@@ -1,13 +1,13 @@
-PhotoSwipe - The ultimate image/photo gallery for your mobile device
-======================================================================
+PhotoSwipe - The ultimate web photo gallery for your mobile device
+==================================================================
 
 [www.photoswipe.com](http://www.photoswipe.com)
 
-Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript image viewer specifically targeted mobile device use.
+Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript based photo viewer specifically targeting mobile devices.
 
-The current version supports mobile handsets running WebKit based browsers, i.e. iOS, Android and Blackberry 6. It also works on selected Nokia devices running WebKit. At the moment, Windows Phone 7 is not currently supported.
+The current version supports mobile handsets running WebKit based browsers, i.e. iOS, Android and Blackberry 6.
 
-In addition, PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox and Internet Explorer 8 and above.
+PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
 
 
@@ -44,16 +44,17 @@ Features
   
     - Set the speeds of all animations used, from sliding in to fading.
 
+
 		
 		
 Getting Started
 ---------------
 
-The library comes with an example site to help you get started. 
+PhotoSwipe comes with an example site to help you get started. 
 
 There are two distributions of the library:
 
-- The default distribution optimised for WebKit (mobile and desktop) and Mozilla based browsers. This distribution uses standard DOM querying and manipulation. It also uses CSS3 transformations for animations.
+- The default distribution optimised for WebKit and Mozilla based browsers. This distribution uses standard DOM querying and manipulation. It also uses CSS3 transformations for animations.
 
 - The jQuery distribution that uses jQuery as it's engine. 
 
