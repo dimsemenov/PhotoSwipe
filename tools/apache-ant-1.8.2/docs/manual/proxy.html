@@ -1,0 +1,295 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+<title>Proxy Configuration</title>
+</head>
+
+<body>
+<h2>Proxy Configuration</h2>
+
+<p>
+This page discussing proxy issues on command-line Apache Ant.
+Consult your IDE documentation for IDE-specific information upon proxy setup.
+</p>
+
+<p>
+
+All tasks and threads running in Ant's JVM share the same HTTP/FTP/Socks
+proxy configuration.
+</p>
+
+<p>
+    When any task tries to retrieve content from an HTTP page, including the
+    <code>&lt;get&gt;</code> task, any automated URL retrieval in
+    an XML/XSL task, or any third-party task that uses the <code>java.net.URL</code>
+    classes, the proxy settings may make the difference between success and failure.
+</p>
+<p>
+    Anyone authoring a build file behind a blocking firewall will immediately appreciate
+    the problems and may want to write a build file to deal with the problem, but
+    users of third party build build files may find that the build file itself
+    does not work behind the firewall.
+</p>
+<p>
+    This is a long standing problem with Java and Ant. The only way to fix
+    it is to explictly configure Ant with the proxy settings, either
+    by passing down the proxy details as JVM properties, or to
+    tell Ant on a Java1.5+ system to have the JVM work it out for itself.
+
+</p>
+
+
+
+<h3>Java1.5+ proxy support (new for Ant1.7)</h3>
+<p>
+    When Ant starts up, if the <code>-autoproxy</code>
+    command is supplied, Ant sets the
+    <code>java.net.useSystemProxies</code> system property. This tells 
+    a Java1.5+ JVM to use the current set of property settings of the host
+    environment. Other JVMs, such as the Kaffe and Apache Harmony runtimes,
+    may also use this property in future.
+    It is ignored on the Java1.4 and earlier runtimes.
+</p>
+<p>
+    This property maybe enough to give command-line Ant
+    builds network access, although in practise the results
+    are inconsistent.
+</p>
+<p>
+    It is has also been reported a breaking the IBM Java 5 JRE on AIX,
+    and does not always work on Linux (presumably due to missing gconf settings)
+    Other odd things can go wrong, like Oracle JDBC drivers or pure Java SVN clients.
+</p>
+
+<p>
+    To make the <code>-autoproxy</code> option the default, add it to the environment variable
+    <code>ANT_ARGS</code>, which contains a list of arguments to pass to Ant on every
+    command line run.
+</p>
+
+<h4>How Autoproxy works</h4>
+<p>
+We are grateful for some input from Sun as to how the proxy code works under
+Java 1.5 and up. The <code>java.net.useSystemProxies</code> is checked only
+once, at startup time, the other checks (registry, gconf, system properties) are done
+dynamically whenever needed (socket connection, URL connection etc..).
+</p>
+<h5>Windows</h5>
+
+<p>
+The JVM goes straight to the registry, bypassing WinInet, as it is not
+present/consistent on all supported Windows platforms (it is part of IE,
+really). Java 7 may use the Windows APIs on the platforms when it is present.
+</p>
+
+<h5>Linux</h5>
+
+<p>
+The JVM uses the gconf library to look at specific entries.
+The GConf-2 settings used are:
+</p>
+<pre>
+ - /system/http_proxy/use_http_proxy            boolean
+ - /system/http_proxy/use_authentication        boolean
+ - /system/http_proxy/host                      string
+ - /system/http_proxy/authentication_user       string
+ - /system/http_proxy/authentication_password   string
+ - /system/http_proxy/port                      int
+ - /system/proxy/socks_host                     string
+ - /system/proxy/mode                           string
+ - /system/proxy/ftp_host                       string
+ - /system/proxy/secure_host                    string
+ - /system/proxy/socks_port                     int
+ - /system/proxy/ftp_port                       int
+ - /system/proxy/secure_port                    int
+ - /system/proxy/no_proxy_for                   list
+ - /system/proxy/gopher_host                    string
+ - /system/proxy/gopher_port                    int
+</pre>
+<p>
+If you are using KDE or another GUI than Gnome, you can still use the
+<code>gconf-editor</code> tool to add these entries.
+</p>
+
+
+<h3>Manual JVM options</h3>
+<p>
+    Any JVM can have its proxy options explicitly configured by passing
+    the appropriate <code>-D</code> system property options to the runtime.
+    Ant can be configured through all its shell scripts via the
+    <code>ANT_OPTS</code> environment variable, which is a list of options to
+    supply to Ant's JVM:
+</p>
+<p>
+  For bash:
+</p>  
+<pre>
+    export ANT_OPTS="-Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080"
+</pre>
+  For csh/tcsh:
+<pre>
+    setenv ANT_OPTS "-Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080"
+</pre>
+<p>
+If you insert this line into the Ant shell script itself, it gets picked up
+by all continuous integration tools running on the system that call Ant via the
+command line.
+</p>
+<p>
+  For Windows, set the <code>ANT_OPTS</code> environment variable in the appropriate "My Computer" 
+  properties dialog box (winXP), "Computer" properties (Vista)
+</p>
+<p>
+  This mechanism works across Java versions, is cross-platform and reliable. 
+  Once set, all build files run via the command line will automatically have
+  their proxy setup correctly, without needing any build file changes. It also
+  apparently overrides Ant's automatic proxy settings options.
+</p>
+<p>  
+  It is limited in the following ways:
+</p>  
+  <ol>
+  <li>Does not work under IDEs. These need their own proxy settings changed</li>
+  <li>Not dynamic enough to deal with laptop configuration changes.</li>
+  </ol>
+
+
+<h3>SetProxy Task</h3>
+<p>
+    The <a href="Tasks/setproxy.html">setproxy task</a> can be used to
+    explicitly set a proxy in a build file. This manipulates the many proxy 
+    configuration properties of a JVM, and controls the proxy settings for all 
+    network operations in the same JVM from that moment. 
+</p>
+<p>
+    If you have a build file that is only to be used in-house, behind a firewall, on
+    an older JVM, <i>and you cannot change Ant's JVM proxy settings</i>, then
+    this is your best option. It is ugly and brittle, because the build file now contains
+    system configuration information. It is also hard to get this right across
+    the many possible proxy options of different users (none, HTTP, SOCKS).
+</p>
+
+
+<p>
+    Note that proxy configurations set with this task will probably override
+    any set by other mechanisms. It can also be used with fancy tricks to 
+    only set a proxy if the proxy is considered reachable:
+</p>
+
+<pre>
+  &lt;target name="probe-proxy" depends="init"&gt;
+    &lt;condition property="proxy.enabled"&gt;
+      &lt;and&gt;
+        &lt;isset property="proxy.host"/&gt;
+        &lt;isreachable host="${proxy.host}"/&gt;
+      &lt;/and&gt;
+    &lt;/condition&gt;
+  &lt;/target&gt;
+
+  &lt;target name="proxy" depends="probe-proxy" if="proxy.enabled"&gt;
+    &lt;property name="proxy.port" value="80"/&gt;
+    &lt;property name="proxy.user" value=""/&gt;
+    &lt;property name="proxy.pass" value=""/&gt;
+    &lt;setproxy proxyhost="${proxy.host}" proxyport="${proxy.port}"
+      proxyuser="${proxy.user}" proxypassword="${proxy.pass}"/&gt;
+  &lt;/target&gt;
+</pre>
+
+<h3>Custom ProxySelector implementations</h3>
+<p>
+    As Java lets developers write their own ProxySelector implementations, it 
+    is theoretically possible for someone to write their own proxy selector class that uses
+    different policies to determine proxy settings. There is no explicit support
+    for this in Ant, and it has not, to the team's knowledge, been attempted. 
+</p>
+<p>
+    This could be the most flexible of solutions, as one could easily imagine
+    an Ant-specific proxy selector that was driven off ant properties, rather
+    than system properties. Developers could set proxy options in their
+    custom build.properties files, and have this propagate.
+</p>
+<p>
+    One issue here is with concurrency: the default proxy selector is per-JVM,
+    not per-thread, and so the proxy settings will apply to all sockets opened
+    on all threads; we also have the problem of how to propagate options from
+    one build to the JVM-wide selector.
+</p>
+
+<h3>Configuring the Proxy settings of Java programs under Ant</h3>
+
+<p>
+    Any program that is executed with <code>&lt;java&gt;</code> without setting
+    <code>fork="true"</code> will pick up the Ant's settings. If you need
+    different values, set <code>fork="false"</code> and provide the values
+    in <code>&lt;sysproperty&gt;</code> elements.
+</p>    
+    If you wish to have
+    a forked process pick up the Ant's settings, use the 
+    <a href="Types/propertyset.html"><code>&lt;syspropertyset&gt;</code></a>
+    element to propagate the normal proxy settings. The following propertyset
+    is a datatype which can be referenced in a <code>&lt;java&gt;</code> task to
+    pass down the current values.
+    
+</p>
+<pre>
+&lt;propertyset id="proxy.properties">
+  &lt;propertyref prefix="java.net.useSystemProxies"/>
+  &lt;propertyref prefix="http."/>
+  &lt;propertyref prefix="https."/>
+  &lt;propertyref prefix="ftp."/>
+  &lt;propertyref prefix="socksProxy"/>
+&lt;/propertyset>
+</pre>
+
+<h3>Summary and conclusions</h3>
+<p>
+There are four ways to set up proxies in Ant.
+</p>
+<ol>
+<li>With Ant1.7 and Java 1.5+ using the <code>-autoproxy</code> parameter.</li>
+<li>Via JVM system properties -set these in the ANT_ARGS environment variable.</li>
+<li>Via the &lt;setproxy&gt; task.</li>
+<li>Custom ProxySelector implementations</li>
+</ol>
+<p>
+Proxy settings are automatically shared with Java programs started under Ant <i>
+that are not forked</i>; to pass proxy settings down to subsidiary programs, use
+a propertyset.
+</p>
+<p>
+Over time, we expect the Java 5+ proxy features to stabilize, and for Java code
+to adapt to them. However, given the fact that it currently does break some
+builds, it will be some time before Ant enables the automatic proxy feature by
+default. Until then, you have to enable the <code>-autoproxy</code> option or
+use one of the alternate mechanisms to configure the JVM.
+
+<h4>Further reading</h4>
+
+<ul>
+<li><a href="http://download.oracle.com/javase/1.5.0/docs/guide/net/properties.html">
+Java Networking Properties</a>. Notice how not all proxy settings are documented
+there.
+<li><a href="http://blogs.sun.com/roller/resources/jcc/Proxies.pdf">Proxies</a>
+</li>
+</ul>
+
+</body>
+</html>

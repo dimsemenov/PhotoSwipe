@@ -1,0 +1,314 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+<title>Directory-based Tasks</title>
+</head>
+
+<body>
+
+<h2><a name="directorybasedtasks">Directory-based Tasks</a></h2>
+<p>Some tasks use directory trees for the actions they perform.
+For example, the <a href="Tasks/javac.html">javac</a> task, which
+compiles a directory tree with <code>.java</code> files into
+<code>.class</code> files, is one of these directory-based tasks. Because
+some of these tasks do so much work with a directory tree, the task itself
+can act as an implicit <a href="Types/fileset.html">FileSet</a>.</p>
+<p>Whether the fileset is implicit or not, it can often be very useful to
+work on a subset of the directory tree. This section describes how you can
+select a subset of such a directory tree when using one of these
+directory-based tasks.</p>
+<p>Apache Ant gives you two ways to create a subset of files in a fileset, both of
+which can be used at the same time:</p>
+<ul>
+  <li>Only include files and directories that match any
+    <code>include</code> patterns and do not match any
+    <code>exclude</code> patterns in a given
+    <a href="Types/patternset.html">PatternSet</a>.</li>
+  <li>Select files based on selection criteria defined by a collection of
+    <a href="Types/selectors.html">selector</a> nested elements.</li>
+</ul>
+<h3><a name="patternset">Patternset</a></h3>
+
+<p>We said that Directory-based tasks can sometimes act as an implicit
+<a href="Types/fileset.html"><code>&lt;fileset&gt;</code></a>,
+but in addition to that, a FileSet acts as an implicit
+<a href="Types/patternset.html"><code>&lt;patternset&gt;</code></a>.</p>
+
+<p>The inclusion and exclusion elements of the implicit PatternSet can be
+specified inside the directory-based task (or explicit fileset) via
+either:</p>
+<ul>
+  <li>the attributes <code>includes</code> and
+    <code>excludes</code>.</li>
+  <li>nested elements <code>&lt;include&gt;</code> and
+    <code>&lt;exclude&gt;</code>.</li>
+  <li>external files specified with the attributes
+    <code>includesfile</code> and <code>excludesfile</code>.</li>
+  <li>external files specified with the nested elements
+    <code>&lt;includesfile&gt;</code> and <code>&lt;excludesfile&gt;</code>.
+  </li>
+</ul>
+<p>
+When dealing with an external file, each line of the file
+is taken as a pattern that is added to the list of include or exclude
+patterns.</p>
+
+<p>When both inclusion and exclusion are used, only files/directories that
+match at least one of the include patterns and don't match any of the
+exclude patterns are used. If no include pattern is given, all files
+are assumed to match the include pattern (with the possible exception of
+the default excludes).</p>
+
+<h4><a name="patterns">Patterns</a></h4>
+
+<p>As described earlier, patterns are used for the inclusion and exclusion
+of files. These patterns look very much like the patterns used in DOS and
+UNIX:</p>
+<p>'*' matches zero or more characters, '?' matches one character.</p>
+
+<p>In general, patterns are considered relative paths, relative to a
+task dependent base directory (the dir attribute in the case of
+<code>&lt;fileset&gt;</code>).  Only files found below that base
+directory are considered.  So while a pattern like
+<code>../foo.java</code> is possible, it will not match anything when
+applied since the base directory's parent is never scanned for
+files.</p>
+
+<p><b>Examples:</b></p>
+<p>
+<code>*.java</code>&nbsp;&nbsp;matches&nbsp;&nbsp;<code>.java</code>,
+<code>x.java</code> and <code>FooBar.java</code>, but
+not <code>FooBar.xml</code> (does not end with <code>.java</code>).</p>
+<p>
+<code>?.java</code>&nbsp;&nbsp;matches&nbsp;&nbsp;<code>x.java</code>,
+<code>A.java</code>, but not <code>.java</code> or <code>xyz.java</code>
+(both don't have one character before <code>.java</code>).</p>
+<p>
+Combinations of <code>*</code>'s and <code>?</code>'s are allowed.</p>
+<p>Matching is done per-directory. This means that first the first directory in
+the pattern is matched against the first directory in the path to match. Then
+the second directory is matched, and so on. For example, when we have the pattern
+<code>/?abc/*/*.java</code>
+and the path <code>/xabc/foobar/test.java</code>,
+the first <code>?abc</code> is matched with <code>xabc</code>,
+then <code>*</code> is matched with <code>foobar</code>,
+and finally <code>*.java</code> is matched with <code>test.java</code>.
+They all match, so the path matches the pattern.</p>
+<p>To make things a bit more flexible, we add one extra feature, which makes it
+possible to match multiple directory levels. This can be used to match a
+complete directory tree, or a file anywhere in the directory tree.
+To do this, <code>**</code>
+must be used as the name of a directory.
+When <code>**</code> is used as the name of a
+directory in the pattern, it matches zero or more directories.
+For example:
+<code>/test/**</code> matches all files/directories under <code>/test/</code>,
+such as <code>/test/x.java</code>,
+or <code>/test/foo/bar/xyz.html</code>, but not <code>/xyz.xml</code>.</p>
+<p>There is one &quot;shorthand&quot;: if a pattern ends
+with <code>/</code>
+or <code>\</code>, then <code>**</code>
+is appended.
+For example, <code>mypackage/test/</code> is interpreted as if it were
+<code>mypackage/test/**</code>.</p>
+<p><b>Example patterns:</b></p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><code>**/CVS/*</code></td>
+    <td valign="top">Matches all files in <code>CVS</code>
+      directories that can be located
+      anywhere in the directory tree.<br>
+      Matches:
+      <pre>
+      CVS/Repository
+      org/apache/CVS/Entries
+      org/apache/jakarta/tools/ant/CVS/Entries
+      </pre>
+      But not:
+      <pre>
+      org/apache/CVS/foo/bar/Entries (<code>foo/bar/</code>
+      part does not match)
+      </pre>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top"><code>org/apache/jakarta/**</code></td>
+    <td valign="top">Matches all files in the <code>org/apache/jakarta</code>
+      directory tree.<br>
+      Matches:
+      <pre>
+      org/apache/jakarta/tools/ant/docs/index.html
+      org/apache/jakarta/test.xml
+      </pre>
+      But not:
+      <pre>
+      org/apache/xyz.java
+      </pre>
+      (<code>jakarta/</code> part is missing).</td>
+  </tr>
+  <tr>
+    <td valign="top"><code>org/apache/**/CVS/*</code></td>
+    <td valign="top">Matches all files in <code>CVS</code> directories
+      that are located anywhere in the directory tree under
+      <code>org/apache</code>.<br>
+      Matches:
+      <pre>
+      org/apache/CVS/Entries
+      org/apache/jakarta/tools/ant/CVS/Entries
+      </pre>
+      But not:
+      <pre>
+      org/apache/CVS/foo/bar/Entries
+      </pre>
+      (<code>foo/bar/</code> part does not match)</td>
+  </tr>
+  <tr>
+    <td valign="top"><code>**/test/**</code></td>
+    <td valign="top">Matches all files that have a <code>test</code>
+        element in their path, including <code>test</code> as a filename.</td>
+  </tr>
+</table>
+<p>When these patterns are used in inclusion and exclusion, you have a powerful
+way to select just the files you want.</p>
+
+<h3><a name="selectors">Selectors</a></h3>
+<p>The <a href="Types/fileset.html"><code>&lt;fileset&gt;</code></a>,
+whether implicit or explicit in the
+directory-based task, also acts as an
+<a href="Types/selectors.html#andselect"><code>&lt;and&gt;</code></a>
+selector container. This can be used to create arbitrarily complicated
+selection criteria for the files the task should work with. See the
+<a href="Types/selectors.html">Selector</a> documentation for more
+information.</p>
+
+<h3><a name="tasklist">Standard Tasks/Filesets</a></h3>
+<p>Many of the standard tasks in ant take one or more filesets which follow
+the rules given here. This list, a subset of those, is a list of standard ant
+tasks that can act as an implicit fileset:</p>
+<ul>
+      <li><a href="Tasks/checksum.html"><code>&lt;checksum&gt;</code></a></li>
+  <li><a href="Tasks/copydir.html"><code>&lt;copydir&gt;</code></a> (deprecated)</li>
+  <li><a href="Tasks/delete.html"><code>&lt;delete&gt;</code></a></li>
+  <li><a href="Tasks/dependset.html"><code>&lt;dependset&gt;</code></a></li>
+  <li><a href="Tasks/fixcrlf.html"><code>&lt;fixcrlf&gt;</code></a></li>
+  <li><a href="Tasks/javac.html"><code>&lt;javac&gt;</code></a></li>
+  <li><a href="Tasks/replace.html"><code>&lt;replace&gt;</code></a></li>
+  <li><a href="Tasks/rmic.html"><code>&lt;rmic&gt;</code></a></li>
+  <li><a href="Tasks/style.html"><code>&lt;style&gt;</code> (aka <code>&lt;xslt&gt;</code>)</a></li>
+  <li><a href="Tasks/tar.html"><code>&lt;tar&gt;</code></a></li>
+  <li><a href="Tasks/zip.html"><code>&lt;zip&gt;</code></a></li>
+  <li><a href="Tasks/ejb.html#ddcreator"><code>&lt;ddcreator&gt;</code></a></li>
+  <li><a href="Tasks/ejb.html#ejbjar"><code>&lt;ejbjar&gt;</code></a></li>
+  <li><a href="Tasks/ejb.html#ejbc"><code>&lt;ejbc&gt;</code></a></li>
+  <li><a href="Tasks/cab.html"><code>&lt;cab&gt;</code></a></li>
+  <li><a href="Tasks/native2ascii.html"><code>&lt;native2ascii&gt;</code></a></li>
+  <li><a href="Tasks/netrexxc.html"><code>&lt;netrexxc&gt;</code></a></li>
+  <li>
+    <a href="Tasks/renameextensions.html"><code>&lt;renameextensions&gt;</code></a>
+  </li>
+  <li><a href="Tasks/depend.html"><code>&lt;depend&gt;</code></a></li>
+  <li><a href="Tasks/translate.html"><code>&lt;translate&gt;</code></a></li>
+  <li><a href="Tasks/image.html"><code>&lt;image&gt;</code></a></li>
+  <li><a href="Tasks/jlink.html"><code>&lt;jlink&gt;</code></a> (deprecated)</li>
+  <li><a href="Tasks/jspc.html"><code>&lt;jspc&gt;</code></a></li>
+  <li><a href="Tasks/wljspc.html"><code>&lt;wljspc&gt;</code></a></li>
+</ul>
+
+<h3><a name="examples">Examples</a></h3>
+<pre>
+&lt;copy todir=&quot;${dist}&quot;&gt;
+  &lt;fileset dir=&quot;${src}&quot;
+           includes=&quot;**/images/*&quot;
+           excludes=&quot;**/*.gif&quot;
+  /&gt;
+&lt;/copy&gt;</pre>
+<p>This copies all files in directories called <code>images</code> that are
+located in the directory tree defined by <code>${src}</code> to the
+destination directory defined by <code>${dist}</code>,
+but excludes all <code>*.gif</code> files from the copy.</p>
+<pre>
+&lt;copy todir=&quot;${dist}&quot;&gt;
+  &lt;fileset dir=&quot;${src}&quot;&gt;
+    &lt;include name=&quot;**/images/*&quot;/&gt;
+    &lt;exclude name=&quot;**/*.gif&quot;/&gt;
+  &lt;/fileset&gt;
+&lt;/copy&gt;
+</pre>
+<p> The same as the example above, but expressed using nested elements.</p>
+
+<pre>
+&lt;delete dir=&quot;${dist}&quot;&gt;
+    &lt;include name=&quot;**/images/*&quot;/&gt;
+    &lt;exclude name=&quot;**/*.gif&quot;/&gt;
+&lt;/delete&gt;
+</pre>
+<p>Deleting the original set of files, the <code>delete</code> task can act
+as an implicit fileset.</p>
+
+<h3><a name="defaultexcludes">Default Excludes</a></h3>
+<p>There are a set of definitions that are excluded by default from all
+directory-based tasks. As of Ant 1.8.1 they are:</p>
+<pre>
+     **/*~
+     **/#*#
+     **/.#*
+     **/%*%
+     **/._*
+     **/CVS
+     **/CVS/**
+     **/.cvsignore
+     **/SCCS
+     **/SCCS/**
+     **/vssver.scc
+     **/.svn
+     **/.svn/**
+     **/.DS_Store
+</pre>
+<p>Ant 1.8.2 adds the folllowing default excludes:</p>
+<pre>
+     **/.git
+     **/.git/**
+     **/.gitattributes
+     **/.gitignore
+     **/.gitmodules
+     **/.hg
+     **/.hg/**
+     **/.hgignore
+     **/.hgsub
+     **/.hgsubstate
+     **/.hgtags
+     **/.bzr
+     **/.bzr/**
+     **/.bzrignore
+</pre>
+<p>If you do not want these default excludes applied, you may disable
+them with the <code>defaultexcludes=&quot;no&quot;</code>
+attribute.</p>
+
+<p>This is the default list; note that you can modify the list of
+default excludes by using the <a
+href="Tasks/defaultexcludes.html">defaultexcludes</a> task.</p>
+
+
+
+</body>
+</html>
+

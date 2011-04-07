@@ -1,0 +1,353 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Rmic Task</title>
+</head>
+
+<body>
+
+<h2><a name="rmic">Rmic</a></h2>
+<h3>Description</h3>
+<p>Runs the rmic compiler for a certain class.</p>
+<p>Rmic can be run on a single class (as specified with the classname
+attribute) or a number of classes at once (all classes below base that
+are neither _Stub nor _Skel classes).  If you want to rmic a single
+class and this class is a class nested into another class, you have to
+specify the classname in the form <code>Outer$$Inner</code> instead of
+<code>Outer.Inner</code>.</p>
+<p>It is possible to refine the set of files that are being rmiced. This can be
+done with the <i>includes</i>, <i>includesfile</i>, <i>excludes</i>, <i>excludesfile</i> and <i>defaultexcludes</i>
+attributes. With the <i>includes</i> or <i>includesfile</i> attribute you specify the files you want to
+have included by using patterns. The <i>exclude</i> or <i>excludesfile</i> attribute is used to specify
+the files you want to have excluded. This is also done with patterns. And
+finally with the <i>defaultexcludes</i> attribute, you can specify whether you
+want to use default exclusions or not. See the section on <a
+href="../dirtasks.html#directorybasedtasks">directory based tasks</a>, on how the
+inclusion/exclusion of files works, and how to write patterns.</p>
+<p>This task forms an implicit <a href="../Types/fileset.html">FileSet</a> and
+supports most attributes of <code>&lt;fileset&gt;</code>
+(<code>dir</code> becomes <code>base</code>) as well as the nested
+<code>&lt;include&gt;</code>, <code>&lt;exclude&gt;</code> and
+<code>&lt;patternset&gt;</code> elements.</p>
+<p>It is possible to use different compilers. This can be selected
+with the &quot;build.rmic&quot; property, the <code>compiler</code>
+attribute. or a nested element.
+<a name="compilervalues">Here are the choices</a>:</p>
+<ul>
+  <li>default -the default compiler (kaffe or sun) for the platform.
+  <li>sun (the standard compiler of the JDK)</li>
+  <li>kaffe (the standard compiler of <a href="http://www.kaffe.org" target="_top">Kaffe</a>)</li>
+  <li>weblogic</li>
+  <li>forking - the sun compiler forked into a separate process (since Apache Ant 1.7)</li>
+  <li>xnew - the sun compiler forked into a separate process,
+      with the -Xnew option (since Ant 1.7).
+      This is the most reliable way to use -Xnew</li>
+    <li> "" (empty string). This has the same behaviour as not setting the compiler attribute.
+    First the value of <tt>build.rmic</tt> is used if defined, and if not, the default
+    for the platform is chosen. If build.rmic is set to this, you get the default.
+
+</ul>
+
+<p>The <a href="http://dione.zcu.cz/~toman40/miniRMI/">miniRMI</a>
+project contains a compiler implementation for this task as well,
+please consult miniRMI's documentation to learn how to use it.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">base</td>
+    <td valign="top">the location to store the compiled files.
+      Also serves as the parent directory for any non-Fileset includes, etc.
+      (This functionality has remained unchanged.)</td>
+    <td valign="top" align="center" rowspan="2"><a href="#footnote-1">*1</a></td>
+  </tr>
+  <tr>
+    <td valign="top">destdir</td>
+    <td valign="top">the location to store the compiled files.</td>
+  </tr>
+  <tr>
+    <td valign="top">classname</td>
+    <td valign="top">the class for which to run <code>rmic</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">filtering</td>
+    <td valign="top">indicates whether token filtering should take place</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">sourcebase</td>
+    <td valign="top">Pass the &quot;-keepgenerated&quot; flag to rmic and
+ move the generated source file to the given sourcebase directory.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">stubversion</td>
+    <td valign="top">Specify the JDK version for the generated stub code.
+ Specify &quot;1.1&quot; to pass the &quot;-v1.1&quot; option to rmic,
+ "1.2" for -v12, compat for -vcompat. <br>
+        Since Ant1.7, if you do not specify a version, and do not ask
+        for iiop or idl files, "compat" is selected.
+ 
+ </td>
+    <td align="center" valign="top">No, default="compat"</td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">The classpath to use during compilation</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpathref</td>
+    <td valign="top">The classpath to use during compilation, given as <a
+      href="../using.html#references">reference</a> to a PATH defined elsewhere</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      included. All files are included when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an include pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      excluded. No files (except default excludes) are excluded when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an exclude pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">defaultexcludes</td>
+    <td valign="top">indicates whether default excludes should be used or not
+      (&quot;yes&quot;/&quot;no&quot;). Default excludes are used when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">verify</td>
+    <td valign="top">check that classes implement Remote before handing them 
+        to rmic (default is false)</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">iiop</td>
+    <td valign="top">indicates that portable (RMI/IIOP) stubs should be generated</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">iiopopts</td>
+    <td valign="top">additional arguments for IIOP class generation</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">idl</td>
+    <td valign="top">indicates that IDL output files should be generated</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">idlopts</td>
+    <td valign="top">additional arguments for IDL file generation</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">debug</td>
+    <td valign="top">generate debug info (passes -g to rmic). Defaults to false.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includeAntRuntime</td> 
+    <td valign="top">whether to include the Ant run-time libraries;
+      defaults to <code>yes</code>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includeJavaRuntime</td> 
+    <td valign="top">whether to include the default run-time
+      libraries from the executing VM; defaults to <code>no</code>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">extdirs</td>
+    <td valign="top">location of installed extensions.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">compiler</td>
+    <td valign="top">The compiler implementation to use.
+      If this attribute is not set, the value of the
+      <code>build.rmic</code> property, if set, will be used.
+      Otherwise, the default compiler for the current VM will be used.
+      (See the above <a href="#compilervalues">list</a> of valid
+      compilers.)</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">executable</td>
+    <td valign="top">Complete path to the <code>rmic</code>
+      executable to use in case of the <code>forking</code>
+      or <code>xnew</code> compiler.
+      Defaults to the rmic compiler of the Java version that is currently
+      running Ant.<br/>
+      <em>Since Ant 1.8.0</em>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">listfiles</td>
+    <td valign="top">Indicates whether the source files to be compiled will
+      be listed; defaults to <code>no</code>.<br/>
+      <em>Since Ant 1.8.0</em>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<p><a name="footnote-1">*1</a>:
+<ul>
+  <li>Maintaining compatibility, <code>base</code>, when specified by
+    itself, serves as both the parent directory for any source files
+    AND the output directory.</li>
+  <li><code>destdir</code> can be used to specify the output
+    directory, allowing for <code>base</code> to be used as the parent
+    directory for any source files.</li>
+  <li>At least one of either <code>base</code> or <code>destdir</code>
+    must be specified and exist, or a runtime error will
+    occur.</li>
+</ul>
+</p>
+
+<h3>Parameters specified as nested elements</h3>
+<h4>classpath and extdirs</h4>
+<p><code>Rmic</code>'s <i>classpath</i> and <i>extdirs</i> attributes are <a
+href="../using.html#path">PATH like structure</a> and can also be set via a nested
+<i>classpath</i> and <i>extdirs</i> elements.</p>
+
+<h4>compilerarg</h4>
+
+<p>You can specify additional command line arguments for the compiler
+with nested <code>&lt;compilerarg&gt;</code> elements.  These elements
+are specified like <a href="../using.html#arg">Command-line
+Arguments</a> but have an additional attribute that can be used to
+enable arguments only if a given compiler implementation will be
+used.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+<tr>
+  <td width="12%" valign="top"><b>Attribute</b></td>
+  <td width="78%" valign="top"><b>Description</b></td>
+  <td width="10%" valign="top"><b>Required</b></td>
+</tr>
+  <tr>
+    <td valign="top">value</td>
+    <td align="center" rowspan="4">See
+    <a href="../using.html#arg">Command-line Arguments</a>.</td>
+    <td align="center" rowspan="4">Exactly one of these.</td>
+  </tr>
+  <tr>
+    <td valign="top">line</td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+  </tr>
+  <tr>
+    <td valign="top">path</td>
+  </tr>
+  <tr>
+    <td valign="top">prefix</td>
+    <td align="center" rowspan="2">See
+    <a href="../using.html#arg">Command-line Arguments</a>.
+    <em>Since Ant 1.8.</em></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">suffix</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">compiler</td>
+    <td>Only pass the specified argument if the chosen
+      compiler implementation matches the value of this attribute.
+      Legal values are the
+      same as those in the above <a href="#compilervalues">list</a> of valid
+      compilers.)</td>
+    <td align="center">No</td>
+  </tr>
+</table>
+
+<h4>compilerclasspath <em>since Ant 1.8.0</em></h4>
+
+<p>A <a href="../using.html#path">PATH like structure</a> holding the
+  classpath to use when loading the compiler implementation if a
+  custom class has been specified.  Doesn't have any effect when
+  using one of the built-in compilers.</p>
+
+<h4>Any nested element of a type that implements RmicAdapter
+  <em>since Ant 1.8.0</em></h4>
+
+<p>If a defined type implements the <code>RmicAdapter</code>
+  interface a nested element of that type can be used as an
+  alternative to the <code>compiler</code> attribute.</p>
+
+<h3>Examples</h3>
+<pre>  &lt;rmic classname=&quot;com.xyz.FooBar&quot; base=&quot;${build}/classes&quot;/&gt;</pre>
+<p>runs the rmic compiler for the class <code>com.xyz.FooBar</code>. The
+compiled files will be stored in the directory <code>${build}/classes</code>.</p>
+<pre>  &lt;rmic base=&quot;${build}/classes&quot; includes=&quot;**/Remote*.class&quot;/&gt;</pre>
+<p>runs the rmic compiler for all classes with <code>.class</code>
+files below <code>${build}/classes</code> whose classname starts with
+<i>Remote</i>. The compiled files will be stored in the directory
+<code>${build}/classes</code>.</p>
+
+<p>If you want to use a custom
+  RmicAdapter <code>org.example.MyAdapter</code> you can either
+  use the compiler attribute:</p>
+<pre>
+&lt;rmic classname=&quot;com.xyz.FooBar&quot;
+      base=&quot;${build}/classes&quot;
+      compiler="org.example.MyAdapter"/&gt;
+</pre>
+<p>or a define a type and nest this into the task like in:</p>
+<pre>
+&lt;componentdef classname="org.example.MyAdapter"
+              name="myadapter"/&gt;
+&lt;rmic classname=&quot;com.xyz.FooBar&quot;
+      base=&quot;${build}/classes&quot;&gt;
+  &lt;myadapter/&gt;
+&lt;/rmic&gt;
+</pre>
+<p>in which case your compiler adapter can support attributes and
+  nested elements of its own.</p>
+
+</body>
+</html>
+

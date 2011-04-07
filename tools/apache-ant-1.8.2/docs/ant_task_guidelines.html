@@ -1,0 +1,507 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html><head>
+<title>
+Apache Ant Task Design Guidelines
+</title>
+</head><body>
+
+<h1>Apache Ant&trade; Task Design Guidelines</h1>
+
+This document covers how to write Apache Ant tasks to a standard required to be
+incorporated into the Ant distribution. You may find it useful when
+writing tasks for personal use as the issues it addresses are still
+there in such a case.
+
+<h2>Don't break existing builds</h2>
+
+Even if you find some really hideous problem with Ant, one that is easy to fix,
+if your fix breaks an existing build file then we have problems. Making sure
+that every build file out there still works is one of the goals of all changes.
+As an example of this, Ant 1.5 passes the single dollar sign &quot;$&quot;
+through in strings; Ant 1.4 and before would strip it. To get this fix in we
+first had to write the test suite to expose current behaviour, then change
+something so that single &quot;$&quot; was passed through, but double
+&quot;$$&quot; got mapped to &quot;$&quot; for backwards compatibility.
+
+<h2>Don't break the Java API</h2>
+
+Ant's tasks can be used by third party programs and tasks.
+We cannot make changes that break the API. This includes:
+<ol>
+<li>Moving classes without leaving a backwards-compatible facade.
+<li>Deleting classes.
+<li>Deleting methods or fields, or reducing their accessibility.
+<li>Changing the signature of a <tt>setAttribute(Type)</tt> method. If you need
+to add a restrictive type, add a new attribute, and place it in the source
+<i>above</i> the original. The XML mapper will get the restricted type, old programs
+can still use the old type.
+<li>Don't change semantics. At least, not drastically. All bug fixes are
+implicit changes of semantics, after all.
+</ol>
+
+<h2>Use built in helper classes</h2>
+
+Ant includes helper tasks to simplify much of your work. It is much better to
+use them than roll your own, for development, maintenance and code size reasons.
+
+<h4>Execute</h4>
+
+Execute will spawn off separate programs under all the platforms which
+Ant supports, dealing with Java version issues as well as platform
+issues. Always use this class to invoke other programs.
+
+<h4>Java, ExecuteJava</h4>
+
+These classes can be used to spawn Java programs in a separate VM (they
+use execute) or in the same VM--with or without a different classloader.
+When deriving tasks from this, it often benefits users to permit the
+classpath to be specified, and for forking to be an optional attribute.
+
+<h4>Project and related classes</h4>
+
+Project, FileUtils, JavaEnvUtils all have helper functions to do things like
+touch a file, copy a file and the like. Use these instead of coding them
+yourself or trying to use tasks which may be less stable and fiddlier to use.
+
+<h2>Obey the Sun/Java style guidelines</h2>
+
+The Ant codebase aims to have a single unified coding standard, and that
+standard is the
+<a href="http://java.sun.com/docs/codeconv/html/CodeConvTOC.doc.html">
+Sun Java coding guidelines
+</a>
+<p>
+
+It's not that they are better than any alternatives, but they are a
+standard and they are what is consistently used in the rest of the
+tasks. Code will not be incorporated into the database until it complies
+with these.
+
+<p>
+
+If you are writing a task for your personal or organisational use, you
+are free to use whatever style you like. But using the Sun Java style
+will help you to become comfortable with the rest of the Ant source,
+which may be important.
+
+<p>
+
+One important rule is 'no tabs'. Use four spaces instead. Not two,
+not eight, four. Even if your editor is configured to have a tab of four
+spaces, lots of others aren't. Spaces have more consistency across
+editors and platforms. Some IDEs (JEdit) can highlight tabs, to stop you
+accidentally inserting them.
+<p>
+There is an Ant build file check.xml in the main ant directory with runs 
+  <a href="http://checkstyle.sourceforge.net">checkstyle</a> over
+  Ant's source code.
+
+<h2>Attributes and elements</h2>
+Use the Ant introspection-based mapping of attributes into Java datatypes,
+rather than implementing all your attributes as setFoo(String) and doing
+the mapping to int, boolean or File yourself. This saves work on your part,
+lets Java callers use you in a typesafe manner, and will let the Xdocs
+documentation generator work out what the parameters are.
+
+<p>
+The Ant 1.x tasks are very inconsistent regarding naming of attributes--some
+tasks use <tt>source</tt>, others <tt>src</tt>.
+Here is a list of preferred attribute names:
+<p>
+<table cellpadding="5">
+<tr>
+<td>
+    failonerror
+</td>
+<td>
+    boolean to control whether failure to execute should throw a
+    <tt>BuildException</tt> or just print an error.
+    Parameter validation failures should always throw an error, regardless
+    of this flag.
+</td>
+</tr>
+<tr>
+<td>
+    destdir
+</td>
+<td>
+    destination directory for output
+</td>
+</tr>
+<tr>    
+<td>
+    destfile
+</td>
+<td>
+    destination file for output
+</td>
+</tr>
+<tr>
+<td>
+    srcdir
+</td>
+<td>
+    source directory
+</td>
+</tr>
+<tr>
+<td>
+    srcfile
+</td>
+<td>
+    source file
+</td>
+</tr>
+</table>
+<p>
+Yes, this is a very short list. Try and be vaguely consistent with the core
+tasks, at the very least.
+
+<h2>Support classpaths</h2>
+
+Try and make it possible for people to supply a classpath to your task,
+if you need external libraries, rather than make them add everything to
+the ANT_HOME/lib directory. This lets people keep the external libraries
+in their Ant-based project, rather than force all users to make changes
+to their Ant system configuration.
+
+<h2>Design for controlled re-use</h2>
+
+Keep member variables private. If read access by subclasses is required,
+add accessor methods rather than change the accessiblity of the member.
+This enables subclasses to access the contents, yet still be decoupled 
+from the actual implementation.
+<p>
+
+The other common re-use mechanism in Ant is for one task to create and
+configure another. This is fairly simple. There are facilities available in
+Ant's API to have the tasks instantiated by their familiar names
+(&quot;java&quot;, &quot;exec&quot;, etc.). It is recommended that you
+<b>not</b> use this approach because of the entirely real possibility that a
+user has overridden the name to point to a different class entirely. Use direct
+constructor calls (or reflection) to instantiate your subtask. Since Ant 1.6.3,
+you can call <code>org.apache.tools.ant.Task#bindToOwner()</code>
+to &quot;mask&quot; a helper task as its parent.
+
+<h2>Do your own Dependency Checking</h2>
+
+Make has the edge over Ant in its integrated dependency checking; the
+command line apps make invokes don't need to do their own work. Ant tasks
+do have to do their own dependency work, but if this can be done then
+it can be done well. A good dependency-aware task can work out the dependencies
+without explicit dependency information in the build file, and be smart
+enough to work out the real dependencies, perhaps through a bit of file parsing.
+The <tt>depends</tt> task is the best example of this. Some of the zip/jar
+tasks are pretty good too, as they can update the archive when needed.
+Most tasks just compare source and destination timestamps and work from there.
+Tasks which don't do any dependency checking do not help users as much as
+they can, because their needless work can trickle through the entire build, test
+and deploy process.
+
+<h2>Support Java 1.2 through Java 1.5+</h2>
+
+Ant 1.5 and lower was designed to support Java 1.1. Ant 1.6 and higher
+is designed to support Java 1.2: to build on it, to run on it. Sometimes
+functionality of tasks have to degrade in that environment--usually due to
+library limitations; such behaviour change must always be noted in the
+documentation.
+<p>
+What is problematic is code which is dependent on Java 1.3 features;
+e.g. java.lang.reflect.Proxy, or Java 1.4 features; e.g. java.io.nio.
+Be also aware of extra methods in older classes;
+e.g. StringBuffer#append(StringBuffer). These cannot be used directly
+by any code and still be able to compile and run on a Java 1.2 system.
+If a new method in an existing class is to be used, it must be used via
+reflection and the <tt>NoSuchMethodException</tt> handled somehow.
+<p>
+What if code simply does not work on Java 1.2? It can happen. It will
+probably be OK to have the task as an optional task, with compilation
+restricted to Java 1.3 or later through build.xml modifications.
+Better still, use reflection to link to the classes at run time.
+<p>
+Java 1.4 adds a new optional change to the language itself, the
+<tt>assert</tt> keyword, which is only enabled if the compiler is told
+to compile 1.4 version source. Clearly with the 1.2 compatibility requirement,
+Ant tasks cannot use this keyword. They also need to move away from
+using the JUnit <tt>assert()</tt> method and call <tt>assertTrue()</tt>
+instead.
+<p>
+Java 1.5 adds the <tt>enum</tt> type; again, this must not be used.
+
+<h2>Explicitly Expand properties in nested text</h2>
+
+For historical reasons, <tt>addText(String text)</tt> is called to
+set the task's nested text, without any property expansion taking place.
+Call <tt>Project.replaceProperties()</tt> to do this manually.
+If you forget, you create a problem that is impossible to fix
+without breaking users' build files.
+
+<h2>Refactor</h2>
+
+If the changes made to a task are making it too unwieldy, split it up
+into a cleaner design, refactor the code and submit not just feature
+creep but cleaner tasks. A common design pattern which tends to occur in
+the Ant process is the adoption of the adapter pattern, in which a base
+class (say Javac or Rmic) starts off simply, then gets convoluted with
+support for multiple back ends:  javac, jikes, jvc. A refactoring to
+split the programmable front end from the classes which provide the back
+end cleans up the design and makes it much easier to add new back ends.
+But to carry this off one needs to keep the interface and behaviour of
+the front end identical, and to be sure that no subclasses have been
+accessing data members directly, because these data members may not
+exist in the refactored design. This is why having private data members
+is so important.
+
+<p>
+
+One thing we must not do is move existing tasks around or delete them.
+Remember that Ant has a Java API as well as an XML language. We don't want
+to break that API, or anything that subclasses existing Ant tasks. When
+refactoring, you need to leave facades where the original classes were. so
+existing code does not break.
+
+<h2>Test</h2>
+
+Look in <tt>ant/src/testcases</tt> and you will find JUnit tests for the
+shipping Ant tasks, to see how it is done and what is expected of a new
+task. Most of them are rudimentary, and no doubt you could do better for
+your task--feel free to do so!
+
+<p>
+
+A well written set of test cases will break the Ant task while it is in
+development, until the code is actually complete. And every bug which
+surfaces later should have a test case added to demonstrate the problem,
+and to fix it.
+
+<p>
+
+The test cases are a great way of testing your task during development.
+A simple call to 'build run-test' in the ant source tree will run all ant
+tests, to verify that your changes don't break anything.
+To test a single task, use the one shot <code>ant run-single-test
+-Dtestcase=${testname}</code> where <code>${testname}</code>
+is the name of your test class.
+
+<p>
+
+The test cases are also used by the committers to verify that changes
+and patches do what they say. If you've got test cases it increases your
+credibility significantly. To be precise, we hate submissions without
+test cases, as it means we have to write them ourselves. This is
+something that only gets done if we need the task or it is perceived as
+utterly essential to many users.
+
+<p>
+
+Remember also that Ant 1.x is designed to compile and run on Java 1.2, so
+you should test on Java 1.2 as well as any later version which you use.
+You ought to be able to download an old SDK from Sun for this purpose.
+<p>
+Finally, run a full <code>build test</code> before and after you start
+developing your project, to make sure you haven't broken anything else by
+accident.
+
+<h2>Document</h2>
+
+Without documentation, the task can't be used. So remember to provide a
+succinct and clear html (soon, xml) page describing the task in a similar
+style to that of existing tasks. It should include a list of attributes
+and elements, and at least one working example of the task. Many users
+cut and paste the examples into their build files as a starting point,
+so make the examples practical and test them too.
+<p>
+You can use the xdocs stuff in proposal/xdocs to autogenerate your
+documentation page from the javadocs of the source; this makes life
+easier and will make the transition to a full xdoclet generated
+documentation build process trivial.
+
+<h2>Licensing and Copyright</h2>
+
+Any code submitted to the Apache project must be compatible with the
+Apache License, and the act of submission must be viewed as
+an implicit license of the submitted code to the Apache Software
+Foundation.
+
+<p>
+This is important.
+
+<p>
+
+The fairly laissez-faire license of Apache is not currently considered
+compatible with
+either the GPL or the Lesser GPL of the Free Software Foundation--the
+Gnu project. These licenses have stricter terms, &quot;copyleft&quot;,
+which are not in the Apache License.
+This permits people and organisations to build
+commercial and closed source applications atop the Apache libraries and source.
+
+<p>
+
+Because the Gnu GPL license immediately extends to cover any larger
+application (or library, in the case of LGPL) into which it is
+incorporated, the Ant team cannot incorporate any task based upon GPL
+or LGPL source into the Ant codebase. You are free to submit it, but it
+will be politely and firmly rejected.
+
+<p>
+If you link to a GPL or LGPL library, by <code>import</code> or
+reflection, your task must be licensed under the same terms. So tasks
+linking to (L)GPL code can't go into the Apache managed codebase.
+Tasks calling such code can use the 'exec' or 'java' tasks to run the
+programs, as you are just executing them at this point, not linking to
+them.
+<p>
+Even if we cannot include your task into the Apache codebase, we can
+still point to where you host it; just submit a diff to
+xdocs/external.html pointing to your task.
+<p>
+If your task links directly to proprietary code, we have a different
+problem: it is really hard to build the tasks. Please use reflection.
+
+<h3>Don't re-invent the wheel</h3>
+
+We've all done it: written and submitted a task only to discover it
+was already implemented in a small corner of another task, or it has
+been submitted by someone else and not committed. You can avoid this
+by being aware of what is in the latest CVS tree; keep getting the daily
+source updates, look at manual changes and subscribe to the dev
+mailing list.
+
+<p>
+
+If you are thinking of writing a task, posting a note on your thoughts
+to the list can be informative--you will get other peoples' insights and
+maybe some half-written task to do the basics, all without writing a
+line of code.
+
+<h2>Submitting to Ant</h2>
+
+The basic mechanism for submitting an Ant task is to mail it to the
+dev mailing list. It helps to be on this list, as you will see other
+submissions, and any debate about your own submission.
+<p>
+You may create your patch file using either of the following approaches
+(the committers recommend the first):
+<p>
+<ul>
+<li><h3>Approach 1 - The Ant Way</h3>
+<p>
+Use Ant to generate a patch file to Ant:
+<pre class="code">
+ant -f patch.xml
+</pre>
+This will create a file named patch.tar.gz that will contain a unified
+diff of files that have been modified and also include files that have
+been added.  Review the file for completeness and correctness.  This approach
+is recommended because it standardizes the way in which patch files are
+constructed.  It also eliminates the chance of you missing to submit new files
+that constitute part of the patch.
+<p>
+<li><h3>Approach 2 - The Manual Way</h3>
+<p>
+Patches to existing files should be generated with
+<code>svn diff filename</code>
+ and save the output to a file. If you want to get
+the changes made to multiple files in a directory , just use <code>svn
+diff</code>.  Then, Tar and GZip the patch file as well as any new files
+that you have added.
+</ul>
+<p>
+The patches should be sent as an attachment to a message titled [PATCH]
+and distinctive one-line summary in the subject of the patch. The
+filename/task and the change usually suffices. It's important to include
+the changes as an attachment, as too many mailers reformat the text
+pasted in, which breaks the patch.
+<p>
+Then you wait for one of the committers to commit the patch, if it is
+felt appropriate to do so. Bug fixes go in quickly, other changes
+often spark a bit of discussion before a (perhaps revised) commit is
+made.
+<p>
+
+New submissions should be proceeded with [SUBMIT]. The mailer-daemon
+will reject any messages over 100KB, so any large update should be
+zipped up. If your submission is bigger than that, why not break it up
+into separate tasks.
+<p>
+
+We also like submissions to be added to
+<a href="http://issues.apache.org/bugzilla/">bugzilla</a>, so that they dont get lost. Please submit them by first filing the report with a
+meaningful name, then adding files as attachments. Use CVS diff files
+please!
+<p>
+
+If you hear nothing after a couple of weeks, remind the mailing list.
+Sometimes really good submissions get lost in the noise of other issues.
+This is particularly the case just prior to a new point release of
+the product. At that time anything other than bug fixes will tend
+to be neglected.
+
+<h2>Checklists</h2>
+
+These are the things you should verify before submitting patches and new
+tasks. Things don't have to be perfect; it may take a couple of
+iterations before a patch or submission is committed, and these items
+can be addressed in the process. But by the time the code is committed,
+everything including the documentation and some test cases will have
+been done, so getting them out the way up front can save time.
+The committers look more favourably on patches and submissions with test
+cases, while documentation helps sell the reason for a task.
+
+<h3>Checklist before submitting a patch</h3>
+<ul>
+<li>Added code complies with style guidelines
+<li>Code compiles and runs on Java 1.2
+<li>New member variables are private, and provide public accessor methods
+	if access is actually needed.
+<li>Existing test cases succeed.
+<li>New test cases written and succeed.
+<li>Documentation page extended as appropriate.
+<li>Example task declarations in the documentation tested.
+<li>Diff files generated using svn diff -u
+<li>Message to dev contains [PATCH], task name and patch reason in
+subject.
+<li>Message body contains a rationale for the patch.
+<li>Message attachment contains the patch file(s).
+</ul>
+
+<h3>Checklist before submitting a new task</h3>
+<ul>
+<li>Java file begins with Apache copyright and license statement.
+<li>Task does not depend on GPL or LGPL code.
+<li>Source code complies with style guidelines
+<li>Code compiles and runs on Java 1.2
+<li>Member variables are private, and provide public accessor methods
+	if access is actually needed.
+<li><i>Maybe</i> Task has failonerror attribute to control failure behaviour
+<li>New test cases written and succeed
+<li>Documentation page written
+<li>Example task declarations in the documentation tested.
+<li>Patch files generated using svn diff -u
+<li>patch files include a patch to defaults.properties to register the
+tasks
+<li>patch files include a patch to tasklist.html to link to the new task page
+<li>Message to dev contains [SUBMIT] and task name in subject
+<li>Message body contains a rationale for the task
+<li>Message attachments contain the required files -source, documentation,
+test and patches zipped up to escape the HTML filter.
+</ul>
+
+
+</body></html>

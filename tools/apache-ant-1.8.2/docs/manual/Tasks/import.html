@@ -1,0 +1,349 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  <title>Import Task</title>
+</head>
+<body>
+  <h2><a name="import">Import</a></h2>
+  <h3>Description</h3>
+  <p>
+    Imports another build file into the current project.
+  </p>
+
+  <p>
+    On execution it will select the proper ProjectHelper to parse the imported
+    file, using the same algorithm as the one executed at
+    <a href="../projecthelper.html">startup</a>. The selected ProjectHelper
+    instance will then be responsible to actually parse the imported file.
+  </p>
+
+  <p>
+    <b>Note</b> as seen above, this task heavily relies on the ProjectHelper
+    implementation and doesn't really perform any work of its own.  If
+    you have configured Apache Ant to use a ProjectHelper other than Ant's
+    default, this task may or may not work.
+  </p>
+
+  <p>
+    In the common use case where only Ant's default project helper is
+    used, it basically works like the 
+    <a href="http://ant.apache.org/faq.html#xml-entity-include">Entity
+      Includes as explained in the Ant FAQ</a>, as if the imported file was
+    contained in the importing file, minus the top <code>&lt;project&gt;</code>
+    tag.
+  </p>
+
+  <p>
+    The import task may only be used as a top-level task. This means that
+    it may not be used in a target.
+  </p>
+  <p>
+There are two further functional aspects that pertain to this task and
+that are not possible with entity includes:
+<ul>
+  <li>target overriding</li>
+  <li>special properties</li>
+</ul>
+  </p>
+<h4>Target overriding</h4>
+
+<p>If a target in the main file is also present in at least one of the
+imported files, the one from the main file takes precedence.</p>
+
+<p>So if I import for example a <i>docsbuild.xml</i> file named <b>builddocs</b>,
+that contains a &quot;<b>docs</b>&quot; target, I can redefine it in my main
+buildfile and that is the one that will be called. This makes it easy to
+keep the same target name, so that the overriding target is still called
+by any other targets--in either the main or imported buildfile(s)--for which
+it is a dependency, with a different implementation. The target from <i>docsbuild.xml</i> is
+made available by the name &quot;<b>builddocs</b><b>.docs</b>&quot;.
+This enables the new implementation to call the old target, thus
+<i>enhancing</i> it with tasks called before or after it.</p>
+
+<p>If you use the <i>as</i> attribute of the task, its value will be
+  used to prefix the overriden target's name instead of the name
+  attribute of the project tag.</p>
+
+<h4>Special Properties</h4>
+
+<p>Imported files are treated as they are present in the main
+buildfile. This makes it easy to understand, but it makes it impossible
+for them to reference files and resources relative to their path.
+Because of this, for every imported file, Ant adds a property that
+contains the path to the imported buildfile. With this path, the
+imported buildfile can keep resources and be able to reference them
+relative to its position.</p>
+
+<p>So if I import for example a <i>docsbuild.xml</i> file named <b>builddocs</b>,
+I can get its path as <b>ant.file.builddocs</b>, similarly to the <b>ant.file</b>
+property of the main buildfile.</p>
+
+<p>Note that &quot;builddocs&quot; is not the filename, but the name attribute
+present in the imported project tag.</p>
+  <p>
+    If the imported file does not have a name attribute, the ant.file.projectname
+    property will not be set.
+  </p>
+
+<p>Since Ant 1.8.0 the task can also import resources from URLs or
+  classpath resources (which are URLs, really).  If you need to know
+  whether the current build file's source has been a file or an URL
+  you can consult the
+  property <b>ant.file.type.<em>projectname</em></b> (using the same
+  example as above <b>ant.file.type.builddocs</b>) which either have
+  the value "file" or "url".</p>
+
+<h4>Resolving files against the imported file</h4>
+
+<p>Suppose your main build file called <code>importing.xml</code>
+imports a build file <code>imported.xml</code>, located anywhere on
+the file system, and <code>imported.xml</code> reads a set of
+properties from <code>imported.properties</code>:</p>
+
+<pre>&lt;!-- importing.xml --&gt;
+&lt;project name="importing" basedir="." default="..."&gt;
+&nbsp; &lt;import file="${path_to_imported}/imported.xml"/&gt;
+&lt;/project&gt;
+
+&lt;!-- imported.xml --&gt;
+&lt;project name="imported" basedir="." default="..."&gt;
+&nbsp; &lt;property file="imported.properties"/&gt;
+&lt;/project&gt;
+</pre>
+
+<p>This snippet however will resolve <code>imported.properties</code>
+against the basedir of <code>importing.xml</code>, because the basedir
+of <code>imported.xml</code> is ignored by Ant. The right way to use
+<code>imported.properties</code> is:</p>
+
+<pre>
+&lt;!-- imported.xml --&gt;
+&lt;project name="imported" basedir="." default="..."&gt;
+&nbsp; &lt;dirname property="imported.basedir" file="${ant.file.imported}"/&gt;
+&nbsp; &lt;property file="${imported.basedir}/imported.properties"/&gt;
+&lt;/project&gt;
+</pre>
+
+<p>As explained above <code>${ant.file.imported}</code> stores the
+path of the build script, that defines the project called
+<code>imported</code>, (in short it stores the path to
+<code>imported.xml</code>) and <a
+href="dirname.html"><code>&lt;dirname&gt;</code></a> takes its
+directory. This technique also allows <code>imported.xml</code> to be
+used as a standalone file (without being imported in other
+project).</p>
+
+<p>The above description only works for imported files that actually
+  are imported from files and not from URLs.  For files imported from
+  URLs using resources relative to the imported file requires you to
+  use tasks that can work on non-file resources in the first place.
+  To create a relative resource you'd use something like:</p>
+
+<pre>
+  &lt;loadproperties&gt;
+    &lt;url baseUrl="${ant.file.imported}"
+         relativePath="imported.properties"/&gt;
+  &lt;/loadproperties&gt;
+</pre>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">
+        file
+      </td>
+      <td valign="top">
+        The file to import. If this is a relative file name, the file name will be resolved
+        relative to the <i>importing</i> file. <b>Note</b>, this is unlike most other
+        ant file attributes, where relative files are resolved relative to ${basedir}.
+      </td>
+      <td valign="top" align="center">Yes or a nested resource collection</td>
+    </tr>
+    <tr>
+      <td valign="top">
+        optional
+      </td>
+      <td valign="top">
+        If true, do not stop the build if the file does not exist,
+        default is false.
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">
+        as
+      </td>
+      <td valign="top">
+        Specifies the prefix prepended to the target names.  If
+        ommitted, the name attribute of the project tag of the
+        imported file will be used.
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">
+        prefixSeparator
+      </td>
+      <td valign="top">
+        Specifies the separator to be used between the prefix and the
+        target name.  Defaults to ".".
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Parameters specified as nested elements</h3>
+
+<h4>any <a href="../Types/resources.html">resource</a> or resource
+collection</h4>
+
+<p>The specified resources will be imported.  <em>Since Ant
+    1.8.0</em></p>
+
+<h3>Examples</h3>
+<pre>&nbsp; &lt;import file=&quot;../common-targets.xml&quot;/&gt;
+</pre>
+
+<p>Imports targets from the common-targets.xml file that is in a parent
+directory.</p>
+
+<pre>&nbsp; &lt;import file=&quot;${deploy-platform}.xml&quot;/&gt;
+</pre>
+
+<p>Imports the project defined by the property deploy-platform</p>
+
+<pre>
+  &lt;import&gt;
+    &lt;javaresource name="common/targets.xml"&gt;
+      &lt;classpath location="common.jar"/&gt;
+    &lt;/javaresource&gt;
+  &lt;/import&gt;
+</pre>
+
+<p>Imports targets from the targets.xml file that is inside the
+  directory common inside the jar file common.jar.</p>
+
+<h3>How is &lt;import&gt; different
+  from <a href="include.html">&lt;include&gt;</a>?</h3>
+
+<p>The short version: Use import if you intend to override a target,
+  otherwise use include.</p>
+
+<p>When using import the imported targets are available by up to two
+  names.  Their "normal" name without any prefix and potentially with
+  a prefixed name (the value of the as attribute or the imported
+  project's name attribute, if any).</p>
+
+<p>When using include the included targets are only available in the
+  prefixed form.</p>
+
+<p>When using import, the imported target's depends attribute
+  remains unchanged, i.e. it uses "normal" names and allows you to
+  override targets in the dependency list.</p>
+
+<p>When using include, the included targets cannot be overridden and
+  their depends attributes are rewritten so that prefixed names are
+  used.  This allows writers of the included file to control which
+  target is invoked as part of the dependencies.</p>
+
+<p>It is possible to include the same file more than once by using
+  different prefixes, it is not possible to import the same file more
+  than once.</p>
+
+<h4>Examples</h4>
+
+<p><i>nested.xml</i> shall be:</p>
+
+<pre>
+&lt;project&gt;
+  &lt;target name="setUp"&gt;
+    &lt;property name="prop" value="in nested"/&gt;
+  &lt;/target&gt;
+
+  &lt;target name="echo" depends="setUp"&gt;
+    &lt;echo&gt;prop has the value ${prop}&lt;/echo&gt;
+  &lt;/target&gt;
+&lt;/project&gt;
+</pre>
+
+<p>When using import like in</p>
+
+<pre>
+&lt;project default="test"&gt;
+  &lt;target name="setUp"&gt;
+    &lt;property name="prop" value="in importing"/&gt;
+  &lt;/target&gt;
+
+  &lt;import file="nested.xml" as="nested"/&gt;
+
+  &lt;target name="test" depends="nested.echo"/&gt;
+&lt;/project&gt;
+</pre>
+
+<p>Running the build file will emit:
+
+<pre>
+setUp:
+
+nested.echo:
+     [echo] prop has the value in importing
+
+test:
+
+</pre>
+
+<p>When using include like in</p>
+
+<pre>
+&lt;project default="test"&gt;
+  &lt;target name="setUp"&gt;
+    &lt;property name="prop" value="in importing"/&gt;
+  &lt;/target&gt;
+
+  &lt;include file="nested.xml" as="nested"/&gt;
+
+  &lt;target name="test" depends="nested.echo"/&gt;
+&lt;/project&gt;
+</pre>
+
+<p>Running the target build file will emit:
+
+<pre>
+nested.setUp:
+
+nested.echo:
+     [echo] prop has the value in nested
+
+test:
+
+</pre>
+
+<p>and there won't be any target named "echo" on the including build file.</p>
+
+</body>
+</html>

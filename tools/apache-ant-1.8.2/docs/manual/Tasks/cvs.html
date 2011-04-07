@@ -1,0 +1,230 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  <title>CVS Task</title>
+</head>
+
+<body>
+
+<h2><a name="cvs">Cvs</a></h2>
+<h3>Description</h3>
+<p>Handles packages/modules retrieved from a
+<a href="http://www.nongnu.org/cvs/" target="_top">CVS</a> repository.</p>
+<p><b>Important:</b> This task needs &quot;<code>cvs</code>&quot; on the path. If it isn't, you will get
+an error (such as error <code>2</code> on windows). If <code>&lt;cvs&gt;</code> doesn't work, try to execute <code>cvs.exe</code>
+from the command line in the target directory in which you are working.
+Also note that this task assumes that the cvs exceutable is compatible
+with the Unix version from cvshome.org, this is not completely true
+for certain other cvs clients - like CVSNT for example - and some
+operation may fail when using such an incompatible client.
+</p>
+
+<p><b>CVSNT Note</b>: CVSNT prefers users to store the passwords
+inside the registry.  If the <a href="cvspass.html">cvspass task</a>
+and the passfile attribute don't seem to work for you, the most likely
+reason is that CVSNT ignores your .cvspass file completely.  See <a
+href="http://issues.apache.org/bugzilla/show_bug.cgi?id=21657#c5">bugzilla
+report 21657</a> for recommended workarounds.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">command</td>
+    <td valign="top">the CVS command to execute.</td>
+    <td align="center" valign="top">No, default &quot;checkout&quot;.</td>
+  </tr>
+  <tr>
+    <td valign="top">compression</td>
+    <td valign="top"><code>true</code> or <code>false</code> - if set
+    to true, this is the same as <code>compressionlevel=&quot;3&quot;</code></td>
+    <td align="center" valign="top">No. Defaults to false.</td>
+  </tr>
+  <tr>
+    <td valign="top">compressionlevel</td>
+    <td valign="top">A number between 1 and 9 (corresponding to
+    possible values for CVS' <code>-z#</code> argument). Any
+    other value is treated as <code>compression=&quot;false&quot;</code></td>
+    <td align="center" valign="top">No. Defaults to no compression.</td>
+  </tr>
+
+  <tr>
+    <td valign="top">cvsRoot</td>
+    <td valign="top">the <code>CVSROOT</code> variable.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">cvsRsh</td>
+    <td valign="top">the <code>CVS_RSH</code> variable.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">dest</td>
+    <td valign="top">the directory where the checked out files should
+    be placed.  Note that this is different from CVS's <code>-d</code> command line
+    switch as Apache Ant will never shorten pathnames to avoid empty
+    directories.</td>
+    <td align="center" valign="top">No, default is project's basedir.</td>
+  </tr>
+  <tr>
+    <td valign="top">package</td>
+    <td valign="top">the package/module to check out.  <b>Note:</b>
+      multiple attributes can be split using spaces.  Use a nested
+      &lt;module&gt; element if you want to specify a module with
+      spaces in its name.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">tag</td>
+    <td valign="top">the tag of the package/module to check out.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">date</td>
+    <td valign="top">Use the most recent revision no later than the given date</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">quiet</td>
+    <td valign="top">suppress informational messages. This is the same as <code>-q</code> on the command line.</td>
+    <td align="center" valign="top">No, default &quot;false&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">reallyquiet</td>
+    <td valign="top">suppress all messages. This is the same as
+      <code>-Q</code> on the command line.  <em>since Ant 1.6</em>.</td>
+    <td align="center" valign="top">No, default &quot;false&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">noexec</td>
+    <td valign="top">report only, don't change any files.</td>
+    <td align="center" valign="top">No, default to &quot;false&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">output</td>
+    <td valign="top">the file to direct standard output from the command.</td>
+    <td align="center" valign="top">No, default output to ANT Log as <code>MSG_INFO</code>.</td>
+  </tr>
+  <tr>
+    <td valign="top">error</td>
+    <td valign="top">the file to direct standard error from the command.</td>
+    <td align="center" valign="top">No, default error to ANT Log as <code>MSG_WARN</code>.</td>
+  </tr>
+  <tr>
+    <td valign="top">append</td>
+    <td valign="top">whether to append output/error when redirecting to a file.</td>
+    <td align="center" valign="top">No, default to &quot;false&quot;.</td>
+  </tr>
+  <tr>
+    <td valign="top">port</td>
+    <td valign="top">Port used by CVS to communicate with the server.</td>
+    <td align="center" valign="top">No, default port <code>2401</code>.</td>
+  </tr>
+  <tr>
+    <td valign="top">passfile</td>
+    <td valign="top">Password file to read passwords from.</td>
+    <td align="center" valign="top">No, default file <code>~/.cvspass</code>.</td>
+  </tr>
+  <tr>
+    <td valign="top">failonerror</td>
+    <td valign="top">Stop the build process if the command exits with a
+      return code other than <code>0</code>. Defaults to &quot;false&quot;</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3>Parameters specified as nested elements</h3>
+
+<h4>module</h4>
+
+<p>Specifies a package/module to work on, unlike the package attribute
+  modules specified using this attribute can contain spaces in their
+  name.</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The module's/package's name.</td>
+    <td align="center" valign="top">Yes.</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>  &lt;cvs cvsRoot=&quot;:pserver:anoncvs@cvs.apache.org:/home/cvspublic&quot;
+       package=&quot;ant&quot;
+       dest=&quot;${ws.dir}&quot;
+  /&gt;</pre>
+<p>checks out the package/module &quot;ant&quot; from the CVS
+repository pointed to by the <code>cvsRoot</code> attribute, and stores the files in &quot;<code>${ws.dir}</code>&quot;.</p>
+<pre>  &lt;cvs dest=&quot;${ws.dir}&quot; command=&quot;update&quot;/&gt;</pre>
+<p>updates the package/module that has previously been checked out into
+&quot;<code>${ws.dir}</code>&quot;.</p>
+
+<pre>  &lt;cvs command=&quot;-q diff -u -N&quot; output=&quot;patch.txt&quot;/&gt;</pre>
+
+<p>silently (<code>-q</code>) creates a file called <code>patch.txt</code> which contains a unified (<code>-u</code>) diff which includes new files added via &quot;cvs add&quot; (<code>-N</code>) and can be used as input to patch.
+The equivalent, using  <code>&lt;commandline&gt;</code> elements, is:
+</p>
+<pre>
+&lt;cvs output=&quot;patch&quot;&gt;
+    &lt;commandline&gt;
+        &lt;argument value=&quot;-q&quot;/&gt;
+        &lt;argument value=&quot;diff&quot;/&gt;
+        &lt;argument value=&quot;-u&quot;/&gt;
+        &lt;argument value=&quot;-N&quot;/&gt;
+    &lt;/commandline&gt;
+&lt;/cvs&gt;
+</pre>
+or:
+<pre>
+&lt;cvs output=&quot;patch&quot;&gt;
+    &lt;commandline&gt;
+        &lt;argument line=&quot;-q diff -u -N&quot;/&gt;
+    &lt;/commandline&gt;
+&lt;/cvs&gt;
+</pre>
+<p>
+You may include as many <code>&lt;commandline&gt;</code> elements as you like. 
+Each will inherit the <code>failonerror</code>, <code>compression</code>, and other &quot;global&quot; parameters
+from the <code>&lt;cvs&gt;</code> element.
+</p>
+
+
+<pre>  &lt;cvs command=&quot;update -A -d&quot;/&gt;</pre>
+<p>Updates from the head of repository ignoring sticky bits (<code>-A</code>) and creating any new directories as necessary (<code>-d</code>).</p>
+<p>Note: the text of the command is passed to cvs &quot;as-is&quot; so any cvs options should appear
+before the command, and any command options should appear after the command as in the diff example
+above. See <a href="http://ximbiot.com/cvs/wiki/index.php?title=Category:User_Documentation" target="_top">the cvs manual</a> for details,
+specifically the <a href="http://ximbiot.com/cvs/wiki/index.php?title=CVS--Concurrent_Versions_System_v1.12.12.1:_Guide_to_CVS_commands#SEC116" target="_top">Guide to CVS commands</a></p>
+
+
+</body>
+</html>
+

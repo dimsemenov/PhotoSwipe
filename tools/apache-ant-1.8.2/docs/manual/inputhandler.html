@@ -1,0 +1,116 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+<title>InputHandler</title>
+</head>
+
+<body>
+<h1>InputHandler</h1>
+
+<h2>Overview</h2>
+
+<p>When a task wants to prompt a user for input, it doesn't simply
+read the input from the console as this would make it impossible to
+embed Apache Ant in an IDE.  Instead it asks an implementation of the
+<code>org.apache.tools.ant.input.InputHandler</code> interface to
+prompt the user and hand the user input back to the task.</p>
+
+<p>To do this, the task creates an <code>InputRequest</code> object
+and passes it to the <code>InputHandler</code> Such an
+<code>InputRequest</code> may know whether a given user input is valid
+and the <code>InputHandler</code> is supposed to reject all invalid
+input.</p>
+
+<p>Exactly one <code>InputHandler</code> instance is associated with
+every Ant process, users can specify the implementation using the
+<code>-inputhandler</code> command line switch.</p>
+
+<h2>InputHandler</h2>
+
+<p>The <code>InputHandler</code> interface contains exactly one
+method</p>
+
+<pre>
+    void handleInput(InputRequest request) 
+        throws org.apache.tools.ant.BuildException;
+</pre>
+
+<p>with some pre- and postconditions.  The main postcondition is that
+this method must not return unless the <code>request</code> considers
+the user input valid, it is allowed to throw an exception in this
+situation.</p>
+
+<p>Ant comes with three built-in implementations of this interface:</p>
+
+<h3><a name="defaulthandler">DefaultInputHandler</a></h3>
+
+<p>This is the implementation you get, when you don't use the
+<code>-inputhandler</code> command line switch at all.  This
+implementation will print the prompt encapsulated in the
+<code>request</code> object to Ant's logging system and re-prompt for
+input until the user enters something that is considered valid input
+by the <code>request</code> object.  Input will be read from the
+console and the user will need to press the Return key.</p>
+
+<h3>PropertyFileInputHandler</h3>
+
+<p>This implementation is useful if you want to run unattended build
+processes.  It reads all input from a properties file and makes the
+build fail if it cannot find valid input in this file.  The name of
+the properties file must be specified in the Java system property
+<code>ant.input.properties</code>.</p>
+
+<p>The prompt encapsulated in a <code>request</code> will be used as
+the key when looking up the input inside the properties file.  If no
+input can be found, the input is considered invalid and an exception
+will be thrown.</p>
+
+<p><strong>Note</strong> that <code>ant.input.properties</code> must
+be a Java system property, not an Ant property.  I.e. you cannot
+define it as a simple parameter to <code>ant</code>, but you can
+define it inside the <code>ANT_OPTS</code> environment variable.</p>
+
+<h3>GreedyInputHandler</h3>
+
+<p>Like the default implementation, this InputHandler reads from standard
+input. However, it consumes <i>all</i> available input. This behavior is
+useful for sending Ant input via an OS pipe. <b>Since Ant 1.7</b>.</p>
+
+<h3>SecureInputHandler</h3>
+
+<p>This InputHandler calls <code>System.console().readPassword()</code>,
+available since Java 1.6.  On earlier platforms it falls back to the
+behavior of DefaultInputHandler. <b>Since Ant 1.7.1</b>.</p>
+
+<h2>InputRequest</h2>
+
+<p>Instances of <code>org.apache.tools.ant.input.InputRequest</code>
+encapsulate the information necessary to ask a user for input and
+validate this input.</p>
+
+<p>The instances of <code>InputRequest</code> itself will accept any
+input, but subclasses may use stricter validations.
+<code>org.apache.tools.ant.input.MultipleChoiceInputRequest</code>
+should be used if the user input must be part of a predefined set of
+choices.</p>
+
+
+</html>

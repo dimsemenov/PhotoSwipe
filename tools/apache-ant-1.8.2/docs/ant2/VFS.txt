@@ -1,0 +1,253 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+From: "Adam Murdoch" <adammurdoch_ml@yahoo.com>
+Subject: RE: Virtual FileSystem Layer
+Date: Sat, 22 Dec 2001 12:06:37 +1000
+
+Hi,
+
+I've also been doing a bit of work on the VFS.  No code yet - instead, I've
+done a survey of the Ant 1 code, to help get a better idea of what we need
+the VFS to actually do.
+
+I've put together a rough list of the sort of features the current tasks
+require from the file system.  This list is entirely from the task writer's
+POV.  I've ignored the build file writer completely - though, the action
+list is a good summary of the build file writer's concerns.  I've tried to
+steer clear of assumptions about what is actually going to provide each
+feature to the tasks, or what the API will look like to the tasks.
+
+The goal for doing up this list, was to help identify the features we want
+to support, and the API that the tasks will use to get at them.  This should
+be largely independent of how we decide to represent the file system in the
+build files.  In addition, it doesn't matter too much whether the list below
+is complete (I'm sure it isn't), or that the VFS provide every single one of
+the features.  Whatever it doesn't provide, can stay up in the tasks, and be
+refactored down later.
+
+The assumption here is that we do actually want to put together a file
+system API.  I think it's a good idea to at least put together some
+interfaces, even if the implementation is stolen from somewhere else.
+Without a doubt, the file system is the most widely used "service" in the
+current crop of tasks.  The API that we choose has to have a good semantic
+match with what the tasks need to do, so that writing the tasks is easy.
+The API also has to be general enough to deal with stuff we haven't thought
+of yet.  On that note, I personally think that JNDI might be a touch too
+general for what we need.
+
+So, the features.  Note that many of these will be optional - not every
+feature will be available for every node in the file system.  I've used the
+term "node" to mean both directories and files.  I'm not suggesting we
+actually call them "nodes" in the API.  I've used the term "root node" to
+mean the root of a file system.
+
+* Naming
+
+- Locate a node by absolute name.
+- Get the absolute name for a node.
+- Resolve a name to a node, relative to some base node - like
+FileUtils.resolveFile().
+- Get the relative name of a node, relative to some base node.
+- Determine the base name (with and without the extension), and extension of
+the node.
+- Deal with file systems that are case sensitive, and case insentitive.
+
+* Properties
+
+- Determine what properties are available on the node.
+- Determine if the node exists.
+- Determine the type of node (file vs. directory, could be "has-content" vs
+"has-children").
+- Determine if the node is readable.
+- Determine if the node is writeable.
+- Get/set the permissions on the node.  This covers things like chmod &
+chown, making read-only, making executable, etc.
+
+* Content
+
+- Determine if the node can/does have content.
+- Get the size of the node.
+- Get/set the last-modified time of the node.
+- Get/set the mime-type of the node.
+- Get/set the encoding of the node.
+- Get a checksum of the node.
+- Get content as InputStream.
+- Get content as Reader.
+- Set content as an OutputStream.
+- Set content as a Writer.
+- Implicit creation of node and its ancestors when content is written.
+- Compare nodes for equality (last modified timestamp, checksum, bytewise
+compare).
+
+* Hierarchy
+
+- Get the parent node of a node.
+- Get the child nodes of a node.
+- Iterate over (or visit) the descendants of a node.
+  - With or without a selector.
+  - In various orders - depthwise, etc.
+  - Be able to modify the nodes during traversal.
+
+* Modification
+
+- Create a new node of a particular type.  Create all missing ancestors.
+- Move, copy, delete a node.
+  - All descendants.
+  - Optional selector. E.g. ignore empty dirs, ignore default excludes, etc.
+  - Optional filter.
+
+* Conversion
+
+- Convert the node to a java.net.URL.
+- Make the node content available as a local file (to hand off to external
+commands).
+- Get the OS specific *filename* for a node.
+- Resolve an OS specific *filename* to a node.
+
+* File System Types
+
+- Local file.
+- HTTP.
+- FTP.
+- Classloader, uses Classloader.getResource().
+- Temporary files.
+- etc ...
+
+- Compound file system.  Made up of a bunch of mount points.  The VFS
+itself.
+
+- Layered file systems (that sit on top of another file system or node):
+  - zip, bzip, jar, tar
+  - filtering - token replacement, etc
+
+- Factories for creating and configuring file system root nodes.
+- Ability to easily add new file system implementations.
+
+* Task Container
+
+- A mechanism for a task to get hold of the project's root node.
+
+- A mechanism that allows a task to create its own private root nodes,
+without letting it mess with the project's file system, or the file systems
+of other tasks.
+
+- A mechanism for cleaning up all the node InputStream, OutputStream, Reader
+and Writers opened by a task during its execute() method.  Cleaning up files
+is one thing the current tasks don't do very well at all.  Something like
+this would take care of anything the task did not explictly close.  Would
+include root nodes it created.
+
+* Other things
+
+- Maybe some way to explicitly close a node and release all resources used
+by it.
+
+- Maybe detection of concurrent updates, in the case of parallel tasks.
+
+- Netbeans has an event model in its VFS.  Something like this might be
+useful in dependency management.
+
+- nodesets.  The replacement for, or generalisation of, FileSet, Path,
+FileList, etc
+  - A nodeset that contains the descendents of a node that match a selector
+(like the current FileSet implementation).
+  - A nodeset that contains arbitrary nodes.
+  - An aggregating nodeset.
+  - Custom nodeset implementations.
+
+- Reimplement the Ant 1 Fileset, Path and Filelist as adaptors sitting on
+top of the VFS.
+
+- A classloader that can load classes from a node.
+
+- etc ..
+
+What's missing?  What shouldn't be on the list?
+
+
+Adam
+
+> -----Original Message-----
+> From: Magesh Umasankar
+> Sent: Saturday, 22 December 2001 10:44 AM
+> To: ant-dev@jakarta.apache.org
+> Subject: Virtual FileSystem Layer
+>
+>
+> I have been spending some time now on the VFS
+> layer...  Nothing major to report yet, but I just wanted
+> to sound off so that if I am going down the wrong
+> route, I correct it right away.
+>
+> I evaluated at WebNFS, NetBeansFS (NBFS) and
+> JNDI.
+>
+> 1.  WebNFS seems to be going nowhere.  It has
+> been dormant for quite sometime now.  Licensing
+> is rigid.  Technically, it doesn't look so bad as it
+> closely replicates java.io.File's API.  But then,
+> that really gives us very little.
+>
+> 2.  NBFS looks OK.  It has got a few filesystems
+> already built.  There may be some licensing issues,
+> I don't know, but that shouldn't concern us too
+> much as, according to Peter, it is Mozilla (I haven't
+> really check the license out, sorry).  But, as far as I
+> can see, it seems to lack in sophisticated API features
+> like searching based on attributes, etc., which
+> we will definitely be needing for the Selector APIs.
+>
+> 3.  JNDI, by far, beats the above to, in my
+> evaluation.  It is generic enough.  We don't have
+> any licensing issues.  It has also become part of
+> the core JRE (1.4 onwards).  Technically, it fits to a T
+> what we are looking for - virtual file system that
+> provides search controls, access attributes,
+> url mounting, etc.  Furthermore, there's been
+> some ground work already done for us at Jakarta/Apache
+> (Catalina).  I have written a SPI for a FTPFileSystem
+> - though it is in a real crude stage right now.  I believe
+> this is the way to go because Ant's code would be
+> operating at the (Dir)Context level and we can keep
+> adding SPIs as we need them.  Furthermore,
+> JNDI has been stable for quite sometime now and
+> we can depend on a widely used API.
+>
+> I don't think JNDI is a heavyweight API for our needs.
+> It seems to be the only one, so far, which encompasses
+> at the APIP level, all the new functionalities that we
+> desire to introduce.
+>
+> Let me know if my approach, so far, to go the JNDI
+> route seems reasonable.
+>
+> Cheers,
+> Magesh
+>
+>
+>
+>
+> --
+> To unsubscribe, e-mail:   <mailto:ant-dev-unsubscribe@jakarta.apache.org>
+> For additional commands, e-mail: <mailto:ant-dev-help@jakarta.apache.org>
+
+
+--
+To unsubscribe, e-mail:   <mailto:ant-dev-unsubscribe@jakarta.apache.org>
+For additional commands, e-mail: <mailto:ant-dev-help@jakarta.apache.org>
+
+

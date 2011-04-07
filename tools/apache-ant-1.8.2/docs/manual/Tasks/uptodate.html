@@ -1,0 +1,177 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Uptodate Task</title>
+</head>
+
+<body>
+
+<h2><a name="uptodate">Uptodate</a></h2>
+<h3>Description</h3>
+<p>Sets a property if a target file or set of target files is more up-to-date
+than a source file or set of source files. A single source file is specified
+using the <code>srcfile</code> attribute. A set of source files is specified
+using the nested <code>&lt;srcfiles&gt;</code>
+elements. These are <a href="../Types/fileset.html">FileSet</a>s,
+whereas multiple target files are specified using a nested
+<a href="../Types/mapper.html"><code>&lt;mapper&gt;</code></a> element.</p>
+<p>By default, the value of the property is set to <code>true</code> if
+the timestamp of the source file(s) is not more recent than the timestamp of
+the corresponding target file(s). You can set the value to something other
+than the default by specifying the <code>value</code> attribute.</p>
+<p>If a <code>&lt;srcfiles&gt;</code> element is used, without also specifying
+a <code>&lt;mapper&gt;</code> element, the default behavior is to use a
+<a href="../Types/mapper.html#merge-mapper">merge mapper</a>, with the
+<code>to</code> attribute set to the value of the
+<code>targetfile</code> attribute.</p>
+<p>Normally, this task is used to set properties that are useful to avoid
+target execution depending on the relative age of the specified files.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">property</td>
+    <td valign="top">The name of the property to set.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">value</td>
+    <td valign="top">The value to set the property to.</td>
+    <td valign="top" align="center">No; defaults to <code>true</code>.</td>
+  </tr>
+  <tr>
+    <td valign="top">srcfile</td>
+    <td valign="top">The file to check against the target file(s).</td>
+    <td valign="top" align="center">Yes, unless a nested
+    <code>&lt;srcfiles&gt;</code> or <code>&lt;srcresources&gt;</code>
+    element is present.</td>
+  </tr>
+  <tr>
+    <td valign="top">targetfile</td>
+    <td valign="top">The file for which we want to determine the status.</td>
+    <td valign="top" align="center">Yes, unless a nested
+      <code>&lt;mapper&gt;</code> element is present.</td>
+  </tr>
+</table>
+
+<h3>Parameters specified as nested elements</h3>
+<h4><a name="srcfiles">srcfiles</a></h4>
+<p>The nested <code>&lt;srcfiles&gt;</code> element is a
+<a href="../Types/fileset.html">fileset</a> and allows you to
+specify a set of files to check against the target file(s).</p>
+
+<p><strong>Note:</strong> You can specify either the <code>srcfile</code>
+attribute or nested <code>&lt;srcfiles&gt;</code> elements, but not both.
+
+<p>Note that the task will completely ignore any directories that seem
+  to be matched by the srcfiles fileset, it will only consider normal
+  files.  If you need logic that applies to directories as well, use a
+  nested srcresource and a dirset (for example).</p>
+
+<h4><a name="srcresources">srcresources</a></h4>
+<p>The nested <code>&lt;srcresources&gt;</code> element is a <a
+href="../Types/resources.html#union">union</a> and allows you to
+specify a collection of resources to check against the target file(s).
+<em>Since Apache Ant 1.7</em></p>
+
+<h4><a name="mapper">mapper</a></h4>
+<p>The nested <code>&lt;mapper&gt;</code> element allows you to specify
+a set of target files to check for being up-to-date with respect to a
+set of source files.</p>
+   <p>
+      The mapper "to" attribute is relative to the target file, or to
+      the "dir" attribute of the nested srcfiles element.
+   </p>
+  <p>
+    <em>Since Ant 1.6.3</em>,
+    one can use a filenamemapper type in place of the mapper element.
+  </p>
+<h3>Examples</h3>
+<pre>  &lt;uptodate property=&quot;xmlBuild.notRequired&quot; targetfile=&quot;${deploy}\xmlClasses.jar&quot; &gt;
+    &lt;srcfiles dir= &quot;${src}/xml&quot; includes=&quot;**/*.dtd&quot;/&gt;
+  &lt;/uptodate&gt;</pre>
+<p>sets the property <code>xmlBuild.notRequired</code> to <code>true</code>
+if the <code>${deploy}/xmlClasses.jar</code> file is more up-to-date than
+any of the DTD files in the <code>${src}/xml</code> directory.</p>
+<p>This can be written as:</p>
+<pre>  &lt;uptodate property=&quot;xmlBuild.notRequired&quot;&gt;
+    &lt;srcfiles dir= &quot;${src}/xml&quot; includes=&quot;**/*.dtd&quot;/&gt;
+    &lt;mapper type=&quot;merge&quot; to=&quot;${deploy}\xmlClasses.jar&quot;/&gt;
+  &lt;/uptodate&gt;</pre>
+as well.
+
+The <code>xmlBuild.notRequired</code> property can then be used in a
+<code>&lt;target&gt;</code> tag's <code>unless</code> attribute to
+conditionally run that target. For example, running the following target:</p>
+<pre>
+&lt;target name=&quot;xmlBuild&quot; depends=&quot;chkXmlBuild&quot; unless=&quot;xmlBuild.notRequired&quot;&gt;
+  ...
+&lt;/target&gt;
+</pre>
+will first run the <code>chkXmlBuild</code> target, which contains
+the <code>&lt;uptodate&gt;</code> task that determines whether
+<code>xmlBuild.notRequired</code> gets set. The property named in
+the <code>unless</code> attribute is then checked for being set/not set.
+If it did get set (ie., the jar file is up-to-date),
+then the <code>xmlBuild</code> target won't be run.
+</p>
+
+<p> The following example shows a single source file being checked
+against a single target file:</p>
+<pre>  &lt;uptodate property=&quot;isUpToDate&quot;
+            srcfile=&quot;/usr/local/bin/testit&quot;
+            targetfile=&quot;${build}/.flagfile&quot;/&gt;
+</pre>
+<p>sets the property <code>isUpToDate</code> to <code>true</code>
+if <code>/usr/local/bin/testit</code> is not newer than
+<code>${build}/.flagfile</code>.</p>
+</p>
+  <p>
+    The following shows usage of a relative mapper.
+  </p>
+  <pre>
+    &lt;uptodate property="checkUptodate.uptodate"&gt;
+      &lt;srcfiles dir="src" includes="*"/&gt;
+      &lt;mapper type="merge" to="../dest/output.done"/&gt;
+    &lt;/uptodate&gt;
+    &lt;echo message="checkUptodate result: ${checkUptodate.uptodate}"/&gt;
+  </pre>
+  <p>
+    The previous example can be a bit confusing, so it may be better to
+    use absolute paths:
+  </p>
+  <pre>
+    &lt;property name="dest.dir" location="dest"/&gt;
+    &lt;uptodate property="checkUptodate.uptodate"&gt;
+      &lt;srcfiles dir="src" includes="*"/&gt;
+      &lt;mapper type="merge" to="${dest.dir}/output.done"/&gt;
+    &lt;/uptodate&gt;
+  </pre>
+
+
+
+</body>
+</html>
+

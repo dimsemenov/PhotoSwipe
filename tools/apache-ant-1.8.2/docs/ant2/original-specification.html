@@ -1,0 +1,294 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "strict.dtd">
+<HTML> 
+  <HEAD> 
+	 <TITLE>Ant Specification, version 0.5</TITLE> 
+  </HEAD> 
+  <BODY> 
+	 <H1>Ant Specification</H1> 
+	 <P>Version 0.5 (2000/04/20)</P> 
+	 <P>This document specifies the behavior of Ant. At this time, this is a
+		working document with no implementation. It is hoped that this specification
+		will lead to a simplier and more consistent implementation of Ant.</P> 
+	 <P>This document is not intended to be used as an end user manual or user
+		guide to Ant. To adequatly explain the concepts herein in a way appropriate to
+		such a use would potentially complicate this document.</P> 
+	 <H2>Design Goals</H2> 
+	 <P>The following are the overall design goals of Ant:</P> 
+	 <UL> 
+		<LI>Simplicity</LI> 
+		<LI>Understandability</LI> 
+		<LI>Extensibility</LI> 
+	 </UL> 
+	 <H3>Simplicity</H3> 
+	 <P>Ant must be simple to use. Of course, as the definition of simple varies
+		according to the audience of the program. For Ant, since it is a build tool
+		aimed at programmers, the goal is to be simple to use for a competent
+		programmer.</P> 
+	 <H3>Understandability</H3> 
+	 <P>Ant must be clearly understandible for a first time as well as a veteran
+		user. This means that a new user should be able to use Ant comfortably the
+		first time and understand how to modify a build file by looking at it. And it
+		should not require much experience with Ant to understand how it works and how
+		to configure it for particular situtations.</P> 
+	 <H3>Extensibility</H3> 
+	 <P>Ant must be easy to extend. The API used to extend Ant must be easy to
+		use and the way in which these extensions are located and used by the core
+		runtime should be clear.</P> 
+	 <H2>Conceptual Overview</H2> 
+	 <P>This is a conceptual overview of the components used by Ant. Full APIs
+		will be defined later.</P> 
+	 <H3>Project</H3> 
+	 <P>The base unit of work in Ant is the <STRONG>Project</STRONG>. A Project
+		is defined by an editable text file and is represented by an object of type
+		<CODE>org.apache.ant.Project</CODE> at runtime.</P> 
+	 <P>A Project is a collection of <STRONG>Properties</STRONG> and
+		<STRONG>Targets</STRONG>.</P> 
+	 <H3>Properties</H3> 
+	 <P>Properties are mutable name-value pairs that are scoped to the Project
+		and held in a table. Only one pair is allowed per name. It is anticipated that
+		this data structure would be of type <CODE>java.util.Properties</CODE> or a type that has approximatly
+		the same contract.</P> 
+	 <P>Properties can be defined in a hierarchical manner. The order of
+		precidence in this hiearchy is:</P> 
+	 <UL> 
+		<LI>Properties defined on the command line or via a GUI tool</LI> 
+		<LI>Properties defined in the text file which defines the project.</LI> 
+		<LI>Properties defined in a file in the users <CODE>user.home</CODE> directory</LI> 
+		<LI>Properties defined in the installation directory that can be shared
+		  by multiple users.</LI> 
+	 </UL> 
+	 <P>Note: The current version of Ant allows the System property list to be
+		consulted for a return value if the property list doesn't satisfy the requested
+		property name. As all Java code has access to the system property list via the
+		<CODE>java.lang.System</CODE> class, this functionality is considered to be confusing and to be
+		removed.</P> 
+	 <P>Note: The current version of Ant allows property substitution to be
+		performed in the project file. This functionality is being removed.</P> 
+	 <H3>Targets</H3> 
+	 <P>Targets are ordered collections of <STRONG>Tasks</STRONG>, units of work
+		to be performed if a Target is executed. </P> 
+	 <P>Targets can define dependancies on other Targets within the Project. If
+		a Target is deemed to be executed, either directly on the command line, or via
+		a dependancy from some other Target, then all of its dependencies must first be
+		executed. Circular depenancies are resolved by examination of the dependancy
+		stack when a Target is evaluated. If a dependancy is already on the stack of
+		targets to be executed, then the dependancy is considered to have been
+		satisfied.</P> 
+	 <P>After all dependancies of a Target have been satisfied, all of the Tasks
+		contained by the target are configured and executed in sequential order. </P> 
+	 <H3>Tasks</H3> 
+	 <P>A Task is a unit of work. When a Task is to be executed, an instance of
+		the class that defines the behavior of the particular task specified is
+		instantiated and then configured. This class implements the <CODE>org.apache.ant.Task</CODE> interface.
+		It is then executed so that it may be able to perform its function. It is
+		important to note that this configuration occurs just before execution of the
+		task, and after execution of any previous tasks, so that configuration
+		information that was modified by any other Task can be properly set.</P> 
+	 <P>When a Task is executed, it is provided access to the object
+		representing the Project it is running in allowing it to examine the Property
+		list of the project and access to various methods needed to operate.</P> 
+	 <H2>Task Jar Layout</H2> 
+	 <P>Tasks are defined within Java Archive files. The name of the JAR
+		determines the name under which the task is known by in the system. For
+		example, if a Task JAR is named mvdir.jar, the task is known to the system as
+		<CODE>&quot;mvdir&quot;</CODE>.</P> 
+	 <P><EM>Question: Should we say that tasks belong in a JAR file with the
+		.tsk extension?</EM></P> 
+	 <P>The class within the Jar file that implements the <CODE>org.apache.ant.Task</CODE> interface is
+		specified by a manifest attribute named <CODE>Ant-Task-Class</CODE> in the Jar manifest. An example
+		manifest would look like:</P> 
+	 <PRE>    Manifest-Version: 1.0
+    Ant-Task-Class: org.apache.ant.task.javac.JavacTask</PRE> 
+	 <P>When the task is used by Ant, a class loader is created that reads
+		classes from the JAR file. This ensures that there is no chance of namespace
+		collision in the classes of various task JAR files.</P> 
+	 <H2>Installation</H2> 
+	 <P>When Ant is installed on a user system, it installs a directory
+		structure with the following form:</P> 
+	 <PRE>&lt;installdir&gt;/ant      (unix shell script)
+            /ant.bat
+            /ant.jar
+            /ant.properties
+            /tasks/[task jar files]
+            /docs/[documentation]
+            /README</PRE> 
+	 <P>Note: Current Jakarta practice is to name the Unix shell script with a
+		.sh extension. This goes against Unix conventions and is unecessary. Testing
+		has shown that the leaving the extension off on Unix will not interfere with
+		the working of the Windows batch file.</P>
+	 <P>Note: The ant.jar file has been moved from the lib/ directory and placed
+		alongside the shell startup scripts (which have also been moved out of the bin/
+		directory). This is because on windows platforms, the .jar file is an
+		executable file of sorts.</P> 
+	 <H3>Ant Properties</H3> 
+	 <P>The <CODE>ant.properties</CODE> file contains a list of all the properties that should be
+		set by default when ant is run. In addition there are a few special properties
+		that are used directly by ant. An example of these properties in use is:</P> 
+	 <PRE>    system.taskdir=tasks/
+    user.taskdir=anttasks/</PRE> 
+	 <P>The <CODE>system.taskdir</CODE> property sets where the system looks for Java ARchive files
+		containing tasks. If this property defines a relative path, then the path is
+		taken as relative from the installation directory.</P> 
+	 <P>The <CODE>user.taskdir</CODE> property defines where users can locate Java Archive files
+		containing tasks. If this property defines a realtive path, then the path is
+		taken as relative from the users home directory (as defined by the <CODE>user.home</CODE>
+		system property). Task JAR files in this directory take precendence of those in
+		the system directory.</P>
+	 <P>Note: <EM>It has been suggested to add a properties file hook to the
+		command line to roll in props. Pending investigation.</EM></P> 
+	 <H3>User Preferences</H3> 
+	 <P>In addition to the Ant installation directory, an <CODE>ant.properties</CODE> file can be
+		located in the user's home directory (as found by the system property <CODE>user.home</CODE>)
+		which can define user preferences such as the location of a user tasks
+		directory. Properties defined in this file take precidence over those set in
+		the installation's <CODE>ant.properties</CODE> file. Such a file could look like:</P> 
+	 <PRE>    user.taskdir=anttasks/
+    javac.debug=off</PRE> 
+	 <P>Properties starting with <CODE>&quot;system.&quot;</CODE> in the user's <CODE>ant.properties</CODE> file are not
+		allowed and must cause a warning to be thrown.</P> 
+	 <H2>Project Configuration</H2> 
+	 <P>Ant's Project text file is structured using XML and reflects the
+		structure of the various components described in the Conceptual Overview.</P> 
+	 <P>A sample Project file:</P> 
+	 <PRE>&lt;project name=&quot;projectname&quot; defaulttarget=&quot;main&quot; taskdir=&quot;tasks/&quot;&gt;
+  &lt;property name=&quot;javac.debug&quot; value=&quot;on&quot;/&gt;
+  &lt;target name=&quot;main&quot;&gt;
+    &lt;taskimpl ...&gt;
+       ...
+    &lt;/taskimpl&gt;
+  &lt;/target&gt;
+&lt;/project&gt;</PRE> 
+	 <H3>The Project Element</H3> 
+	 <P>The <CODE>project</CODE> element has the following required attributes:</P> 
+	 <UL> 
+		<LI><CODE><STRONG>defaulttarget</STRONG></CODE> defining the default target to be executed if no other target
+		  is specified when Ant is run</LI> 
+	 </UL> 
+	 <P>It also has the following optional allowed attributes:</P> 
+	 <UL> 
+		<LI><CODE><CODE><STRONG>name</STRONG></CODE></CODE> defining a name for this project</LI> 
+		<LI><CODE><STRONG>taskdir</STRONG></CODE> defining a directory in which project specific tasks can be
+		  located. Tasks in this directory take precedence over those in the either the
+		  user taskdir or the installation taskdir.</LI> 
+	 </UL> 
+	 <P>The following elements are allowed as children of the project
+		element:</P> 
+	 <UL> 
+		<LI><CODE><STRONG>property</STRONG></CODE> defining a property scoped to the project</LI> 
+		<LI><CODE><STRONG>target</STRONG></CODE> defining a target</LI>
+	 </UL>
+	 <H3>The Property Element</H3>
+	 <P>asdf</P>
+	 <H3>The Target Element</H3>
+	 <P>asfd</P> 
+	 <H2>Configuration of Tasks</H2> 
+	 <P>The Task section of the configuration file is structured as such:</P> 
+	 <PRE>  &lt;[taskname] [attname=value] [attname=value]...]&gt;
+    [&lt;[elementname] [attname=value] ...&gt; ... &lt;/[elementname]&gt;]
+  &lt;/[taskname]&gt;</PRE> 
+	 <P>The taskname is used to find the class of the Task. Once the class has
+		been located and an instance of it created, all of the attributes of the Task
+		are reflected into the task instance using bean patterns. For example, if a
+		Task contains an attribute named &quot;directory&quot;, the method named
+		setDirectory would be called with the attribute value cast to the appropriate
+		type desired by the method. <EM>(What to do if the type isn't a file or a
+		simple type, look for the class and see if it has a setString method?)</EM></P>
+	 
+	 <P>Text blocks contained by the element are added to task using an addText
+		method. <EM>Place an example...</EM></P> 
+	 <P>For each element contained in the Task definition, an addElementname
+		method is found on the task. The parameter type of the method defines an object
+		that will be loaded and instantiated. The attributes of the element are
+		reflected into the object using bean methods. Any text is set using the addText
+		method. Any elements are recursed in the same fashion.</P>
+	 <P>Search order of tasks.... project/user/system</P> 
+	 <H2>Command Line</H2> 
+	 <P>The command line utility provided with Ant must support the following
+		allowable syntax:</P> 
+	 <P><CODE>ant projectfile [prop=value [prop=value...]] [target]</CODE></P>
+	 <P>Internally, the command line shell scripts should call the <CODE>org.apache.ant.Main</CODE> class
+		with the following arguments:</P>
+	 <PRE>java -Dant.home=installdir org.apache.ant.Main $*</PRE>
+	 <P>or its equivalent on the host platform. Note that the ant installation
+		directory is a System property. The above syntax results in ant.home being
+		placed in the System property list.</P>
+	 <P>Note: <EM>On unix, finding the directory of the script that was launched
+		is relatively easy. However on Windows, I'm not sure the best way of handling
+		this.</EM></P> 
+	 <H2>File Naming Conventions</H2> 
+	 <P>File naming in a cross platform tool is tricky. For maximum portability
+		and understandiblity it is recommended that project files use the following
+		conventions:</P> 
+	 <UL> 
+		<LI>The '/' character is used as a directory seperator</LI> 
+		<LI>The ':' character is used as a path seperator</LI> 
+		<LI>Only relative paths are used</LI> 
+	 </UL> 
+	 <P>However, to allow for maximum flexibility and to allow project authors
+		to use conventions that make sense on their native platform, Ant allows for a
+		representation of file names which has the following rules:</P> 
+	 <UL> 
+		<LI>Directories are seperated by the forward slash ('/') or backwards
+		  slash ('\') character.</LI> 
+		<LI>File names starting with either of the above directory seperators are
+		  considered to be absolute paths.</LI> 
+		<LI>On systems that support multiple file roots (e.g. Windows), a file
+		  name that starts with a single alphabetical character followed by a colon (':')
+		  followed by a directory seperator defines an absolute path where the letter
+		  corresponds with a directory root.</LI> 
+		<LI>File names starting with any other character are considered to be
+		  relative paths. In project files, all relative paths are resolved relative to
+		  the directory in which the project file is located.</LI> 
+	 </UL> 
+	 <P>Absolute paths are not recommended for build files as they reduce the
+		ability to share a project between u sers or machines.</P> 
+	 <P>In situtations where a set of filenames need to be specified, such as
+		defining a classpath, both the colon (':') andsemicolon (';') are allowable
+		characters to seperate each filename. The only case that has to be
+		disambiguated is if a user specifies paths that contain windows style absolute
+		paths. In this case, the colon is not treated as a path seperator if the
+		following rules are met:</P> 
+	 <UL> 
+		<LI>The character two places before the colon is either of the allowable
+		  path seperators (':' or ';') or if the colon is the second character of the
+		  string.</LI> 
+		<LI>The character immediately before the colon is a alphabetic character
+		  in the range a-z or A-Z.</LI> 
+		<LI>The character immediately after the colon is either of the allowable
+		  directory seperators ('/' or '\').</LI> 
+	 </UL> 
+	 <H2>Scripting Model</H2> 
+	 <P>Sam, I'm leaving this to you. </P>
+	 <H2>Runtime Requirements</H2>
+	 <P>The following requirements are system requirements that Ant should have
+		in order to run correctly. We should not bundle in any of these into the
+		distribution of ant.</P>
+	 <UL>
+		<LI>JDK 1.1 or greater</LI>
+		<LI>A JAXP compliant parser on the classpath</LI>
+	 </UL>
+	 <P>Note: <EM>When running on JDK 1.2 or greater, the tools.jar isn't on the
+		classpath by default. There's a few different ways we can take care of this.
+		One is to put it on the classpath in the execute script (I don't like this
+		one). Another is to find the location of tools.jar at runtime and put it on the
+		classpath of class loaders that load in task.jars so that, at least in the
+		scope of the Tasks, the relevant classes are there. </EM></P>
+	 <P></P> 
+	 <P></P> </BODY>
+</HTML>

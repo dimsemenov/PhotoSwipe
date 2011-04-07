@@ -1,0 +1,243 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Unzip Task</title>
+</head>
+
+<body>
+
+<h2><a name="unzip">Unjar/Untar/Unwar/Unzip</a></h2>
+<h3>Description</h3>
+<p>Unzips a zip-, war-, or jar file.</p>
+<p><a href="../Types/patternset.html">PatternSet</a>s are used to select files to extract
+<I>from</I> the archive.  If no patternset is used, all files are extracted.
+</p>
+
+<p><a href="../Types/resources.html#collection">Resource
+Collection</a>s may be used to select archived files to perform
+unarchival upon.  Only file system based resource collections are
+supported by Unjar/Unwar/Unzip, this includes <a
+href="../Types/fileset.html">fileset</a>, <a
+href="../Types/filelist.html">filelist</a>, <a
+href="../using.html#path">path</a>, and <a
+href="../Types/resources.html#files">files</a>.
+Untar supports arbitrary resource collections.
+Prior to Apache Ant 1.7 only fileset has been supported as a nested element.</p>
+
+<p>You can define filename transformations by using a nested <a href="../Types/mapper.html">mapper</a> element.  The default mapper is the
+<a href="../Types/mapper.html#identity-mapper">identity mapper</a>.
+</p>
+<p>File permissions will not be restored on extracted files.</p>
+<p>The untar task recognizes the long pathname entries used by GNU tar.<p>
+
+<p><b>Please note</b> that different ZIP tools handle timestamps
+differently when it comes to applying timezone offset calculations of
+files.  Some ZIP libraries will store the timestamps as they've been
+read from the filesystem while others will modify the timestamps both
+when reading and writing the files to make all timestamps use the same
+timezone.  A ZIP archive created by one library may extract files with
+"wrong timestamps" when extracted by another library.</p>
+
+<p>Ant's ZIP classes use the same algorithm as the InfoZIP tools and
+zlib (timestamps get adjusted), Windows' "compressed folders" function
+and WinZIP don't change the timestamps.  This means that using the
+unzip task on files created by Windows' compressed folders function
+may create files with timestamps that are "wrong", the same is true if
+you use Windows' functions to extract an Ant generated ZIP
+archive.</p>
+
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">src</td>
+    <td valign="top">archive file to expand.</td>
+    <td align="center" valign="top">Yes, if filesets are not used.</td>
+  </tr>
+  <tr>
+    <td valign="top">dest</td>
+    <td valign="top">directory where to store the expanded files.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">overwrite</td>
+    <td valign="top">Overwrite files, even if they are newer than the
+      corresponding entries in the archive (true or false, default is
+      true).</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">compression</td>
+    <td valign="top"><b>Note:</b> This attribute is only available for
+    the <code>untar</code> task.<br>
+    compression method.  Allowable values are &quot;none&quot;,
+    &quot;gzip&quot; and &quot;bzip2&quot;.  Default is
+    &quot;none&quot;.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top"><b>Note:</b> This attribute is not available for
+    the <code>untar</code> task.<br>
+    The character encoding that has been used for filenames
+    inside the zip file.  For a list of possible values see <a
+    href="http://download.oracle.com/javase/1.5.0/docs/guide/intl/encoding.doc.html">http://download.oracle.com/javase/1.5.0/docs/guide/intl/encoding.doc.html</a>.<br>
+    Defaults to &quot;UTF8&quot;, use the magic value
+    <code>native-encoding</code> for the platform's default character
+    encoding.
+      <br/>See also the <a href="zip.html#encoding">discussion in the
+      zip task page</a></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">failOnEmptyArchive</td>
+    <td valign="top">whether trying to extract an empty archive is an
+      error. <em>since Ant 1.8.0</em></td>
+    <td valign="top" align="center">No, defaults to false</td>
+  </tr>
+  <tr>
+    <td valign="top">stripAbsolutePathSpec</td>
+    <td valign="top">whether Ant should remove leading '/' or '\'
+      characters from the extracted file name before extracing it.
+      Note that this changes the entry's name before applying
+      include/exclude patterns and before using the nested mappers (if
+      any).  <em>since Ant 1.8.0</em></td>
+    <td valign="top" align="center">No, defaults to false</td>
+  </tr>
+  <tr>
+    <td valign="top">scanForUnicodeExtraFields</td>
+    <td valign="top"><b>Note:</b> This attribute is not available for
+    the <code>untar</code> task.<br>
+      If the archive contains uncode extra fields then use them to set
+      the file names, ignoring the specified encoding.
+      <br/>See also the <a href="zip.html#encoding">discussion in the
+      zip task page</a></td>
+    <td align="center" valign="top">No, defaults to true</td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<pre>
+&lt;unzip src=&quot;${tomcat_src}/tools-src.zip&quot; dest=&quot;${tools.home}&quot;/&gt;
+</pre>
+<p>
+<pre>
+&lt;gunzip src=&quot;tools.tar.gz&quot;/&gt;
+&lt;untar src=&quot;tools.tar&quot; dest=&quot;${tools.home}&quot;/&gt;
+</pre>
+<pre>
+&lt;unzip src=&quot;${tomcat_src}/tools-src.zip&quot;
+       dest=&quot;${tools.home}&quot;&gt;
+    &lt;patternset&gt;
+        &lt;include name=&quot;**/*.java&quot;/&gt;
+        &lt;exclude name=&quot;**/Test*.java&quot;/&gt;
+    &lt;/patternset&gt;
+&lt;/unzip&gt;
+</pre>
+<p>
+<pre>
+&lt;unzip dest=&quot;${tools.home}&quot;&gt;
+    &lt;patternset&gt;
+        &lt;include name=&quot;**/*.java&quot;/&gt;
+        &lt;exclude name=&quot;**/Test*.java&quot;/&gt;
+    &lt;/patternset&gt;
+    &lt;fileset dir=&quot;.&quot;&gt;
+        &lt;include name=&quot;**/*.zip&quot;/&gt;
+        &lt;exclude name=&quot;**/tmp*.zip&quot;/&gt;
+    &lt;/fileset&gt;
+&lt;/unzip&gt;
+</pre>
+<p>
+<pre>
+&lt;unzip src=&quot;apache-ant-bin.zip&quot; dest=&quot;${tools.home}&quot;&gt;
+    &lt;patternset&gt;
+        &lt;include name=&quot;apache-ant/lib/ant.jar&quot;/&gt;
+    &lt;/patternset&gt;
+    &lt;mapper type=&quot;flatten&quot;/&gt;
+&lt;/unzip&gt;
+</pre>
+
+<h3>Related tasks</h3>
+
+<pre>
+&lt;unzip src="some-archive" dest="some-dir"&gt;
+  &lt;patternset&gt;
+    &lt;include name="some-pattern"/&gt;
+  &lt;/patternset&gt;
+  &lt;mapper type=&quot;some-mapper&quot;/&gt;
+&lt;/unzip&gt;
+</pre>
+
+is identical to
+
+<pre>
+&lt;copy todir="some-dir" preservelastmodified="true"&gt;
+  &lt;zipfileset src="some-archive"&gt;
+    &lt;patternset&gt;
+      &lt;include name="some-pattern"/&gt;
+    &lt;/patternset&gt;
+  &lt;/zipfileset&gt;
+  &lt;mapper type=&quot;some-mapper&quot;/&gt;
+&lt;/copy&gt;
+</pre>
+
+<p>The same is also true for <code>&lt;untar&gt;</code> and
+<code>&lt;tarfileset&gt;</code>.  <code>&lt;copy&gt;</code> offers
+additional features like <a href="../Types/filterchain.html">filtering files</a> on the fly,
+allowing a file to be mapped to multiple destinations or a
+configurable file system timestamp granularity.</p>
+
+<pre>&lt;zip destfile=&quot;new.jar&quot;&gt;
+  &lt;zipfileset src=&quot;old.jar&quot;&gt;
+    &lt;exclude name=&quot;do/not/include/this/class&quot;/&gt;
+  &lt;/zipfileset&gt;
+&lt;/zip&gt;
+</pre>
+<p>&quot;Deletes&quot; files from a zipfile.</p>
+
+<pre>
+&lt;unzip src=&quot;${ant.home}/lib/ant.jar&quot; dest=&quot;...&quot;&gt;
+  &lt;patternset&gt;
+    &lt;include name=&quot;images/&quot;/&gt;
+  &lt;/patternset&gt;
+&lt;/unzip&gt;
+</pre>
+<p>This extracts all images from <tt>ant.jar</tt> which are stored in the <tt>images</tt> directory
+of the Jar (or somewhere under it). While extracting the directory structure (<tt>images</tt>)
+will be taken.</p>
+
+<pre>
+&lt;unzip src=&quot;${ant.home}/lib/ant.jar&quot; dest=&quot;...&quot;&gt;
+  &lt;patternset&gt;
+    &lt;include name=&quot;**/ant_logo_large.gif&quot;/&gt;
+    &lt;include name=&quot;**/LICENSE.txt&quot;/&gt;
+  &lt;/patternset&gt;
+&lt;/unzip&gt;
+</pre>
+<p>This extracts the two files <tt>ant_logo_large.gif</tt> and <tt>LICENSE.txt</tt> from the
+<tt>ant.jar</tt>. More exactly: it extracts all files with these names from anywhere in the source file. While extracting the directory structure will be taken.</p>
+
+</body>
+</html>

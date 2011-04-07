@@ -1,0 +1,173 @@
+<!DOCTYPE html><html>
+<head>
+	<title>PhotoSwipe</title>
+	<meta name="author" content="Code Computerlove - http://www.codecomputerlove.com/" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+	<link href="styles.css" type="text/css" rel="stylesheet" />
+	
+	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
+	
+	<script type="text/javascript" src="../lib/simple-inheritance.min.js"></script>
+	<script type="text/javascript" src="../code-photoswipe-1.0.0.js"></script>
+	
+	
+	<script type="text/javascript">
+		
+		/*
+		 This example shows how to set up the gallery without
+		 using the Code.photoSwipe() helper or the $.photoSwipe() jQuery plugin.
+		 
+		 The example finds the Gallery container, then finds all anchor tags in 
+		 the container (thumbnails).
+		 
+		 It then sets a click event listener on the container.
+		 
+		 When the user clicks the container, it checks to see if an image has been
+		 clicked (i.e. a thumbnail).
+		 
+		 It then attempts to find the index number of the thumbnail clicked 
+		 (from our list of thumbnails) and starts PhotoSwipe at that index.
+		 */
+		 
+		if(typeof document.querySelectorAll === 'function') {
+			
+			document.addEventListener('DOMContentLoaded', function(){
+				
+				// Find the element holding our photos
+				var galleryEl = document.getElementById('Gallery');
+				
+				
+				// Find all the photos in our gallery
+				var thumbEls = galleryEl.querySelectorAll('a');
+				
+				if (thumbEls.length < 1) {
+					return;
+				}
+				
+				// Set options (optional)
+				Code.PhotoSwipe.Current.setOptions({
+					loop: false
+				});
+				
+				
+				// Tell PhotoSwipe about the photos
+				Code.PhotoSwipe.Current.setImages(thumbEls);
+				
+				
+				// Listen out for when the user clicks the gallery
+				galleryEl.addEventListener('click', function(e){
+					
+					// If we clicked an image, start the gallery at that image
+					if (e.target.nodeName !== 'IMG'){
+						return;
+					}
+					
+					e.preventDefault();
+					
+					var linkEl = e.target.parentNode;
+					
+					var startingIndex = 0;
+					for (startingIndex; startingIndex<thumbEls.length; startingIndex++){
+						if (thumbEls[startingIndex] === linkEl){
+							break;
+						}
+					}
+					
+					// Start PhotoSwipe
+					Code.PhotoSwipe.Current.show(startingIndex);
+				
+				}, false);
+			
+			
+			}, false); 
+			
+		}
+		
+	</script>
+	
+</head>
+<body>
+
+<div id="Header">
+	<a href="http://www.codecomputerlove.com"><img src="images/codecomputerlovelogo.gif" width="230" height="48" alt="Code Computerlove" /></a>
+</div>
+
+<div id="MainContent">
+
+	<div class="page-content">
+		<h1>PhotoSwipe</h1>
+	</div>
+	
+	
+	<div id="Gallery">
+	
+		<div class="gallery-row">
+	
+			<div class="gallery-item"><a href="images/full/001.jpg"><img src="images/thumb/001.jpg" alt="Image 001" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/002.jpg"><img src="images/thumb/002.jpg" alt="Image 002" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/003.jpg"><img src="images/thumb/003.jpg" alt="" /></a></div>
+			
+		</div>
+
+	
+		<div class="gallery-row">
+	
+			<div class="gallery-item"><a href="images/full/004.jpg"><img src="images/thumb/004.jpg" alt="Image 004" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/005.jpg"><img src="images/thumb/005.jpg" alt="Image 005" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/006.jpg"><img src="images/thumb/006.jpg" alt="Image 006" /></a></div>
+	
+		</div>
+	
+		<div class="gallery-row">
+	
+			<div class="gallery-item"><a href="images/full/007.jpg"><img src="images/thumb/007.jpg" alt="Image 007" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/008.jpg"><img src="images/thumb/008.jpg" alt="Image 008" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/009.jpg"><img src="images/thumb/009.jpg" alt="Image 009" /></a></div>
+
+		</div>
+	
+		<div class="gallery-row">
+	
+			<div class="gallery-item"><a href="images/full/010.jpg"><img src="images/thumb/010.jpg" alt="Image 010" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/011.jpg"><img src="images/thumb/011.jpg" alt="Image 011" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/012.jpg"><img src="images/thumb/012.jpg" alt="Image 012" /></a></div>
+	
+		</div>
+	
+		<div class="gallery-row">
+	
+			<div class="gallery-item"><a href="images/full/013.jpg"><img src="images/thumb/013.jpg" alt="Image 013" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/014.jpg"><img src="images/thumb/014.jpg" alt="Image 014" /></a></div>
+			
+			<div class="gallery-item"><a href="images/full/015.jpg"><img src="images/thumb/015.jpg" alt="Image 015" /></a></div>
+	
+		</div>
+	
+	</div>
+	
+	
+</div>	
+
+	
+<div id="Footer">
+	<p><small>&copy; 2011 Code Computerlove Ltd - new media agency / digital marketing agency</small></p>
+
+	<div id="SocialLinks">
+	<a href="http://blog.codecomputerlove.com/"><img src="images/blogicon.png" width="32" height="32" alt="Blog" /></a>
+	<a href="http://www.twitter.com/computerlovers"><img src="images/twittericon.png" width="32" height="32" alt="Twitter" /></a>
+	<a href="http://www.facebook.com/CodeComputerlove"><img src="images/facebookicon.png" width="32" height="32" alt="Facebook" /></a>
+	<a href="http://www.flickr.com/photos/codecomputerlove"><img src="images/flickricon.png" width="32" height="32" alt="Flickr" /></a>
+</div>
+</div>
+
+</body>
+</html>

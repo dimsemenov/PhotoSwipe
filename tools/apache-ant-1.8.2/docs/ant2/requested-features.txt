@@ -1,0 +1,782 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+Status:
+=======
+
+The committers have cast votes on all items (except those that came in
+too late) and the results are listed below - the next step will be a
+design phase.
+
+This list of items will be summarized into an Ant2 specification soon.
+
+I. Things that don't affect the core but are requests for new tasks or
+enhancements of existing tasks.
+======================================================================
+
+[ACCEPTED] for a task doesn't mean that task will be core tasks (or
+even be supplied by a voter), just that having them (as optional
+tasks) would be acceptable.
+
+* Add a new datatype filterset to group token-filters 
+
+  [ACCEPTED]
+
+* make usage of particular filters/filtersets explicit in copy tasks
+
+  [ACCEPTED]
+
+* make facade tasks for things like javac (JikesImpl, ModernImpl etc)
+
+  One candidate is jar with implementations for fastjar
+  for example.
+
+  [ACCEPTED]
+
+* unify multiple similar tasks to use similar forms (ie all the javacc
+  type tools)
+
+  [ACCEPTED]
+
+* Obfuscating task
+
+  [ACCEPTED]
+
+* Add an <ant> task that will find build files according to a fileset
+  and invokes a common target in them.
+
+  <anton>?
+
+  [will need more discussion because of votes by Peter Donald and
+                                                 Stefan Bodewig]
+
+  [finally ACCEPTED]
+
+* Add a JavaApply task that executes a given class with files from a
+  fileset as arguments - similar to <apply>.
+
+  [will need more discussion because of votes by Peter Donald and
+                                                 Stefan Bodewig]
+
+  [finally ACCEPTED]
+
+* Include some more sophisticated loggers with the Ant distribution -
+  especially for sending emails. Make the existing one more flexible
+  (stylesheet used by XmlLogger).
+
+  Could be part of the same module tasks would be developed in?
+
+  [will need more discussion because of vote by Conor MacNeill]
+
+  [finally ACCEPTED]
+
+* make the default logger's output clear, informative, and terse.
+
+  Actually, this is a little bit abstract, but doesn't apply to the
+  core either.
+
+  [will need more discussion because of vote by Conor MacNeill]
+
+  [REJECTED - vetoes by Conot MacNeill and Stefan Bodewig]
+
+* Better docs.
+
+  More examples. Tutorials, beginner documents, reference sheets for
+  tasks, printable version.
+
+  [ACCEPTED]
+
+* RPM task.
+
+  [ACCEPTED]
+
+* add an attribute to <property> to read in an entire file as the
+  value of a property.
+
+  [will need more discussion because of vote by Peter Donald]
+
+  [REJECTED - veto by Peter Donald]
+
+* Task for splitting files (head/tail/split like functionality).
+
+  [ACCEPTED]
+
+* Task to create XMI from Java.
+
+  [ACCEPTED]
+
+* socksified networking tasks, SSH tasks.
+
+  [Peter Donald expressed some legal concerns that might be overcome, 
+                depending on the implementation]
+
+* a reachable task that works much like available for network URLs.
+
+  [ACCEPTED]
+
+* make PATH handling consistent. Every task that has a PATH attribute
+  must also accept references to PATHs.
+
+  [will need more discussion because of vote by Stefan Bodewig]
+
+  [REJECTED - vetoes by Conor MacNeill, Glenn McAllister and Stefan Bodewig]
+
+* Task to extract classes from a JAR file that a given class depends
+  on.
+
+  Based on <depend> or IBM's JAX for example.
+
+  [ACCEPTED]
+
+* Unify <available> and <uptodate> into a more general <condition>
+  task, support AND/OR of several tests here.
+
+  [will need more discussion because of vote by Peter Donald]
+
+* jsp-compilation task
+
+  Sounds like a candidate for a facade task.
+
+  [ACCEPTED]
+
+* URL-spider task that checks links for missing content or server errors
+
+  [ACCEPTED]
+
+II. Abstract goals that need to be abstract until we get into design
+decisions.
+======================================================================
+
+During discussion it became obvious, that some things from this list
+are goals for Ant and some should be guidelines for developers,
+therefore there are two flavors, [ACCEPTED] and [ACCEPTED AS GUIDELINE].
+
+* Provide a clear mission statement for Ant.
+
+  [ACCEPTED]
+
+* Main goals: Simplicity, Understandability, Extensibility
+
+  [ACCEPTED]
+
+* remove magic properties if at all humanly possible
+
+  [ACCEPTED]
+
+* remove as much dependency on native scripts as possible.
+
+  [ACCEPTED]
+
+* clean object model (ie Project/Target/Task)
+
+  [ACCEPTED]
+
+* good event model to integrate well with IDE/GUI/whatever
+
+  [ACCEPTED]
+
+* use a consistent naming scheme for attributes across all tasks
+
+  [ACCEPTED]
+
+* keep build file syntax as compatible to Ant1 as possible -
+  i.e. don't break something just because we can.
+
+  [ACCEPTED]
+
+* keep the interface for Tasks as similar to the one of Ant1 as
+  possible - i.e. don't break something just because we can.
+
+  [ACCEPTED]
+
+* Ant should be cancelable
+
+  [ACCEPTED]
+
+* no commit of new features without documentation
+
+  [ACCEPTED AS GUIDELINE]
+
+* no commit of new features without testcases
+
+  [ACCEPTED AS GUIDELINE]
+
+III. Things that are simple, easy to implement, where we expect the
+committers to agree
+======================================================================
+
+* namespace support so different concerns can occupy different namespaces
+  from ant (thus SAX2/JAXP1.1)
+
+  [ACCEPTED]
+
+* Java2
+
+  [ACCEPTED]
+
+* remove all deprecated methods, attributes, tasks
+
+  [ACCEPTED]
+
+* allow all datatypes to be defined anywhere - i.e. as children of
+  project as well as of target.
+
+  [ACCEPTED]
+
+* make properties fully dynamic, i.e. allow their value to be reassigned
+
+  [will need more discussion because of vote by Glenn McAllister and
+                                                Conor MacNeill]
+
+  [finally ACCEPTED]
+
+* unify the namespace of all data types (ie properties + filesets +
+  patternset + filtersets).
+
+  [ACCEPTED]
+
+* add a user defined message if a target will be skipped because the
+  if/unless attribute says so.
+
+  [ACCEPTED]
+
+* allow user-datatypes to be defined via a <typedef> similar to <taskdef>.
+
+  [ACCEPTED]
+
+IV. Things we probably agree upon but need to discuss the details or
+decide between several possible options.
+======================================================================
+
+[ACCEPTED] means, the goal/idea is fine, not that a decission on a
+particular implementation has been made.
+
+* The ability for GUI/IDE tools to integrate easily with object model
+  without reinventing the wheel and writing their own parser (which
+  antidote was forced to do). 
+
+  Two suggested solutions were allowing GUI developers to extend
+  object model (ie GUITask extends Task) or to have Task as interface
+  (ie GUITask implements Task). This way the GUI tasks could be W3C
+  DOM Elements, have property vetoers/listeners etc.
+
+  [ACCEPTED]
+
+* support for numerous frontends - from command line over GUI to servlets
+
+  corollary of the above?
+
+  [ACCEPTED]
+
+* Fully interpreted at runtime. This almost requires some form of
+  abstraction/proxy that stands in place of tasks till it is
+  interpreted.  This can be hashtables/simple dom-like model/whatever
+
+  [ACCEPTED]
+
+* provide utility classes to aid in building tasks. ie like up-to-date
+  functionality abstracted
+
+  Need to become more specific here.
+
+  [ACCEPTED]
+
+* make ant-call a low cost operations so it can certain
+  optional/template-like operations
+
+  corollary of "fully interpreted at runtime"?
+
+  [ACCEPTED]
+
+* allow facilities to build projects from multiple sources. ie CSS+xml
+  or XSLT+ XML or Velocity+text or database or from inside jars or normal 
+  build.xmls etc.
+
+  allow the project tree to be built dynamically.
+
+  [ACCEPTED]
+
+* move to a system that allows docs to be generated - doc snippets
+  should be included with the tasks they document.
+
+  Which DTD? Which tools for generation?
+
+  [ACCEPTED]
+
+* allow tasks to be loaded from jars. tasks should be indicated by
+  either xml file in TSK-INF/taskdefs.xml or manifest file.
+
+  [ACCEPTED]
+
+* allow documentation to be stored in .tsk jars
+
+  corollary of the two points above?
+
+  [ACCEPTED]
+
+* better scripting/notification support so the hooks are available to
+  send notifications at certain times.
+
+  Which hooks and where?
+
+  [will need more discussion because of vote by Peter Donald and
+                                                Simeon Fitch]
+
+  [REJECTED - vetoes by Conor MacNeill, Peter Donald and Simeon Fitch]
+
+* separate tasks into .tsk jars somehow. (Probably via function - ie
+  java tasks, file tasks, ejb tasks).
+
+  Decide on categories.
+
+  [will need more discussion because of vote by Conor MacNeill]
+
+  [finally ACCEPTED]
+
+* make separate build files easy (ala AntFarm) and importing different
+  projects a breeze
+
+  [ACCEPTED]
+
+* provide support for user defined task configurations - i.e. give
+  users the ability to specify a default value for attributes (always
+  use debug="true" in <javac> unless something else has been
+  specified). 
+
+  Three ideas so far: a CSS like language, a <taskconfig> element,
+  properties following a specific naming scheme.
+
+  [ACCEPTED]
+
+* support more control over the properties that are going to be passed
+  to subprojects (modules)
+
+  [ACCEPTED]
+
+* Ask for a new CVS module for Ant tasks.
+
+  We need to define rules for this to work - maybe the rules proposed
+  for the commons project could give us a start.
+
+  [will need more discussion because of vote by Conor MacNeill]
+
+  [REJECTED - vetoes by Conor MacNeill and Glenn McAllister]
+
+* It should be possible to modify details of the actual build (e.g. classpath,
+  used compiler) without the need to change the build specification.
+
+  Do build.compiler and build.sysclasspath cover everything or do we
+  need to add more stuff like this?
+
+  [will need more discussion because of vote by Conor MacNeill]
+
+  [REJECTED - veto by Conor MacNeill]
+
+* Task to prompt for user input.
+
+  Does affect core as we need a means to request input from the Frontend.
+
+  [ACCEPTED]
+
+* Add cvs login feature.
+
+  Requires handling of user input.
+
+  [ACCEPTED]
+
+* Easier installation process. GUI - maybe webstart from the homepage.
+
+  This includes asking the user whether he wants to use optional tasks
+  and downloads the required libs. Automatic upgrades and so on.
+
+  Self-extracting jar installer: java -jar jakarta-ant-1.3-bin.jar. 
+  Prompts for destination directory, extracts archive, fixes all 
+  text files with fixCRLF task; on UNIX, makes scripts executable.  
+  Could also modify ant scripts with the location of ANT_HOME.
+
+  [ACCEPTED]
+
+* Logo for Ant.
+
+  [ACCEPTED]
+
+* detach Ant from System.err/.in/.out.
+
+  Beware of problems with spawned processes.
+
+  [ACCEPTED]
+
+* better subproject handling
+
+  Whatever that means in detail.
+
+  [will need more discussion because of vote by Conor MacNeill]
+
+  [REJECTED - vetoes by Conor MacNeill and Stefan Bodewig]
+
+* build files should be declarative in nature
+
+  [ACCEPTED]
+
+V. Things we probably don't agree on. 
+======================================================================
+
+[DISC] Datatypes
+----------------
+
+ * Allow mappers to be genericised so that particular features can be modified 
+ during mapping. Something similar to 
+ 
+ <fileset ...>
+   <include name="*.sh"/>
+   <mapper type="unix-permissions">
+     <param name="user" value="ant"/>
+     <param name="group" value="ant"/>
+     <param name="mod" value="755"/>
+   </mapper>
+ </fileset>
+
+ [REJECTED - vetoes by Stefan Bodewig and Conor MacNeill, not enough
+             positive votes anyway.]
+
+ * Allow include/exclude tow work with multiple characteristerics of a file.
+ ie include into fileset if file is readable, modified after 29th of Feb,
+ has a name that matches patter "**/*.java" and the property "foo.present"
+ is set. Something similar to 
+ 
+ <include>
+   <item-filter type="name" value="**/*.java"/>
+   <item-filter type="permission" value="r"/>
+
+   <!-- could optionally be directory/or some other system specific features -->
+   <item-filter type="type" value="file"/> 
+   <item-filter type="modify-time" 
+                operation="greater-than" 
+                value="29th Feb 2003"/>
+ </include>
+
+ [ACCEPTED]
+
+* provide datatypes through property tag and remove need for separate free
+  standing entities. ie
+  <property name="foo">
+    <fileset dir="blah">
+     <include name="*/**.java" />
+    </fileset>
+  </property>
+
+  [REJECTED - only one +1 vote]
+
+* provide support for non-hardwired (ie loadable) low-level 
+ components (mappers/itemset-filters/converters). Allow them to be 
+ loaded in either global or a new classloader.
+
+  [ACCEPTED]
+
+* provide support for non-hardwired (ie loadable) converters.
+
+  Q: What is a converter? Is this an implementation detail?
+  A: Not an implementation detail but a way to extend the engine
+  to convert more data types. Currently we have fixed set that is 
+  expanded on occasion (ie includes primitive types + File). Instead
+  of spreading converting code through out tasks it can be centralized 
+  into one component and used by engine. This becomes particularly 
+  relevent if you build ant based testing systems and use ant in certain
+  web-related areas.
+
+  [ACCEPTED]
+
+* Make all datatypes interfaces to allow them to be customized in many
+  ways.
+
+  [REJECTED - vetoes by Conor MacNeill, Peter Donald and Stefan Bodewig]
+
+* Set arithmetic for fileset/patternset/*set
+
+  [ACCEPTED]
+
+* inheritance of ant properties/datatypes/context etc in project hierarchy
+
+  [ACCEPTED]
+
+* inheritance of between ant datatypes. ie fileset A inherits from fileset B (includes 
+  all entries in A).
+
+  [REJECTED - vetoes by Conor MacNeill, Peter Donald and Stefan Bodewig]
+
+* Homogenize notion of PATHs and filesets.
+
+  [REJECTED - vetoes by Conor MacNeill, Peter Donald and Stefan Bodewig]
+
+[DISC] Ant's goals
+------------------
+
+* make it possible to reuse taskengine for other things. ie
+  Installshield type app, Peter's cron-server and other task based
+  operations. 
+
+  [REJECTED as a primary goal - only two +1 votes]
+
+* provide support for CJAN
+
+  Q: In what way?
+  A: Probably by supplying a set of tasks that download versioned 
+  binaries and their associated dependencies, caching the downloads
+  in a known place and updating binaries when required. ("When required"
+  being indicated by a change in property values).
+
+  [REJECTED as part of Ant's core - veto by Conor MacNeill, no single +1]
+
+[DISC] class loading
+--------------------
+
+ * force resolution of classes on loading to identify classloader 
+ issues early. (At least in global classloader).
+
+  [REJECTED - only one +1 vote]
+
+* Ignore any classes contained in the damned ext dirs of a JVM - possibly by launching
+  with something like jar -Djava.ext.dir=foo -jar ant.jar
+
+  [REJECTED - vetoes by Conor MacNeill, Glenn McAllister and Stefan
+              Bodewig, ACCEPTED if optional]
+
+
+[DISC] workspace/subbuild issues
+--------------------------------
+
+* create the concept of workspace so that projects can be built in a
+  DAG and thus enable projects like catalina/tomcat to have an easy
+  build process. It also helps CJAN to a lesser degree and would
+  partially solve the JARs in CVS thing.
+
+  [ACCEPTED]
+
+* Project inheritance
+
+  What's this?
+
+  [REJECTED - vetoes by Conor MacNeill, Peter Donald and Stefan Bodewig]
+
+* Target inheritance. ie The ability to include targets from other 
+  project files overidining them as necessary (so cascading project
+  files).
+
+  [REJECTED - vetoes by Conor MacNeill, Peter Donald and Stefan Bodewig]
+
+* Add an attribute to <ant> to feed back the environment (properties and
+  taskdefs) from the child build to the parent.
+
+  [REJECTED - vetoes by Conor MacNeill, Peter Donald, Simeon Fitch and
+              Stefan Bodewig]
+
+* Allow a target to depend on a target which is in another buildfile.  
+
+  [ACCEPTED]
+
+* Allow a target to reference properties defined in another buildfile.
+
+  [REJECTED - only one +1 vote]
+
+[DISC] documentation system
+---------------------------
+
+* generate docs by anakia/XSLT
+
+  Corollary of "move to a system that allows docs to be generated"?
+
+  [ACCEPTED - with no decision on which system to use]
+
+[DISC] Task API
+---------------
+
+* tasks provide some way to identify their attributes from the
+  outside. 
+
+  Possible solutions include a special method like getProperties(), an
+  external describing file shipping with the task class or special
+  javadoc comments parsed by a custom doclet. Whatever the method it
+  should not impose any cost on runtime as it is only used a small 
+  proportion of the time (design-time).  
+
+  [ACCEPTED]
+
+* tasks should have access to its own XML representation.
+
+  [REJECTED - vetoes by Christoph Wilhelms, Conor MacNeill and Simeon Fitch]
+
+* Task level if and unless attributes.
+
+  [REJECTED - no single +1 vote]
+
+* Allow tasks to find out, whether another task has completed successfully.
+
+  [REJECTED - vetoes by Conor MacNeill, Glenn McAllister, Peter Donald
+              and Stefan Bodewig]
+
+* provide failonerror like functionality to all tasks. (Provide this as an aspect??
+  much like logging aspect or classloader aspect).
+
+  [ACCEPTED]
+
+[DISC] logging
+--------------
+
+* allow build file writers to modify logging (verbosity for example)
+  on a target by target or task by task basis.
+
+  [ACCEPTED]
+
+* Make loggers configurable via build.xml.
+
+  [ACCEPTED]
+
+[DISC] multithrading
+--------------------
+
+* Multithreaded execution of tasks within the same target.
+
+  [ACCEPTED]
+
+* Multithreaded execution of targets.
+
+  [REJECTED - vetoes by Conor MacNeill, Glenn McAllister and Stefan Bodewig]
+
+[DISC] procedural versus purely declarative
+-------------------------------------------
+
+* Simple flow control (if-then-else, for)
+
+  [REJECTED - vetoes by Conor MacNeill, Glenn McAllister, Peter Donald
+              and Stefan Bodewig]
+
+* targets should be like methods including a return value
+
+  [REJECTED - vetoes by Conor MacNeill, Glenn McAllister, Peter Donald,
+              Simeon Fitch and Stefan Bodewig]
+
+* build files should be purely declarative
+
+  [REJECTED - veto by Stefan Bodewig]
+
+[DISC] Properties
+-----------------
+
+* Ability to manage scopping of properties in general (ie target/project/workspace).
+
+  [ACCEPTED]
+
+[DISC] Templates
+----------------
+
+* it should be possible to provide general /(template?)/ build
+  specifications, and to declare for a concrete item that it should be
+  built according to such a general specification.
+
+  [REJECTED - vetoes by Conor MacNeill, Glenn McAllister, Peter Donald
+              and Stefan Bodewig]
+
+[DISC] XML issues
+-----------------
+
+* a built-in mechanism to include build-file fragments - something
+  that doesn't use SYSTEM entities at all and therefore is XSchema
+  friendly, allows for property expansions ...
+
+  [ACCEPTED]
+
+* Let Ant ignore - but warn - if unknown XML elements or attributes
+  occur in a build file.
+
+  [REJECTED - vetoes by Conor MacNeill, Glenn McAllister, Peter Donald
+              and Stefan Bodewig]
+
+* Allow ant to farm out attributes and elements that are NOT in the ant 
+  namespace to other components. ie hand doc: elements to the Documentation
+  component or log: attributes to Log policy component etc
+
+  [ACCEPTED]
+
+[DISC] core extensions
+----------------------
+
+* Allow named tasks to be defined by <script> elements.
+
+  [REJECTED - only one +1 vote]
+
+* specify an onfail task or target that runs in case of a build
+  failure.
+
+  [REJECTED - vetoes by Glenn McAllister, Peter Donald and Stefan Bodewig]
+
+* allow sequence to be specified in depends attribute or enhance
+  antcall to work with current list of executed targets
+
+  [ACCEPTED]
+
+* Support nesting tasks into other elements - not just as children of
+  target - as proposed by Thomas Christen in
+  <http://marc.theaimsgroup.com/?l=ant-dev&m=98130655812010&w=2>.
+
+  [ACCEPTED]
+
+* Make if/unless attributes to check for the value of a property, not
+  only its existance.
+
+  [REJECTED - vetoes by Glenn McAllister and Stefan Bodewig]
+
+* check for more than one condition in if/unless attributes.
+
+  [REJECTED - vetoes by Glenn McAllister, Peter Donald and Stefan Bodewig]
+
+* provide a way to define the order in which targets a given target
+  depends upon get executed.
+
+  [ACCEPTED]
+
+* define task contexts that define various common aspects (logging,
+  failure handling ...) and assign them to tasks.
+
+  [ACCEPTED]
+
+[DISC] organization
+-------------------
+
+* separate CVSes and code hierarchies for
+  - task engine [ org.apache.task.* ]
+  - project engine (ie model of targets/projects/workspaces) + support/utility classes 
+    [ org.apache.ant.* ]
+  - core tasks (ie tasks supported by ant contributors) [ org.apache.??? ]
+
+  [REJECTED - vetoes by Conor MacNeill and Glenn McAllister]
+
+[DISC] misc
+-----------
+
+* internationalization
+
+  [ACCEPTED]
+
+VI. entries that have been submitted too late
+=============================================
+
+* Integration of the depends task and javac tasks
+
+  [REJECTED - only two +1 votes]
+
+* recursive property resolution( ie resolving ${dist.${name}.dir} )
+
+  [REJECTED - veto by Peter Donald]

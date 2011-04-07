@@ -1,0 +1,55 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Sequential Task</title>
+</head>
+
+<body>
+
+<h2>Sequential</h2>
+<h3>Description</h3>
+<p>Sequential is a container task - it can contain other Apache Ant tasks. The nested 
+tasks are simply executed in sequence. Sequential's primary use is to support 
+the sequential execution of a subset of tasks within the 
+<a href="parallel.html">parallel</a> task</p>
+
+<p>The sequential task has no attributes and does not support any nested 
+elements apart from Ant tasks. Any valid Ant task may be embedded within the 
+sequential task.</p>
+
+<h3>Example</h3>
+<pre>
+&lt;parallel&gt;
+  &lt;wlrun ... &gt;
+  &lt;sequential&gt;
+    &lt;sleep seconds=&quot;30&quot;/&gt;
+    &lt;junit ... &gt;
+    &lt;wlstop/&gt;
+  &lt;/sequential&gt;
+&lt;/parallel&gt;
+</pre>
+<p>This example shows how the sequential task is used to execute three tasks in
+sequence, while another task is being executed in a separate thread. </p>
+
+
+</body>
+</html>
+

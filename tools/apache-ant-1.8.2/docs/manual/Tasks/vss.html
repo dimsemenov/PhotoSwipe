@@ -1,0 +1,823 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Microsoft Visual SourceSafe(VSS) Tasks</title>
+</head>
+<body>
+<h1>Microsoft Visual SourceSafe Tasks User Manual</h1>
+<p>by</p>
+<ul>
+    <li>Craig Cottingham</li>
+    <li>Andrew Everitt</li>
+    <li>Balazs Fejes 2</li>
+    <li><a href="mailto:Glenn_Twiggs@bmc.com">Glenn_Twiggs@bmc.com</a></li>
+    <li>Martin Poeschl (<a href="mailto:mpoeschl@marmot.at">mpoeschl@marmot.at</a>)</li>
+    <li>Phillip Wells</li>
+    <li>Jon Skeet (<a href="mailto:jon.skeet@peramon.com">jon.skeet@peramon.com</a>)</li>
+    <li>Nigel Magnay (<a href="mailto:nigel.magnay@parsec.co.uk">nigel.magnay@parsec.co.uk</a>)</li>
+    <li>Gary S. Weaver</li>
+    <li>Jesse Stockall</li>
+ </ul>
+<hr>
+<h2>Contents</h2>
+<ul>
+    <li><a href="#intro">Introduction</a></li>
+    <li><a href="#tasks">The Tasks</a></li>
+</ul>
+<br>
+<h2><a name="intro">Introduction</a></h2>
+<p>These tasks provide an interface to the
+<a href="http://msdn.microsoft.com/ssafe/default.asp" target="_top">Microsoft Visual SourceSafe</a> SCM.
+The <code>org.apache.tools.ant.taskdefs.optional.vss</code> package consists of a simple framework to support
+vss functionality as well as some Apache Ant tasks encapsulating frequently used vss commands.
+Although it is possible to use these commands on the desktop,
+they were primarily intended to be used by automated build systems.</p>
+<p>
+If you get a CreateProcesss IOError=2 when running these, it means
+that ss.exe was not found. Check to see if you can run it from the
+command line -you may need to alter your path, or set the <tt>ssdir</tt>
+property.
+<h2><a name="tasks">The Tasks</a></h2>
+
+<table border="0" cellspacing="0" cellpadding="3">
+    <tr>
+        <td><a href="#vssget">vssget</a></td>
+        <td>Retrieves a copy of the specified VSS file(s).</td>
+    </tr>
+    <tr>
+        <td><a href="#vsslabel">vsslabel</a></td>
+        <td>Assigns a label to the specified version or current version of a file or project.</td>
+    </tr>
+    <tr>
+        <td><a href="#vsshistory">vsshistory</a></td>
+        <td>Shows the history of a file or project in VSS.</td>
+    </tr>
+    <tr>
+        <td><a href="#vsscheckin">vsscheckin</a></td>
+        <td>Updates VSS with changes made to a checked out file, and unlocks the VSS master copy.</td>
+    </tr>
+    <tr>
+        <td><a href="#vsscheckout">vsscheckout</a></td>
+        <td>Copies a file from the current project to the current folder, for the purpose of editing.</td>
+    </tr>
+    <tr>
+        <td><a href="#vssadd">vssadd</a></td>
+        <td>Adds a new file into the VSS Archive</td>
+    </tr>
+    <tr>
+        <td><a href="#vsscp">vsscp</a></td>
+        <td>Change the current project being used in VSS</td>
+    </tr>
+    <tr>
+        <td><a href="#vsscreate">vsscreate</a></td>
+        <td>Creates a project in VSS.</td>
+    </tr>
+</table>
+
+<hr>
+<h2>Task Descriptions</h2>
+
+<!-- VSSGET -->
+
+<h2><a name="vssget">VssGet</a></h2>
+<h3>Description</h3>
+Task to perform GET commands to Microsoft Visual SourceSafe.
+<p>If you specify two or more attributes from version, date and
+label only one will be used in the order version, date, label.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+     <td>vsspath</td>
+     <td>SourceSafe path which specifies the project/file(s) you wish to
+         perform the action on.</td>
+     <td>Yes</td>
+  </tr>
+  <tr>
+     <td>login</td>
+     <td>username[,password] - The username and password needed to get access
+         to VSS. Note that you may need to specify both (if you have a password) -
+         Ant/VSS will hang if you leave the password out and VSS does not accept
+         login without a password. </td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>localpath</td>
+     <td>Override the working directory and get to the specified path</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>ssdir</td>
+     <td>directory where <code>ss.exe</code> resides. By default the
+         task expects it to be in the PATH.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>serverPath</td>
+     <td>directory where <code>srcsafe.ini</code> resides.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>writable</td>
+     <td>true or false; default false</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>recursive</td>
+     <td>true or false; default false. Note however that in the SourceSafe UI
+     , there is a setting accessed via Tools/Options/GeneralTab called
+     &quot;Act on projects recursively&quot;.  If this setting is checked,
+     then the recursive attribute is effectively ignored, and the get
+     will always be done recursively
+     </td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>version</td>
+     <td>a version number to get</td>
+     <td rowspan="3">No, only one of these allowed</td>
+  </tr>
+  <tr>
+     <td>date</td>
+     <td>a date stamp to get at</td>
+  </tr>
+  <tr>
+     <td>label</td>
+     <td>a label to get for</td>
+  </tr>
+  <tr>
+     <td>quiet</td>
+     <td>suppress output (off by default)</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>autoresponse</td>
+     <td>What to respond with (sets the -I option). By default, -I- is
+     used; values of Y or N will be appended to this.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+    <td>writablefiles</td>
+    <td>Behavior when local files are writable. Valid options are: <code>replace</code>, 
+        <code>skip</code> and <code>fail</code>; Defaults to <code>fail</code>
+        <br><code>skip</code> implies <code>failonerror=false</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>failonerror</td>
+    <td>Stop the buildprocess if ss.exe exits with a returncode of 100. Defaults to true</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>filetimestamp</td>
+    <td>Set the behavior for timestamps of local files. Valid options are <code>current</code>, 
+        <code>modified</code>, or <code>updated</code>. Defaults to <code>current</code>.</td> 
+    <td>No</td>
+  </tr>
+</table>
+<p>Note that only one of version, date or label should be specified</p>
+<h3>Examples</h3>
+<blockquote>
+<pre>
+&lt;vssget localPath=&quot;C:\mysrc\myproject&quot;
+        recursive=&quot;true&quot;
+        label=&quot;Release1&quot;
+        login=&quot;me,mypassword&quot;
+        vsspath=&quot;$/source/aProject&quot;
+        writable=&quot;true&quot;/&gt;
+</pre>
+</blockquote>
+<p>Does a get on the VSS-Project <i>$/source/myproject</i> using the username
+<i>me</i> and the password <i>mypassword</i>. It will recursively get the files
+which are labeled <i>Release1</i> and write them to the local directory
+<i>C:\mysrc\myproject</i>. The local files will be writable.</p>
+<hr>
+
+<!-- VSSLABEL -->
+
+<h2><a name="vsslabel">VssLabel</a></h2>
+<h3>Description</h3>
+Task to perform LABEL commands to Microsoft Visual SourceSafe.
+<p>Assigns a label to the specified version or current version of a file or
+project.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+   <tr>
+     <th>Attribute</th>
+     <th>Values</th>
+     <th>Required</th>
+   </tr>
+  <tr>
+     <td>vsspath</td>
+     <td>SourceSafe path which specifies the project/file(s) you wish to
+         perform the action on.</td>
+     <td>Yes</td>
+  </tr>
+  <tr>
+     <td>login</td>
+     <td>username[,password] - The username and password needed to get access
+         to VSS. Note that you may need to specify both (if you have a password) -
+         Ant/VSS will hang if you leave the password out and VSS does not accept
+         login without a password. </td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>ssdir</td>
+     <td>directory where <code>ss.exe</code> resides. By default the
+         task expects it to be in the PATH.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>serverPath</td>
+     <td>directory where <code>srcsafe.ini</code> resides.</td>
+     <td>No</td>
+  </tr>
+   <tr>
+      <td>label</td>
+      <td>A label to apply to the hierarchy</td>
+      <td>Yes</td>
+   </tr>
+   <tr>
+      <td>version</td>
+      <td>An existing file or project version to label. By default the current
+      version is labeled.</td>
+      <td>No</td>
+   </tr>
+   <tr>
+      <td>comment</td>
+      <td>The comment to use for this label. Empty or '-' for no comment.</td>
+      <td>No</td>
+   </tr>
+  <tr>
+     <td>autoresponse</td>
+     <td>What to respond with (sets the -I option). By default, -I- is
+     used; values of Y or N will be appended to this.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+    <td>failonerror</td>
+    <td>Stop the buildprocess if ss.exe exits with a returncode of 100. Defaults to true</td>
+    <td>No</td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<blockquote>
+<pre>
+&lt;vsslabel vsspath=&quot;$/source/aProject&quot;
+          login=&quot;me,mypassword&quot;
+          label=&quot;Release1&quot;/&gt;
+</pre>
+</blockquote>
+<p>Labels the current version of the VSS project <i>$/source/aProject</i> with
+the label <i>Release1</i> using the username <i>me</i> and the password
+<i>mypassword</i>.
+</p>
+<blockquote>
+<pre>
+&lt;vsslabel vsspath=&quot;$/source/aProject/myfile.txt&quot;
+          version=&quot;4&quot;
+          label=&quot;1.03.004&quot;/&gt;
+</pre>
+</blockquote>
+<p>Labels version 4 of the VSS file <i>$/source/aProject/myfile.txt</i> with the
+label <i>1.03.004</i>. If this version already has a label, the operation (and
+the build) will fail.
+</p>
+<hr>
+
+<!-- VSSHISTORY -->
+
+<h2><a name="vsshistory">VssHistory</a></h2>
+<h3>Description</h3>
+Task to perform HISTORY commands to Microsoft Visual SourceSafe.
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+     <td>vsspath</td>
+     <td>SourceSafe path which specifies the project/file(s) you wish to
+         perform the action on.</td>
+     <td>Yes</td>
+  </tr>
+  <tr>
+     <td>login</td>
+     <td>username[,password] - The username and password needed to get access
+         to VSS. Note that you may need to specify both (if you have a password) -
+         Ant/VSS will hang if you leave the password out and VSS does not accept
+         login without a password. </td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>ssdir</td>
+     <td>directory where <code>ss.exe</code> resides. By default the
+         task expects it to be in the PATH.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>serverPath</td>
+     <td>directory where <code>srcsafe.ini</code> resides.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+    <td>fromDate</td>
+    <td>Start date for comparison</td>
+    <td>See below</td>
+  </tr>
+  <tr>
+    <td>toDate</td>
+    <td>End date for comparison</td>
+    <td>See below</td>
+  </tr>
+  <tr>
+    <td>dateFormat</td>
+    <td>Format of dates in fromDate and toDate. Used when calculating dates with
+      the numdays attribute. This string uses the formatting rules of SimpleDateFormat.
+      Defaults to DateFormat.SHORT.</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>fromLabel</td>
+    <td>Start label for comparison</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>toLabel</td>
+    <td>Start label for comparison</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>numdays</td>
+    <td>The number of days for comparison.</td>
+    <td>See below</td>
+  </tr>
+  <tr>
+    <td>output</td>
+    <td>File to write the diff.</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>recursive</td>
+    <td>true or false</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>style</td>
+    <td>brief, codediff, default or nofile. The default is default.</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>user</td>
+    <td>Name the user whose changes we would like to see</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>failonerror</td>
+    <td>Stop the buildprocess if ss.exe exits with a returncode of 100. Defaults to true</td>
+    <td>No</td>
+  </tr>
+</table>
+
+<h4>Specifying the time-frame</h4>
+<p>There are different ways to specify what time-frame you wish to evaluate:</p>
+<ul>
+  <li>Changes between two dates: Specify both <code>fromDate</code> and <code>toDate</code> </li>
+  <li>Changes before a date: Specify <code>toDate</code></li>
+  <li>Changes after a date: Specify <code>fromDate</code></li>
+  <li>Changes X Days before a date: Specify <code>toDate</code> and (negative!) <code>numDays</code></li>
+  <li>Changes X Days after a date: Specify <code>fromDate</code> and <code>numDays</code></li>
+</ul>
+
+
+<h3>Examples</h3>
+<blockquote>
+  <pre>
+&lt;vsshistory vsspath=&quot;$/myProject&quot; recursive=&quot;true&quot;
+            fromLabel=&quot;Release1&quot;
+            toLabel=&quot;Release2&quot;/&gt;
+</pre>
+</blockquote>
+<p>Shows all changes between &quot;Release1&quot; and &quot;Release2&quot;.</p>
+
+<blockquote>
+  <pre>
+&lt;vsshistory vsspath=&quot;$/myProject&quot; recursive=&quot;true&quot;
+            fromDate=&quot;01.01.2001&quot;
+            toDate=&quot;31.03.2001&quot;/&gt;
+</pre>
+</blockquote>
+<p>Shows all changes between January 1st 2001 and March 31st 2001 (in Germany, date must be specified according to your locale).</p>
+
+<blockquote>
+  <pre>
+&lt;tstamp&gt;
+  &lt;format property=&quot;to.tstamp&quot; pattern=&quot;M-d-yy;h:mma&quot;/&gt;
+&lt;/tstamp&gt;
+
+&lt;vsshistory vsspath=&quot;$/myProject&quot; recursive=&quot;true&quot;
+            numDays=&quot;-14&quot;
+            dateFormat=&quot;M-d-yy;h:mma&quot;
+            toDate=&quot;${to.tstamp}&quot;/&gt;
+</pre>
+</blockquote>
+<p>Shows all changes in the 14 days before today.</p>
+<hr>
+
+<!-- VSSCHECKIN -->
+
+<h2><a name="vsscheckin">VssCheckin</a></h2>
+<h3>Description</h3>
+Task to perform CHECKIN commands to Microsoft Visual SourceSafe.
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+     <td>vsspath</td>
+     <td>SourceSafe path which specifies the project/file(s) you wish to
+         perform the action on.</td>
+     <td>Yes</td>
+  </tr>
+  <tr>
+     <td>login</td>
+     <td>username[,password] - The username and password needed to get access
+         to VSS. Note that you may need to specify both (if you have a password) -
+         Ant/VSS will hang if you leave the password out and VSS does not accept
+         login without a password. </td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>localpath</td>
+     <td>Override the working directory and get to the specified path</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>ssdir</td>
+     <td>directory where <code>ss.exe</code> resides. By default the
+         task expects it to be in the PATH.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>serverPath</td>
+     <td>directory where <code>srcsafe.ini</code> resides.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>writable</td>
+     <td>true or false</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>recursive</td>
+     <td>true or false</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>comment</td>
+     <td>Comment to use for the files that where checked in.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>autoresponse</td>
+     <td>'Y', 'N' or empty. Specify how to reply to questions from VSS.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+    <td>failonerror</td>
+    <td>Stop the buildprocess if ss.exe exits with a returncode of 100. Defaults to true</td>
+    <td>No</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<blockquote>
+<pre>
+&lt;vsscheckin vsspath=&quot;$/test/test*&quot;
+            localpath=&quot;D:\build\&quot;
+            comment=&quot;Modified by automatic build&quot;/&gt;
+</pre>
+</blockquote>
+<p>Checks in the file(s) named <i>test*</i> in the project <i>$/test</i> using
+the local directory <i>D:\build</i>.</p>
+<hr>
+
+<!-- VSSCHECKOUT -->
+
+<h2><a name="vsscheckout">VssCheckout</a></h2>
+<h3>Description</h3>
+Task to perform CHECKOUT commands to Microsoft Visual SourceSafe.
+<p>If you specify two or more attributes from version, date and
+label only one will be used in the order version, date, label.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+     <td>vsspath</td>
+     <td>SourceSafe path which specifies the project/file(s) you wish to
+         perform the action on.</td>
+     <td>Yes</td>
+  </tr>
+  <tr>
+     <td>login</td>
+     <td>username[,password] - The username and password needed to get access
+         to VSS. Note that you may need to specify both (if you have a password) -
+         Ant/VSS will hang if you leave the password out and VSS does not accept
+         login without a password. </td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>localpath</td>
+     <td>Override the working directory and get to the specified path</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>ssdir</td>
+     <td>directory where <code>ss.exe</code> resides. By default the
+         task expects it to be in the PATH.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>serverPath</td>
+     <td>directory where <code>srcsafe.ini</code> resides.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>writable</td>
+     <td>true or false</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>recursive</td>
+     <td>true or false</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>version</td>
+     <td>a version number to get</td>
+     <td rowspan="3">No, only one of these allowed</td>
+  </tr>
+  <tr>
+     <td>date</td>
+     <td>a date stamp to get at</td>
+  </tr>
+  <tr>
+     <td>label</td>
+     <td>a label to get for</td>
+  </tr>
+  <tr>
+    <td>writablefiles</td>
+    <td>Behavior when local files are writable. Valid options are: <code>replace</code>, 
+        <code>skip</code> and <code>fail</code>; Defaults to <code>fail</code>
+        <br><code>skip</code> implies <code>failonerror=false</code></td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>failonerror</td>
+    <td>Stop the buildprocess if ss.exe exits with a returncode of 100. Defaults to true</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>filetimestamp</td>
+    <td>Set the behavior for timestamps of local files. Valid options are <code>current</code>, 
+        <code>modified</code>, or <code>updated</code>. Defaults to <code>current</code>.</td> 
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>getlocalcopy</td>
+    <td>Set the behavior to retrieve local copies of the files. Defaults to true.</td> 
+    <td>No</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<blockquote>
+<pre>
+&lt;vsscheckout vsspath=&quot;$/test&quot;
+             localpath=&quot;D:\build&quot;
+             recursive=&quot;true&quot;
+             login=&quot;me,mypass&quot;/&gt;
+</pre>
+</blockquote>
+<p>Does a recursive checkout of the project <i>$/test</i> to the directory D:\build.
+</p>
+<hr>
+
+<!-- VSSADD -->
+
+<h2><a name="vssadd">VssAdd</a></h2>
+<h3>Description</h3>
+Task to perform ADD commands to Microsoft Visual SourceSafe.
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+     <td>localpath</td>
+     <td>Specify the local file(s) to add to VSS</td>
+     <td>Yes</td>
+  </tr>
+  <tr>
+     <td>login</td>
+     <td>username[,password] - The username and password needed to get access
+         to VSS. Note that you may need to specify both (if you have a password) -
+         Ant/VSS will hang if you leave the password out and VSS does not accept
+         login without a password. </td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>ssdir</td>
+     <td>directory where <code>ss.exe</code> resides. By default the
+         task expects it to be in the PATH.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>serverPath</td>
+     <td>directory where <code>srcsafe.ini</code> resides.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>writable</td>
+     <td>true or false</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>recursive</td>
+     <td>true or false</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>comment</td>
+     <td>Comment to use for the files that where checked in.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>autoresponse</td>
+     <td>'Y', 'N' or empty. Specify how to reply to questions from VSS.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+    <td>failonerror</td>
+    <td>Stop the buildprocess if ss.exe exits with a returncode of 100. Defaults to true</td>
+    <td>No</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<blockquote>
+<pre>
+&lt;vssadd localpath=&quot;D:\build\build.00012.zip&quot;
+            comment=&quot;Added by automatic build&quot;/&gt;
+</pre>
+</blockquote>
+<p>Add the file named build.00012.zip into the project current working
+directory (see vsscp).</p>
+<hr>
+
+<!-- VSSCP -->
+
+<h2><a name="vsscp">VssCp</a></h2>
+<h3>Description</h3>
+<p>Task to perform CP (Change Project) commands to Microsoft Visual SourceSafe.</p>
+<p>This task is typically used before a VssAdd in order to set the target project</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+     <td>vsspath</td>
+     <td>SourceSafe path which specifies the project you wish to
+         make the current project.</td>
+     <td>Yes</td>
+  </tr>
+  <tr>
+     <td>login</td>
+     <td>username[,password] - The username and password needed to get access
+         to VSS. Note that you may need to specify both (if you have a password) -
+         Ant/VSS will hang if you leave the password out and VSS does not accept
+         login without a password. </td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>ssdir</td>
+     <td>directory where <code>ss.exe</code> resides. By default the
+         task expects it to be in the PATH.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+     <td>serverPath</td>
+     <td>directory where <code>srcsafe.ini</code> resides.</td>
+     <td>No</td>
+  </tr>
+  <tr>
+    <td>failonerror</td>
+    <td>Stop the buildprocess if ss.exe exits with a returncode of 100. Defaults to true</td>
+    <td>No</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<blockquote>
+<pre>
+&lt;vsscp vsspath=&quot;$/Projects/ant&quot;/&gt;
+</pre>
+</blockquote>
+<p>Sets the current VSS project to <i>$/Projects/ant</i>.</p>
+<hr>
+
+<!-- VSSCREATE -->
+
+ <h2><a name="vsscreate">VssCreate</a></h2>
+ <h3>Description</h3>
+ Task to perform CREATE commands to Microsoft Visual Source Safe.
+ <p>Creates a new project in VSS.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <th>Attribute</th>
+    <th>Values</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td>login</td>
+    <td>username,password</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>vsspath</td>
+    <td>SourceSafe path of project to be created</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>ssdir</td>
+    <td>directory where <code>ss.exe</code> resides. By default the task expects it to be in the PATH.</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>quiet</td>
+    <td>suppress output (off by default)</td>
+    <td>No</td>
+   </tr>
+  <tr>
+    <td>failOnError</td>
+    <td>fail if there is an error creating the project (true by default)</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>autoresponse</td>
+    <td>What to respond with (sets the -I option). By default, -I- is used; values of Y or N will be appended to this.</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td>comment</td>
+    <td>The comment to use for this label. Empty or '-' for no comment.</td>
+    <td>No</td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<blockquote>
+<pre>
+&lt;vsscreate vsspath=&quot;$/existingProject/newProject&quot;/&gt;
+</pre>
+</blockquote>
+<p>Creates the VSS-Project <i>$/existingProject/newProject</i>.</p>
+<hr>
+
+<!-- Footer -->
+</body>
+</html>

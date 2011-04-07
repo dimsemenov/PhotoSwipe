@@ -1,0 +1,335 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>ServerDeploy Task</title>
+
+</head>
+
+<body>
+
+<h1><a name="serverdeploy">Apache Ant ServerDeploy User Manual</a></h1>
+<p>by</p>
+<!-- Names are in alphabetical order, on last name -->
+<ul>
+<li>Christopher A. Longo (<a href="mailto:cal@cloud9.net">cal@cloud9.net</a>)</li>
+<li>Cyrille Morvan (<a href="mailto:cmorvan@ingenosya.com">cmorvan@ingenosya.com</a>)</li>
+</ul>
+
+</p>
+<hr>
+<p> At present the tasks support:<br>
+
+<ul>
+<li><a href="http://www.bea.com" target="_top">Weblogic</a> servers</li>
+<li><a href="http://www.objectweb.org/jonas/" target="_top">JOnAS</a>
+2.4 Open Source EJB server</li>
+</ul>
+Over time we expect further optional tasks  to support additional J2EE Servers.
+</p>
+
+<hr>
+
+<table border="1" cellpadding="5">
+<tr><td>Task</td><td colspan="2">Application Servers</td></tr>
+<tr><td rowspan="4"><a href="#serverdeploy_element">serverdeploy</a></td><td colspan="2" align="center"><b>Nested Elements</b></td></tr>
+<tr><td><a href="#serverdeploy_generic">generic</a></td><td>Generic task</td></tr>
+<tr><td><a href="#serverdeploy_jonas">jonas</a></td><td>JOnAS 2.4</td></tr>
+<tr><td><a href="#serverdeploy_weblogic">weblogic</a></td><td>Weblogic</td></tr>
+
+</table>
+
+<a name="serverdeploy_element">
+<h2>ServerDeploy element</h2>
+
+<h3><b>Description:</b></h3>
+
+<p>The <code>serverdeploy</code> task is used to run a "hot" deployment tool for
+vendor-specific J2EE server. The task requires nested elements which define
+the attributes of the vendor-specific deployment tool being executed.
+Vendor-specific deployment tools elements may enforce rules for which
+attributes are required, depending on the tool.
+</p>
+
+<h3>Parameters:</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">action</td>
+    <td valign="top">This is the action to be performed.  For most cases this
+    will be "deploy".  Some tools support additional actions, such as "delete", "list",
+    "undeploy", "update"...</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">source</td>
+    <td valign="top">A fully qualified path/filename of the component to be deployed.
+    This may be an .ear, .jar, .war, or any other type that is supported by the server.
+    </td>
+    <td>Tool dependent</td>
+  </tr>
+</table>
+
+<h3>Nested Elements</h3>
+
+<p>The serverdeploy task supports a nested <code>classpath</code> element to set the classpath.</p>
+
+<h3>Vendor-specific nested elements</h3>
+
+<h3>Parameters used for all tools:</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">The classpath to be passed to the JVM running the tool.
+    The classpath may also be supplied as a nested element.</td>
+    <td>Tool dependent</td>
+  </tr>
+  <tr>
+    <td valign="top">server</td>
+    <td valign="top">The address or URL for the server where the component will be deployed.</td>
+    <td>Tool dependent</td>
+  </tr>
+  <tr>
+    <td valign="top">username</td>
+    <td valign="top">The user with privileges to deploy applications to the server.</td>
+    <td>Tool dependent</td>
+  </tr>
+  <tr>
+    <td valign="top">password</td>
+    <td valign="top">The password of the user with privileges to deploy applications to the server.</td>
+    <td>Tool dependent</td>
+  </tr>
+</table>
+
+<p>Also supported are nested vendor-specific elements.</p>
+
+<a name="serverdeploy_generic">
+<h3>Generic element</h3>
+This element is provided for generic Java-based deployment tools.
+The generic task accepts (but does not require) nested <code>arg</code>
+and <code>jvmarg</code> elements.
+A JVM will be spawned with the provided attributes.  It is recommended
+that a vendor-specific element be used over the generic one if at all
+possible.
+<p>The following attributes are supported by the generic element.</p>
+<p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">classname</td>
+    <td valign="top">This is the fully qualified classname of the Java based
+    deployment tool to execute.</td>
+    <td>Yes</td>
+  </tr>
+</table>
+</p>
+
+<h3>Nested Elements</h3>
+<p>The generic element supports nested <code>&lt;arg&gt;</code> and <code>&lt;jvmarg&gt;</code> elements.</p>
+
+<h3>Example</h3>
+
+<p>This example shows the use of generic deploy element to deploy a component
+using a Java based deploy tool:</p>
+
+<pre>
+    &lt;serverdeploy action=&quot;deploy&quot; source=&quot;${lib.dir}/ejb_myApp.ear&quot;&gt;
+        &lt;generic classname="com.yamato.j2ee.tools.deploy.DeployTool"
+            classpath=&quot;${classpath}&quot;
+            username=&quot;${user.name}&quot;
+            password=&quot;${user.password}&quot;&gt;
+            &lt;arg value="-component=WildStar"/&gt;
+            &lt;arg value="-force"/&gt;
+            &lt;jvmarg value="-ms64m"/&gt;
+            &lt;jvmarg value="-mx128m"/&gt;
+        &lt;/generic&gt;
+    &lt;/serverdeploy&gt;
+</pre>
+
+<a name="serverdeploy_weblogic">
+<h3>WebLogic element</h3>
+<p>
+The WebLogic element contains additional attributes to run the
+<code>weblogic.deploy</code> deployment tool.
+<p>Valid actions for the tool are <code>deploy</code>, <code>undeploy</code>,
+<code>list</code>, <code>update</code>, and <code>delete</code>.
+<p>If the action is <code>deploy</code> or <code>update</code>,
+the <code>application</code> and <code>source</code> attributes must be set.
+If the action is <code>undeploy</code> or <code>delete</code>,
+the <code>application</code> attribute must be set.  If the <code>username</code>
+attribute is omitted, it defaults to "system".  The <code>password</code> attribute is
+required for all actions.
+<p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">application</td>
+    <td valign="top">This is the name of the application being deployed</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">component</td>
+    <td valign="top">This is the component string for deployment targets.
+    It is in the form <code>&lt;component&gt;:&lt;target1&gt;,&lt;target2&gt;...</code>
+    Where component is the archive name (minus the .jar, .ear, .war
+    extension).  Targets are the servers where the components will be deployed</td>
+    <td>no</td>
+  </tr>
+  <tr>
+    <td valign="top">debug</td>
+    <td valign="top">If set to true, additional information will be
+    printed during the deployment process.</td>
+    <td>No</td>
+  </tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<p>This example shows the use of serverdeploy to deploy a component to a WebLogic server:</p>
+
+<pre>
+    &lt;serverdeploy action=&quot;deploy&quot; source=&quot;${lib.dir}/ejb_myApp.ear&quot;&gt;
+        &lt;weblogic application=&quot;myapp&quot;
+            server=&quot;t3://myserver:7001&quot;
+            classpath=&quot;${weblogic.home}/lib/weblogic.jar&quot;
+            username=&quot;${user.name}&quot;
+            password=&quot;${user.password}&quot;
+            component=&quot;ejb_foobar:myserver,productionserver&quot;
+            debug=&quot;true&quot;/&gt;
+    &lt;/serverdeploy&gt;
+</pre>
+
+<p>This example shows serverdeploy being used to delete a component from a
+WebLogic server:</p>
+
+<pre>
+    &lt;serverdeploy action=&quot;delete&quot; source=&quot;${lib.dir}/ejb_myApp.jar&quot;/&gt
+        &lt;weblogic application=&quot;myapp&quot;
+            server=&quot;t3://myserver:7001&quot;
+            classpath=&quot;${weblogic.home}/lib/weblogic.jar&quot;
+            username=&quot;${user.name}&quot;
+            password=&quot;${user.password}&quot;/&gt;
+    &lt;/serverdeploy&gt;
+</pre>
+
+<a name="serverdeploy_jonas">
+<h3>JOnAS (Java Open Application Server) element</h3>
+<p>
+The JOnAS element contains additional attributes to run the
+<code>JonasAdmin</code> deployment tool.
+<p>Valid actions for the tool are <code>deploy</code>, <code>undeploy</code>,
+<code>list</code> and <code>update</code>.
+<p>You can't use <code>user</code> and <code>password</code> property with this 
+task.
+<p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">jonasroot</td>
+    <td valign="top">The root directory for JOnAS.</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">orb</td>
+    <td valign="top">Choose your ORB : RMI, JEREMIE, DAVID, ... If omitted, it defaults
+     to the one present in classpath. The corresponding JOnAS JAR is
+     automatically added to the classpath. If your orb is DAVID (RMI/IIOP) you must 
+     specify davidhost and davidport properties.</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td valign="top">davidhost</td>
+    <td valign="top">The value for the system property : <code>david.CosNaming.default_host</code> .</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td valign="top">davidport</td>
+    <td valign="top">The value for the system property : <code>david.CosNaming.default_port</code> .</td>
+    <td>No</td>
+  </tr>
+  <tr>
+    <td valign="top">classname</td>
+    <td valign="top">This is the fully qualified classname of the Java based
+    deployment tool to execute. Default to <code>org.objectweb.jonas.adm.JonasAdmin</code></td>
+    <td>No</td>
+  </tr>
+
+</table>
+
+<h3>Nested Elements</h3>
+<p>The jonas element supports nested <code>&lt;arg&gt;</code> and <code>&lt;jvmarg&gt;</code> elements.</p>
+
+
+<h3>Examples</h3>
+
+<p>This example shows the use of serverdeploy to deploy a component to a JOnAS server:</p>
+
+<pre>
+    &lt;serverdeploy action=&quot;deploy&quot; source=&quot;${lib.dir}/ejb_myApp.jar&quot;&gt;
+        &lt;jonas server=&quot;MyJOnAS&quot; jonasroot="${jonas.root}"&gt;
+
+           &lt;classpath&gt;
+               &lt;pathelement path=&quot;${jonas.root}/lib/RMI_jonas.jar&quot;/&gt;
+               &lt;pathelement path=&quot;${jonas.root}/config/&quot;/&gt;
+           &lt;/classpath&gt;
+        &lt;/jonas&gt;
+    &lt;/serverdeploy&gt;
+</pre>
+
+<p>This example shows serverdeploy being used to list the components from a
+JOnAS server and a WebLogic server:</p>
+
+<pre>
+    &lt;serverdeploy action=&quot;list&quot;/&gt
+        &lt;jonas jonasroot=&quot;${jonas.root}&quot; orb=&quot;JEREMIE&quot;/&gt;
+        &lt;weblogic application=&quot;myapp&quot
+            server=&quot;t3://myserver:7001&quot;
+            classpath=&quot;${weblogic.home}/lib/weblogic.jar&quot;
+            username=&quot;${user.name}&quot;
+            password=&quot;${user.password}&quot;/&gt;
+    &lt;/serverdeploy&gt;
+</pre>
+
+
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+body {
+    background-color: #FFFFFF;
+    color: #000000;
+    margin: 0px 0px 0px 0px;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size : 90%;
+}
+
+a:link { color: #0F3660; }
+a:visited { color: #009999; }
+a:active { color: #000066; }
+a:hover { color: #000066; }
+
+.menucontainer {
+    float: left;
+    background-color: #4C6C8F;
+    margin: 0px 5px;
+    width: 250px;
+}
+
+.menu {
+    font-size : 90%;
+    padding: 3px 8px 5px 3px;
+    border-right: 1px solid #294563;
+    border-left: 1px solid #294563;
+}
+
+.menu a:link { color: #FFFFFF;  text-decoration : none;  }
+.menu a:visited { color: #FFFFFF; text-decoration : none; }
+.menu a:hover { color: #FFCC00; text-decoration : none; }
+.menu ul { margin: 0px 0px 0px 20px; padding: 0px; }
+.menu li  { list-style-image: url('images/label.gif'); font-weight : bold; }
+.menu ul ul li .sel { list-style-image: url('images/current.gif'); font-weight : normal; }
+.menu ul ul li  { list-style-image: url('images/page.gif'); font-weight : normal; }
+
+.menuheader {
+    color: #CFDCED;
+}
+
+.sel {
+    color: #ffcc00;
+}
+
+.tab { font-size : 85%; border: 0; background-color: #294563;}
+.tab a:link {   text-decoration : none;  }
+.tab a:visited { text-decoration : none; color: #2A4A6D }
+.tab a:hover { color: #000066; }
+
+table .title { background-color: #FFFFFF; width:100%; border: 0px; }
+.dida { font-size: 80%; }
+
+.pre { white-space: pre;}
+.nowrap { white-space: nowrap;}
+
+.main {
+    margin-left: 280px;
+    margin-right: 5px;
+}
+
+.content {
+    padding: 5px 5px 5px 10px;
+    font : small Verdana, Helvetica, sans-serif;
+    font-size : 90%;
+}
+
+.content .ForrestTable { width: 100%; background-color: #7099C5; color: #ffffff; font-size : 90%;}
+.content .ForrestTable caption { text-align: left; color: black; font-weight: bold; }
+.content .ForrestTable th { text-align: center; }
+.content .ForrestTable td { background-color: #f0f0ff; color: black; }
+
+.content .externals { width: 80%; background-color: #7099C5; color: #ffffff; font-size : 90%;}
+.content .externals caption { text-align: left; color: black; font-weight: bold; }
+.content .externals th { width: 120px; text-align: right; }
+.content .externals td { background-color: #f0f0ff; color: black; }
+
+.content .ContinuousBuild { width: 90%; background-color: #7099C5; color: #ffffff; font-size : 90%;}
+.content .ContinuousBuild caption { text-align: left; color: black; font-weight: bold; }
+.content .ContinuousBuild th { width: 120px; }
+.content .ContinuousBuild td { background-color: #f0f0ff; color: black; text-align: center; }
+.content .ContinuousBuild .title { width: 15%; text-align: left; }
+.content .ContinuousBuild .description { width: 30%; font-style: italic; }
+.content .ContinuousBuild .command { width: 20%; font-family: "Courier New", Courier, monospace; }
+.content .ContinuousBuild .when { width: 25%; }
+.content .ContinuousBuild .link {  }
+
+
+.frame { margin: 5px 20px 5px 20px; font-size: 90%; }
+.frame .content { margin: 0px; }
+
+.note { border: solid 1px #7099C5; background-color: #f0f0ff; }
+.note .label { background-color: #7099C5; color: #ffffff; }
+
+.warning { border: solid 1px #D00000; background-color: #fff0f0; }
+.warning .label { background-color: #D00000; color: #ffffff; }
+
+.fixme { border: solid 1px #C6C600; background-color: #FAF9C3; }
+.fixme .label { background-color: #C6C600; color: #ffffff; }
+
+.code { border-color: #CFDCED; border-style: solid; border-width: 1px; }
+.codefrag {	font-family: "Courier New", Courier, monospace; }
+
+.highlight { background-color: yellow; }
+
+.minitoc {margin: 5px 5px 5px 40px;}
+
+.dtdElement { width: 100%;	font-size: 90%; background-color : #ffffff; }
+
+.dtdTag {    color: #990000; text-transform : uppercase;  font-style : normal;  font-size : 120%;  font-weight : bold; }
+
+.section {
+    font-family: Verdana, Helvetica, sans-serif;
+    background-color: #294563;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 2px;
+    margin-top: 20px;
+    clear: right;
+}
+
+.subsection {
+    font-family: arial,helvetica,sanserif;
+    background-color: #4C6C8F;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 2px;
+    clear: right;
+}
+
+.toc {
+    font-family: arial,helvetica,sanserif;
+    background-color: #4C6C8F;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 2px;
+}
+
+.faq {
+    font-family: arial,helvetica,sanserif;
+    background-color: #4C6C8F;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 2px;
+}
+
+.navpath {
+    font-family: arial,helvetica,sanserif;
+    background-color: #CFDCED;
+    padding: 2px 6px;
+    margin: 0px 0px 0px 0px;
+    font-size: 90%;
+    border-bottom: 2px solid #4C6C8F;
+}
+
+.title {
+    font-family: Verdana, Helvetica, sans-serif;
+}
+
+.copyright {
+    font-family: arial,helvetica,sanserif;
+    font-size: 90%;
+    background-color: #CFDCED;
+    clear: both;
+    text-align: center;
+    margin: 0px;
+    border-top: thin solid #4C6C8F;
+}
+
+.bluebar {
+    padding: 5px 5px 5px 10px;
+    background-color: #4C6C8F;
+    margin: 0px;
+}
+
+.lightbluebar {
+    padding: 5px 5px 5px 10px;
+    background-color: #CFDCED;
+    margin: 0px;
+    border-top: 1px solid #294563;
+    border-bottom: 1px solid #294563;
+}
+
+.logobar {
+    background-color: #294563;
+    padding-right: 10px;
+    margin: 0px;
+}
+
+.searchcaption {
+    color: #FFFFFF;
+    text-align: left;
+    font-family: arial,helvetica,sanserif;
+    font-size: 90%;
+    background-color: #4C6C8F;
+    margin: 0px;
+}
+
+@media print {
+   .menu {
+     display: none;
+   }
+}
+
+#adcontainer {
+}

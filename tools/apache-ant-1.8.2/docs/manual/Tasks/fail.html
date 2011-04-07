@@ -1,0 +1,143 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Fail Task</title>
+</head>
+
+<body>
+
+<h2><a name="fail">Fail</a></h2>
+<h3>Description</h3>
+<p>Exits the current build (just throwing a BuildException), optionally printing additional information.</p>
+<p>The message of the Exception can be set via the message attribute
+or character data nested into the element.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">message</td>
+    <td valign="top">A message giving further information on why the build exited</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">if</td>
+    <td valign="top">Only fail <a href="../properties.html#if+unless">if a property of the given name exists</a>
+      in the current project</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">unless</td>
+    <td valign="top">Only fail <a href="../properties.html#if+unless">if a property of the given name doesn't
+      exist</a> in the current project</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">status</td>
+    <td valign="top">Exit using the specified status code;
+      assuming the generated Exception is not caught, the
+      JVM will exit with this status. <em>Since Apache Ant 1.6.2</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3>Parameters specified as nested elements</h3>
+
+<p>As an alternative to the <i>if</i>/<i>unless</i> attributes,
+  conditional failure can be achieved using a single nested
+  <code>&lt;condition&gt;</code> element, which should contain exactly one
+  core or custom condition.  For information about conditions, see
+  <a href="conditions.html">here</a>.<br><b>Since Ant 1.6.2</b>
+</p>
+
+<h3>Examples</h3>
+
+<pre>  &lt;fail/&gt;</pre>
+<p>will exit the current build with no further information given.</p>
+<pre>
+BUILD FAILED
+
+build.xml:4: No message
+</pre>
+
+<pre>  &lt;fail message=&quot;Something wrong here.&quot;/&gt;</pre>
+<p>will exit the current build and print something
+  like the following to wherever your output goes:
+</p>
+<pre>
+BUILD FAILED
+
+build.xml:4: Something wrong here.
+</pre>
+
+<pre>  &lt;fail&gt;Something wrong here.&lt;/fail&gt;</pre>
+<p>will give the same result as above.</p>
+
+<pre>  &lt;fail unless=&quot;thisdoesnotexist&quot;/&gt;</pre>
+<p>will exit the current build and print something
+  like the following to wherever your output goes:
+</p>
+<pre>
+BUILD FAILED
+
+build.xml:2: unless=thisdoesnotexist
+</pre>
+
+Using a condition to achieve the same effect:
+
+<pre>
+  &lt;fail&gt;
+     &lt;condition&gt;
+       &lt;not&gt;
+         &lt;isset property=&quot;thisdoesnotexist&quot;/&gt;
+       &lt;/not&gt;
+     &lt;/condition&gt;
+   &lt;/fail&gt;
+</pre>
+
+<p>Output:</p>
+<pre>
+BUILD FAILED
+
+build.xml:2: condition satisfied
+</pre>
+
+<pre>
+&lt;fail message=&quot;Files are missing.&quot;&gt;
+    &lt;condition&gt;
+        &lt;not&gt;
+            &lt;resourcecount count=&quot;2&quot;&gt;
+                &lt;fileset id=&quot;fs&quot; dir=&quot;.&quot; includes=&quot;one.txt,two.txt&quot;/&gt;
+            &lt;/resourcecount&gt;
+        &lt;/not&gt;
+    &lt;/condition&gt;
+&lt;/fail&gt;
+</pre>
+<p>Will check that both files <i>one.txt</i> and <i>two.txt</i> are present otherwise the build
+will fail.</p>
+
+</body>
+</html>
+

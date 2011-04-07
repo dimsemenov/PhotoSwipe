@@ -1,0 +1,275 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>SCP Task</title>
+</head>
+
+<body>
+
+<h2><a name="scp">SCP</a></h2>
+<h3>Description</h3>
+
+<p><em>since Apache Ant 1.6</em></p>
+
+<p>Copies a file or FileSet to or from a (remote) machine running an SSH daemon.
+FileSet <i>only</i> works for copying files from the local machine to a
+remote machine.</p>
+
+<p><b>Note:</b> This task depends on external libraries not included
+in the Ant distribution.  See <a
+href="../install.html#librarydependencies">Library Dependencies</a>
+for more information.  This task has been tested with jsch-0.1.2 and later.</p>
+
+<p>See also the <a href="sshexec.html">sshexec task</a></p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">The file to copy.  This can be a local path or a
+    remote path of the form <i>user[:password]@host:/directory/path</i>.
+    <i>:password</i> can be omitted if you use key based
+    authentication or specify the password attribute.  The way remote
+    path is recognized is whether it contains @ character or not. This
+    will not work if your localPath contains @ character.</td>
+    <td valign="top" align="center">Yes, unless a nested
+    <code>&lt;fileset&gt;</code> element is used.</td>
+  </tr>
+  <tr>
+    <td valign="top">localFile</td>
+    <td valign="top">This is an alternative to the file attribute. But
+    this must always point to a local file. The reason this was added
+    was that when you give file attribute it is treated as remote if
+    it contains @ character. This character can exist also in local
+    paths.  <em>since Ant 1.6.2</em></td>
+    <td valign="top" align="center">Alternative to file attribute.</td>
+  </tr>
+  <tr>
+    <td valign="top">remoteFile</td>
+    <td valign="top">This is an alternative to the file attribute. But
+    this must always point to a remote file.  <em>since Ant 1.6.2</em></td>
+    <td valign="top" align="center">Alternative to file attribute.</td>
+  </tr>
+  <tr>
+    <td valign="top">todir</td>
+    <td valign="top">The directory to copy to.  This can be a local path
+    or a remote path of the form <i>user[:password]@host:/directory/path</i>.
+    <i>:password</i> can be omitted if you use key based
+    authentication or specify the password attribute.  The way remote
+    path is recognized is whether it contains @ character or not. This
+    will not work if your localPath contains @ character.</td>
+    <td valian="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">localTodir</td>
+    <td valign="top">This is an alternative to the todir
+    attribute. But this must always point to a local directory. The
+    reason this was added was that when you give todir attribute it is
+    treated as remote if it contains @ character. This character can
+    exist also in local paths.  <em>since Ant 1.6.2</em></td>
+    <td valian="top" align="center">Alternative to todir attribute.</td>
+  </tr>
+  <tr>
+    <td valign="top">localTofile</td>
+    <td valign="top">Changes the file name to the given name while
+    receiving it, only useful if receiving a single file.  <em>since
+    Ant 1.6.2</em></td>
+    <td valian="top" align="center">Alternative to todir attribute.</td>
+  </tr>
+  <tr>
+    <td valign="top">remoteTodir</td>
+    <td valign="top">This is an alternative to the todir
+    attribute. But this must always point to a remote directory.
+    <em>since Ant 1.6.2</em></td>
+    <td valian="top" align="center">Alternative to todir attribute.</td>
+  </tr>
+  <tr>
+    <td valign="top">remoteTofile</td>
+    <td valign="top">Changes the file name to the given name while
+    sending it, only useful if sending a single file.  <em>since
+    Ant 1.6.2</em></td>
+    <td valian="top" align="center">Alternative to todir attribute.</td>
+  </tr>
+  <tr>
+    <td valign="top">port</td>
+    <td valign="top">The port to connect to on the remote host.</td>
+    <td valian="top" align="center">No, defaults to 22.</td>
+  </tr>
+  <tr>
+    <td valign="top">trust</td>
+    <td valign="top">This trusts all unknown hosts if set to yes/true.<br>
+      <strong>Note</strong> If you set this to false (the default), the
+      host you connect to must be listed in your knownhosts file, this
+      also implies that the file exists.</td>
+    <td valian="top" align="center">No, defaults to No.</td>
+  </tr>
+  <tr>
+    <td valign="top">knownhosts</td>
+    <td valign="top">This sets the known hosts file to use to validate
+    the identity of the remote host.  This must be a SSH2 format file.
+    SSH1 format is not supported.</td>
+    <td valian="top" align="center">No, defaults to
+    ${user.home}/.ssh/known_hosts.</td>
+  </tr>
+  <tr>
+    <td valign="top">failonerror</td>
+     <td valign="top">Whether to halt the build if the transfer fails.
+     </td>
+     <td valign="top" align="center">No; defaults to true.</td>
+  </tr>
+  <tr>
+    <td valign="top">password</td>
+     <td valign="top">The password.</td>
+     <td valign="top" align="center">Not if you are using key based
+     authentication or the password has been given in the file or
+     todir attribute.</td>
+  </tr>
+  <tr>
+    <td valign="top">keyfile</td>
+     <td valign="top">Location of the file holding the private key.</td>
+     <td valign="top" align="center">Yes, if you are using key based
+     authentication.</td>
+  </tr>
+  <tr>
+    <td valign="top">passphrase</td>
+     <td valign="top">Passphrase for your private key.</td>
+     <td valign="top" align="center">No, defaults to an empty string.</td>
+  </tr>
+  <tr>
+    <td valign="top">verbose</td>
+    <td valign="top">Determines whether SCP outputs verbosely to the
+    user. Currently this means outputting dots/stars showing the
+    progress of a file transfer.  <em>since Ant 1.6.2</em></td>
+    <td valign="top" align="center">No; defaults to false.</td>
+  </tr>
+  <tr>
+    <td valign="top">sftp</td>
+    <td valign="top">Determines whether SCP uses the sftp protocol.
+    The sftp protocol is the file transfer protocol of SSH2.  It is
+    recommended that this be set to true if you are copying to/from a
+    server that doesn't support scp1. <em>since Ant 1.7</em></td>
+    <td valign="top" align="center">No; defaults to false.</td>
+  </tr>
+  <tr>
+    <td valign="top">preserveLastModified</td>
+    <td valign="top">Determines whether the last modification
+    timestamp of downloaded files is preserved.  It only works when
+    transferring from a remote to a local system and probably doesn't
+    work with a server that doesn't support SSH2.  <em>since Ant
+    1.8.0</em></td>
+    <td valign="top" align="center">No; defaults to false.</td>
+  </tr>
+</table>
+<h3>Parameters specified as nested elements</h3>
+
+<h4>fileset</h4>
+ <p><a href="../Types/fileset.html">FileSet</a>s are used to select
+sets of files to copy.
+ To use a fileset, the <code>todir</code> attribute must be set.</p>
+
+<h3>Examples</h3>
+<p><b>Copy a single local file to a remote machine</b></p>
+<pre>
+  &lt;scp file=&quot;myfile.txt&quot; todir=&quot;user:password@somehost:/home/chuck&quot;/&gt;
+</pre>
+
+<p><b>Copy a single local file to a remote machine with separate
+password attribute</b></p>
+<pre>
+  &lt;scp file=&quot;myfile.txt&quot; todir=&quot;user@somehost:/home/chuck&quot; password=&quot;password&quot;/&gt;
+</pre>
+
+<p><b>Copy a single local file to a remote machine using key base
+authentication.</b></p>
+<pre>
+  &lt;scp file=&quot;myfile.txt&quot;
+       todir=&quot;user@somehost:/home/chuck&quot; 
+       keyfile=&quot;${user.home}/.ssh/id_dsa&quot;
+       passphrase=&quot;my extremely secret passphrase&quot;
+  /&gt;
+</pre>
+
+<p><b>Copy a single remote file to a local directory</b></p>
+<pre>
+  &lt;scp file=&quot;user:password@somehost:/home/chuck/myfile.txt&quot; todir=&quot;../some/other/dir&quot;/&gt;
+</pre>
+
+<p><b>Copy a remote directory to a local directory</b></p>
+<pre>
+  &lt;scp file=&quot;user:password@somehost:/home/chuck/*&quot; todir=&quot;/home/sara&quot;/&gt;
+</pre>
+
+<p><b>Copy a local directory to a remote directory</b></p>
+<pre>
+  &lt;scp todir=&quot;user:password@somehost:/home/chuck/&quot;&gt;
+    &lt;fileset dir=&quot;src_dir&quot;/&gt;
+  &lt;/scp&gt;
+</pre>
+<p><b>Copy a set of files to a directory</b></p>
+<pre>
+  &lt;scp todir=&quot;user:password@somehost:/home/chuck&quot;&gt;
+    &lt;fileset dir=&quot;src_dir&quot;&gt;
+      &lt;include name=&quot;**/*.java&quot;/&gt;
+    &lt;/fileset&gt;
+  &lt;/scp&gt;
+
+  &lt;scp todir=&quot;user:password@somehost:/home/chuck&quot;&gt;
+    &lt;fileset dir=&quot;src_dir&quot; excludes=&quot;**/*.java&quot;/&gt;
+  &lt;/scp&gt;
+</pre>
+
+<p><strong>Security Note:</strong>  Hard coding passwords and/or usernames
+in scp task can be a serious security hole.  Consider using variable
+substitution and include the password on the command line.  For example:
+<p>
+<pre>
+    &lt;scp todir=&quot;${username}:${password}@host:/dir&quot; ...&gt;
+</pre>
+Invoking ant with the following command line:
+<pre>
+    ant -Dusername=me -Dpassword=mypassword target1 target2
+</pre>
+
+Is slightly better, but the username/password is exposed to all users on an Unix
+system (via the ps command). The best approach is to use the
+<code>&lt;input&gt;</code> task and/or retrieve the password from a (secured)
+.properties file.
+
+<p>
+
+<p><strong>Unix Note:</strong> File permissions are not retained when files
+are copied; they end up with the default <code>UMASK</code> permissions
+instead. This is caused by the lack of any means to query or set file
+permissions in the current Java runtimes. If you need a permission-
+preserving copy function, use <code>&lt;exec executable="scp" ... &gt;</code>
+instead.
+</p>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,264 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="en-us">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Programming Selectors in Apache Ant</title>
+  </head>
+
+  <body>
+    <h2>Programming your own Selectors</h2>
+
+    <h3>Selector Programming API</h3>
+
+    <p>Want to define your own selectors? It's easy!</p>
+
+    <p>First, pick the type of selector that you want to define. There
+    are three types, and a recipe for each one follows. Chances are
+    you'll want to work with the first one, Custom Selectors.</p>
+
+    <ol>
+      <li>Custom Selectors
+
+        <p>This is the category that Apache Ant provides specifically for you to
+        define your own Selectors. Anywhere you want to use your selector
+        you use the <code>&lt;custom&gt;</code> element and specify
+        the class name of your selector within it. See the
+        <a href="selectors.html#customselect">Custom Selectors</a>
+        section of the Selector page for details. The
+        <code>&lt;custom&gt;</code> element can be used anywhere
+        the core selectors can be used. It can be contained within
+        <a href="selectors.html#selectcontainers">Selector Containers</a>,
+        for example.</p>
+
+        <p>To create a new Custom Selector, you have to create a class that
+        implements
+        <code>org.apache.tools.ant.types.selectors.ExtendFileSelector</code>.
+        The easiest way to do that is through the convenience base class
+        <code>org.apache.tools.ant.types.selectors.BaseExtendSelector</code>,
+        which provides all of the methods for supporting
+        <code>&lt;param&gt;</code> tags. First, override the
+        <code>isSelected()</code> method, and optionally the
+        <code>verifySettings()</code> method. If your custom
+        selector requires parameters to be set, you can also override
+        the <code>setParameters()</code> method and interpret the
+        parameters that are passed in any way you like. Several of the
+        core selectors demonstrate how to do that because they can
+        also be used as custom selectors.</p>
+
+      <li>Core Selectors
+
+        <p>These are the selectors used by Ant itself. To implement one of
+        these, you will have to alter some of the classes contained within
+        Ant.</p>
+
+        <ul>
+          <li><p>First, create a class that implements
+            <code>org.apache.tools.ant.types.selectors.FileSelector</code>.
+            You can either choose to implement all methods yourself from
+            scratch, or you can extend
+            <code>org.apache.tools.ant.types.selectors.BaseSelector</code>
+            instead, a convenience class that provides reasonable default
+            behaviour for many methods.</p>
+
+            <p>There is only one method required.
+            <code>public boolean isSelected(File basedir, String filename,
+              File file)</code>
+              is the real purpose of the whole exercise. It returns true
+              or false depending on whether the given file should be
+              selected from the list or not.</p>
+
+            <p>If you are using
+            <code>org.apache.tools.ant.types.selectors.BaseSelector</code>
+            there are also some predefined behaviours you can take advantage
+            of. Any time you encounter a problem when setting attributes or
+            adding tags, you can call setError(String errmsg) and the class
+            will know that there is a problem. Then, at the top of your
+            <code>isSelected()</code> method call <code>validate()</code> and
+            a BuildException will be thrown with the contents of your error
+            message. The <code>validate()</code> method also gives you a
+            last chance to check your settings for consistency because it
+            calls <code>verifySettings()</code>. Override this method and
+            call <code>setError()</code> within it if you detect any
+            problems in how your selector is set up.</p>
+
+            <p>You may also want to override <code>toString()</code>.</p>
+
+          <li><p>Put an <code>add</code> method for your selector in
+            <code>org.apache.tools.ant.types.selectors.SelectorContainer</code>.
+            This is an interface, so you will also have to add an implementation
+            for the method in the classes which implement it, namely
+            <code>org.apache.tools.ant.types.AbstractFileSet</code>,
+            <code>org.apache.tools.ant.taskdefs.MatchingTask</code> and
+            <code>org.apache.tools.ant.types.selectors.BaseSelectorContainer</code>.
+            Once it is in there, it will be available everywhere that core
+            selectors are appropriate.</p>
+        </ul>
+
+      <li>Selector Containers
+        <p>Got an idea for a new Selector Container? Creating a new one is
+        no problem:</p>
+        <ul>
+          <li><p>Create a new class that implements
+            <code>org.apache.tools.ant.types.selectors.SelectorContainer</code>.
+            This will ensure that your new
+            Container can access any new selectors that come along. Again, there
+            is a convenience class available for you called
+            <code>org.apache.tools.ant.types.selectors.BaseSelectorContainer</code>.
+            </p>
+          <li><p>Implement the
+            <code>public boolean isSelected(String filename, File file)</code>
+            method to do the right thing. Chances are you'll want to iterate
+            over the selectors under you, so use
+            <code>selectorElements()</code> to get an iterator that will do
+            that.</p>
+          <li><p>Again, put an <code>add</code> method for your container in
+            <code>org.apache.tools.ant.types.selectors.SelectorContainer</code>
+            and its implementations
+            <code>org.apache.tools.ant.types.AbstractFileSet</code> and
+            <code>org.apache.tools.ant.types.selectors.BaseSelectorContainer</code>.
+            </p>
+        </ul>
+    </ol>
+
+    <h3>Testing Selectors</h3>
+
+    <p>For a robust component (and selectors are (Project)Components) tests are
+    necessary. For testing Tasks we use JUnit TestCases - more specific
+    <tt>org.apache.tools.ant.BuildFileTest extends junit.framework.TestCase</tt>.
+    Some of its features like configure the (test) project by reading its buildfile and
+    execute targets we need for selector tests also. Therefore we use that BuildFileTest.
+    But testing selectors requires some more work: having a set of files, instantiate
+    and configure the selector, check the selection work and more. Because we usually
+    extend <tt>BaseExtendSelector</tt> its features have to be tested also (e.g. setError()).
+    </p>
+
+    <p>That's why we have a base class for doing our selector tests:
+    <tt>org.apache.tools.ant.types.selectors.BaseSelectorTest</tt>.</p>
+
+    <p>This class extends TestCase and therefore can included in the set of Ant's
+    unit tests. It holds an instance of preconfigured BuildFileTest. Configuration
+    is done by parsing the src/etc/testcases/types/selectors.xml. BaseSelectorTest
+    then gives us helper methods for handling multiple selections. </p>
+
+    <p>Because the term "testcase" or "testenvironment" are so often used, this
+    special testenvironment got a new name: <i>bed</i>. Like you initialize the
+    test environment by calling setUp() and cleaning by calling tearDown() (<i>or like
+    to make your bed before go sleeping</i>) you have to do that work with your
+    <i>bed</i> by calling <tt>makeBed()</tt> respecitive <tt>cleanupBed()</tt>.</p>
+
+    <p>A usual test scenario is<ol>
+       <li>make the bed</li>
+       <li>instantiate the selector</li>
+       <li>configure the selector</li>
+       <li>let the selector do some work</li>
+       <li>verify the work</li>
+       <li>clean the bed</li>
+       </ol>
+    </p>
+
+    <p>For common way of instantiation you have to override the <tt>getInstance()</tt>
+    simply by returning a new object of your selector. For easier "selection and verification work"
+    BaseSelectorTest provides the method <tt>performTests()</tt> which
+    iterates over all files (and directories) in the String array <tt>filenames</tt>
+    and checks whether the given selector returns the expected result. If an error
+    occurred (especially the selector does not return the expected result) the test
+    fails and the failing filenames are logged.</p>
+
+    <p>An example test would be:<pre>
+package org.apache.tools.ant.types.selectors;
+
+public class MySelectorTest extends BaseSelectorTest {
+
+    public MySelectorTest(String name) {
+        super(name);
+    }
+
+    public BaseSelector getInstance() {
+        return new MySelector();
+    }
+
+    public void testCase1() {
+        try {
+            // initialize test environment 'bed'
+            makeBed();
+
+            // Configure the selector
+            MySelector s = (MySelector)getSelector();
+            s.addParam("key1", "value1");
+            s.addParam("key2", "value2");
+            s.setXX(true);
+            s.setYY("a value");
+
+            // do the tests
+            performTests(s, "FTTTTTTTTTTT");  // First is not selected - rest is
+
+        } finally {
+            // cleanup the environment
+            cleanupBed();
+        }
+    }
+}
+    </pre>
+    As an example of an error JUnit could log<pre>
+    [junit]     FAILED
+    [junit] Error for files: <font color=blue>.;copy.filterset.filtered;tar/gz/asf-logo.gif.tar.gz</font>
+    [junit] expected:&lt;<font color=blue>FTTTFTTTF...</font>&gt; but was:&lt;TTTTTTTTT...&gt;
+    [junit] junit.framework.ComparisonFailure: Error for files: .;copy.filterset.filtered;tar/gz/asf-logo.gif.tar.gz
+    [junit] expected:&lt;FTTTFTTTF...&gt; but was:&lt;TTTTTTTTT...&gt;
+    [junit]     at junit.framework.Assert.assertEquals(Assert.java:81)
+    [junit]     at org.apache.tools.ant.types.selectors.BaseSelectorTest.performTest(BaseSelectorTest.java:194)
+    </pre></p>
+
+    <p>Described above the test class should provide a <tt>getInstance()</tt>
+    method. But that isn't used here. The used <tt>getSelector()</tt> method is
+    implemented in the base class and gives an instance of an Ant Project to
+    the selector. This is usually done inside normal build file runs, but not
+    inside this special environment, so this method gives the selector the
+    ability to use its own Project object (<tt>getProject()</tt>), for example
+    for logging.</p>
+
+
+    <h3>Logging</h3>
+
+    <p>During development and maybe later you sometimes need the output of information.
+    Therefore Logging is needed. Because the selector extends BaseExtendSelector or directly
+    BaseSelector it is an Ant <tt>DataType</tt> and therefore a <tt>ProjectComponent</tt>. <br>
+    That means that you have access to the project object and its logging capability.
+    <tt>ProjectComponent</tt> itself provides <i>log</i> methods which will do the
+    access to the project instance. Logging is therefore done simply with:
+    <pre>
+        log( "message" );
+    </pre>
+    or
+    <pre>
+        log( "message" , loglevel );
+    </pre>
+    where the <tt>loglevel</tt> is one of the values <ul>
+    <li> org.apache.tools.ant.Project.MSG_ERR </li>
+    <li> org.apache.tools.ant.Project.MSG_WARN </li>
+    <li> org.apache.tools.ant.Project.MSG_INFO  (= default) </li>
+    <li> org.apache.tools.ant.Project.MSG_VERBOSE </li>
+    <li> org.apache.tools.ant.Project.MSG_DEBUG </li>
+    </ul>
+    </p>
+
+    
+  </body>
+
+</html>

@@ -1,0 +1,347 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Property Task</title>
+</head>
+
+<body>
+
+<h2><a name="property">Property</a></h2>
+<h3>Description</h3>
+<p>Sets a <a href="../using.html#properties">property</a>
+(by name and value), or set of properties (from file or
+resource) in the project.  Properties are case sensitive.</p>
+ Properties are immutable: whoever sets a property first freezes it for the
+ rest of the build; they are most definitely not variables.
+<p>There are seven ways to set properties:</p>
+<ul>
+  <li>By supplying both the <i>name</i> and one of <i>value</i> or <i>location</i> attribute.</li>
+  <li>By supplying the <i>name</i> and nested text.</li>
+  <li>By supplying both the <i>name</i> and <i>refid</i> attribute.</li>
+  <li>By setting the <i>file</i> attribute with the filename of the property
+    file to load. This property file has the format as defined by the file used
+    in the class java.util.Properties, with the same rules about how
+    non-ISO8859-1 characters must be escaped.</li>
+  <li>By setting the <i>url</i> attribute with the url from which to load the
+    properties. This url must be directed to a file that has the format as defined
+    by the file used in the class java.util.Properties.</li>
+  <li>By setting the <i>resource</i> attribute with the resource name of the
+    property file to load. A resource is a property file on the current
+    classpath, or on the specified classpath.</li>
+  <li>By setting the <i>environment</i> attribute with a prefix to use.
+    Properties will be defined for every environment variable by
+    prefixing the supplied name and a period to the name of the variable.</li>
+</ul>
+<p>Although combinations of these ways are possible, only one should be used
+at a time. Problems might occur with the order in which properties are set, for
+instance.</p>
+<p>The value part of the properties being set, might contain references to other
+properties. These references are resolved at the time these properties are set.
+This also holds for properties loaded from a property file.</p>
+<p>A list of predefined properties can be found <a
+href="../properties.html#built-in-props">here</a>.</p>
+<p>Since Apache Ant 1.7.1 it is possible to load properties defined in xml
+according to <a href="http://java.sun.com/dtd/properties.dtd">Suns DTD</a>,
+if Java5+ is present. For this the name of the file, resource or url has 
+to end with <tt>.xml</tt>.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">the name of the property to set.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">value</td>
+    <td valign="top">the value of the property.</td>
+    <td valign="middle" align="center" rowspan="3">One of these or
+       nested text, when using the name attribute</td>
+  </tr>
+  <tr>
+    <td valign="top">location</td>
+    <td valign="top">Sets the property to the absolute filename of the
+      given file. If the value of this attribute is an absolute path, it
+      is left unchanged (with / and \ characters converted to the
+      current platforms conventions). Otherwise it is taken as a path
+      relative to the project's basedir and expanded.</td>
+  </tr>
+  <tr>
+    <td valign="top">refid</td>
+    <td valign="top"><a href="../using.html#references">Reference</a> to an object
+      defined elsewhere. Only yields reasonable results for references
+      to <a href="../using.html#path">PATH like structures</a> or properties.</td>
+  </tr>
+  <tr>
+    <td valign="top">resource</td>
+    <td valign="top"> the name of the classpath resource containing
+      properties settings in properties file format.</td>
+    <td valign="middle" align="center" rowspan="4">One of these, when
+      <b>not</b> using the name attribute</td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">the location of the properties file to load.</td>
+  </tr>
+  <tr>
+    <td valign="top">url</td>
+    <td valign="top">a url containing properties-format settings.</td>
+  </tr>
+  <tr>
+    <td valign="top">environment</td>
+    <td valign="top">the prefix to use when retrieving environment variables. Thus
+    if you specify environment=&quot;myenv&quot; you will be able to access OS-specific
+    environment variables via property names &quot;myenv.PATH&quot; or
+    &quot;myenv.TERM&quot;. Note that if you supply a property name with a final
+    &quot;.&quot; it will not be doubled; i.e. environment=&quot;myenv.&quot; will still
+    allow access of environment variables through &quot;myenv.PATH&quot; and
+    &quot;myenv.TERM&quot;. This functionality is currently only implemented
+    on <a href="#notes-env">select platforms</a>. Feel free to send patches to increase the
+    number of platforms on which this functionality is supported ;).<br>
+    Note also that properties are case-sensitive, even if the
+    environment variables on your operating system are not; e.g. Windows 2000's
+    system path variable is set to an Ant property named "env.Path"
+    rather than "env.PATH".</td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">the classpath to use when looking up a resource.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpathref</td>
+    <td valign="top">the classpath to use when looking up a resource,
+      given as <a href="../using.html#references">reference</a> to a <code>&lt;path&gt;</code> defined
+      elsewhere..</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">prefix</td>
+    <td valign="top">Prefix to apply to properties loaded using <code>file</code>,
+    <code>resource</code>, or <code>url</code>.
+      A "." is appended to the prefix if not specified.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">prefixValues</td>
+    <td valign="top">Whether to apply the prefix when expanding the
+      right hand side of properties loaded using <code>file</code>,
+      <code>resource</code>, or <code>url</code>.
+      <em>Since Ant 1.8.2</em></td>
+    <td align="center" valign="top">No (default=<tt>false</tt>)</td>
+  </tr>
+  <tr>
+    <td valign="top">relative</td>
+    <td valign="top">If set to <tt>true</tt> the relative path
+      to <tt>basedir</tt> is set.  <em>Since Ant 1.8.0</em></td>
+    <td align="center" valign="top">No (default=<tt>false</tt>)</td>
+  </tr>
+  <tr>
+    <td valign="top">basedir</td>
+    <td valign="top">The basedir to calculate the relative path
+      from.  <em>Since Ant 1.8.0</em></td>
+    <td align="center" valign="top">No (default=<tt>${basedir}</tt>)</td>
+  </tr>
+</table>
+
+<h4>OpenVMS Users</h4>
+<p>With the <code>environment</code> attribute this task will load all defined
+logicals on an OpenVMS system.  Logicals with multiple equivalence names get
+mapped to a property whose value is a comma separated list of all equivalence
+names.  If a logical is defined in multiple tables, only the most local
+definition is available (the table priority order being PROCESS, JOB, GROUP,
+SYSTEM).
+</p>
+
+<h4>Any OS except OpenVMS</h4>
+<p>Starting with Ant 1.8.2 if Ant detects it is running of a Java 1.5
+  VM (or better) Ant will use <code>System.getenv</code> rather than
+  its own OS dependent native implementation.  For some OSes this
+  causes minor differences when compared to older versions of Ant.
+  For a full list
+  see <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=49366">Bugzilla
+  Issue 49366</a>.  In particular:</p>
+<ul>
+  <li>On Windows Ant will now return additional "environment
+    variables" that correspond to the drive specific current working
+    directories when Ant is run from the command line.  The keys of
+    these variables starts with an equals sign.</li>
+  <li>Some users reported that some Cygwin specific variables (in
+    particular PROMPT) was no longer present.</li>
+  <li>On OS/2 Ant no longer returns the BEGINLIBPATH variable.</li>
+</ul>
+
+<h3>Parameters specified as nested elements</h3>
+<h4>classpath</h4>
+<p><code>Property</code>'s <i>classpath</i> attribute is a <a
+href="../using.html#path">PATH like structure</a> and can also be set via a nested
+<i>classpath</i> element.</p>
+
+<h3>Examples</h3>
+<pre>  &lt;property name=&quot;foo.dist&quot; value=&quot;dist&quot;/&gt;</pre>
+<p>sets the property <code>foo.dist</code> to the value &quot;dist&quot;.</p>
+
+<pre>  &lt;property name=&quot;foo.dist&quot;&gt;dist&lt;/property&gt;</pre>
+<p>sets the property <code>foo.dist</code> to the value &quot;dist&quot;.</p>
+
+<pre>  &lt;property file=&quot;foo.properties&quot;/&gt;</pre>
+<p>reads a set of properties from a file called &quot;foo.properties&quot;.</p>
+
+<pre>  &lt;property url=&quot;http://www.mysite.com/bla/props/foo.properties&quot;/&gt;</pre>
+<p>reads a set of properties from the address &quot;http://www.mysite.com/bla/props/foo.properties&quot;.</p>
+
+<pre>  &lt;property resource=&quot;foo.properties&quot;/&gt;</pre>
+<p>reads a set of properties from a resource called &quot;foo.properties&quot;.</p>
+<p>Note that you can reference a global properties file for all of your Ant
+builds using the following:</p>
+
+<pre>  &lt;property file=&quot;${user.home}/.ant-global.properties&quot;/&gt;</pre>
+<p>since the &quot;user.home&quot; property is defined by the Java virtual machine
+to be your home directory.  Where the &quot;user.home&quot; property resolves to in
+the file system depends on the operating system version and the JVM implementation.
+On Unix based systems, this will map to the user's home directory. On modern Windows
+variants, this will most likely resolve to the user's directory in the &quot;Documents
+and Settings&quot; or &quot;Users&quot; folder. Older windows variants such as Windows 98/ME are less
+predictable, as are other operating system/JVM combinations.</p>
+
+<pre>
+  &lt;property environment=&quot;env&quot;/&gt;
+  &lt;echo message=&quot;Number of Processors = ${env.NUMBER_OF_PROCESSORS}&quot;/&gt;
+  &lt;echo message=&quot;ANT_HOME is set to = ${env.ANT_HOME}&quot;/&gt;
+</pre>
+<p>reads the system environment variables and stores them in properties, prefixed with &quot;env&quot;.
+Note that this only works on <em>select</em> operating systems.
+Two of the values are shown being echoed.
+</p>
+
+<pre>
+  &lt;property environment=&quot;env&quot;/&gt;
+  &lt;property file=&quot;${user.name}.properties&quot;/&gt;
+  &lt;property file=&quot;${env.STAGE}.properties&quot;/&gt;
+  &lt;property file=&quot;build.properties&quot;/&gt;
+</pre>
+<p>This buildfile uses the properties defined in <tt>build.properties</tt>. Regarding to the
+environment variable <tt>STAGE</tt> some or all values could be overwritten, e.g. having
+<tt>STAGE=test</tt> and a <tt>test.properties</tt> you have special values for that (like another
+name for the test server). Finally all these values could be overwritten by personal settings with
+a file per user.</p>
+
+<pre>
+  &lt;property name=&quot;foo&quot; location=&quot;my/file.txt&quot; relative=&quot;true&quot; basedir=&quot;..&quot;/&gt;
+</pre>
+<p>Stores the relative path in <tt>foo</tt>: projectbasedir/my/file.txt</p>
+
+<pre>
+  &lt;property name=&quot;foo&quot; location=&quot;my/file.txt&quot; relative=&quot;true&quot; basedir=&quot;cvs&quot;/&gt;
+</pre>
+<p>Stores the relative path in <tt>foo</tt>: ../my/file.txt</p>
+
+
+<h3>Property Files</h3>
+
+As stated, this task will load in a properties file stored in the file
+system, or as a resource on a classpath. Here are some interesting facts
+about this feature
+<ol>
+<li>If the file is not there, nothing is printed except at -verbose log
+level. This lets you have optional configuration files for every
+project, that team members can customize.
+<li>The rules for this format are laid down
+<a href="http://download.oracle.com/javase/6/docs/api/java/util/Properties.html#load%28java.io.InputStream%29">by Sun</a>.
+This makes it hard for Team Ant to field bug reports about it.
+<li>Trailing spaces are not stripped. It may have been what you wanted.
+<li>Want unusual characters? Escape them \u0456 or \&quot; style.
+<li>Ant Properties are expanded in the file
+<li>If you want to expand properties defined inside the same file and
+  you use the prefix attribute of the task, you must use the same
+  prefix when expanding the properties or
+  set <code>prefixValues</code> to true.</li>
+</ol>
+In-file property expansion is very cool. Learn to use it.
+<p>
+Example:
+<pre>
+build.compiler=jikes
+deploy.server=lucky
+deploy.port=8080
+deploy.url=http://${deploy.server}:${deploy.port}/
+</pre>
+
+
+<a name="notes-env"></a>
+<h3>Notes about environment variables</h3>
+<p>
+  Ant runs on Java 1.2 therefore it cant use Java5 features for accessing environment
+  variables. So it starts a command in a new process which prints the environment variables,
+  analyzes the output and creates the properties. <br>
+  There are commands for the following operating systems implemented in
+  <a href="http://svn.apache.org/viewvc/ant/core/trunk/src/main/org/apache/tools/ant/taskdefs/Execute.java?view=markup">
+  Execute.java</a> (method <tt>getProcEnvCommand()</tt>):
+  <table>
+    <tr>
+      <th>OS</th>
+      <th>command</th>
+    </tr>
+    <tr>
+      <td> os/2 </td>
+      <td> cmd /c set </td>
+    </tr>
+    <tr>
+      <td colspan="2"> windows </td>
+    </tr>
+    <tr>
+      <td> * win9x </td>
+      <td> command.com /c set </td>
+    </tr>
+    <tr>
+      <td> * other </td>
+      <td> cmd /c set </td>
+    </tr>
+    <tr>
+      <td> z/os </td>
+      <td> /bin/env <b>OR</b> /usr/bin/env <b>OR</b> env   <i>(depending on read rights)</i> </td>
+    </tr>
+    <tr>
+      <td> unix </td>
+      <td> /bin/env <b>OR</b> /usr/bin/env <b>OR</b> env   <i>(depending on read rights)</i> </td>
+    </tr>
+    <tr>
+      <td> netware </td>
+      <td> env </td>
+    </tr>
+    <tr>
+      <td> os/400 </td>
+      <td> env </td>
+    </tr>
+    <tr>
+      <td> openvms </td>
+      <td> show logical </td>
+    </tr>
+  </table>
+</p>
+
+</body>
+</html>

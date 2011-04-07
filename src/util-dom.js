@@ -1,0 +1,467 @@
+// PhotoSwipe - http://www.photoswipe.com/
+// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
+// Licensed under the MIT license
+
+(function (Util) {
+	
+	Util.extend(Util, {
+		
+		DOM: {
+		
+			/*
+			 * Function: resetTranslate
+			 * Required for smoother transition on iOS
+			 */
+			resetTranslate: function(el){
+				
+				if (Util.browser.mobileSafari){
+					Util.DOM.setStyle(el, '-webkit-transform', 'translate3d(0px,0px,0px)');
+				}
+				
+			},
+		
+		
+			/*
+			 * Function: createElement
+			 */
+			createElement: function(type, attributes, content){
+				
+				var retval = document.createElement(type);
+					
+				for(var attribute in attributes) {
+					if(attributes.hasOwnProperty(attribute)){
+						retval.setAttribute(attribute, attributes[attribute]);
+					}
+				}
+    
+				retval.innerHTML = content || '';
+				
+				return retval;
+				
+			},
+			
+			
+			/*
+			 * Function: appendChild
+			 */
+			appendChild: function(childEl, parentEl){
+				
+				parentEl.appendChild(childEl);
+				
+			},
+			
+			
+			/*
+			 * Function: appendText
+			 */
+			appendText: function(text, parentEl){
+				
+				var textNode = document.createTextNode(text);
+				Util.DOM.appendChild(textNode, parentEl);
+				
+			},
+			
+			
+			/*
+			 * Function: appendToBody
+			 */
+			appendToBody: function(childEl){
+				
+				this.appendChild(childEl, document.body);
+				
+			},
+			
+			
+			/*
+			 * Function: removeChild
+			 */
+			removeChild: function(childEl, parentEl){
+			
+				parentEl.removeChild(childEl);
+				
+			},
+			
+			
+			
+			/*
+			 * Function: removeChildren
+			 */
+			removeChildren: function(parentEl){
+				
+				if (parentEl.hasChildNodes()){
+					
+					while (parentEl.childNodes.length >= 1){
+						parentEl.removeChild(parentEl.childNodes[parentEl.childNodes.length -1]);
+					}
+					
+				}
+			
+			},
+			
+			
+			
+			/*
+			 * Function: hasAttribute
+			 */
+			hasAttribute: function(el, attributeName){
+			
+				return el.getAttribute(attributeName);
+			
+			},
+			
+			
+			/*
+			 * Function: getAttribute
+			 */
+			getAttribute: function(el, attributeName){
+				
+				if(!this.hasAttribute(el, attributeName)){
+					return '';
+				}
+				
+				return el.getAttribute(attributeName);
+			
+			},
+			
+			
+			/*
+			 * Function: el, attributeName
+			 */
+			setAttribute: function(el, attributeName, value){
+				
+				el.setAttribute(attributeName, value);
+				
+			},
+			
+			
+			/*
+			 * Function: removeAttribute
+			 */
+			removeAttribute: function(el, attributeName){
+				
+				if (this.hasAttribute(el, attributeName)){
+				
+					el.removeAttribute(attributeName);
+					
+				}
+			
+			},
+			
+			
+			/*
+			 * Function: addClass
+			 */
+			addClass: function(el, className){
+				
+				var currentClassValue = Util.DOM.getAttribute(el, 'class');
+				
+				var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
+				
+				if ( ! re.test(currentClassValue) ){
+					if (currentClassValue != ''){
+						currentClassValue = currentClassValue + ' ';
+					}
+					currentClassValue = currentClassValue + className;
+					Util.DOM.setAttribute(el, 'class', currentClassValue);
+				}
+       
+			},
+			
+			
+			/*
+			 * Function: removeClass
+			 */
+			removeClass: function(el, className){
+			
+				var currentClassValue = Util.DOM.getAttribute(el, 'class');
+				
+				var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
+				
+				if (re.test(currentClassValue)){
+					
+					currentClassValue = currentClassValue.replace(re, ' ');
+					
+					Util.DOM.setAttribute(el, 'class', currentClassValue);
+					Util.DOM.removeClass(el, className);
+					
+				}
+				else{
+					currentClassValue = Util.trim(currentClassValue);
+					if (currentClassValue === ''){
+						Util.DOM.removeAttribute(el, 'class');
+					}
+					else{
+						Util.DOM.setAttribute(el, 'class', currentClassValue);
+					}
+				}
+				
+			},
+			
+			
+			/*
+			 * Function: hasClass
+			 */
+			hasClass: function(el, className){
+				
+				var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
+        return re.test(Util.DOM.getAttribute(el, 'class'));
+				
+			},
+			
+			
+			/*
+			 * Function: setStyle
+			 */
+			setStyle: function(el, style, value){
+				
+				if (Util.isObject(style)) {
+					for(var propertyName in style) {
+						if(style.hasOwnProperty(propertyName)){
+							el.style[propertyName] = style[propertyName];
+						}
+					}
+				}
+				else {
+					el.style[style] = value;
+				}
+			},
+			
+			
+			/*
+			 * Function: getStyle
+			 */
+			getStyle: function(el, styleName){
+				
+				return window.getComputedStyle(el,'').getPropertyValue(styleName);
+				
+			},
+			
+			
+			/*
+			 * Function: hide
+			 */
+			hide: function(el){
+				
+				// Store the current display value if we use show
+				Util.setElementData(el, 'oldDisplayValue', Util.DOM.getStyle(el, 'display'));
+				Util.DOM.setStyle(el, 'display', 'none');
+			
+			},
+			
+			
+			/*
+			 * Function: show
+			 */
+			show: function(el){
+				
+				if (Util.DOM.getStyle(el, 'display') === 'none'){
+					var oldDisplayValue = Util.getElementData(el, 'oldDisplayValue', 'block');
+					if (oldDisplayValue === 'none'){
+						oldDisplayValue = 'block';
+					}
+					Util.DOM.setStyle(el, 'display', oldDisplayValue);
+				}
+				
+			},
+			
+			
+			/*
+			 * Function: width 
+			 * Content width, excludes padding
+			 */
+			width: function(el, value){
+				
+				if (!Util.isNothing(value)){
+					if (Util.isNumber(value)){
+						value = value + 'px';
+					}
+					el.style.width = value;
+				}
+				
+				return window.parseInt(window.getComputedStyle(el,'').getPropertyValue('width'));
+				
+			},
+			
+			
+			/*
+			 * Function: outerWidth
+			 */
+			outerWidth: function(el){
+				
+				return el.offsetWidth;
+			
+			},
+			
+			
+			/*
+			 * Function: height 
+			 * Content height, excludes padding
+			 */
+			height: function(el, value){
+				
+				if (!Util.isNothing(value)){
+					if (Util.isNumber(value)){
+						value = value + 'px';
+					}
+					el.style.height = value;
+				}
+				
+				return window.parseInt(window.getComputedStyle(el,'').getPropertyValue('height'));
+				
+			},
+			
+			
+			/*
+			 * Function: outerHeight
+			 */
+			outerHeight: function(el){
+				
+				return el.offsetHeight;
+			
+			},
+			
+			
+			/*
+			 * Function: documentWidth
+			 */
+			documentWidth: function(){
+				
+				return Util.DOM.width(document.documentElement);
+				
+			},
+
+			
+			/*
+			 * Function: documentHeight
+			 */
+			documentHeight: function(){
+				
+				return Math.round(Util.DOM.height(document.documentElement));
+				
+			},
+			
+			
+			/*
+			 * Function: bodyWidth
+			 */
+			bodyWidth: function(){
+				
+				return Util.DOM.width(document.body);
+			
+			},
+			
+			
+			/*
+			 * Function: bodyHeight
+			 */
+			bodyHeight: function(){
+				
+				return Util.DOM.height(document.body);
+			
+			},
+			
+			
+			/*
+			 * Function: windowWidth
+			 */
+			windowWidth: function(){
+			
+				return window.innerWidth;
+			
+			},
+			
+			
+			/*
+			 * Function: windowHeight
+			 */
+			windowHeight: function(){
+			
+				return window.innerHeight;
+			
+			},
+			
+			
+			/*
+			 * Function: windowScrollLeft
+			 */
+			windowScrollLeft: function(){
+			
+				return window.pageXOffset;
+			
+			},
+			
+			
+			/*
+			 * Function: windowScrollTop
+			 */
+			windowScrollTop: function(){
+			
+				return window.pageYOffset;
+			
+			},
+			
+			
+			/*
+			 * Function: addEventListener
+			 */
+			addEventListener: function(el, type, listener){
+				
+				el.addEventListener(type, listener, false);
+			
+			},
+			
+			
+			/*
+			 * Function: removeEventListener
+			 */
+			removeEventListener: function(el, type, listener){
+				
+				el.removeEventListener(type, listener, false);
+			
+			},
+			
+			
+			/*
+			 * Function: getMousePosition
+			 */
+			getMousePosition: function(event){
+				
+				var retval = {
+					x: 0,
+					y: 0
+				}
+				
+				if (event.pageX) {
+					retval.x = event.pageX;
+				}
+				else if (event.clientX) {
+					retval.x = event.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft);
+				}
+			
+				if (event.pageY) {
+					retval.y = event.pageY;
+				}
+				else if (event.clientY) {
+					retval.y = event.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+				}
+				
+				return retval;
+			},
+			
+			
+			/*
+			 * Function: getTouchEvent
+			 */
+			getTouchEvent: function(event){
+				
+				return event;
+			
+			}
+			
+		}
+	
+		
+	});
+	
+	
+})(Code.PhotoSwipe.Util);

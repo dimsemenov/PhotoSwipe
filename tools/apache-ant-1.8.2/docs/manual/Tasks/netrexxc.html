@@ -1,0 +1,338 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>NetRexxC Task</title>
+</head>
+
+<body>
+
+<h2><a name="netrexxc">NetRexxC</a></h2>
+<h3>Description</h3>
+<p>Compiles a <a href="http://www2.hursley.ibm.com/netrexx" target="_top">NetRexx</a>
+source tree within the running (Apache Ant) VM.</p>
+<p>The source and destination directory will be recursively scanned for
+NetRexx source files to compile.  Only NetRexx files that have no corresponding
+class file or where the class file is older than the java file will be compiled.</p>
+<p>Files in the source tree are copied to the destination directory,
+allowing support files to be located properly in the classpath. The source
+files are copied because the NetRexx compiler cannot produce class files in a
+specific directory via parameters</p>
+<p>The directory structure of the source tree should follow the package
+hierarchy.</p>
+<p>It is possible to refine the set of files that are being compiled/copied.
+This can be done with the <i>includes</i>, <i>includesfile</i>, <i>excludes</i>, <i>excludesfile</i> and
+<i>defaultexcludes</i> attributes. With the <i>includes</i> or <i>includesfile</i> attribute you
+specify the files you want to have included by using patterns. The
+<i>exclude</i> or <i>excludesfile</i> attribute is used to specify the files you want to have
+excluded.  This is also done with patterns.  And finally with the
+<i>defaultexcludes</i> attribute, you can specify whether you
+want to use default exclusions or not. See the section on <a
+href="../dirtasks.html#directorybasedtasks">directory based tasks</a>, on how the
+inclusion/exclusion of files works, and how to write patterns.</p>
+<p>This task forms an implicit <a href="../Types/fileset.html">FileSet</a> and
+supports most attributes of <code>&lt;fileset&gt;</code>
+(<code>dir</code> becomes <code>srcdir</code>) as well as the nested
+<code>&lt;include&gt;</code>, <code>&lt;exclude&gt;</code> and
+<code>&lt;patternset&gt;</code> elements.</p>
+<p>All properties except classpath, srcdir and destDir are also available as properties in the form
+<code>ant.netrexxc.<i>attributename</i></code>, eg.<br>
+<code>&lt;property name="ant.netrexxc.verbose" value="noverbose"/&gt;</code><br>
+or from the command line as<br>
+<code>ant -Dant.netrexxc.verbose=noverbose ...</code>
+</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">binary</td>
+    <td valign="top">Whether literals are treated as the java binary
+      type rather than the NetRexx types</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">The classpath to use during compilation</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">comments</td>
+    <td valign="top">Whether comments are passed through to the
+      generated java source</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">compact</td>
+    <td valign="top">Whether error messages come out in compact or
+      verbose format. Default is the compact format.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">compile</td>
+    <td valign="top">Whether the NetRexx compiler should compile the
+      generated java code</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">console</td>
+    <td valign="top">Whether or not messages should be displayed on the
+      'console'. Note that this task will rely on the default value for filtering compile messages.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">crossref</td>
+    <td valign="top">Whether variable cross references are generated</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">decimal</td>
+    <td valign="top">Whether decimal arithmetic should be used for the
+      NetRexx code. Setting this to off will report decimal arithmetic
+      as an error, for performance critical applications.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">defaultexcludes</td>
+    <td valign="top">indicates whether default excludes should be used or not
+      (&quot;yes&quot;/&quot;no&quot;). Default excludes are used when
+      omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">destDir</td>
+    <td valign="top">the destination directory into which the NetRexx
+      source files should be copied and then compiled</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">diag</td>
+    <td valign="top">Whether diagnostic information about the compile is
+      generated</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      excluded. No files (except default excludes) are excluded when
+      omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an exclude pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">explicit</td>
+    <td valign="top">Whether variables must be declared explicitly
+      before use</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">format</td>
+    <td valign="top">Whether the generated java code is formatted nicely
+      or left to match NetRexx line numbers for call stack debugging</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      included. All files are included when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an include pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">java</td>
+    <td valign="top">Whether the generated java code is produced</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">keep</td>
+    <td valign="top">Sets whether the generated java source file should be kept
+      after compilation. The generated files will have an extension of
+      .java.keep, <b>not</b> .java. Use removeKeepExtension to change that.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">logo</td>
+    <td valign="top">Whether the compiler text logo is displayed when
+      compiling</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">removeKeepExtension</td>
+    <td valign="top">Tells wether the trailing .keep in nocompile-mode should
+      be removed so that the resulting java source really ends on .java. This
+      facilitates the use of the javadoc tool lateron.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">replace</td>
+    <td valign="top">Whether the generated .java file should be replaced
+      when compiling</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">savelog</td>
+    <td valign="top">Whether the compiler messages will be written to
+      NetRexxC.log as well as to the console</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">sourcedir</td>
+    <td valign="top">Tells the NetRexx compiler to store the class files in the
+      same directory as the source files. The alternative is the working
+      directory</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">srcDir</td>
+    <td valign="top">Set the source dir to find the source NetRexx
+      files</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">strictargs</td>
+    <td valign="top">Tells the NetRexx compiler that method calls always
+      need parentheses, even if no arguments are needed, e.g.
+      <code>aStringVar.getBytes</code> vs.
+      <code>aStringVar.getBytes()</code></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">strictassign</td>
+    <td valign="top">Tells the NetRexx compile that assignments must
+      match exactly on type</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">strictcase</td>
+    <td valign="top">Specifies whether the NetRexx compiler should be
+      case sensitive or not</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">strictimport</td>
+    <td valign="top">Whether classes need to be imported explicitly using an
+      <code>import</code> statement.  By default the NetRexx compiler will
+      import certain packages automatically</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">strictprops</td>
+    <td valign="top">Whether local properties need to be qualified
+      explicitly using <code>this</code></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">strictsignal</td>
+    <td valign="top">Whether the compiler should force catching of
+      exceptions by explicitly named types</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">symbols</td>
+    <td valign="top">Whether debug symbols should be generated into the
+      class file</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">time</td>
+    <td valign="top">Asks the NetRexx compiler to print compilation
+      times to the console</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">trace</td>
+    <td valign="top">Turns on or off tracing and directs the resultant
+      trace output</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">utf8</td>
+    <td valign="top">Tells the NetRexx compiler that the source is in UTF8</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">verbose</td>
+    <td valign="top">Whether lots of warnings and error messages should
+      be generated</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">suppressMethodArgumentNotUsed</td>
+    <td valign="top">Tells whether we should filter out the
+      &amp;Method argument not used&amp; messages in strictargs mode.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">suppressPrivatePropertyNotUsed</td>
+    <td valign="top">Tells whether we should filter out the
+      &amp;Private Property defined, but not used&amp; messages in strictargs mode.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">suppressVariableNotUsed</td>
+    <td valign="top">Tells whether we should filter out the
+      &amp;Variable set but not used&amp; messages in strictargs mode.
+      Please be careful with this one, as you can hide errors behind it!</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">suppressExceptionNotSignalled</td>
+    <td valign="top">Tells whether we should filter out the
+      &amp;Exception is declared, but not signaled within the method&amp;
+      messages in strictsignal mode.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">suppressDeprecation</td>
+    <td valign="top">Tells whether we should filter out any deprecation-messages
+      of the compiler out.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<blockquote>
+  <p><code>&lt;netrexxc srcDir=&quot;/source/project&quot;
+           includes=&quot;vnr/util/*&quot;
+           destDir=&quot;/source/project/build&quot;
+           classpath=&quot;/source/project2/proj.jar&quot;
+           comments=&quot;true&quot;
+           crossref=&quot;false&quot; replace=&quot;true&quot;
+           keep=&quot;true&quot;/&gt;</code>
+  </p>
+</blockquote>
+
+
+</body>
+</html>
+

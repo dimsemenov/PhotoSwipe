@@ -1,0 +1,171 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>TarFileSet Type</title>
+</head>
+<body>
+<h2><a name="fileset">TarFileSet</a></h2>
+
+<p><em>TarFileSet</em> has been added as a stand-alone type in Apache Ant
+1.7.</p>
+
+<p>A <code>&lt;tarfileset&gt;</code> is a special form of a <code>&lt;<a
+ href="fileset.html">fileset</a>&gt;</code> which can behave in 2
+different ways : <br>
+</p>
+<ul>
+  <li>When the <span style="font-style: italic;">src</span> attribute
+  is used - or a nested resource collection has been specified, the
+  tarfileset is populated with tar entries found in the file <span
+  style="font-style: italic;">src</span>.<br>
+  </li>
+  <li>When the <span style="font-style: italic;">dir</span> attribute
+is used, the tarfileset is populated with filesystem files found under <span
+ style="font-style: italic;">dir</span>.<br>
+  </li>
+</ul>
+<p><code>&lt;tarfileset&gt;</code> supports all attributes of <code>&lt;<a
+ href="fileset.html">fileset</a>&gt;</code>
+in addition to those listed below.<br>
+</p>
+<p>A tarfileset can be defined with the <span style="font-style:
+italic;">id </span>attribute and referred to with the <span
+style="font-style: italic;">refid</span> attribute.  This is also true
+for tarfileset which has been added in Ant 1.7.<br>
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td valign="top" align="center"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">prefix</td>
+      <td valign="top">all files in the fileset are prefixed with that 
+path in the archive.</td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">fullpath</td>
+      <td valign="top">the file described by the fileset is placed at  
+that exact location in the archive.</td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">src</td>
+      <td valign="top">may be used in place of the <i>dir</i> attribute
+ to specify a tar file whose contents will be extracted and     included
+in the archive.</td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">filemode</td>
+      <td valign="top">A 3 digit octal string, specify the user, group 
+and other modes in the standard Unix fashion.  Only applies to    
+plain files.  Default is 644.</td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">dirmode</td>
+      <td valign="top">A 3 digit octal string, specify the user, group 
+and other modes in the standard Unix fashion.  Only applies to    
+directories.  Default is 755.</td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">username</td>
+      <td valign="top">The username for the tar entry. This is not the same as the UID.
+       </td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">group</td>
+      <td valign="top">The groupname for the tar entry. This is not the same as the GID.
+      </td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">uid</td>
+      <td valign="top">The user identifier (UID) for the tar entry. This is an integer value
+        and is not the same as the username.
+      </td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">gid</td>
+      <td valign="top">The group identifier (GID) for the tar entry.
+      </td>
+      <td align="center" valign="top">No</td>
+    </tr>
+    <tr>
+      <td valign="top">erroronmissingarchive</td>
+      <td valign="top">
+        Specify what happens if the archive does not exist.
+        If true, a build error will happen; if false, the fileset
+        will be ignored/empty.
+        Defaults to true.
+        <em>Since Ant 1.8.0</em>
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+  </tbody>
+</table>
+<p>The <i>fullpath</i> attribute can only be set for filesets that
+represent a single file. The <i>prefix</i> and <i>fullpath</i>
+attributes cannot both be set on the same fileset.</p>
+<p>When using the <i>src</i> attribute, include and exclude patterns
+may be used to specify a subset of the archive for inclusion in the
+archive as with the <i>dir</i> attribute.</p>
+
+<p>Please note that currently only the <a
+href="../Tasks/tar.html">tar</a> task uses the permission and
+ownership attributes.</p>
+
+<h3>Parameters specified as nested elements</h3>
+
+<h4>any <a href="resources.html">resource</a> or single element
+resource collection</h4>
+
+<p>The specified resource will be used as src.</p>
+
+<h4>Examples</h4>
+<blockquote>
+<pre>
+  &lt;copy todir="some-dir"&gt;
+    &lt;tarfileset includes="lib/**"&gt;
+      &lt;bzip2resource&gt;
+        &lt;url url="http://example.org/dist/some-archive.tar.bz2"/&gt;
+      &lt;/bzip2resource&gt;
+    &lt;/tarfileset&gt;
+  &lt;/copy&gt;
+      </pre></blockquote>
+
+<p>downloads the archive some-archive.tar.bz2, uncompresses and
+extracts it on the fly, copies the contents of the lib directory into
+some-dir and discards the rest of the archive.  File timestamps will
+be compared between the archive's entries and files inside the target
+directory, no files get overwritten unless they are out-of-date.</p>
+
+
+</body>
+</html>

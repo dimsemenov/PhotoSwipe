@@ -1,0 +1,177 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>JLink Task</title>
+</head>
+<body>
+
+<h2><a name="jlink">Jlink</a></h2>
+<h3><i>Deprecated</i></h3>
+<p><i>This task has been deprecated. Use a <a href="../Types/zipfileset.html">zipfileset</a>
+ or <a href="../Tasks/zip.html#zipgroupfileset">zipgroupfileset</a> with the
+ <a href="../Tasks/jar.html">Jar task</a> or <a href="../Tasks/zip.html">Zip task</a>
+ instead.</i></p>
+
+<h3><b>Description:</b></h3>
+<p>Links entries from sub-builds and libraries.</p>
+
+<p>The jlink task can be used to build jar and zip files, similar to 
+the <i>jar</i> task.
+However, jlink provides options for controlling the way entries from 
+input files
+are added to the output file. Specifically, capabilities for merging 
+entries from
+multiple zip or jar files is available.</p>
+
+<p>If a mergefile is specified directly (eg. at the top level of a 
+<i>mergefiles</i>
+pathelement) <i>and</i> the mergefile ends in &quot;.zip&quot; or 
+&quot;.jar&quot;,
+entries in the mergefile will be merged into the outfile. A file with 
+any other extension
+will be added to the output file, even if it is specified in the 
+mergefiles element.
+Directories specified in either the mergefiles or addfiles element 
+are added to the
+output file as you would expect: all files in subdirectories are 
+recursively added to
+the output file with appropriate prefixes in the output file 
+(without merging).
+</p>
+
+<p>
+In the case where duplicate entries and/or files are found among the 
+files to be merged or
+added, jlink merges or adds the first entry and ignores all subsequent entries.
+</p>
+
+<p>
+jlink ignores META-INF directories in mergefiles. Users should supply their
+own manifest information for the output file.
+</p>
+
+<p>It is possible to refine the set of files that are being jlinked. 
+This can be
+done with the <i>includes</i>, <i>includesfile</i>, <i>excludes</i>, 
+<i>excludesfile</i>,
+and <i>defaultexcludes</i> attributes on the <i>addfiles</i> and 
+<i>mergefiles</i>
+nested elements. With the <i>includes</i> or <i>includesfile</i>
+attribute you specify the files you want to have included by using patterns.
+The <i>exclude</i> or <i>excludesfile</i> attribute is used to specify
+the files you want to have excluded. This is also done with patterns. And
+finally with the <i>defaultexcludes</i> attribute, you can specify whether you
+want to use default exclusions or not. See the section on <a
+href="../dirtasks.html#directorybasedtasks">directory based tasks</a>, on how the
+inclusion/exclusion of files works, and how to write patterns. The patterns are
+relative to the <i>base</i> directory.</p>
+
+
+
+<h3>Parameters:</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+   <tr>
+     <td valign="top"><b>Attribute</b></td>
+     <td valign="top"><b>Description</b></td>
+     <td align="center" valign="top"><b>Required</b></td>
+   </tr>
+   <tr>
+     <td valign="top">outfile</td>
+     <td valign="top">the path of the output file.</td>
+     <td valign="top" align="center">Yes</td>
+   </tr>
+   <tr>
+     <td valign="top">compress</td>
+     <td valign="top">whether or not the output should be compressed. 
+<i>true</i>,
+                      <i>yes</i>, or <i>on</i> result in compressed output.
+                      If omitted, output will be uncompressed (inflated).</td>
+     <td valign="top" align="center">No</td>
+   </tr>
+   <tr>
+     <td valign="top">mergefiles</td>
+     <td valign="top">files to be merged into the output, if possible.</td>
+     <td valign="middle" align="center" rowspan="2">At least one of 
+mergefiles or addfiles</td>
+   </tr>
+   <tr>
+     <td valign="top">addfiles</td>
+     <td valign="top">files to be added to the output.</td>
+   </tr>
+</table>
+
+<h3>Examples</h3>
+
+<p>The following will merge the entries in mergefoo.jar and mergebar.jar 
+into out.jar.
+mac.jar and pc.jar will be added as single entries to out.jar.</p>
+<pre>
+&lt;jlink compress=&quot;false&quot; outfile=&quot;out.jar&quot;&gt;
+   &lt;mergefiles&gt;
+     &lt;pathelement path=&quot;${build.dir}/mergefoo.jar&quot;/&gt;
+     &lt;pathelement path=&quot;${build.dir}/mergebar.jar&quot;/&gt;
+   &lt;/mergefiles&gt;
+   &lt;addfiles&gt;
+     &lt;pathelement path=&quot;${build.dir}/mac.jar&quot;/&gt;
+     &lt;pathelement path=&quot;${build.dir}/pc.zip&quot;/&gt;
+   &lt;/addfiles&gt;
+&lt;/jlink&gt;
+</pre>
+
+<p><b>Non-deprecated alternative to the above:</b></p>
+<pre>
+&lt;jar compress=&quot;false&quot; destfile=&quot;out.jar&quot;&gt;
+  &lt;zipgroupfileset dir=&quot;${build.dir}&quot;&gt;
+    &lt;include name=&quot;mergefoo.jar&quot;/&gt;
+    &lt;include name=&quot;mergebar.jar&quot;/&gt;
+  &lt;/zipgroupfileset&gt;
+  &lt;fileset dir=&quot;${build.dir}&quot;&gt;
+    &lt;include name=&quot;mac.jar&quot;/&gt;
+    &lt;include name=&quot;pc.jar&quot;/&gt;
+  &lt;/fileset&gt;
+&lt;/jar&gt;
+</pre>
+
+<p>Suppose the file foo.jar contains two entries: bar.class and 
+barnone/myClass.zip.
+Suppose the path for file foo.jar is build/tempbuild/foo.jar. The 
+following example
+will provide the entry tempbuild/foo.jar in the out.jar.</p>
+<pre>
+&lt;jlink compress=&quot;false&quot; outfile=&quot;out.jar&quot;&gt;
+   &lt;mergefiles&gt;
+     &lt;pathelement path=&quot;build/tempbuild&quot;/&gt;
+   &lt;/mergefiles&gt;
+&lt;/jlink&gt;
+</pre>
+
+<p>However, the next example would result in two top-level entries in out.jar,
+namely bar.class and barnone/myClass.zip</p>
+<pre>
+&lt;jlink compress=&quot;false&quot; outfile=&quot;out.jar&quot;&gt;
+   &lt;mergefiles&gt;
+     &lt;pathelement path=&quot;build/tempbuild/foo.jar&quot;/&gt;
+   &lt;/mergefiles&gt;
+&lt;/jlink&gt;
+</pre>
+
+
+</body>
+
+</html>

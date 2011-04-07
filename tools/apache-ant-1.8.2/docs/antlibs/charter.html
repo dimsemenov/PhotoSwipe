@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+        <html lang="en">
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <head>
+      <META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <title>Apache Ant - Apache Ant Libraries - Charter</title>
+        <link type="text/css" href="../page.css" rel="stylesheet">
+        </head>
+
+    <body>
+      <p class="navpath">
+        <script src="../breadcrumbs.js" language="JavaScript" type="text/javascript"></script>
+      </p>
+
+      <div class="logobar">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="left"><img border="0" alt="Apache Ant site" src="../images/group-logo.gif"></td>
+            <td align="center" width="100%"><img alt="Apache Ant logo" border="0" src="../images/project-logo.gif"></td>
+            <td align="right">
+              <form target="_blank" onsubmit="q.value = query.value + ' site:ant.apache.org'" action="http://www.google.com/search" method="get">
+                <table summary="search" border="0" cellspacing="0" cellpadding="0" bgcolor="#4C6C8F">
+                  <tr>
+                    <td colspan="3"><img height="10" width="1" alt="" src="../images/spacer.gif"></td>
+                  </tr>
+                  <tr>
+                    <td><img height="1" width="1" alt="" src="../images/spacer.gif"></td>
+                    <td nowrap="nowrap" class="searchcaption">
+                      <input name="q" type="hidden">
+                      <input size="15" id="query" type="text">
+                      <img height="1" width="5" alt="" src="../images/spacer.gif">
+                      <input name="Search" value="Search" type="submit">
+                      <br>
+                      the Apache Ant site
+                    </td>
+                    <td><img height="1" width="1" alt="" src="../images/spacer.gif"></td>
+                  </tr>
+                  <tr>
+                    <td><img alt="" border="0" height="10" width="9" src="../images/search-left.gif"></td>
+                    <td><img height="1" width="1" alt="" src="../images/spacer.gif"></td>
+                    <td><img alt="" border="0" height="10" width="9" src="../images/search-right.gif"></td>
+                  </tr>
+                </table>
+              </form>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+                  <div class="tab">
+              <table summary="tab bar" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                                  <td width="5"><img alt="" height="8" width="8" src="../images/spacer.gif"></td><td valign="bottom">
+                      <table summary="non selected tab" style="height: 1.4em" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td valign="top" width="5" bgcolor="#B2C4E0"><img height="5" width="5" alt="" src="../images/tab-left.gif"></td><td valign="middle" bgcolor="#B2C4E0"><a href="../index.html"><font size="2" face="Arial, Helvetica, Sans-serif">Home</font></a></td><td valign="top" width="5" bgcolor="#B2C4E0"><img height="5" width="5" alt="" src="../images/tab-right.gif"></td>
+                        </tr>
+                      </table>
+                    </td>
+                                    <td width="8"><img alt="" height="5" width="8" src="../images/spacer.gif"></td><td valign="bottom">
+                      <table summary="selected tab" style="height: 1.5em" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                        <td valign="top" width="5" bgcolor="#4C6C8F"><img height="5" width="5" alt="" src="../images/tabSel-left.gif"></td><td valign="middle" bgcolor="#4C6C8F"><font color="#ffffff" size="2" face="Arial, Helvetica, Sans-serif"><b>Projects</b></font></td><td valign="top" width="5" bgcolor="#4C6C8F"><img height="5" width="5" alt="" src="../images/tabSel-right.gif"></td>
+                        </tr>
+                      </table>
+                    </td>
+                            </tr>
+              </table>
+            </div>
+
+      <div class="bluebar"></div>
+                                                              
+  <div class="menucontainer">
+    <div class="menu">
+      <ul>
+              <li class="menuheader">Projects
+          <ul>
+                            <li>
+                                    <a href="../projects/index.html">Welcome</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Apache Ant Libraries
+          <ul>
+                            <li>
+                                    <a href="../antlibs/index.html">Introduction</a>
+                                </li>
+                            <li>
+                                    <a href="../antlibs/charter.html">Charter</a>
+                                </li>
+                            <li>
+                                    <a href="../antlibs/proper.html">Ant Libraries</a>
+                                </li>
+                            <li>
+                                    <a href="../antlibs/sandbox.html">Sandbox Ant Libraries</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/antlibs/bindownload.cgi">Binary Distributions</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/antlibs/srcdownload.cgi">Source Distributions</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Apache Ivy
+          <ul>
+                            <li>
+                                    <a href="../projects/ivy.html">Introduction</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/">Homepage</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/download.cgi">Distributions</a>
+                                </li>
+                            <li>
+                                    <a href="http://cwiki.apache.org/IVY/">Wiki</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Apache IvyDE
+          <ul>
+                            <li>
+                                    <a href="../projects/ivyde.html">Introduction</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/ivyde">Homepage</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/ivyde/screenshots.html">Screenshots</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/ivyde/download.cgi">Distributions</a>
+                                </li>
+                      </ul>
+        </li>
+            </ul>
+    </div>
+    <center>
+    <a href="http://www.apache.org/events/current-event.html"><img border="0" title="ApacheCon" alt="ApacheCon - logo" src="http://www.apache.org/events/current-event-125x125.png" style="width: 125px;height: 125px;"></a>
+    </center>
+    <img style="float: left" height="10" width="10" border="0" alt="" src="../images/menu-left.gif">
+    <img style="float: right" height="10" width="10" border="0" alt="" src="../images/menu-right.gif">
+  </div>
+      <div class="lightbluebar">&nbsp;</div>
+  <div class="main">
+  <div class="content">
+    <h1 class="title">Apache Ant Libraries - Charter</h1>
+            <h3 class="section">
+      <a name="Charter"></a>
+      Charter
+    </h3>
+                        <p>Below is the text of the proposal that has been accepted by
+      the Apache Ant PMC.  Further amendments are expected.</p>
+                                <pre class="code">
+Proposal to Create a Ant-Libraries Sub-Project in Apache Ant
+============================================================
+
+(0) rationale
+
+Ant itself has accumulated lots and lots of tasks over time. So many,
+that Ant developers have become reluctant to adding new
+task. Furthermore any new task in Ant would be tied to Ant's release
+schedule which is too slow for a thriving, fresh piece of code.
+
+The proposal allows Ant tasks and types to be developed under the Ant
+umbrella by Ant developers but have much shorter release cycles than
+Ant itself. In addition it would new committers who would have commit
+access to a single Ant library instead of the whole of Ant.
+
+(1) scope of the subproject
+
+The subproject shall create and maintain libraries of Ant tasks and
+types. Each library will be managed in the same manner as the Ant
+project itself, the PMC is ultimately responsible for it.
+
+Common Java libraries that only happen to provide Ant tasks as well
+are out of scope of the subproject. Providing the tasks or types has
+to be the primary goal of the library.
+
+To further this goal, the subproject shall also host a workplace for
+Ant committers.
+
+(1.5) interaction with other subprojects
+
+(1.5.1) the sandbox
+
+The subproject will host a SVN repository available to all Ant
+committers as a workplace for new Ant libraries.
+
+Before a library can have a public release it has to get promoted to
+the &quot;proper&quot; Ant libraries subproject. This also means it has to match
+the requirements of an Ant library as defined in section (4) under
+Guidelines below.
+
+The status of any library developed in the sandbox shall be reviewed
+after six months and the library gets either promoted or removed - or
+it has to be re-evaluated after another six months.
+
+(2) identify the initial source from which the subproject is to be populated
+
+Some Ant committers have developed tasks or libraries inside of the
+Ant CVS module under the proposal/sandbox directory. Committers are
+free to move them over to the new sandbox subproject or remove them
+completely.
+
+Libraries expected to move to the sandbox subproject initially are
+
+* the .NET tasks under proposal/sandbox/dotnet
+
+* the Subversion support tasks under proposal/sandbox/svn
+
+(3) identify the initial Apache resources to be created
+
+(3.1) mailing list(s)
+
+None. At least at the beginning we don't expect too much traffic and
+the existing mailing lists of the Ant projects will be used.
+
+(3.2) SVN repositories
+
+Create &lt;http://svn.apache.org/repos/asf/ant/&gt;
+
+Expected are sub-directories
+
+antlibs/
+   |
+   -----&gt; proper/
+   |        |
+   |        -----&gt; library1
+   |        |        |
+   |        |        -----------&gt; trunk
+   |        |        -----------&gt; tags
+   |        |        -----------&gt; branches
+   |        -----&gt; library2
+   |                 |
+   |                 -----------&gt; trunk
+   |                 -----------&gt; tags
+   |                 -----------&gt; branches
+   |
+   -----&gt; sandbox/
+            |
+            -----&gt; library1
+            |        |
+            |        -----------&gt; trunk
+            |        -----------&gt; tags
+            |        -----------&gt; branches
+            -----&gt; library2
+                     |
+                     -----------&gt; trunk
+                     -----------&gt; tags
+                     -----------&gt; branches
+
+And potentially collections of all-trunks using svn:external as shown
+by the current Jakarta Commons structure.
+
+(3.3) Bugzilla
+
+New components under product &quot;Ant&quot; for each new library.
+
+(4) identify the initial set of committers
+
+All current Ant PMC members plus the active Ant committers who are not
+PMC members yet.
+
+Guidelines
+----------
+
+Note:
+
+* is, has, will, shall, must - required.
+
+* may, should, are encouraged - optional but recommended.
+
+(1) The primary unit of reuse and release is the Ant library.
+
+(2) The library is not a framework or a general library but a
+    collection of Ant tasks and types.
+
+(3) Each library must have a clearly defined purpose, scope, and API.
+
+(4) Each library is treated as a product in its own right.
+
+(4.1) Each library has its own status file, release schedule, version
+      number, QA tests, documentation, bug category, and individual
+      JAR.
+
+(4.2) Each library must clearly specify any external dependencies,
+      including any other libraries, and the earliest JDK version
+      required.
+
+(4.3) Each library must maintain a list of its active committers in
+      its status file.
+
+(4.4) The libraries should use a standard scheme for versioning, QA
+      tests, and directory layouts, and a common format for
+      documentation and Ant build files.
+
+(4.4) Each library will be hosted on its own page on the subproject
+      Web site, and will also be indexed in a master directory.
+
+(4.5) Volunteers become committers to this subproject in the same way
+      they are entered to any Apache subproject.
+
+      Once the required infrastructure is in place, volunteers may
+      become committers for a single Ant library only.
+
+(4.6) New libraries may be proposed to the Ant dev mailing list. To be
+      accepted, a library proposal must receive majority approval of
+      the Ant PMC. Proposals are to identify the rationale for the
+      library, its scope, the initial source from which the library is
+      to be created, and the initial set of committers.
+
+(4.7) As stated in the Ant guidelines, an action requiring majority
+      approval must receive at least 3 binding +1 votes and more +1
+      votes than -1 votes.
+
+(4.8) Each Ant library needs at least three committers, at least one
+      of them has to be an Ant PMC member.
+      </pre>
+                
+    </div>
+  </div>
+
+        <p class="copyright">
+        <script type="text/javascript" language="JavaScript"><!--
+                document.write(" - "+"Last Published: " + document.lastModified);
+              //  -->
+        </script>
+      </p>
+    </body>
+  </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

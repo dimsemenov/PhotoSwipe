@@ -1,0 +1,894 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Javadoc Task</title>
+</head>
+
+<body>
+
+<h2><a name="javadoc">Javadoc/<i>Javadoc2</i></a></h2>
+<h3>Description</h3>
+<p>Generates code documentation using the javadoc tool.</p>
+<p>The source directory will be recursively scanned for Java source files to process
+but only those matching the inclusion rules, and not matching the exclusions rules
+will be passed to the javadoc tool. This
+allows wildcards to be used to choose between package names, reducing verbosity
+and management costs over time. This task, however, has no notion of
+&quot;changed&quot; files, unlike the <a href="javac.html">javac</a> task. This means
+all packages will be processed each time this task is run. In general, however,
+this task is used much less frequently.</p>
+<p>NOTE: since javadoc calls System.exit(), javadoc cannot be run inside the
+same VM as Apache Ant without breaking functionality. For this reason, this task
+always forks the VM. This overhead is not significant since javadoc is normally a heavy
+application and will be called infrequently.</p>
+<p>NOTE: the packagelist attribute allows you to specify the list of packages to
+document outside of the Ant file. It's a much better practice to include everything
+inside the <code>build.xml</code> file. This option was added in order to make it easier to
+migrate from regular makefiles, where you would use this option of javadoc.
+The packages listed in packagelist are not checked, so the task performs even
+if some packages are missing or broken. Use this option if you wish to convert from
+an existing makefile. Once things are running you should then switch to the regular
+notation. </p>
+
+<p><i><b>DEPRECATION:</b> the javadoc2 task simply points to the javadoc task and it's
+there for back compatibility reasons. Since this task will be removed in future
+versions, you are strongly encouraged to use <a href="javadoc.html">javadoc</a>
+instead.</i></p>
+
+<p>In the table below, 1.2 means available if your current Java VM is
+a 1.2 VM (but not 1.3 or later), 1.4+ for any VM of at least version 1.4, otherwise
+any VM of at least version 1.2 is acceptable. JDKs &lt;1.4 are no longer supported.
+If you specify the <code>executable</code> attribute it is up to you
+to ensure that this command supports the attributes you wish to use.</p>
+
+<p><b>Note:</b><br>When generating the JavaDocs for classes which contains annotations
+you maybe get a <tt>java.lang.ClassCastException: com.sun.tools.javadoc.ClassDocImpl</tt>.
+This is due <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6442982" target="_blank">bug-6442982</a>. The cause is that JavaDoc cannot find the implementations of used annotations.
+The workaround is providing the jars with these implementations (like JAXBs <tt>@XmlType</tt>, ...)
+to &lt;javadoc&gt; using <tt>classpath</tt>, <tt>classpathref</tt> attributes or nested
+&lt;classpath&gt; element.</p>
+
+<p><b>Note:</b> many problems with running javadoc stem from command
+  lines that have become too long - even though the error message
+  doesn't give the slightest hint this may be the problem.  If you
+  encounter problems with the task, try to set
+  the <code>useexternalfile</code> attribute to <code>true</code>
+  first.</p>
+
+<p>If you use multiple ways to specify where javadoc should be looking
+  for sources your result will be the union of all specified
+  documentations.  If you, e.g., specify a sourcepath attribute and
+  also a nested packageset both pointing at the same directory your
+  excludepackagenames attribute won't have any effect unless it agrees
+  with the exclude patterns of the packageset (and vice versa).</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Availability</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">sourcepath</td>
+    <td valign="top">Specify where to find source files</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" rowspan="3">At least one of the three or nested
+    <code>&lt;sourcepath&gt;</code>, <code>&lt;fileset&gt;</code> or
+    <code>&lt;packageset&gt;</code></td>
+  </tr>
+  <tr>
+    <td valign="top">sourcepathref</td>
+    <td valign="top">Specify where to find source files by <a
+      href="../using.html#references">reference</a> to a PATH defined elsewhere.</td>
+    <td align="center" valign="top">all</td>
+  </tr>
+  <tr>
+    <td valign="top">sourcefiles</td>
+    <td valign="top">Comma separated list of source files -- see also
+    the nested <code>source</code> element.</td>
+    <td align="center" valign="top">all</td>
+  </tr>
+  <tr>
+    <td valign="top">destdir</td>
+    <td valign="top">Destination directory for output files</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">Yes, unless a doclet has been specified.</td>
+  </tr>
+  <tr>
+    <td valign="top">maxmemory</td>
+    <td valign="top">Max amount of memory to allocate to the javadoc VM</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">packagenames</td>
+    <td valign="top">Comma separated list of package files (with terminating
+      wildcard) -- see also the nested <code>package</code> element.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">packageList</td>
+    <td valign="top">The name of a file containing the packages to process</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">Specify where to find user class files</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Bootclasspath</td>
+    <td valign="top">Override location of class files loaded by the bootstrap
+      class loader</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpathref</td>
+    <td valign="top">Specify where to find user class files by <a
+      href="../using.html#references">reference</a> to a PATH defined elsewhere.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">bootclasspathref</td>
+    <td valign="top">Override location of class files loaded by the
+      bootstrap class loader by <a href="../using.html#references">reference</a> to a
+      PATH defined elsewhere.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Extdirs</td>
+    <td valign="top">Override location of installed extensions</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Overview</td>
+    <td valign="top">Read overview documentation from HTML file</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">access</td>
+    <td valign="top">Access mode: one of <code>public</code>, <code>protected</code>,
+                     <code>package</code>, or <code>private</code></td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No (default <code>protected</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">Public</td>
+    <td valign="top">Show only public classes and members</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Protected</td>
+    <td valign="top">Show protected/public classes and members (default)</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Package</td>
+    <td valign="top">Show package/protected/public classes and members</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Private</td>
+    <td valign="top">Show all classes and members</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Old</td>
+    <td valign="top">Generate output using JDK 1.1 emulating
+      doclet.<br>
+      <b>Note:</b> as of Ant 1.8.0 this attribute doesn't have any
+      effect since the javadoc of Java 1.4 (required by Ant 1.8.0)
+      doesn't support the -1.1 switch anymore.</td>
+    <td align="center" valign="top">1.2</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Verbose</td>
+    <td valign="top">Output messages about what Javadoc is doing</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Locale</td>
+    <td valign="top">Locale to be used, e.g. en_US or en_US_WIN</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Encoding</td>
+    <td valign="top">Source file encoding name</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Version</td>
+    <td valign="top">Include @version paragraphs</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Use</td>
+    <td valign="top">Create class and package usage pages</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Author</td>
+    <td valign="top">Include @author paragraphs</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Splitindex</td>
+    <td valign="top">Split index into one file per letter</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Windowtitle</td>
+    <td valign="top">Browser window title for the documentation (text)</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Doctitle</td>
+    <td valign="top">Include title for the package index(first) page (html-code)</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Header</td>
+    <td valign="top">Include header text for each page (html-code)</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">Footer</td>
+    <td valign="top">Include footer text for each page (html-code)</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">bottom</td>
+    <td valign="top">Include bottom text for each page (html-code)</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">link</td>
+    <td valign="top">Create links to javadoc output at the given URL
+    -- see also the nested <code>link</code> element.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">linkoffline</td>
+    <td valign="top">Link to docs at <code>&lt;url&gt;</code> using package list at
+    <code>&lt;url2&gt;</code> - separate the URLs by using a space character -- see
+    also the nested <code>link</code> element.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">group</td>
+    <td valign="top">Group specified packages together in overview
+    page.  The format is as described <a
+    href="#groupattribute">below</a> -- see also the nested
+    <code>group</code> element.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">nodeprecated</td>
+    <td valign="top">Do not include @deprecated information</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">nodeprecatedlist</td>
+    <td valign="top">Do not generate deprecated list</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">notree</td>
+    <td valign="top">Do not generate class hierarchy</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">noindex</td>
+    <td valign="top">Do not generate index</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">nohelp</td>
+    <td valign="top">Do not generate help link</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">nonavbar</td>
+    <td valign="top">Do not generate navigation bar</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">serialwarn</td>
+    <td valign="top">Generate warning about @serial tag</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">helpfile</td>
+    <td valign="top">Specifies the HTML help file to use</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">stylesheetfile</td>
+    <td valign="top">Specifies the CSS stylesheet to use</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">charset</td>
+    <td valign="top">Charset for cross-platform viewing of generated
+      documentation</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">docencoding</td>
+    <td valign="top">Output file encoding name</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">doclet</td>
+    <td valign="top">Specifies the class file that starts the doclet
+    used in generating the documentation -- see also the nested
+    <code>doclet</code> element.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">docletpath</td>
+    <td valign="top">Specifies the path to the doclet class file that is specified with the -doclet option.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">docletpathref</td>
+    <td valign="top">Specifies the path to the doclet class file that
+      is specified with the -doclet option by <a
+      href="../using.html#references">reference</a> to a PATH defined elsewhere.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">additionalparam</td>
+    <td valign="top">Lets you add additional parameters to the javadoc
+    command line. Useful for doclets. Parameters containing spaces
+    need to be quoted using &amp;quot; -- see also the nested
+    <code>arg</code> element.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">failonerror</td>
+    <td valign="top">Stop the buildprocess if the command exits with a
+      returncode other than 0.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludepackagenames</td>
+    <td valign="top">comma separated list of packages you don't want
+      docs for -- see also the nested <code>excludepackage</code> element.</td>
+    <td align="center" valign="top">all</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">defaultexcludes</td>
+    <td valign="top">indicates whether default excludes should be used
+      (<code>yes</code> | <code>no</code>); default excludes are used when omitted.</td>
+    <td align="center" valign="top">all</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">useexternalfile</td>
+    <td valign="top">indicates whether the sourcefile name specified
+      in srcfiles or as nested source elements should be written to a
+      temporary file to make the command line shorter. Also applies to
+      the package names specified via the packagenames attribute or
+      nested package elements.  <em>Since Ant 1.7.0</em>, also applies
+      to all the other command line options.
+      (<code>yes</code> | <code>no</code>). Default is no.</td>
+    <td align="center" valign="top">all</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">source</td>
+    <td valign="top">Necessary to enable javadoc to handle assertions
+    present in J2SE v 1.4 source code. Set this to &quot;1.4&quot; to
+    documents code that compiles using <code>&quot;javac -source
+    1.4&quot;</code>.<br>
+    A default value for this attribute can be provided using the magic
+    <a
+    href="../javacprops.html#source"><code>ant.build.javac.source</code></a>
+    property.</td>
+    <td align="center" valign="top">1.4+</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">linksource</td>
+    <td valign="top">Generate hyperlinks to source files.
+      <em>since Ant 1.6</em>.
+      (<code>yes</code> | <code>no</code>). Default is no.</td>
+    <td align="center" valign="top">1.4+</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">breakiterator</td>
+    <td valign="top">Use the new breakiterator algorithm.
+      <em>since Ant 1.6</em>.
+      (<code>yes</code> | <code>no</code>). Default is no.</td>
+    <td align="center" valign="top">1.4+</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">noqualifier</td>
+    <td valign="top">Enables the <code>-noqualifier</code> argument -
+      must be <code>all</code> or a colon separated list of packages.
+      <em>since Ant 1.6</em>.</td>
+    <td align="center" valign="top">1.4+</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includenosourcepackages</td>
+    <td valign="top">If set to true, packages that don't contain Java
+      source but a package.html will get documented as well.
+      <em>since Ant 1.6.3</em>.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No (default is <code>false</code>)</td>
+  </tr>
+  <tr>
+    <td valign="top">executable</td>
+    <td valign="top">Specify a particular <code>javadoc</code> executable
+      to use in place of the default binary (found in the same JDK as Ant is running in).
+      <em>since Ant 1.6.3</em>.</td>
+    <td align="center" valign="top">all</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">docfilessubdirs</td>
+    <td valign="top">Enables deep-copying of <code>doc-files</code>
+      subdirectories.  Defaults to false. <em>since Ant 1.8.0</em>.</td>
+    <td align="center" valign="top">1.4</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludedocfilessubdir</td>
+    <td valign="top">Colon-separated list of <code>doc-files</code>'
+      subdirectories to exclude if <code>docfilessubdirs</code> is
+      true. <em>since Ant 1.8.0</em>.</td>
+    <td align="center" valign="top">1.4</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h4><a name="groupattribute">Format of the group attribute</a></h4>
+<p>The arguments are comma-delimited. Each single argument is 2
+space-delimited strings, where the first one is the group's title and
+the second one a colon delimited list of packages.</p>
+<p>If you need to specify more than one group, or a group whose title
+contains a comma or a space character, using <a
+href="#groupelement">nested group elements</a> is highly
+recommended.</p>
+<p>E.g.:</p>
+<pre>    group=&quot;XSLT_Packages org.apache.xalan.xslt*,XPath_Packages org.apache.xalan.xpath*&quot;</pre>
+
+<h3>Parameters specified as nested elements</h3>
+
+<h4>packageset</h4>
+
+<p>A <a href="../Types/dirset.html">DirSet</a>.  All matched
+directories that contain Java source files will be passed to javadoc
+as package names.  Package names are created from the directory names
+by translating the directory separator into dots.  Ant assumes the
+base directory of the packageset points to the root of a package
+hierarchy.</p>
+
+<p>The <code>packagenames</code>, <code>excludepackagenames</code> and
+<code>defaultexcludes</code> attributes of the task have no effect on
+the nested <code>&lt;packageset&gt;</code> elements.</p>
+
+<h4>fileset</h4>
+
+<p>A <a href="../Types/fileset.html">FileSet</a>.  All matched
+files will be passed to javadoc as source files.  Ant will
+automatically add the include pattern <code>**/*.java</code> (and
+<code>**/package.html</code> if includenosourcepackages is true) to
+these filesets.</p>
+
+<p>Nested filesets can be used to document sources that are in the
+default package or if you want to exclude certain files from
+documentation.  If you want to document all source files and don't use
+the default package, packagesets should be used instead as this
+increases javadocs performance.</p>
+
+<p>The <code>packagenames</code>, <code>excludepackagenames</code> and
+<code>defaultexcludes</code> attributes of the task have no effect on
+the nested <code>&lt;fileset&gt;</code> elements.</p>
+
+<h4>sourcefiles</h4>
+
+<p>A container for arbitrary file system based <a
+href="../Types/resources.html#collection">resource
+collections</a>.  All files contained in any of the nested collections
+(this includes nested filesets, filelists or paths) will be passed to
+javadoc as source files.</p>
+
+<h4>package</h4>
+<p>Same as one entry in the list given by <code>packagenames</code>.</p>
+
+<h5>Parameters</h5>
+<table width="90%" border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The package name (may be a wildcard)</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+</table>
+
+<h4>excludepackage</h4>
+<p>Same as one entry in the list given by <code>excludepackagenames</code>.</p>
+
+<h5>Parameters</h5>
+Same as for <code>package</code>.
+
+<h4>source</h4>
+<p>Same as one entry in the list given by <code>sourcefiles</code>.</p>
+
+<h5>Parameters</h5>
+<table width="90%" border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">The source file to document</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+</table>
+
+<h4>doctitle</h4>
+
+<p>Same as the <code>doctitle</code> attribute, but you can nest text
+inside the element this way.</p>
+
+<p>If the nested text contains line breaks, you must use the
+  useexternalfile attribute and set it to true.</p>
+
+<h4>header</h4>
+
+<p>Similar to <code>&lt;doctitle&gt;</code>.</p>
+
+<h4>footer</h4>
+
+<p>Similar to <code>&lt;doctitle&gt;</code>.</p>
+
+<h4>bottom</h4>
+
+<p>Similar to <code>&lt;doctitle&gt;</code>.</p>
+
+<h4>link</h4>
+<p>Create link to javadoc output at the given URL. This performs the
+same role as the link and linkoffline attributes. You can use either
+syntax (or both at once), but with the nested elements you can easily
+specify multiple occurrences of the arguments.</p>
+
+<h5>Parameters</h5>
+<table width="90%" border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">href</td>
+    <td valign="top">The URL for the external documentation you wish
+    to link to.  This can be an absolute URL, or a relative file
+    name.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">offline</td>
+    <td valign="top">True if this link is not available online at the time of
+                     generating the documentation</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">packagelistLoc</td>
+    <td valign="top">The location to the directory containing the package-list file for
+                     the external documentation</td>
+    <td align="center" valign="top" rowspan="2">One of the two if the offline attribute is true</td>
+  </tr>
+  <tr>
+    <td valign="top">packagelistURL</td>
+    <td valign="top">The URL of the the directory containing the package-list file for
+                     the external documentation</td>
+  </tr>
+  <tr>
+    <td valign="top">resolveLink</td>
+    <td valign="top">If the link attribute is a relative file name,
+    Ant will first try to locate the file relative to the current
+    project's basedir and if it finds a file there use an absolute URL
+    for the link attribute, otherwise it will pass the file name
+    verbatim to the javadoc command.</td>
+    <td align="center" valign="top">No, default is false.</td>
+  </tr>
+</table>
+
+<h4><a name="groupelement">group</a></h4>
+<p>Separates packages on the overview page into whatever groups you
+specify, one group per table. This performs the same role as the group
+attribute. You can use either syntax (or both at once), but with the
+nested elements you can easily specify multiple occurrences of the
+arguments.</p>
+
+<h5>Parameters</h5>
+<table width="90%" border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">title</td>
+    <td valign="top">Title of the group</td>
+    <td align="center" valign="top">Yes, unless nested <code>&lt;title&gt;</code> given</td>
+  </tr>
+  <tr>
+    <td valign="top">packages</td>
+    <td valign="top">List of packages to include in that group. Multiple packages are separated with ':'.</td>
+    <td align="center" valign="top">Yes, unless nested <code>&lt;package&gt;</code>s given</td>
+  </tr>
+</table>
+
+<p>The title may be specified as a nested <code>&lt;title&gt;</code> element
+with text contents, and the packages may be listed with nested
+<code>&lt;package&gt;</code> elements as for the main task.</p>
+
+<h4>doclet</h4>
+<p>The doclet nested element is used to specify the
+<a href="http://download.oracle.com/javase/1.4.2/docs/tooldocs/javadoc/overview.html">doclet</a>
+that javadoc will use to process the input source files. A number of the standard javadoc arguments
+are actually arguments of the standard doclet. If these are specified in the javadoc
+task's attributes, they will be passed to the doclet specified in the
+<code>&lt;doclet&gt;</code> nested element. Such attributes should only be specified,
+therefore, if they can be interpreted by the doclet in use.</p>
+
+<p>If the doclet requires additional parameters, these can be specified with
+<code>&lt;param&gt;</code> elements within the <code>&lt;doclet&gt;</code>
+element. These parameters are restricted to simple strings. An example usage
+of the doclet element is shown below:</p>
+
+<pre>  &lt;javadoc ... &gt;
+     &lt;doclet name=&quot;theDoclet&quot;
+             path=&quot;path/to/theDoclet&quot;&gt;
+        &lt;param name=&quot;-foo&quot; value=&quot;foovalue&quot;/&gt;
+        &lt;param name=&quot;-bar&quot; value=&quot;barvalue&quot;/&gt;
+     &lt;/doclet&gt;
+  &lt;/javadoc&gt;
+</pre>
+
+<h4><a name="tagelement">tag</a></h4>
+
+<p>If you want to specify a standard tag using a nested tag element
+because you want to determine the order the tags are output, you must
+not set the description attribute for those tags.</p>
+
+<h5>Parameters</h5>
+<table width="90%" border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">Name of the tag (e.g. <code>todo</code>)</td>
+    <td align="center" valign="top">Yes, unless the <code>dir</code> attribute is specified.</td>
+  </tr>
+  <tr>
+    <td valign="top">description</td>
+    <td valign="top">Description for tag (e.g. <code>To do:</code>)</td>
+    <td align="center" valign="top">
+      No, the javadoc executable will pick a default if this is not specified.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">enabled</td>
+    <td valign="top">Whether or not the tag is enabled (defaults to <code>true</code>)</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">scope</td>
+    <td valign="top">Scope for the tag - the elements in which it can be used. This
+    is a comma separated list of some of the elements: <code>overview</code>,
+    <code>packages</code>, <code>types</code>, <code>constructors</code>,
+    <code>methods</code>, <code>fields</code> or the default, <code>all</code>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">dir</td>
+    <td valign="top">If this attribute is specified, this element will behave as an implicit
+    <a href="../Types/fileset.html">fileset</a>. The files included by this fileset should
+    contain each tag definition on a separate line, as described in the
+    <a href="http://download.oracle.com/javase/1.4.2/docs/tooldocs/windows/javadoc.html#tag">Javadoc reference guide</a>:
+    <pre>ejb.bean:t:XDoclet EJB Tag
+todo:a:To Do</pre>
+      <b>Note:</b> The  Javadoc reference quide has double quotes around
+the description part of the definition. This will not work when used in
+a file, as the definition is quoted again when given to
+the javadoc program.
+    <br/>
+      <b>Note:</b> If this attribute is specified, all the other attributes in this
+    element will be ignored.
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h4><a name="tagletelement">taglet</a></h4>
+<p>The taglet nested element is used to specify custom
+  <a href="http://download.oracle.com/javase/1.4.2/docs/tooldocs/javadoc/taglet/overview.html">taglets</a>.</p>
+
+<h5>Parameters</h5>
+<table width="90%" border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the taglet class
+              (e.g. <a href="http://download.oracle.com/javase/1.4.2/docs/tooldocs/javadoc/taglet/ToDoTaglet.java">
+              <code>com.sun.tools.doclets.ToDoTaglet</code></a>)</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">path</td>
+    <td valign="top">A path specifying the search path for the taglet class
+            (e.g. <code>/home/taglets</code>).
+            The path may also be specified by a nested <code>&lt;path&gt;</code> element</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h4>sourcepath, classpath and bootclasspath</h4>
+<p><code>Javadoc</code>'s <i>sourcepath</i>, <i>classpath</i> and
+<i>bootclasspath</i> attributes are <a href="../using.html#path">PATH like
+structure</a> and can also be set via nested <i>sourcepath</i>,
+<i>classpath</i> and <i>bootclasspath</i> elements
+respectively.</p>
+
+<h4>arg</h4>
+
+<p>Use nested <code>&lt;arg&gt;</code> to specify additional
+arguments.  See <a href="../using.html#arg">Command line
+arguments</a>. <em>Since Ant 1.6</em></p>
+
+<h3>Example</h3>
+<pre>  &lt;javadoc packagenames=&quot;com.dummy.test.*&quot;
+           sourcepath=&quot;src&quot;
+           excludepackagenames=&quot;com.dummy.test.doc-files.*&quot;
+           defaultexcludes=&quot;yes&quot;
+           destdir=&quot;docs/api&quot;
+           author=&quot;true&quot;
+           version=&quot;true&quot;
+           use=&quot;true&quot;
+           windowtitle=&quot;Test API&quot;&gt;
+    &lt;doctitle&gt;&lt;![CDATA[&lt;h1&gt;Test&lt;/h1&gt;]]&gt;&lt;/doctitle&gt;
+    &lt;bottom&gt;&lt;![CDATA[&lt;i&gt;Copyright &amp;#169; 2000 Dummy Corp. All Rights Reserved.&lt;/i&gt;]]&gt;&lt;/bottom&gt;
+    &lt;tag name=&quot;todo&quot; scope=&quot;all&quot; description=&quot;To do:&quot;/&gt;
+    &lt;group title=&quot;Group 1 Packages&quot; packages=&quot;com.dummy.test.a*&quot;/&gt;
+    &lt;group title=&quot;Group 2 Packages&quot; packages=&quot;com.dummy.test.b*:com.dummy.test.c*&quot;/&gt;
+    &lt;link offline=&quot;true&quot; href=&quot;http://download.oracle.com/javase/6/docs/api/&quot; packagelistLoc=&quot;C:\tmp&quot;/&gt;
+    &lt;link href=&quot;http://developer.java.sun.com/developer/products/xml/docs/api/&quot;/&gt;
+  &lt/javadoc&gt;</pre>
+
+<p>is the same as</p>
+
+<pre>  &lt;javadoc
+           destdir=&quot;docs/api&quot;
+           author=&quot;true&quot;
+           version=&quot;true&quot;
+           use=&quot;true&quot;
+           windowtitle=&quot;Test API&quot;&gt;
+
+    &lt;packageset dir=&quot;src&quot; defaultexcludes=&quot;yes&quot;&gt;
+      &lt;include name=&quot;com/dummy/test/**&quot;/&gt;
+      &lt;exclude name=&quot;com/dummy/test/doc-files/**&quot;/&gt;
+    &lt;/packageset&gt;
+
+    &lt;doctitle&gt;&lt;![CDATA[&lt;h1&gt;Test&lt;/h1&gt;]]&gt;&lt;/doctitle&gt;
+    &lt;bottom&gt;&lt;![CDATA[&lt;i&gt;Copyright &amp;#169; 2000 Dummy Corp. All Rights Reserved.&lt;/i&gt;]]&gt;&lt;/bottom&gt;
+    &lt;tag name=&quot;todo&quot; scope=&quot;all&quot; description=&quot;To do:&quot;/&gt;
+    &lt;group title=&quot;Group 1 Packages&quot; packages=&quot;com.dummy.test.a*&quot;/&gt;
+    &lt;group title=&quot;Group 2 Packages&quot; packages=&quot;com.dummy.test.b*:com.dummy.test.c*&quot;/&gt;
+    &lt;link offline=&quot;true&quot; href=&quot;http://download.oracle.com/javase/6/docs/api/&quot; packagelistLoc=&quot;C:\tmp&quot;/&gt;
+    &lt;link href=&quot;http://developer.java.sun.com/developer/products/xml/docs/api/&quot;/&gt;
+  &lt/javadoc&gt;</pre>
+
+<p>or</p>
+
+<pre>  &lt;javadoc
+           destdir=&quot;docs/api&quot;
+           author=&quot;true&quot;
+           version=&quot;true&quot;
+           use=&quot;true&quot;
+           windowtitle=&quot;Test API&quot;&gt;
+
+    &lt;fileset dir=&quot;src&quot; defaultexcludes=&quot;yes&quot;&gt;
+      &lt;include name=&quot;com/dummy/test/**&quot;/&gt;
+      &lt;exclude name=&quot;com/dummy/test/doc-files/**&quot;/&gt;
+    &lt;/fileset&gt;
+
+    &lt;doctitle&gt;&lt;![CDATA[&lt;h1&gt;Test&lt;/h1&gt;]]&gt;&lt;/doctitle&gt;
+    &lt;bottom&gt;&lt;![CDATA[&lt;i&gt;Copyright &amp;#169; 2000 Dummy Corp. All Rights Reserved.&lt;/i&gt;]]&gt;&lt;/bottom&gt;
+    &lt;tag name=&quot;todo&quot; scope=&quot;all&quot; description=&quot;To do:&quot;/&gt;
+    &lt;group title=&quot;Group 1 Packages&quot; packages=&quot;com.dummy.test.a*&quot;/&gt;
+    &lt;group title=&quot;Group 2 Packages&quot; packages=&quot;com.dummy.test.b*:com.dummy.test.c*&quot;/&gt;
+    &lt;link offline=&quot;true&quot; href=&quot;http://download.oracle.com/javase/6/docs/api/&quot; packagelistLoc=&quot;C:\tmp&quot;/&gt;
+    &lt;link href=&quot;http://developer.java.sun.com/developer/products/xml/docs/api/&quot;/&gt;
+  &lt/javadoc&gt;</pre>
+
+
+
+</body>
+</html>
+

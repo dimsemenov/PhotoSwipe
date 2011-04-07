@@ -1,0 +1,123 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>RenameExtensions Task</title>
+</head>
+
+<body>
+
+<h2><a name="renameexts">RenameExtensions</a></h2>
+<h3><i>Deprecated</i></h3>
+<p><i>This task has been deprecated.  Use the <a href="../Tasks/move.html">move</a>
+task with a <a href="../Types/mapper.html#glob-mapper">glob mapper</a> instead.</i></p>
+<h3>Description</h3>
+<p>Renames files in the <code>srcDir</code> directory ending with the
+<code>fromExtension</code> string so that they end with the
+<code>toExtension</code> string. Files are only replaced if
+<code>replace</code> is true
+</p>
+<p>See the section on
+<a href="../dirtasks.html#directorybasedtasks">directory based tasks</a>, on how the
+inclusion/exclusion of files works, and how to write patterns.
+This task forms an implicit <a href="../Types/fileset.html">FileSet</a> and
+supports most attributes of <code>&lt;fileset&gt;</code>
+(<code>dir</code> becomes <code>srcDir</code>) as well as the nested
+<code>&lt;include&gt;</code>, <code>&lt;exclude&gt;</code> and
+<code>&lt;patternset&gt;</code> elements.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">defaultexcludes</td>
+    <td valign="top">indicates whether default excludes should be used or not
+      (&quot;yes&quot;/&quot;no&quot;). Default excludes are used when
+      omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      excluded. No files (except default excludes) are excluded when
+      omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an exclude pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">fromExtention</td>
+    <td valign="top">The string that files must end in to be renamed</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      included. All files are included when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an include pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">replace</td>
+    <td valign="top">Whether the file being renamed to should be
+      replaced if it already exists</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">srcDir</td>
+    <td valign="top">The starting directory for files to search in</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">toExtension</td>
+    <td valign="top">The string that renamed files will end with on
+      completion</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<blockquote>
+  <p><code>&lt;renameext srcDir=&quot;/source/project1&quot;
+              includes=&quot;**&quot;
+              excludes=&quot;**/samples/*&quot;
+              fromExtension=&quot;.java.keep&quot;
+              toExtension=&quot;.java&quot;
+              replace=&quot;true&quot;/&gt;
+</code>
+  </p>
+</blockquote>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,2284 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+        <html lang="en">
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <head>
+      <META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <title>Apache Ant - Frequently Asked Questions</title>
+        <link type="text/css" href="./page.css" rel="stylesheet">
+          <meta name="author" content="Stefan Bodewig">
+  <meta name="email" content="bodewig@apache.org">
+      </head>
+
+    <body>
+      <p class="navpath">
+        <script src="./breadcrumbs.js" language="JavaScript" type="text/javascript"></script>
+      </p>
+
+      <div class="logobar">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="left"><img border="0" alt="Apache Ant site" src="./images/group-logo.gif"></td>
+            <td align="center" width="100%"><img alt="Apache Ant logo" border="0" src="./images/project-logo.gif"></td>
+            <td align="right">
+              <form target="_blank" onsubmit="q.value = query.value + ' site:ant.apache.org'" action="http://www.google.com/search" method="get">
+                <table summary="search" border="0" cellspacing="0" cellpadding="0" bgcolor="#4C6C8F">
+                  <tr>
+                    <td colspan="3"><img height="10" width="1" alt="" src="./images/spacer.gif"></td>
+                  </tr>
+                  <tr>
+                    <td><img height="1" width="1" alt="" src="./images/spacer.gif"></td>
+                    <td nowrap="nowrap" class="searchcaption">
+                      <input name="q" type="hidden">
+                      <input size="15" id="query" type="text">
+                      <img height="1" width="5" alt="" src="./images/spacer.gif">
+                      <input name="Search" value="Search" type="submit">
+                      <br>
+                      the Apache Ant site
+                    </td>
+                    <td><img height="1" width="1" alt="" src="./images/spacer.gif"></td>
+                  </tr>
+                  <tr>
+                    <td><img alt="" border="0" height="10" width="9" src="./images/search-left.gif"></td>
+                    <td><img height="1" width="1" alt="" src="./images/spacer.gif"></td>
+                    <td><img alt="" border="0" height="10" width="9" src="./images/search-right.gif"></td>
+                  </tr>
+                </table>
+              </form>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+                  <div class="tab">
+              <table summary="tab bar" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                                  <td width="8"><img alt="" height="5" width="8" src="./images/spacer.gif"></td><td valign="bottom">
+                      <table summary="selected tab" style="height: 1.5em" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                        <td valign="top" width="5" bgcolor="#4C6C8F"><img height="5" width="5" alt="" src="./images/tabSel-left.gif"></td><td valign="middle" bgcolor="#4C6C8F"><font color="#ffffff" size="2" face="Arial, Helvetica, Sans-serif"><b>Home</b></font></td><td valign="top" width="5" bgcolor="#4C6C8F"><img height="5" width="5" alt="" src="./images/tabSel-right.gif"></td>
+                        </tr>
+                      </table>
+                    </td>
+                                    <td width="5"><img alt="" height="8" width="8" src="./images/spacer.gif"></td><td valign="bottom">
+                      <table summary="non selected tab" style="height: 1.4em" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td valign="top" width="5" bgcolor="#B2C4E0"><img height="5" width="5" alt="" src="./images/tab-left.gif"></td><td valign="middle" bgcolor="#B2C4E0"><a href="./projects/index.html"><font size="2" face="Arial, Helvetica, Sans-serif">Projects</font></a></td><td valign="top" width="5" bgcolor="#B2C4E0"><img height="5" width="5" alt="" src="./images/tab-right.gif"></td>
+                        </tr>
+                      </table>
+                    </td>
+                            </tr>
+              </table>
+            </div>
+
+      <div class="bluebar"></div>
+                    
+  <div class="menucontainer">
+    <div class="menu">
+      <ul>
+              <li class="menuheader">Apache Ant
+          <ul>
+                            <li>
+                                    <a href="./index.html">Welcome</a>
+                                </li>
+                            <li>
+                                    <a href="http://www.apache.org/licenses/LICENSE-2.0.html">License</a>
+                                </li>
+                            <li>
+                                    <a href="./antnews.html">News</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Documentation
+          <ul>
+                            <li>
+                                    <a href="./manual/index.html">Manual</a>
+                                </li>
+                            <li>
+                                    <a href="./projects.html">Related Projects</a>
+                                </li>
+                            <li>
+                                    <a href="./external.html">External Tools and Tasks</a>
+                                </li>
+                            <li>
+                                    <a href="./resources.html">Resources</a>
+                                </li>
+                            <li>
+                              <span class="sel">Frequently Asked Questions</span>
+                              </li>
+                            <li>
+                                    <a href="http://wiki.apache.org/ant/FrontPage">Wiki</a>
+                                </li>
+                            <li>
+                                    <a href="./problems.html">Having Problems?</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Download
+          <ul>
+                            <li>
+                                    <a href="http://ant.apache.org/bindownload.cgi">Binary Distributions</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/srcdownload.cgi">Source Distributions</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/manualdownload.cgi">Ant Manual</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Contributing
+          <ul>
+                            <li>
+                                    <a href="./mail.html">Mailing Lists</a>
+                                </li>
+                            <li>
+                                    <a href="./svn.html">Subversion Repositories</a>
+                                </li>
+                            <li>
+                                    <a href="./nightlies.html">Nightly+Continuous Builds</a>
+                                </li>
+                            <li>
+                                    <a href="./bugs.html">Bug Database</a>
+                                </li>
+                            <li>
+                                    <a href="http://www.apache.org/security/">Security</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Sponsorship
+          <ul>
+                            <li>
+                                    <a href="http://www.apache.org/foundation/thanks.html">Thanks</a>
+                                </li>
+                            <li>
+                                    <a href="http://www.apache.org/foundation/sponsorship.html">Sponsorship</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Project Management
+          <ul>
+                            <li>
+                                    <a href="./contributors.html">Contributors</a>
+                                </li>
+                            <li>
+                                    <a href="./mission.html">Apache Ant Mission</a>
+                                </li>
+                            <li>
+                                    <a href="./bylaws.html">Project Bylaws</a>
+                                </li>
+                            <li>
+                                    <a href="./legal.html">Legal</a>
+                                </li>
+                      </ul>
+        </li>
+            </ul>
+    </div>
+    <center>
+    <a href="http://www.apache.org/events/current-event.html"><img border="0" title="ApacheCon" alt="ApacheCon - logo" src="http://www.apache.org/events/current-event-125x125.png" style="width: 125px;height: 125px;"></a>
+    </center>
+    <img style="float: left" height="10" width="10" border="0" alt="" src="./images/menu-left.gif">
+    <img style="float: right" height="10" width="10" border="0" alt="" src="./images/menu-right.gif">
+  </div>
+      <div class="lightbluebar">&nbsp;</div>
+  <div class="main">
+  <div class="content">
+    <h1 class="title">Frequently Asked Questions</h1>
+    
+        <h3 class="section">Questions</h3>
+                <h4 class="toc">About this FAQ</h4>
+        <ul>
+                <li><a href="#latest-version">
+  Where do I find the latest version of this
+        document?
+      </a></li>
+                <li><a href="#adding-faqs">
+  How can I contribute to this FAQ?
+      </a></li>
+                <li><a href="#creating-faq">
+  How do you create the HTML version of this
+        FAQ?
+      </a></li>
+            </ul>
+                <h4 class="toc">General</h4>
+        <ul>
+                <li><a href="#what-is-ant">
+  What is Apache Ant?
+      </a></li>
+                <li><a href="#ant-name">
+  Why do you call it Ant?
+      </a></li>
+                <li><a href="#history">
+  Tell us a little bit about Ant's history.
+      </a></li>
+            </ul>
+                <h4 class="toc">Installation</h4>
+        <ul>
+                <li><a href="#java-version">
+  Which version of Java is required to run
+        Apache Ant?
+      </a></li>
+                <li><a href="#no-gnu-tar">
+  I get checksum errors when I try to extract the
+      <code>tar.gz</code> distribution file. Why?
+      </a></li>
+                <li><a href="#RedHat_ES_3">
+  How do you get ant-1.6.x (or any version later than
+      1.5.2) to work on on RedHat ES 3?
+      </a></li>
+            </ul>
+                <h4 class="toc">How do I ...</h4>
+        <ul>
+                <li><a href="#precompile-jsps">
+  How to I precompile Java Server Pages (JSPs)?
+      </a></li>
+                <li><a href="#implement-os-specific-configuration">
+  How do I realize os--specific configurations?
+      </a></li>
+                <li><a href="#adding-external-tasks">
+  How do I add an external task that I've written to the
+      page "External Tools and Tasks"?
+      </a></li>
+                <li><a href="#create-extensions">
+  How do I create new tasks?
+      </a></li>
+                <li><a href="#passing-cli-args">
+  How do I pass parameters from the command line to my
+        build file?
+      </a></li>
+                <li><a href="#jikes-switches">
+  How can I use Jikes-specific command-line
+        switches?
+      </a></li>
+                <li><a href="#shell-redirect-1">
+  How do I include a &lt; character in my command-line arguments?
+      </a></li>
+                <li><a href="#shell-redirect-2">
+  How do I redirect standard input or standard output
+        in the <code>&lt;exec&gt;</code> task?
+      </a></li>
+                <li><a href="#batch-shell-execute">
+  How do I execute a batch file or shell script from Ant?
+      </a></li>
+                <li><a href="#multi-conditions">
+  I want to execute a particular target only if
+        multiple conditions are true.
+      </a></li>
+                <li><a href="#encoding">
+  How can I include national characters like German
+        umlauts in my build file?
+      </a></li>
+                <li><a href="#use-zip-instead-of-jar">
+  How do I use <code>jar</code>'s <code>M</code> switch?
+      I don't want a MANIFEST.
+      </a></li>
+                <li><a href="#propertyvalue-as-name-for-property">
+  How can I do something like <code>&lt;property name="prop"
+      value="${${anotherprop}}"/&gt;</code> (double expanding the property)?
+      </a></li>
+                <li><a href="#delete-directory-children-only">
+  How can I delete everything beneath a particular directory,
+    preserving the directory itself?
+      </a></li>
+                <li><a href="#delete-directory-only-if-empty">
+  How can I delete a particular directory,
+        if and only if it is empty?
+      </a></li>
+            </ul>
+                <h4 class="toc">It doesn't work (as expected)</h4>
+        <ul>
+                <li><a href="#general-advice">
+  General Advice
+      </a></li>
+                <li><a href="#always-recompiles">
+  Why does Ant always recompile all my Java files?
+      </a></li>
+                <li><a href="#defaultexcludes">
+  I've used a <code>&lt;delete&gt;</code> task to
+      delete unwanted SourceSafe control files (CVS files, editor
+      backup files, etc.), but it doesn't seem to work; the files
+      never get deleted. What's wrong?
+      </a></li>
+                <li><a href="#stop-dependency">
+  I have a target I want to skip if a property is set,
+      so I have <code>unless="property"</code> as an attribute
+      of the target, but all the targets this target
+      depends on are still executed. Why?
+      </a></li>
+                <li><a href="#include-order">
+  In my <code>&lt;fileset&gt;</code>, I've put in an
+      <code>&lt;exclude&gt;</code> of all files followed by an
+      <code>&lt;include&gt;</code> of just the files I want, but it
+      isn't giving me any files at all. What's wrong?
+      
+      </a></li>
+                <li><a href="#properties-not-trimmed">
+  <code>ant</code> failed to build my program via javac
+      even when I put the needed jars in an external
+      <code>build.properties</code> file and reference them by
+      <code>pathelement</code> or <code>classpath refid</code>.
+      </a></li>
+                <li><a href="#winzip-lies">
+  Ant creates WAR files with a lower-case
+        <code>web-inf</code> or JAR files with a lower-case
+        <code>meta-inf</code> directory.
+      </a></li>
+                <li><a href="#NoClassDefFoundError">
+  I installed Ant 1.6.x and now get
+        <code>Exception in thread "main" java.lang.NoClassDefFoundError:
+        </code>
+      
+      </a></li>
+                <li><a href="#InstantiationException">
+  I installed Ant 1.6.x and now get
+        <code>java.lang.InstantiationException: org.apache.tools.ant.Main</code>
+      
+      </a></li>
+                <li><a href="#mangled-manifest">
+  
+        Whenever I use the Ant jar or manifest related tasks, long lines in
+        my manifest are wrapped at 70 characters and the resulting jar does
+        not work in my application server. Why does Ant do this?
+      
+      </a></li>
+                <li><a href="#CreateProcess_error_2">
+  <code>&lt;exec&gt;</code> fails with <code>"Cannot run
+          program "...":CreateProcess error=2"</code> on
+        Windows.
+      </a></li>
+            </ul>
+                <h4 class="toc">Apache Ant and IDEs/Editors</h4>
+        <ul>
+                <li><a href="#integration">
+  Is Apache Ant supported by my IDE/Editor?
+      </a></li>
+                <li><a href="#emacs-mode">
+  Why doesn't (X)Emacs/vi/MacOS X's project builder
+      correctly parse the error messages generated by Ant?
+      </a></li>
+            </ul>
+                <h4 class="toc">Advanced Issues</h4>
+        <ul>
+                <li><a href="#dtd">
+  Is there a DTD that I can use to validate my build
+      files?
+      </a></li>
+                <li><a href="#xml-entity-include">
+  How do I include an XML snippet in my build file?
+      </a></li>
+                <li><a href="#mail-logger">
+  How do I send an email with the result of my build
+        process?
+      </a></li>
+                <li><a href="#listener-properties">
+  How do I get at the properties that Ant was running
+      with from inside BuildListener?
+      </a></li>
+            </ul>
+                <h4 class="toc">Known Problems</h4>
+        <ul>
+                <li><a href="#input-makes-exec-hang">
+  <code>&lt;exec&gt;</code> causes other tasks to hang
+        or leads to strange behaviour of <code>&lt;input&gt;</code>
+        tasks.
+      </a></li>
+                <li><a href="#javac-stackoverflow">
+  <code>&lt;javac&gt;</code> causes a
+        StackOverflowError
+      </a></li>
+                <li><a href="#170-requires-junit">
+  Ant 1.7.0 doesn't build from sources without
+        JUnit
+      </a></li>
+                <li><a href="#remove-cr">
+  &lt;chmod&gt; or &lt;exec&gt; doesn't work in Ant
+        1.3 on Unix
+      </a></li>
+                <li><a href="#delegating-classloader">
+  &lt;style&gt; or &lt;junit&gt; ignores my
+      &lt;classpath&gt;
+      </a></li>
+                <li><a href="#delegating-classloader-1.5">
+  &lt;style&gt; or &lt;junit&gt; ignores my
+      &lt;classpath&gt; - Ant 1.5.x version
+      </a></li>
+                <li><a href="#delegating-classloader-1.6">
+  &lt;style&gt; or &lt;junit&gt; ignores my
+      &lt;classpath&gt; - Ant 1.6.x version
+      </a></li>
+                <li><a href="#unknownelement.taskcontainer">
+  
+        Why do my custom task containers see Unknown Elements in Ant 1.6
+        - they worked in Ant 1.5?
+      
+      </a></li>
+                <li><a href="#oom-on-mac">
+  
+        Ant runs into an infinite loop/throws an OutOfMemoryError
+        when I compile my project under Mac OS X.
+      
+      </a></li>
+                <li><a href="#extension-point-and-import">
+  <code>extension-point</code> doesn't work
+        with <code>import</code> like the documentation
+        states.
+      </a></li>
+            </ul>
+    
+      <h3 class="section">Answers</h3>
+                    <p class="faq">
+      <a name="latest-version"></a>
+      Where do I find the latest version of this
+        document?
+    </p>
+                  <p>The latest version can always be found at Apache Ant's homepage
+          <a href="http://ant.apache.org/faq.html">http://ant.apache.org/faq.html</a>.</p>
+                    <p class="faq">
+      <a name="adding-faqs"></a>
+      How can I contribute to this FAQ?
+    </p>
+                  <p>The page you are looking it is generated from
+          <a href="http://svn.apache.org/repos/asf/ant/core/trunk/xdocs/faq.xml">this</a>
+          document.  If you want to add a new question, please submit
+          a patch against this document to one of Ant's mailing lists;
+          hopefully, the structure is self-explanatory.</p>
+                        <p>If you don't know how to create a patch, see the patches
+          section of <a href="http://jakarta.apache.org/site/source.html">this
+          page</a>.</p>
+                    <p class="faq">
+      <a name="creating-faq"></a>
+      How do you create the HTML version of this
+        FAQ?
+    </p>
+                  <p>We use
+        <a href="http://jakarta.apache.org/velocity/anakia.html">Anakia</a>
+        to render the HTML version from the original XML file.</p>
+                        <p>The Velocity stylesheets used to process the XML files can
+        be found in the <code>xdocs/stylesheets</code> subdirectory of
+        Ant's SVN repository - the build file
+        <code>docs.xml</code> at the top level of the ant SVN
+        module (trunk) is used to drive Anakia.</p>
+                        <p>To transform the xml into html, one needs velocity 1.4.
+        The command to run is :</p>
+                        <p>
+        <code>ant -Dvelocity.dir=[installation path of velocity] -f docs.xml</code>
+        </p>
+                                <p class="faq">
+      <a name="what-is-ant"></a>
+      What is Apache Ant?
+    </p>
+                  <p> Ant is a Java-based build tool. In theory, it is kind of
+        like Make, without Make's wrinkles and with the full
+        portability of pure Java code.</p>
+                    <p class="faq">
+      <a name="ant-name"></a>
+      Why do you call it Ant?
+    </p>
+                  <p>According to Ant's original author, James Duncan
+        Davidson, the name is an acronym for "Another Neat
+        Tool".</p>
+                        <p>Later explanations go along the lines of "ants
+        do an extremely good job at building things", or
+        "ants are very small and can carry a weight dozens of times
+        their own" - describing what Ant is intended to
+        be.</p>
+                    <p class="faq">
+      <a name="history"></a>
+      Tell us a little bit about Ant's history.
+    </p>
+                  <p>Initially, Ant was part of the Tomcat code base, when it was
+        donated to the Apache Software Foundation. It was
+        created by James Duncan Davidson, who is also the original
+        author of Tomcat. Ant was there to build Tomcat, nothing
+        else.</p>
+                        <p>Soon thereafter, several open source Java projects realized
+        that Ant could solve the problems they had with Makefiles.
+        Starting with the projects hosted at Jakarta and the old Java
+        Apache project, Ant spread like a virus and is now the build
+        tool of choice for a lot of projects.</p>
+                        <p>In January 2000, Ant was moved to a separate CVS module and
+        was promoted to a project of its own, independent of
+        Tomcat, and became Apache Ant.</p>
+                        <p>The first version of Ant that was exposed to a larger audience
+        was the one that shipped with Tomcat's 3.1 release on 19 April
+        2000.  This version has later been referred to as Ant
+        0.3.1.</p>
+                        <p>The first official release of Ant as a stand-alone product was
+        Ant 1.1, released on 19 July 2000.  The complete release
+        history:</p>
+                              <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant Version
+      </th>
+                          <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Release Date
+      </th>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.1
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          19 July 2000
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.2
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          24 October 2000
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.3
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          3 March 2001
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.4
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          3 September 2001
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.4.1
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          11 October 2001
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.5
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          10 July 2002
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.5.1
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          3 October 2002
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.5.2
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          3 March 2003
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.5.3
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          9 April 2003
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.5.4
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          12 August 2003
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.6.0
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          18 December 2003
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.6.1
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          12 February 2004
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.6.2
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          16 July 2004
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.6.3
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          28 April 2005
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.6.4
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          19 May 2005
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.6.5
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2 June 2005
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.7.0
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          19 December 2006
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.7.1
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          27 June 2008
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.8.0
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          8 February 2010
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.8.1
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          7 May 2010
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.8.2
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          27 December 2010
+      </td>
+      </tr>
+          </table>
+                                <p class="faq">
+      <a name="java-version"></a>
+      Which version of Java is required to run
+        Apache Ant?
+    </p>
+                  <p>You will need Java installed on your system, version 1.4 or
+          later required, 1.5 or later strongly recommended. The later
+          the version of Java, the more Ant tasks you get.</p>
+                        <p>If only the JRE is present but not a full JDK then many
+          tasks will not work.</p>
+                        <p>The following table lists the minimum Java versions
+          required to compile and run Ant.  Note that most committers
+          work with more recent versions of the JDK and that Ant doesn't
+          get tested much for older versions.</p>
+                              <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant Version
+      </th>
+                          <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Minimum Java Version
+      </th>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.1 up to 1.5.4
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.1
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.6.0 up to 1.6.5
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.2
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.7.0 up to 1.7.1
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.3
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.8.0 up to current svn trunk
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          1.4
+      </td>
+      </tr>
+          </table>
+                    <p class="faq">
+      <a name="no-gnu-tar"></a>
+      I get checksum errors when I try to extract the
+      <code>tar.gz</code> distribution file. Why?
+    </p>
+                  <p>Ant's distribution contains file names that are longer
+        than 100 characters, which is not supported by the standard
+        tar file format. Several different implementations of tar use
+        different and incompatible ways to work around this
+        restriction.</p>
+                        <p>Ant's &lt;tar&gt; task can create tar archives that use
+        the GNU tar extension, and this has been used when putting
+        together the distribution. If you are using a different
+        version of tar (for example, the one shipping with Solaris),
+        you cannot use it to extract the archive.</p>
+                        <p>The solution is to either install GNU tar, which can be
+        found <a href="http://www.gnu.org/software/tar/tar.html">here</a>,
+        or use the zip archive instead (you can extract it using
+        <code>jar xf</code>).</p>
+                    <p class="faq">
+      <a name="RedHat_ES_3"></a>
+      How do you get ant-1.6.x (or any version later than
+      1.5.2) to work on on RedHat ES 3?
+    </p>
+                  <p>Redhat ES 3.0 comes installed with ant 1.5.2. Even if you
+        have your PATH and ANT_HOME variables set correctly to a later
+        version of ant, you will always be forced to use the
+        preinstalled version.</p>
+                        <p>To use a later version of ant on this OS you could do the
+        following:</p>
+                        <pre class="code">
+$ ant -version
+Apache Ant version 1.5.2-23 compiled on November 12 2003
+$ su -
+# rpm -e ant ant-libs
+# exit
+$ hash -r
+$ ant -version
+Apache Ant version 1.6.2 compiled on July 16 2004
+</pre>
+                                <p class="faq">
+      <a name="precompile-jsps"></a>
+      How to I precompile Java Server Pages (JSPs)?
+    </p>
+                  <p>Apache Ant has a built in optional task <a href="/manual/Tasks/jspc.html">&lt;jspc&gt;</a>
+        which was intended for that. <b>But this task is deprecated.</b>
+        Here the alternative suggested by the manual:</p>
+                        <p><i>Instead of relying on container specific JSP-compilers we suggest deploying
+        the raw files (*.jsp) and use the container build-in functions: after deploying
+        run a test suite (e.g. with
+        <a href="http://jakarta.apache.org/cactus/">Cactus</a> or
+        <a href="http://httpunit.sourceforge.net/">HttpUnit</a>) against the deployed web
+        application. So you'll get then test result and the compiled JSPs.</i></p>
+                    <p class="faq">
+      <a name="implement-os-specific-configuration"></a>
+      How do I realize os--specific configurations?
+    </p>
+                  <p>The core idea is using property files which name accords to the
+        os-name. Then simply use the build-in property <tt>os.name</tt>.</p>
+                        <p>For better use you should also provide a file with default values.
+        But be careful with the correct os-names. For test simply &lt;echo&gt;
+        the ${os.name} on all machines and you can be sure to use the right
+        file names.</p>
+                        <pre class="code">
+          &lt;property file=&quot;${os.name}.properties&quot;/&gt;
+          &lt;property file=&quot;default.properties&quot;/&gt;
+</pre>
+                    <p class="faq">
+      <a name="adding-external-tasks"></a>
+      How do I add an external task that I've written to the
+      page "External Tools and Tasks"?
+    </p>
+                  <p>Join and post a message to the dev or user mailing
+        list (one list is enough), including the following
+        information:</p>
+                        <ul>
+          <li>the name of the task/tool</li>
+          <li>a short description of the task/tool</li>
+          <li>a Compatibility: entry stating with which version(s) of
+          Ant the tool/task is compatible to</li>
+          <li>a URL: entry linking to the main page of the tool/task</li>
+          <li>a Contact: entry containing the email address or the URL
+          of a webpage for the person or list to contact for issues
+          related to the tool/task.  <strong>Note that we'll add a
+          link on the page, so any email address added there is not
+          obfuscated and can (and probably will) be abused by robots
+          harvesting websites for addresses to spam.</strong></li>
+          <li>a License: entry containing the type of license for the
+          tool/task</li>
+        </ul>
+                        <p>The preferred format for this information is a patch to <a href="http://svn.apache.org/repos/asf/ant/core/trunk/xdocs/external.xml">this</a>
+        document.</p>
+                        <p>If you have written something bigger than a 'simple plugin' to Ant it
+        may be better to add the link to <a href="projects.html">projects.html</a>.
+        The procedure to add it is the same. The file to patch is <a href="http://svn.apache.org/repos/asf/ant/core/trunk/xdocs/projects.xml">this</a>
+        document. The syntax of that file is the same.</p>
+                    <p class="faq">
+      <a name="create-extensions"></a>
+      How do I create new tasks?
+    </p>
+                  <p>Apart from a lot of information on using Ant, the
+        <a href="manual/index.html">Manual</a> also contains information
+        on how to extend Ant with new tasks. This information
+        can be found under "Developing with Ant".</p>
+                        <p>Chances are that someone else already created the task you
+        want to create, it may be wise to see
+        <a href="external.html">External Tools and Tasks</a> and
+        <a href="projects.html">Related Projects</a> first.</p>
+                    <p class="faq">
+      <a name="passing-cli-args"></a>
+      How do I pass parameters from the command line to my
+        build file?
+    </p>
+                  <p>Use properties. Using <code>ant
+        -D<em>name</em>=<em>value</em></code> lets you define values for
+        properties on the Ant command line. These properties can then be
+        used within your build file as
+        any normal property: <code>${<em>name</em>}</code> will put in
+        <code><em>value</em></code>.</p>
+                    <p class="faq">
+      <a name="jikes-switches"></a>
+      How can I use Jikes-specific command-line
+        switches?
+    </p>
+                  <p>A couple of switches are supported via "magic"
+          properties:</p>
+                              <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          switch
+      </th>
+                          <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          property
+      </th>
+                          <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          default
+      </th>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          +E
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          build.compiler.emacs
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          false == not set
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          +P
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          build.compiler.pedantic
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          false == not set
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          +F
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          build.compiler.fulldepend
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          false == not set
+      </td>
+      </tr>
+                  <tr>
+                      <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <strong>(Only for Ant &lt; 1.4; replaced by the
+                <code><strong>nowarn</strong></code>
+                attribute of the <code><strong>&lt;javac&gt;</strong></code>
+                task after that.)</strong><br />-nowarn
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          build.compiler.warnings
+      </td>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          true == not set
+      </td>
+      </tr>
+          </table>
+                        <p>With Ant &gt;= 1.5, you can also use nested
+          <code>&lt;compilerarg&gt;</code> elements with the
+          <code>&lt;javac&gt;</code> task.</p>
+                    <p class="faq">
+      <a name="shell-redirect-1"></a>
+      How do I include a &lt; character in my command-line arguments?
+    </p>
+                  <p>The short answer is "Use: <code>&amp;lt;</code>".</p>
+                        <p>The long answer is that this probably won't do what you
+        want anyway (see <a href="#shell-redirect-2">the next
+        section</a>).</p>
+                    <p class="faq">
+      <a name="shell-redirect-2"></a>
+      How do I redirect standard input or standard output
+        in the <code>&lt;exec&gt;</code> task?
+    </p>
+                  <p>Say you want to redirect the standard output stream of the
+        <code>m4</code> command to write to a file, something
+        like:</p>
+                        <pre class="code">
+shell-prompt&gt; m4 foo.m4 &gt; foo
+</pre>
+                        <p>and try to translate it into</p>
+                        <pre class="code">
+&lt;exec executable=&quot;m4&quot;&gt;
+  &lt;arg value=&quot;foo.m4&quot;/&gt;
+  &lt;arg value=&quot;&amp;gt;&quot;/&gt;
+  &lt;arg value=&quot;foo&quot;/&gt;
+&lt;/exec&gt;
+</pre>
+                        <p>This will not do what you expect.  The output redirection is
+        performed by your shell, not the command itself, so this
+        should read:</p>
+                        <pre class="code">
+&lt;exec executable=&quot;/bin/sh&quot;&gt;
+  &lt;arg value=&quot;-c&quot; /&gt;
+  &lt;arg value=&quot;m4 foo.m4 &amp;gt; foo&quot; /&gt;
+&lt;/exec&gt;
+</pre>
+                        <p>Note that you must use the <code>value</code> attribute of
+        <code>&lt;arg&gt;</code> in the last element, in order to have
+        the command passed as a single, quoted argument. Alternatively,
+        you can use:</p>
+                        <pre class="code">
+&lt;exec executable=&quot;/bin/sh&quot;&gt;
+  &lt;arg line='-c &quot;m4 foo.m4 &amp;gt; foo&quot;'/&gt;
+&lt;/exec&gt;
+</pre>
+                        <p>Note the double-quotes nested inside the single-quotes.</p>
+                    <p class="faq">
+      <a name="batch-shell-execute"></a>
+      How do I execute a batch file or shell script from Ant?
+    </p>
+                  <p>On native Unix systems, you should be able to run shell scripts
+           directly. On systems running a Unix-type shell (for example, Cygwin
+           on Windows) execute the (command) shell instead - <code>cmd</code>
+           for batch files, <code>sh</code> for shell scripts - then pass the
+           batch file or shell script (plus any arguments to the script)
+           as a single command, using the <code>/c</code> or
+           <code>-c</code> switch, respectively. See
+           <a href="#shell-redirect-2">the above section</a>
+           for example <code>&lt;exec&gt;</code> tasks
+           executing <code>sh</code>. For batch files, use something like:</p>
+                        <pre class="code">
+&lt;exec dir=&quot;.&quot; executable=&quot;cmd&quot; os=&quot;Windows NT&quot;&gt;
+  &lt;arg line=&quot;/c test.bat&quot;/&gt;
+&lt;/exec&gt;
+</pre>
+                    <p class="faq">
+      <a name="multi-conditions"></a>
+      I want to execute a particular target only if
+        multiple conditions are true.
+    </p>
+                  <p>There are actually several answers to this question.</p>
+                        <p>If you have only one set and one unset property to test,
+        you can specify both an <code>if</code> and an <code>unless</code>
+        attribute for the target, and they will act as if they
+        are "anded" together.</p>
+                        <p>If you are using a version of Ant 1.3 or earlier, the
+        way to work with all other cases is to chain targets together
+        to determine the specific state you want to test for.</p>
+                        <p>To see how this works, assume you have three properties:
+        <code>prop1</code>, <code>prop2</code>, and <code>prop3</code>.
+        You want to test that <code>prop1</code> and <code>prop2</code>
+        are set, and that <code>prop3</code> is not. If the condition
+        holds true you want to echo "yes".</p>
+                        <p>Here is the implementation in Ant 1.3 and earlier:</p>
+                        <pre class="code">
+&lt;target name=&quot;cond&quot; depends=&quot;cond-if&quot;/&gt;
+
+&lt;target name=&quot;cond-if&quot; if=&quot;prop1&quot;&gt;
+  &lt;antcall target=&quot;cond-if-2&quot;/&gt;
+&lt;/target&gt;
+
+&lt;target name=&quot;cond-if-2&quot; if=&quot;prop2&quot;&gt;
+  &lt;antcall target=&quot;cond-if-3&quot;/&gt;
+&lt;/target&gt;
+
+&lt;target name=&quot;cond-if-3&quot; unless=&quot;prop3&quot;&gt;
+  &lt;echo message=&quot;yes&quot;/&gt;
+&lt;/target&gt;
+</pre>
+                        <p>Note: <code>&lt;antcall&gt;</code> tasks do <em>not</em> pass
+        property changes back up to the environment they were called
+        from, so you wouldn't be able to, for example, set a
+        <code>result</code> property in the <code>cond-if-3</code> target,
+        then do
+        <code>&lt;echo message="result is ${result}"/&gt;</code>
+        in the <code>cond</code> target.</p>
+                        <p>Starting with Ant 1.4, you can use the
+        <code>&lt;condition&gt;</code> task.</p>
+                        <pre class="code">
+&lt;target name=&quot;cond&quot; depends=&quot;cond-if,cond-else&quot;/&gt;
+
+&lt;target name=&quot;check-cond&quot;&gt;
+  &lt;condition property=&quot;cond-is-true&quot;&gt;
+    &lt;and&gt;
+      &lt;not&gt;
+        &lt;equals arg1=&quot;${prop1}&quot; arg2=&quot;$${prop1}&quot; /&gt;
+      &lt;/not&gt;
+      &lt;not&gt;
+        &lt;equals arg1=&quot;${prop2}&quot; arg2=&quot;$${prop2}&quot; /&gt;
+      &lt;/not&gt;
+      &lt;equals arg1=&quot;${prop3}&quot; arg2=&quot;$${prop3}&quot; /&gt;
+    &lt;/and&gt;
+  &lt;/condition&gt;
+&lt;/target&gt;
+
+&lt;target name=&quot;cond-if&quot; depends=&quot;check-cond&quot; if=&quot;cond-is-true&quot;&gt;
+  &lt;echo message=&quot;yes&quot;/&gt;
+&lt;/target&gt;
+
+&lt;target name=&quot;cond-else&quot; depends=&quot;check-cond&quot; unless=&quot;cond-is-true&quot;&gt;
+  &lt;echo message=&quot;no&quot;/&gt;
+&lt;/target&gt;
+</pre>
+                        <p>This version takes advantage of two things:</p>
+                        <ul>
+          <li>If a property <code>a</code> has not been set,
+          <code>${a}</code> will evaluate to <code>${a}</code>.</li>
+
+          <li>To get a literal <code>$</code> in Ant, you have to
+          escape it with another <code>$</code> - this will also break
+          the special treatment of the <code>${</code> sequence.</li>
+        </ul>
+                        <p>Because testing for a literal <code>${property}</code> string
+        isn't all that readable or easy to understand,
+        post-1.4.1 Ant introduces the <code>&lt;isset&gt;</code> element
+        to the <code>&lt;condition&gt;</code> task.</p>
+                        <p>Here is the previous example done using
+        <code>&lt;isset&gt;</code>:</p>
+                        <pre class="code">
+&lt;target name=&quot;check-cond&quot;&gt;
+  &lt;condition property=&quot;cond-is-true&quot;&gt;
+    &lt;and&gt;
+      &lt;isset property=&quot;prop1&quot;/&gt;
+      &lt;isset property=&quot;prop2&quot;/&gt;
+      &lt;not&gt;
+        &lt;isset property=&quot;prop3&quot;/&gt;
+      &lt;/not&gt;
+    &lt;/and&gt;
+  &lt;/condition&gt;
+&lt;/target&gt;
+</pre>
+                        <p>The last option is to use a scripting language to set the
+        properties. This can be particularly handy when you need much
+        finer control than the simple conditions shown here but, of
+        course, comes with the overhead of adding JAR files to support
+        the language, to say nothing of the added maintenance in requiring
+        two languages to implement a single system. See the
+        <a href="manual/Tasks/script.html">
+        <code>&lt;script&gt;</code> task documentation</a> for more
+        details.</p>
+                    <p class="faq">
+      <a name="encoding"></a>
+      How can I include national characters like German
+        umlauts in my build file?
+    </p>
+                  <p>You need to tell the XML parser which character encoding
+        your build file uses, this is done inside the <a href="http://www.w3.org/TR/2000/REC-xml-20001006#sec-prolog-dtd">XML
+        declaration</a>.</p>
+                        <p>By default the parser assumes you are using the UTF-8
+        encoding instead of your platform's default.  For most Western
+        European countries you should set the encoding to
+        <code>ISO-8859-1</code>.  To do so, make the very first line
+        of you build file read like</p>
+                        <pre class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; ?&gt;
+</pre>
+                    <p class="faq">
+      <a name="use-zip-instead-of-jar"></a>
+      How do I use <code>jar</code>'s <code>M</code> switch?
+      I don't want a MANIFEST.
+    </p>
+                  <p>A JAR archive is a ZIP file, so if you don't want a
+        MANIFEST you can simply use <code>&lt;zip&gt;</code>.</p>
+                        <p>If your file names contain national characters you should
+        know that Sun's <code>jar</code> utility like Ant's
+        <code>&lt;jar&gt;</code> uses UTF-8 to encode their names while
+        <code>&lt;zip&gt;</code> uses your platforms default encoding.
+        Use the encoding attribute of <code>&lt;zip&gt;</code> if
+        necessary.</p>
+                    <p class="faq">
+      <a name="propertyvalue-as-name-for-property"></a>
+      How can I do something like <code>&lt;property name="prop"
+      value="${${anotherprop}}"/&gt;</code> (double expanding the property)?
+    </p>
+                  <p>Without any external help you can not.</p>
+                        <p>With &lt;script/&gt;, which needs external libraries, you can do</p>
+                        <pre class="code">
+&lt;script language=&quot;javascript&quot;&gt;
+    propname = project.getProperty(&quot;anotherprop&quot;);
+    project.setNewProperty(&quot;prop&quot;, propname);
+&lt;/script&gt;
+</pre>
+                        <p>With AntContrib (external task library) you can do <code>
+         &lt;propertycopy name="prop" from="${anotherprop}"/&gt;</code>.</p>
+                        <p>With Ant 1.6 you can simulate the AntContribs &lt;propertycopy&gt;
+         and avoid the need of an external library:</p>
+                        <pre class="code">
+&lt;macrodef name=&quot;propertycopy&quot;&gt;
+  &lt;attribute name=&quot;name&quot;/&gt;
+  &lt;attribute name=&quot;from&quot;/&gt;
+  &lt;sequential&gt;
+    &lt;property name=&quot;@{name}&quot; value=&quot;${@{from}}&quot;/&gt;
+  &lt;/sequential&gt;
+&lt;/macrodef&gt;
+</pre>
+                        <p>With the 'props' antlib (external, but also from Ant) you could
+         do the dereferencing with <code>${${anotherprop}</code> - not just
+         in the property task - instead everywhere in your buildfile (after
+         registering the required property helper).</p>
+                        <pre class="code">
+&lt;propertyhelper&gt;
+  &lt;props:nested /&gt;
+&lt;/propertyhelper&gt;
+&lt;property name=&quot;foo&quot; value=&quot;foo.value&quot; /&gt;
+&lt;property name=&quot;var&quot; value=&quot;foo&quot; /&gt;
+&lt;echo&gt; ${${var}} = foo.value &lt;/echo&gt;</pre>
+                    <p class="faq">
+      <a name="delete-directory-children-only"></a>
+      How can I delete everything beneath a particular directory,
+    preserving the directory itself?
+    </p>
+                  <p>Most users who go down this path have no problem figuring out that
+  <code>&lt;delete includeemptydirs="true" /&gt;</code> will help them.  The
+  seemingly tricky part is preserving the base directory itself,
+  which Ant includes in the directory scan. Fortunately the answer is simple:
+</p>
+                        <pre class="code">
+&lt;delete includeemptydirs=&quot;true&quot;&gt;
+  &lt;fileset dir=&quot;dirtokeep&quot; includes=&quot;**/*&quot; /&gt;
+&lt;/delete&gt;
+</pre>
+                    <p class="faq">
+      <a name="delete-directory-only-if-empty"></a>
+      How can I delete a particular directory,
+        if and only if it is empty?
+    </p>
+                  <p>Most users who go down this path have no problem figuring
+          out that
+          <code>&lt;delete includeemptydirs="true" /&gt;</code> will
+          help them.  The seemingly tricky part is preserving the
+          non-empty directories, which Ant includes in the directory
+          scan. Fortunately the answer is simple:</p>
+                        <pre class="code">
+&lt;delete includeemptydirs=&quot;true&quot;&gt;
+  &lt;fileset dir=&quot;dirtokeepifnotempty&quot; excludes=&quot;**/*&quot; /&gt;
+&lt;/delete&gt;
+</pre>
+                                <p class="faq">
+      <a name="general-advice"></a>
+      General Advice
+    </p>
+                  <p>There are many reasons why Apache Ant doesn't behave as
+        expected, not all of them are due to Ant bugs.  See our <a href="problems.html">Having Problems?</a> page for hints that
+        may help pinning down the reasons for your problem.</p>
+                    <p class="faq">
+      <a name="always-recompiles"></a>
+      Why does Ant always recompile all my Java files?
+    </p>
+                  <p>In order to find out which files should be compiled, Ant
+        compares the timestamps of the source files to those of the
+        resulting <code>.class</code> files.  Opening all source files
+        to find out which package they belong to would be very
+        inefficient. Instead, Ant expects you to place your
+        source files in a directory hierarchy that mirrors your
+        package hierarchy and to point Ant to the root of this
+        directory tree with the <code>srcdir</code> attribute.</p>
+                        <p>Say you have <code>&lt;javac srcdir="src"
+        destdir="dest"/&gt;</code>.  If Ant finds a file
+        <code>src/a/b/C.java</code>, it expects it to be in package
+        <code>a.b</code> so that the resulting <code>.class</code>
+        file is going to be <code>dest/a/b/C.class</code>.</p>
+                        <p>If your source-tree directory structure does not match your
+        package structure, Ant's heuristic won't work, and
+        it will recompile classes that are up-to-date.  Ant is not the
+        only tool that expects a source-tree layout like this.</p>
+                        <p>If you have Java source files that aren't declared to
+        be part of any package, you can still use the <code>&lt;javac&gt;</code>
+        task to compile these files correctly - just set the
+        <code>srcdir</code> and <code>destdir</code> attributes to
+        the actual directory the source
+        files live in and the directory the class files should go into,
+        respectively.</p>
+                    <p class="faq">
+      <a name="defaultexcludes"></a>
+      I've used a <code>&lt;delete&gt;</code> task to
+      delete unwanted SourceSafe control files (CVS files, editor
+      backup files, etc.), but it doesn't seem to work; the files
+      never get deleted. What's wrong?
+    </p>
+                  <p>This is probably happening because, by default, Ant excludes
+        SourceSafe control files (<code>vssver.scc</code>) and certain other
+        files from FileSets.</p>
+                        <p>Here's what you probably did:</p>
+                        <pre class="code">
+&lt;delete&gt;
+  &lt;fileset dir=&quot;${build.src}&quot; includes=&quot;**/vssver.scc&quot;/&gt;
+&lt;/delete&gt;
+</pre>
+                        <p>You need to switch off the default exclusions,
+           and it will work:</p>
+                        <pre class="code">
+&lt;delete&gt;
+  &lt;fileset dir=&quot;${build.src}&quot; includes=&quot;**/vssver.scc&quot;
+           defaultexcludes=&quot;no&quot;/&gt;
+&lt;/delete&gt;
+</pre>
+                        <p>For a complete listing of the patterns that are excluded
+        by default, see <a href="manual/dirtasks.html#defaultexcludes">the user
+        manual</a>.</p>
+                    <p class="faq">
+      <a name="stop-dependency"></a>
+      I have a target I want to skip if a property is set,
+      so I have <code>unless="property"</code> as an attribute
+      of the target, but all the targets this target
+      depends on are still executed. Why?
+    </p>
+                  <p>The list of dependencies is generated by Ant before any of the
+        targets are run. This allows dependent targets, such as an
+        <code>init</code> target, to set properties that can control the
+               execution of the targets higher in the dependency graph. This
+              is a good thing.</p>
+                        <p>However, when your dependencies break down the
+        higher-level task
+        into several smaller steps, this behaviour becomes
+        counter-intuitive. There are a couple of solutions available:
+        </p>
+                        <ol>
+          <li>Put the same condition on each of the dependent targets.</li>
+
+          <li>Execute the steps using <code>&lt;antcall&gt;</code>,
+          instead of specifying them inside the <code>depends</code>
+          attribute.</li>
+        </ol>
+                    <p class="faq">
+      <a name="include-order"></a>
+      In my <code>&lt;fileset&gt;</code>, I've put in an
+      <code>&lt;exclude&gt;</code> of all files followed by an
+      <code>&lt;include&gt;</code> of just the files I want, but it
+      isn't giving me any files at all. What's wrong?
+      
+    </p>
+                  <p>The order of the <code>&lt;include&gt;</code> and
+        <code>&lt;exclude&gt;</code> tags within a <code>&lt;fileset&gt;</code>
+        is ignored when the FileSet is created. Instead, all of the
+        <code>&lt;include&gt;</code> elements are processed together,
+        followed by all of the <code>&lt;exclude&gt;</code>
+        elements. This means that the <code>&lt;exclude&gt;</code>
+        elements only apply to the file list produced by the
+        <code>&lt;include&gt;</code> elements.</p>
+                        <p>To get the files you want, focus on just the
+        <code>&lt;include&gt;</code> patterns that would be necessary
+        to get them. If you find you need to trim the list that the
+        <code>&lt;include&gt;</code> elements produce, then use
+        <code>&lt;exclude&gt;</code> elements.</p>
+                    <p class="faq">
+      <a name="properties-not-trimmed"></a>
+      <code>ant</code> failed to build my program via javac
+      even when I put the needed jars in an external
+      <code>build.properties</code> file and reference them by
+      <code>pathelement</code> or <code>classpath refid</code>.
+    </p>
+                  <p>When <code>ant</code> loads properties from an external
+        file it doesn't touch the value of properties, trailing blanks
+        will not be trimmed for example.</p>
+                        <p>If the value represents a file path, like a jar needed to
+        compile, the task which requires the value, javac for example
+        would fail to compile since it can't find the file due to
+        trailing spaces.</p>
+                    <p class="faq">
+      <a name="winzip-lies"></a>
+      Ant creates WAR files with a lower-case
+        <code>web-inf</code> or JAR files with a lower-case
+        <code>meta-inf</code> directory.
+    </p>
+                  <p>No it doesn't.</p>
+                        <p>You may have seen these lower-case directory names in
+        WinZIP, but WinZIP is trying to be helpful (and fails).  If
+        WinZIP encounters a filename that is all upper-case, it
+        assumes it has come from an old DOS box and changes the case to
+        all lower-case for you.</p>
+                        <p>If you extract (or just check) the archive with jar, you
+        will see that the names have the correct case.</p>
+                        <p>With WinZIP (version 8.1 at least), this can be corrected in the
+        configuration.  In the Options/Configuration menu, in the View tab, General
+        section, check the "Allow all upper case files names" box.  The META-INF and
+        WEB-INF will look correct.</p>
+                    <p class="faq">
+      <a name="NoClassDefFoundError"></a>
+      I installed Ant 1.6.x and now get
+        <code>Exception in thread "main" java.lang.NoClassDefFoundError:
+        </code>
+      
+    </p>
+                  <p>
+          The cause of this is that there is an old version of ant somewhere in the
+          class path or configuration.
+        </p>
+                        <p>
+          A version of this problem happens with jars that are in the classpath
+          that include an embedded copy of ant classes.
+          An example of this is some copies of weblogic.jar.
+        </p>
+                        <p>
+        One can check if this is the case by doing (on unix/sh):
+        <code><pre>
+        unset CLASSPATH
+        ant -version
+        </pre>
+        </code>
+        </p>
+                    <p class="faq">
+      <a name="InstantiationException"></a>
+      I installed Ant 1.6.x and now get
+        <code>java.lang.InstantiationException: org.apache.tools.ant.Main</code>
+      
+    </p>
+                  <p>
+          The cause of this is that there is an old version of ant somewhere in the
+          class path or configuration.
+        </p>
+                        <p>
+          A version of this problem may be seen on some linux systems.
+          Some linux systems (Fedora Core 2 for example), comes with a version
+          of ant pre-installed. There is a configuration file called
+          <code>/etc/ant.conf</code> which if present, the ant shell
+          script will 'dot' include. On Fedora Core 2, the /etc/ant.conf
+          file resets the <code>ANT_HOME</code> environment variable to
+          <code>/usr/share/ant</code>. This causes the problem that
+          an old version of ant (1.5.x in this cause) will be used
+          with a new version of the ant script file.
+        </p>
+                        <p>
+          One can check if this is the case by doing
+          <code>ant --noconfig -version</code>.
+        </p>
+                    <p class="faq">
+      <a name="mangled-manifest"></a>
+      
+        Whenever I use the Ant jar or manifest related tasks, long lines in
+        my manifest are wrapped at 70 characters and the resulting jar does
+        not work in my application server. Why does Ant do this?
+      
+    </p>
+                  <p>
+          Ant implements the Java
+          <a href="http://download.oracle.com/javase/1.4.2/docs/guide/jar/jar.html">Jar
+          file specification</a>. Please refer to the notes section where it
+          discusses the maximum allowable length of a line and the concept of
+          continuation characters.
+        </p>
+                        <p>
+          If a jar file produced by Ant does not work in your appserver, and
+          that failure is due to the wrapped manifest, then you need
+          to consult your appserver provider, as it is a bug in their
+          appserver. Far more likely, however, is a problem in your
+          specification of your classpath. It is not Ant's wrapping of your
+          classpath that is the problem.
+        </p>
+                        <p>
+          Do not raise a bug about this issue until you have checked to ensure
+          that the problem is not due to your classpath specification.
+        </p>
+                    <p class="faq">
+      <a name="CreateProcess_error_2"></a>
+      <code>&lt;exec&gt;</code> fails with <code>"Cannot run
+          program "...":CreateProcess error=2"</code> on
+        Windows.
+    </p>
+                  <p>A common problem is not having the executable on the
+          PATH. In case you get an error message <code>Cannot run
+          program "...":CreateProcess error=2. The system cannot find
+            the path specified.</code> have a look at your PATH
+          variable.</p>
+                        <p>Just type the command directly on the command line and if
+          Windows finds it, Ant should do it too. (Otherwise ask on
+          the user mailinglist for help.) If Windows can not execute
+          the program add the directory of the programm to the PATH
+          (<code>set PATH=%PATH%;dirOfProgram</code>) or specify the
+          absolute path in the <code>executable</code> attribute in
+          your buildfile.</p>
+                                <p class="faq">
+      <a name="integration"></a>
+      Is Apache Ant supported by my IDE/Editor?
+    </p>
+                  <p>See the <a href="external.html#IDE and Editor Integration">section
+        on IDE integration</a> on our External Tools and Tasks page.</p>
+                    <p class="faq">
+      <a name="emacs-mode"></a>
+      Why doesn't (X)Emacs/vi/MacOS X's project builder
+      correctly parse the error messages generated by Ant?
+    </p>
+                  <p>Ant adds a "banner" with the name of the current
+        task in front of all logging messages - and there are no built-in
+        regular expressions in your editor that would account for
+        this.</p>
+                        <p>You can disable this banner by invoking Ant with the
+        <code>-emacs</code> switch.  To make Ant autodetect
+        Emacs' compile mode, put this into your
+        <code>.antrc</code> (contributed by Ville Skyttä).</p>
+                        <pre class="code">
+# Detect (X)Emacs compile mode
+if [ &quot;$EMACS&quot; = &quot;t&quot; ] ; then
+  ANT_ARGS=&quot;$ANT_ARGS -emacs&quot;
+  ANT_OPTS=&quot;$ANT_OPTS -Dbuild.compiler.emacs=true&quot;
+fi
+</pre>
+                        <p>Alternatively, you can add the following snippet to your
+        <code>.emacs</code> to make Emacs understand Ant's
+        output.</p>
+                        <pre class="code">
+(require 'compile)
+(setq compilation-error-regexp-alist
+  (append (list
+     ;; works for jikes
+     '(&quot;^\\s-*\\[[^]]*\\]\\s-*\\(.+\\):\\([0-9]+\\):\\([0-9]+\\):[0-9]+:[0-9]+:&quot; 1 2 3)
+     ;; works for javac
+     '(&quot;^\\s-*\\[[^]]*\\]\\s-*\\(.+\\):\\([0-9]+\\):&quot; 1 2))
+  compilation-error-regexp-alist))
+</pre>
+                        <p>Yet another alternative that preserves most of Ant's
+        formatting is to pipe Ant's output through the following Perl
+        script by Dirk-Willem van Gulik:</p>
+                        <pre class="code">
+#!/usr/bin/perl
+#
+# May 2001 dirkx@apache.org - remove any
+# [foo] lines from the output; keeping
+# spacing more or less there.
+#
+$|=1;
+while(&lt;STDIN&gt;) {
+        if (s/^(\s+)\[(\w+)\]//) {
+                if ($2 ne $last) {
+                        print &quot;$1\[$2\]&quot;;
+                        $s = ' ' x length($2);
+                } else {
+                        print &quot;$1 $s &quot;;
+                };
+                $last = $2;
+        };
+        print;
+};
+</pre>
+                                <p class="faq">
+      <a name="dtd"></a>
+      Is there a DTD that I can use to validate my build
+      files?
+    </p>
+                  <p>An incomplete DTD can be created by the
+          <code>&lt;antstructure&gt;</code> task - but this one
+          has a few problems:</p>
+                        <ul>
+            <li>It doesn't know about required attributes.  Only
+            manual tweaking of this file can help here.</li>
+
+            <li>It is not complete - if you add new tasks via
+            <code>&lt;taskdef&gt;</code> it won't know about it.  See
+            <a href="http://www.sdv.fr/pages/casa/html/ant-dtd.en.html">this
+            page</a> by Michel Casabianca for a solution to this
+            problem.  Note that the DTD you can download at this page
+            is based on Apache Ant 0.3.1.</li>
+
+            <li>It may even be an invalid DTD.  As Ant allows tasks
+            writers to define arbitrary elements, name collisions will
+            happen quite frequently - if your version of Ant contains
+            the optional <code>&lt;test&gt;</code> and
+            <code>&lt;junit&gt;</code> tasks, there are two XML
+            elements named <code>test</code> (the task and the nested child
+            element of <code>&lt;junit&gt;</code>) with different attribute
+            lists.  This problem cannot be solved; DTDs don't give a
+            syntax rich enough to support this.</li>
+          </ul>
+                    <p class="faq">
+      <a name="xml-entity-include"></a>
+      How do I include an XML snippet in my build file?
+    </p>
+                  <p>You can use XML's way of including external files and let
+        the parser do the job for Ant:</p>
+                        <pre class="code">
+&lt;?xml version=&quot;1.0&quot;?&gt;
+
+&lt;!DOCTYPE project [
+       &lt;!ENTITY common SYSTEM &quot;common.xml&quot;&gt;
+]&gt;
+
+&lt;project name=&quot;test&quot; default=&quot;test&quot; basedir=&quot;.&quot;&gt;
+
+  &lt;target name=&quot;setup&quot;&gt;
+    ...
+  &lt;/target&gt;
+
+  &amp;common;
+
+  ...
+
+&lt;/project&gt;
+</pre>
+                        <p>will literally include the contents of <code>common.xml</code> where
+        you've placed the <code>&amp;common;</code> entity.</p>
+                        <p>(The filename <code>common.xml</code> in this example is resolved
+        relative to the containing XML file by the XML parser. You may also use
+        an absolute <code>file:</code> protocol URI.)</p>
+                        <p>In combination with a DTD, this would look like this:</p>
+                        <pre class="code">
+&lt;!DOCTYPE project PUBLIC &quot;-//ANT//DTD project//EN&quot; &quot;ant.dtd&quot; [
+   &lt;!ENTITY include SYSTEM &quot;header.xml&quot;&gt;
+]&gt;
+</pre>
+                        <p>Starting with Ant 1.6, there is a new
+        <code>&lt;import&gt;</code> task that can (also) be used to
+        include build file fragments.  Unlike the snippets used with
+        entity includes, the referenced files have to be complete Ant
+        build files, though.</p>
+                        <p>The example above would become:</p>
+                        <pre class="code">
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;project name=&quot;test&quot; default=&quot;test&quot; basedir=&quot;.&quot;&gt;
+
+  &lt;target name=&quot;setup&quot;&gt;
+    ...
+  &lt;/target&gt;
+
+  &lt;import file=&quot;./common.xml&quot;/&gt;
+
+  ...
+
+&lt;/project&gt;
+</pre>
+                        <p>Unlike entity includes, <code>&lt;import&gt;</code> will
+        let you use Ant properties in the file name.</p>
+                    <p class="faq">
+      <a name="mail-logger"></a>
+      How do I send an email with the result of my build
+        process?
+    </p>
+                  <p>If you are using a nightly build of Ant 1.5 after
+        2001-12-14, you can use the built-in MailLogger:</p>
+                        <pre class="code">
+         ant -logger org.apache.tools.ant.listener.MailLogger
+</pre>
+                        <p>See the <a href="http://svn.apache.org/repos/asf/ant/core/trunk/docs/manual/listeners.html">Listeners
+        &amp; Loggers</a> documentation for details on the properties
+        required.</p>
+                        <p>For older versions of Ant, you can use a custom
+        BuildListener that sends out an email
+        in the buildFinished() method.  Will Glozer
+        &lt;will.glozer@jda.com&gt; has written such a listener based
+        on <a href="http://www.oracle.com/technetwork/java/index-jsp-139225.html">JavaMail</a>.
+        The source is:</p>
+                        <pre class="code">
+import java.io.*;
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import org.apache.tools.ant.*;
+
+/**
+ * A simple listener that waits for a build to finish and sends an email
+ * of the results.  The settings are stored in &quot;monitor.properties&quot; and
+ * are fairly self explanatory.
+ *
+ * @author      Will Glozer
+ * @version     1.05a 09/06/2000
+ */
+public class BuildMonitor implements BuildListener {
+    protected Properties props;
+
+    /**
+     * Create a new BuildMonitor.
+     */
+    public BuildMonitor() throws Exception {
+        props = new Properties();
+        InputStream is = getClass().getResourceAsStream(&quot;monitor.properties&quot;);
+        props.load(is);
+        is.close();
+    }
+
+    public void buildStarted(BuildEvent e) {
+    }
+
+    /**
+     * Determine the status of the build and the actions to follow, now that
+     * the build has completed.
+     *
+     * @param       e       Event describing the build status.
+     */
+    public void buildFinished(BuildEvent e) {
+        Throwable th = e.getException();
+        String status = (th != null) ? &quot;failed&quot; : &quot;succeeded&quot;;
+
+        try {
+            String key = &quot;build.&quot; + status;
+            if (props.getProperty(key + &quot;.notify&quot;).equalsIgnoreCase(&quot;false&quot;)) {
+                    return;
+            }
+
+            Session session = Session.getDefaultInstance(props, null);
+
+            MimeMessage message = new MimeMessage(session);
+            message.addRecipients(Message.RecipientType.TO, parseAddresses(
+                props.getProperty(key + &quot;.email.to&quot;)));
+            message.setSubject(props.getProperty(key + &quot;.email.subject&quot;));
+
+            BufferedReader br = new BufferedReader(new FileReader(
+                props.getProperty(&quot;build.log&quot;)));
+            StringWriter sw = new StringWriter();
+
+            String line = br.readLine();
+            while (line != null) {
+                sw.write(line);
+                sw.write(&quot;\n&quot;);
+                line = br.readLine();
+            }
+            br.close();
+
+            message.setText(sw.toString(), &quot;UTF-8&quot;);
+            sw.close();
+
+            Transport transport = session.getTransport();
+            transport.connect();
+            transport.send(message);
+            transport.close();
+        } catch (Exception ex) {
+            System.out.println(&quot;BuildMonitor failed to send email!&quot;);
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Parse a comma separated list of internet email addresses.
+     *
+     * @param       s       The list of addresses.
+     * @return      Array of Addresses.
+     */
+    protected Address[] parseAddresses(String s) throws Exception {
+        StringTokenizer st = new StringTokenizer(s, &quot;,&quot;);
+        Address[] addrs = new Address[st.countTokens()];
+
+        for (int i = 0; i &lt; addrs.length; i++) {
+            addrs[i] = new InternetAddress(st.nextToken());
+        }
+        return addrs;
+    }
+
+    public void messageLogged(BuildEvent e) {
+    }
+
+    public void targetStarted(BuildEvent e) {
+    }
+
+    public void targetFinished(BuildEvent e) {
+    }
+
+    public void taskStarted(BuildEvent e) {
+    }
+
+    public void taskFinished(BuildEvent e) {
+    }
+}
+</pre>
+                        <p>With a <code>monitor.properties</code> like this:</p>
+                        <pre class="code">
+# configuration for build monitor
+
+mail.transport.protocol=smtp
+mail.smtp.host=&lt;host&gt;
+mail.from=Will Glozer &lt;will.glozer@jda.com&gt;
+
+build.log=build.log
+
+build.failed.notify=true
+build.failed.email.to=will.glozer@jda.com
+build.failed.email.subject=Nightly build failed!
+
+build.succeeded.notify=true
+build.succeeded.email.to=will.glozer@jda.com
+build.succeeded.email.subject=Nightly build succeeded!
+</pre>
+                        <p><code>monitor.properties</code> should be placed right next
+        to your compiled <code>BuildMonitor.class</code>.  To use it,
+        invoke Ant like:</p>
+                        <pre class="code">
+ant -listener BuildMonitor -logfile build.log
+</pre>
+                        <p>Make sure that <code>mail.jar</code> from JavaMail and
+        <code>activation.jar</code> from the
+        <a href="http://www.oracle.com/technetwork/java/javase/jaf-135115.html">Java
+        Beans Activation Framework</a> are in your <code>CLASSPATH</code>.</p>
+                    <p class="faq">
+      <a name="listener-properties"></a>
+      How do I get at the properties that Ant was running
+      with from inside BuildListener?
+    </p>
+                  <p>You can get at a hashtable with all the properties that Ant
+        has been using through the BuildEvent parameter. For
+        example:</p>
+                        <pre class="code">
+public void buildFinished(BuildEvent e) {
+    Hashtable table = e.getProject().getProperties();
+    String buildpath = (String)table.get(&quot;build.path&quot;);
+    ...
+}
+</pre>
+                        <p>This is more accurate than just reading the same property
+        files that your project does, since it will give the correct
+        results for properties that were specified on the Ant command line.</p>
+                                <p class="faq">
+      <a name="input-makes-exec-hang"></a>
+      <code>&lt;exec&gt;</code> causes other tasks to hang
+        or leads to strange behaviour of <code>&lt;input&gt;</code>
+        tasks.
+    </p>
+                  <p>When Apache Ant forks a new process for example by using the
+          <code>&lt;exec&gt;</code>, <code>&lt;apply&gt;</code>
+          or <code>&lt;java&gt;</code> tasks, it will also start a
+          new thread reading from standard input and sending
+          everything that it has read to that process.</p>
+                        <p>Unfortunately Ant has no way to know whether the forked
+          process is ever going to read any input, so it will start such
+          a thread even if the process doesn't need one.</p>
+                        <p>This behaviour leads to strange side effects like the Ant
+          process
+          being <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=34461">suspended
+          when a build forking new process is run as a background
+          process</a> on Unix-like systems or
+          <code>&lt;input&gt;</code>
+          tasks <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=41024">requiring
+          additional inputs</a> if they come after
+          an <code>&lt;exec&gt;</code> task.</p>
+                        <p>Fortunately there is a workaround for this, always specify
+          <code>inputstring=""</code> for
+          any <code>&lt;exec&gt;</code> task (or one of its sibblings)
+          if you know the forked process doesn't consume any
+          input.</p>
+                    <p class="faq">
+      <a name="javac-stackoverflow"></a>
+      <code>&lt;javac&gt;</code> causes a
+        StackOverflowError
+    </p>
+                  <p>For some Java source files it is possible
+          that <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=45370">causes
+          a StackOverlowError</a> is thrown inside Sun's javac
+          compiler.  As far as we can tell this is not triggered by a
+          bug in Ant.</p>
+                        <p>It is possible to work around this problem by setting 
+          <code>&lt;javac&gt;</code>'s fork attribute to true.</p>
+                    <p class="faq">
+      <a name="170-requires-junit"></a>
+      Ant 1.7.0 doesn't build from sources without
+        JUnit
+    </p>
+                  <p>When building Ant 1.7.0 from the source release without
+        junit.jar the build fails with the message "We cannot build
+        the test jar unless JUnit is present".</p>
+                        <p>With Ant 1.7.0 we've started to add ant-testutil.jar as
+        part of the distribution and this causes a hard dependency on
+        JUnit - at least in version 1.7.0.  Unfortunately the
+        installation docs don't say so.</p>
+                        <p>There are two workarounds:</p>
+                        <ol>
+
+          <li>Add junit.jar to your CLASSPATH when building Ant.</li>
+
+          <li>Change Ant's buildfile and remove test-jar from the
+          depends list of the dist-lite target.</li>
+
+        </ol>
+                    <p class="faq">
+      <a name="remove-cr"></a>
+      &lt;chmod&gt; or &lt;exec&gt; doesn't work in Ant
+        1.3 on Unix
+    </p>
+                  <p>The <code>antRun</code> script in <code>ANT_HOME/bin</code>
+        has DOS instead of Unix line endings; you must remove the
+        carriage-return characters from this file.  This can be done by
+        using Ant's <code>&lt;fixcrlf&gt;</code> task
+        or something like:</p>
+                        <pre class="code">
+tr -d '\r' &lt; $ANT_HOME/bin/antRun &gt; /tmp/foo
+mv /tmp/foo $ANT_HOME/bin/antRun
+</pre>
+                    <p class="faq">
+      <a name="delegating-classloader"></a>
+      &lt;style&gt; or &lt;junit&gt; ignores my
+      &lt;classpath&gt;
+    </p>
+                  <p>Starting with Ant 1.7.0, &lt;junit&gt; will honor your
+        nested &lt;classpath&gt;.</p>
+                        <p>These tasks don't ignore your classpath setting, you
+        are facing a common problem with delegating classloaders.</p>
+                        <p>This question collects a common type of problem: A task
+        needs an external library and it has a nested classpath
+        element so that you can point it to this external library, but
+        that doesn't work unless you put the external library
+        into the <code>CLASSPATH</code> or place it in
+        <code>ANT_HOME/lib</code>.</p>
+                        <p>Some background is necessary before we can discuss
+        solutions for <a href="#delegating-classloader-1.5">Ant
+        1.5.x</a> and <a href="#delegating-classloader-1.6">Ant
+        1.6.x</a>.</p>
+                        <p>When you specify a nested <code>&lt;classpath&gt;</code> in
+        Ant, Ant creates a new class loader that uses the path you
+        have specified.  It then tries to load additional classes from
+        this classloader.</p>
+                        <p>In most cases - for example using &lt;style&gt; or
+        &lt;junit&gt; - Ant doesn't load the external library
+        directly, it is the loaded class that does so.</p>
+                        <p>In the case of <code>&lt;junit&gt;</code> it is the task
+        implementation itself and in the case of
+        <code>&lt;style&gt;</code> it is the implementation of the
+        <code>org.apache.tools.ant.taskdefs.XSLTLiaison</code>
+        class.</p>
+                        <p><em>As of Ant 1.7</em> <code>&lt;junit&gt;</code> no longer
+        requires you to have <code>junit.jar</code> in Ant's startup
+        classpath even if <code>ant-junit.jar</code> is present there.</p>
+                        <p>Ant's class loader implementation uses Java's
+        delegation model, see <a href="http://download.oracle.com/javase/6/docs/api/java/lang/ClassLoader.html">http://download.oracle.com/javase/6/docs/api/java/lang/ClassLoader.html</a>
+        the paragraph</p>
+                        <blockquote>The <code>ClassLoader</code> class uses a
+        delegation model to search for classes and resources. Each
+        instance of <code>ClassLoader</code> has an associated parent
+        class loader.  When called upon to find a class or resource, a
+        <code>ClassLoader</code> instance will delegate the search for
+        the class or resource to its parent class loader before
+        attempting to find the class or resource itself. The virtual
+        machine's built-in class loader, called the bootstrap
+        class loader, does not itself have a parent but may serve as
+        the parent of a <code>ClassLoader</code>
+        instance.</blockquote>
+                        <p>The possible solutions depend on the version of Ant you
+        use, see the next sections.</p>
+                    <p class="faq">
+      <a name="delegating-classloader-1.5"></a>
+      &lt;style&gt; or &lt;junit&gt; ignores my
+      &lt;classpath&gt; - Ant 1.5.x version
+    </p>
+                  <p>Please read <a href="#delegating-classloader">the previous
+        entry</a> before you go ahead.</p>
+                        <p>First of all let's state that Ant's wrapper script
+        (<code>ant</code> or <code>ant.bat</code>) adds all
+        <code>.jar</code> files from <code>ANT_HOME/lib</code> to
+        <code>CLASSPATH</code>, therefore "in
+        <code>CLASSPATH</code>" shall mean "either in your
+        <code>CLASSPATH</code> environment variable or
+        <code>ANT_HOME/lib</code>" for the rest of this
+        answer.</p>
+                        <p>The root of the problem is that the class that needs the
+        external library is on the <code>CLASSPATH</code>.</p>
+                        <p>Let's see what happens when you load the &lt;junit&gt;
+        task.  Ant's class loader will consult the
+        bootstrap class loader first, which tries to load classes from
+        <code>CLASSPATH</code>.  The bootstrap class loader
+        doesn't know anything about Ant's class loader or
+        even the path you have specified.</p>
+                        <p>If the bootstrap class loader can load the class Ant has
+        asked it to load (which it can if <code>optional.jar</code> is
+        part of <code>CLASSPATH</code>), this class will try to load
+        the external library from <code>CLASSPATH</code> as well - it
+        doesn't know anything else - and will not find it unless
+        the library is in <code>CLASSPATH</code> as well.</p>
+                        <p>To solve this, you have two major options:</p>
+                        <ol>
+          <li>put all external libraries you need in
+          <code>CLASSPATH</code> as well this is not what you want,
+          otherwise you wouldn't have found this FAQ entry.</li>
+
+          <li>remove the class that loads the external library from
+          the <code>CLASSPATH</code>.</li>
+        </ol>
+                        <p>The easiest way to do this is to remove
+        <code>optional.jar</code> from <code>ANT_HOME/lib</code>.  If
+        you do so, you will have to <code>&lt;taskdef&gt;</code> all
+        optional tasks and use nested <code>&lt;classpath&gt;</code>
+        elements in the <code>&lt;taskdef&gt;</code> tasks that point
+        to the new location of <code>optional.jar</code>.  Also,
+        don't forget to add the new location of
+        <code>optional.jar</code> to the
+        <code>&lt;classpath&gt;</code> of your
+        <code>&lt;style&gt;</code> or <code>&lt;junit&gt;</code>
+        task.</p>
+                        <p>If you want to avoid to <code>&lt;taskdef&gt;</code> all
+        optional tasks you need, the only other option is to remove
+        the classes that should not be loaded via the bootstrap class
+        loader from <code>optional.jar</code> and put them into a
+        separate archive. Add this separate archive to the
+        <code>&lt;classpath&gt;</code> of your
+        <code>&lt;style&gt;</code> or <code>&lt;junit&gt;</code> task
+        - and make sure the separate archive is not in
+        <code>CLASSPATH</code>.</p>
+                        <p>In the case of <code>&lt;junit&gt;</code> you'd have
+        to remove all classes that are in the
+        <code>org/apache/tools/ant/taskdefs/optional/junit</code>
+        directory, in the <code>&lt;style&gt;</code> case it is one of
+        the <code>*Liaison</code> classes in
+        <code>org/apache/tools/ant/taskdefs/optional</code>.</p>
+                        <p>If you use the option to break up <code>optional.jar</code>
+        for <code>&lt;junit&gt;</code> or remove
+        <code>ant-junit.jar</code>, you still have to use a
+        <code>&lt;taskdef&gt;</code> with a nested
+        <code>&lt;classpath&gt;</code> to define the junit task.</p>
+                    <p class="faq">
+      <a name="delegating-classloader-1.6"></a>
+      &lt;style&gt; or &lt;junit&gt; ignores my
+      &lt;classpath&gt; - Ant 1.6.x version
+    </p>
+                  <p>Please read <a href="#delegating-classloader">the general
+        entry</a> before you go ahead.</p>
+                        <p>The wrapper script of Ant 1.6.x no longer adds the contents
+        of <code>ANT_HOME/lib</code> to <code>CLASSPATH</code>,
+        instead Ant will create a classloader on top of the bootstrap
+        classloader - let's call it the coreloader for the rest of
+        this answer - which holds the contents of
+        <code>ANT_HOME/lib</code>.  Ant's core and its tasks will be
+        loaded through this classloader and not the bootstrap
+        classloader.</p>
+                        <p>This causes some small but notable differences between Ant
+        1.5.x and 1.6.x.  Most importantly, a third-party task that is
+        part of <code>CLASSPATH</code> will no longer work in Ant
+        1.6.x since the task now can't find Ant's classes.  In a sense
+        this is the same problem this entry is about, only
+        <code>ant.jar</code> has become the external library in
+        question now.</p>
+                        <p>This coreloader also holds the contents of
+        <code>~/.ant/lib</code> and any file or directory that has
+        been specified using Ant's <code>-lib</code> command line
+        argument.</p>
+                        <p>Let's see what happens when you load the &lt;junit&gt;
+        task.  Ant's class loader will consult the bootstrap
+        class loader first, which tries to load classes from
+        <code>CLASSPATH</code>.  The bootstrap class loader
+        doesn't know anything about Ant's class loader or
+        even the path you have specified.  If it fails to find the
+        class using the bootstrap classloader it will try the
+        coreloader next.  Again, the coreloader doesn't know anything
+        about your path.</p>
+                        <p>If the coreloader can load the class Ant has asked it to
+        load (which it can if <code>ant-junit.jar</code> is in
+        <code>ANT_HOME/lib</code>), this class will try to load the
+        external library from coreloader as well - it doesn't
+        know anything else - and will not find it unless the library
+        is in <code>CLASSPATH</code> or the coreloader as well.</p>
+                        <p>To solve this, you have the following major options:</p>
+                        <ol>
+          <li>put all external libraries you need in
+          <code>CLASSPATH</code> as well this is not what you want,
+          otherwise you wouldn't have found this FAQ entry.</li>
+
+          <li>put all external libraries you need in
+          <code>ANT_HOME/lib</code> or <code>.ant/lib</code>.  This
+          probably still isn't what you want, but you might reconsider
+          the <code>.ant/lib</code> option.</li>
+
+          <li>Always start Ant with the <code>-lib</code> command line
+          switch and point to your external libraries (or the
+          directories holding them).</li>
+
+          <li>remove the class that loads the external library from
+          the coreloader.</li>
+        </ol>
+                        <p>In Ant 1.6 <code>optional.jar</code> has been split into
+        multiple jars, each one containing classes with the same
+        dependencies on external libraries.  You can move the
+        "offending" jar out of <code>ANT_HOME/lib</code>.  For the
+        <code>&lt;junit&gt;</code> task it would be
+        <code>ant-junit.jar</code>.</p>
+                        <p>If you do so, you will have to <code>&lt;taskdef&gt;</code>
+        all optional tasks that need the external library and use
+        nested <code>&lt;classpath&gt;</code> elements in the
+        <code>&lt;taskdef&gt;</code> tasks that point to the new
+        location of <code>ant-*.jar</code>.  Also, don't forget
+        to add the new location of <code>ant-*.jar</code> to the
+        <code>&lt;classpath&gt;</code> of your
+        <code>&lt;style&gt;</code> or <code>&lt;junit&gt;</code>
+        task.</p>
+                        <p>For example</p>
+                        <pre class="code">
+    &lt;taskdef name=&quot;junit&quot;
+            class=&quot;org.apache.tools.ant.taskdefs.optional.junit.JUnitTask&quot;&gt;
+      &lt;classpath&gt;
+        &lt;pathelement location=&quot;HOME-OF/junit.jar&quot;/&gt;
+        &lt;pathelement location=&quot;NEW-HOME-OF/ant-junit.jar&quot;/&gt;
+      &lt;/classpath&gt;
+    &lt;/taskdef&gt;
+</pre>
+                    <p class="faq">
+      <a name="unknownelement.taskcontainer"></a>
+      
+        Why do my custom task containers see Unknown Elements in Ant 1.6
+        - they worked in Ant 1.5?
+      
+    </p>
+                  <p>
+          The objects added in TaskContainer.addTask(Task task)
+          have changed from  Tasks to UnknownElements.
+        </p>
+                        <p>
+          There was a number of valid reasons for this change. But the backward
+          compatibility problems were not noticed until after Ant 1.6.0 was
+          released.
+        </p>
+                        <p>
+          Your container class will need to be modified to check if the Task
+          is an UnknownElement and call perform on it to
+          convert it to a Task and to execute it.
+          (see apache.tools.ant.taskdefs.Sequential)
+        </p>
+                        <p>
+          If you want to do more processing on the task,
+          you need to use the techniques in apache.tools.ant.taskdefs.Antlib#execute()
+          This does make use of one 1.6 method call (UE#getRealObject()),
+          you need to use UE#getTask() instead - this will
+          return null for non tasks (types like fileset id=x).
+        </p>
+                        <p>
+          So.. iterate over the tasks, if they are UEs, convert them to
+          tasks, using UE#maybeConfigure and UE#getTask()
+        </p>
+                        <pre class="code">
+        for (Iterator i = tasks.iterator(); i.hasNext();) {
+           Task t = (Task) i.next();
+           if (t instanceof UnknownElement) {
+              ((UnknownElement) t).maybeConfigure();
+              t = ((UnknownElement) t).getTask();
+              if (t == null) {
+                  continue;
+              }
+           }
+           // .... original Custom code
+        }
+        </pre>
+                        <p>
+          This approach should work for ant1.5 and ant1.6.
+        </p>
+                    <p class="faq">
+      <a name="oom-on-mac"></a>
+      
+        Ant runs into an infinite loop/throws an OutOfMemoryError
+        when I compile my project under Mac OS X.
+      
+    </p>
+                  <p>Apple's Java VMs reside
+        in <code>/System/Library/Frameworks/JavaVM.framework/Versions/X.Y.Z</code>
+          and <code>JAVA_HOME</code> will usually be something
+        like <code>/System/Library/Frameworks/JavaVM.framework/Versions/X.Y.Z/Home</code>.</p>
+                        <p>Inside this home directory there is a symbolic link
+        named <code>shared_bundle</code> that links three levels up,
+        i.e. to <code>/System/Library/Frameworks/JavaVM.framework</code>.</p>
+                        <p>If your build file contains a <code>fileset</code> like</p>
+                        <pre class="code">
+&lt;fileset dir=&quot;${java.home}&quot; includes=&quot;**/*.jar&quot;/&gt;
+</pre>
+                        <p>Ant is going to follow the <code>shared_bundle</code>
+        symlink and ends up recursing into all your installed VMs.
+        Even worse, it will
+        enter <code>/System/Library/Frameworks/JavaVM.framework/Versions/X.Y.Z/Home</code>
+          and will once again follow the same symlink.</p>
+                        <p>Ant versions after Ant 1.7.1 will detect the infinite loop
+        they are in, but the resulting fileset may still be too big to
+        deal with, in particular if you have many different VM
+        versions installed.  The problem is amplified by the fact that
+        each installed version has a <code>shared_bundle</code>
+        symlink in it.</p>
+                        <p>One solution is to not allow the fileset to follow symbolic
+          links at all, like in</p>
+                        <pre class="code">
+&lt;fileset dir=&quot;${java.home}&quot; includes=&quot;**/*.jar&quot; followsymlinks=&quot;false&quot;/&gt;
+</pre>
+                        <p>another one excludes the <code>shared_bundle</code>
+        directories:</p>
+                        <pre class="code">
+&lt;fileset dir=&quot;${java.home}&quot; includes=&quot;**/*.jar&quot; excludes=&quot;**/shared_bundle/**&quot;/&gt;
+</pre>
+                        <p>For Ant 1.7.1 and earlier
+        excluding <code>shared_bundle</code> may not be enough since
+        there is another symlink <code>bundle</code> that points to
+        the <code>Home</code> directory and will cause infite
+        recursions as well.</p>
+                    <p class="faq">
+      <a name="extension-point-and-import"></a>
+      <code>extension-point</code> doesn't work
+        with <code>import</code> like the documentation
+        states.
+    </p>
+                  <p>Yes, there is
+          a <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=48804">bug
+          in Ant 1.8.0</a>.</p>
+                        <p>When using two build files like</p>
+                        <pre class="code">
+importing.xml:
+&lt;project&gt;
+   ...
+   &lt;import file=&quot;imported.xml&quot;/&gt;
+   &lt;target name=&quot;bar&quot; extensionOf=&quot;foo&quot;/&gt;
+&lt;/project&gt;
+imported.xml:
+&lt;project&gt;
+   &lt;extension-point name=&quot;foo&quot;/&gt;
+&lt;/project&gt;
+</pre>
+                        <p>Ant 1.8.0 will fail, claiming there was no extension point
+          named "foo".</p>
+                        <p>This bug has been fixed for Ant 1.8.1.  For Ant 1.8.0 there
+          is
+          a <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=48804#c9">work-around</a>:
+          add an additional layer of importing like in</p>
+                        <pre class="code">
+importing.xml:
+&lt;project&gt;
+   &lt;target name=&quot;bar&quot; extensionOf=&quot;foo&quot;/&gt;
+&lt;/project&gt;
+imported.xml:
+&lt;project&gt;
+   &lt;extension-point name=&quot;foo&quot;/&gt;
+&lt;/project&gt;
+build.xml:
+&lt;project&gt;
+   &lt;import file=&quot;imported.xml&quot;/&gt;
+   &lt;import file=&quot;importing.xml&quot;/&gt;
+&lt;/project&gt;
+</pre>
+                    </div>
+  </div>
+
+        <p class="copyright">
+      Apache Ant, Apache Ivy, Ant, Ivy, Apache, the Apache feather logo, and the Apache Ant project logos are trademarks of The Apache Software Foundation.
+        <script type="text/javascript" language="JavaScript"><!--
+                document.write(" - "+"Last Published: " + document.lastModified);
+              //  -->
+        </script>
+      </p>
+    </body>
+  </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

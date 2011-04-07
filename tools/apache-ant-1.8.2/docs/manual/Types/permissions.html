@@ -1,0 +1,164 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Permissions type</title>
+</head>
+
+<body>
+
+<h2><a name="permissions">Permissions</a></h2>
+<p>
+Permissions represents a set of security permissions granted or revoked to
+a specific part code executed in the JVM where Apache Ant is running in.
+The actual Permissions are specified via a set of nested permission items either
+<code>&lt;grant&gt;</code>ed or <code>&lt;revoke&gt;</code>d.</p>
+<p>
+In the base situation a <a href="#baseset">base set</a> of permissions granted. 
+Extra permissions can be
+granted. A granted permission can be overruled by revoking a permission.
+The security manager installed by the permissions will throw an 
+<code>SecurityException</code> if
+the code subject to these permissions try to use an permission that has not been 
+granted or that has been revoked.</p>
+<h3>Nested elements</h3>
+<h4>grant</h4>
+<p>
+Indicates a specific permission is always granted. Its attributes indicate which 
+permissions are granted.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">class</td>
+    <td valign="top">The fully qualified name of the Permission class.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the Permission. The actual contents depends on the
+    Permission class.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">actions</td>
+    <td valign="top">The actions allowed. The actual contents depend on the 
+    Permission class and name.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+<p>
+Implied permissions are granted.
+</p>
+<p>
+Please note that some Permission classes may actually need a name and / or actions in order to function properly. The name and actions are parsed by the actual
+Permission class.
+</p>
+<h4>revoke</h4>
+<p>
+Indicates a specific permission is revoked.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">class</td>
+    <td valign="top">The fully qualified name of the Permission class.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the Permission. The actual contents depends on the
+    Permission class.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">actions</td>
+    <td valign="top">The actions allowed. The actual contents depend on the 
+    Permission class and name.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+<p>
+Implied permissions are not resolved and therefore also not revoked.
+</p>
+<p>
+The name can handle the * wildcard at the end of the name, in which case all 
+permissions of the specified class of which the name starts with the specified name
+(excluding the *) are revoked. Note that the - wildcard often supported by the
+granted properties is not supported.
+If the name is left empty all names match, and are revoked.
+If the actions are left empty all actions match, and are revoked.
+</p>
+<h3><a name="baseset">Base set</a></h3>
+A permissions set implictly contains the following permissions:
+<blockquote><pre>
+&lt;grant class=&quot;java.net.SocketPermission&quot; name=&quot;localhost:1024-&quot; actions=&quot;listen&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.version&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.vendor&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.vendor.url&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.class.version&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;os.name&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;os.version&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;os.arch&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;file.encoding&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;file.separator&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;path.separator&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;line.separator&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.specification.version&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.specification.vendor&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.specification.name&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.vm.specification.version&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.vm.specification.vendor&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.vm.specification.name&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.vm.version&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.vm.vendor&quot; actions=&quot;read&quot;&gt;
+&lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;java.vm.name&quot; actions=&quot;read&quot;&gt;
+</blockquote></pre>
+These permissions can be revoked via <code>&lt;revoke&gt;</code> elements if necessary.
+
+<h3>Examples</h3>
+<blockquote><pre>
+&lt;permissions&gt;
+  &lt;grant class=&quot;java.security.AllPermission&quot;/&gt;
+  &lt;revoke class=&quot;java.util.PropertyPermission&quot;/&gt;
+&lt;/permissions&gt;
+</pre></blockquote>
+<p>
+Grants all permissions to the code except for those handling Properties.
+</p>
+<blockquote><pre>
+&lt;permissions&gt;
+  &lt;grant class=&quot;java.net.SocketPermission&quot; name=&quot;foo.bar.com&quot; action=&quot;connect&quot;/&gt;
+  &lt;grant class=&quot;java.util.PropertyPermission&quot; name=&quot;user.home&quot; action=&quot;read,write&quot;/&gt;
+&lt;/permissions&gt;
+</pre></blockquote>
+<p>
+Grants the base set of permissions with the addition of a SocketPermission to connect
+to foo.bar.com and the permission to read and write the user.home system property.
+</p>
+
+</body>
+</html>

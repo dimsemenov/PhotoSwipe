@@ -1,0 +1,195 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us"/>
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css"/>
+<title>Apache Ant User Manual</title>
+<base target="mainFrame"/>
+</head>
+
+<body>
+
+<h2><a href="toc.html" target="navFrame">Table of Contents</a></h2>
+
+<ul class="inlinelist">
+<li><a href="tasksoverview.html" target="mainFrame">Overview of Apache Ant Tasks</a></li>
+<li><a href="conceptstypeslist.html" target="navFrame">Concepts and Types</a></li>
+</ul>
+
+<h3>Tasks</h3>
+<ul class="inlinelist">
+<li><a href="Tasks/ant.html">Ant</a></li>
+<li><a href="Tasks/antcall.html">AntCall</a></li>
+<li><a href="Tasks/antlr.html">ANTLR</a></li>
+<li><a href="Tasks/antstructure.html">AntStructure</a></li>
+<li><a href="Tasks/antversion.html">AntVersion</a></li>
+<li><a href="Tasks/apply.html">Apply/<i>ExecOn</i></a></li>
+<li><a href="Tasks/apt.html">Apt</a></li>
+<li><a href="Tasks/attrib.html">Attrib</a></li>
+<li><a href="Tasks/augment.html">Augment</a></li>
+<li><a href="Tasks/available.html">Available</a></li>
+<li><a href="Tasks/basename.html">Basename</a></li>
+<li><a href="Tasks/bindtargets.html">Bindtargets</a></li>
+<li><a href="Tasks/buildnumber.html">BuildNumber</a></li>
+<li><a href="Tasks/unpack.html">BUnzip2</a></li>
+<li><a href="Tasks/pack.html">BZip2</a></li>
+<li><a href="Tasks/cab.html">Cab</a></li>
+<li><a href="Tasks/ccm.html">Continuus/Synergy Tasks</a></li>
+<li><a href="Tasks/changelog.html">CvsChangeLog</a></li>
+<li><a href="Tasks/checksum.html">Checksum</a></li>
+<li><a href="Tasks/chgrp.html">Chgrp</a></li>
+<li><a href="Tasks/chmod.html">Chmod</a></li>
+<li><a href="Tasks/chown.html">Chown</a></li>
+<li><a href="Tasks/clearcase.html">Clearcase Tasks</a></li>
+<li><a href="Tasks/componentdef.html">Componentdef</a></li>
+<li><a href="Tasks/concat.html">Concat</a></li>
+<li><a href="Tasks/condition.html">Condition</a></li>
+<div style="padding-left:1em">
+  <li><a href="Tasks/conditions.html">Supported conditions</a></li>
+</div>
+<li><a href="Tasks/copy.html">Copy</a></li>
+<li><a href="Tasks/copydir.html"><i>Copydir</i></a></li>
+<li><a href="Tasks/copyfile.html"><i>Copyfile</i></a></li>
+<li><a href="Tasks/cvs.html">Cvs</a></li>
+<li><a href="Tasks/cvspass.html">CVSPass</a></li>
+<li><a href="Tasks/cvstagdiff.html">CvsTagDiff</a></li>
+<li><a href="Tasks/cvsversion.html">CvsVersion</a></li>
+<li><a href="Tasks/defaultexcludes.html">Defaultexcludes</a></li>
+<li><a href="Tasks/delete.html">Delete</a></li>
+<li><a href="Tasks/deltree.html"><i>Deltree</i></a></li>
+<li><a href="Tasks/depend.html">Depend</a></li>
+<li><a href="Tasks/dependset.html">Dependset</a></li>
+<li><a href="Tasks/diagnostics.html">Diagnostics</a></li>
+<li><a href="Tasks/dirname.html">Dirname</a></li>
+<li><a href="Tasks/ear.html">Ear</a></li>
+<li><a href="Tasks/echo.html">Echo</a></li>
+<li><a href="Tasks/echoproperties.html">Echoproperties</a></li>
+<li><a href="Tasks/echoxml.html">EchoXML</a></li>
+<li><a href="Tasks/ejb.html">EJB Tasks</a></li>
+<li><a href="Tasks/exec.html">Exec</a></li>
+<li><a href="Tasks/fail.html">Fail</a></li>
+<li><a href="Tasks/filter.html">Filter</a></li>
+<li><a href="Tasks/fixcrlf.html">FixCRLF</a></li>
+<li><a href="Tasks/ftp.html">FTP</a></li>
+<li><a href="Tasks/genkey.html">GenKey</a></li>
+<li><a href="Tasks/get.html">Get</a></li>
+<li><a href="Tasks/unpack.html">GUnzip</a></li>
+<li><a href="Tasks/pack.html">GZip</a></li>
+<li><a href="Tasks/hostinfo.html">Hostinfo</a></li>
+<li><a href="Tasks/image.html">Image</a></li>
+<li><a href="Tasks/import.html">Import</a></li>
+<li><a href="Tasks/include.html">Include</a></li>
+<li><a href="Tasks/input.html">Input</a></li>
+<li><a href="Tasks/jar.html">Jar</a></li>
+<li><a href="Tasks/jarlib-available.html">Jarlib-available</a></li>
+<li><a href="Tasks/jarlib-display.html">Jarlib-display</a></li>
+<li><a href="Tasks/jarlib-manifest.html">Jarlib-manifest</a></li>
+<li><a href="Tasks/jarlib-resolve.html">Jarlib-resolve</a></li>
+<li><a href="Tasks/java.html">Java</a></li>
+<li><a href="Tasks/javac.html">Javac</a></li>
+<li><a href="Tasks/javacc.html">JavaCC</a></li>
+<li><a href="Tasks/javadoc.html">Javadoc/<i>Javadoc2</i></a></li>
+<li><a href="Tasks/javah.html">Javah</a></li>
+<li><a href="Tasks/jdepend.html">JDepend</a></li>
+<li><a href="Tasks/jjdoc.html">JJDoc</a></li>
+<li><a href="Tasks/jjtree.html">JJTree</a></li>
+<li><a href="Tasks/jlink.html"><i>Jlink</i></a></li>
+<li><a href="Tasks/jspc.html">JspC</a></li>
+<li><a href="Tasks/junit.html">JUnit</a></li>
+<li><a href="Tasks/junitreport.html">JUnitReport</a></li>
+<li><a href="Tasks/length.html">Length</a><br/></li>
+<li><a href="Tasks/loadfile.html">LoadFile</a></li>
+<li><a href="Tasks/loadproperties.html">LoadProperties</a></li>
+<li><a href="Tasks/loadresource.html">LoadResource</a></li>
+<li><a href="Tasks/local.html">Local</a></li>
+<li><a href="Tasks/macrodef.html">MacroDef</a></li>
+<li><a href="Tasks/mail.html">Mail</a></li>
+<li><a href="Tasks/makeurl.html">MakeURL</a></li>
+<li><a href="Tasks/manifest.html">Manifest</a></li>
+<li><a href="Tasks/manifestclasspath.html">ManifestClassPath</a></li>
+<li><a href="Tasks/mimemail.html"><i>MimeMail</i></a></li>
+<li><a href="Tasks/mkdir.html">Mkdir</a></li>
+<li><a href="Tasks/move.html">Move</a></li>
+<li><a href="Tasks/native2ascii.html">Native2Ascii</a></li>
+<li><a href="Tasks/netrexxc.html">NetRexxC</a></li>
+<li><a href="Tasks/nice.html">Nice</a></li>
+<li><a href="Tasks/parallel.html">Parallel</a></li>
+<li><a href="Tasks/patch.html">Patch</a></li>
+<li><a href="Tasks/pathconvert.html">PathConvert</a></li>
+<li><a href="Tasks/perforce.html">Perforce Tasks</a></li>
+<li><a href="Tasks/presetdef.html">PreSetDef</a></li>
+<li><a href="Tasks/projecthelper.html">ProjectHelper</a></li>
+<li><a href="Tasks/property.html">Property</a></li>
+<li><a href="Tasks/propertyfile.html">PropertyFile</a></li>
+<li><a href="Tasks/propertyhelper.html">PropertyHelper</a></li>
+<li><a href="Tasks/pvcstask.html">Pvcs</a></li>
+<li><a href="Tasks/recorder.html">Record</a></li>
+<li><a href="Tasks/rename.html"><i>Rename</i></a></li>
+<li><a href="Tasks/renameextensions.html"><i>RenameExtensions</i></a></li>
+<li><a href="Tasks/replace.html">Replace</a></li>
+<li><a href="Tasks/replaceregexp.html">ReplaceRegExp</a></li>
+<li><a href="Tasks/resourcecount.html">ResourceCount</a></li>
+<li><a href="Tasks/retry.html">Retry</a></li>
+<li><a href="Tasks/rexec.html">RExec</a></li>
+<li><a href="Tasks/rmic.html">Rmic</a></li>
+<li><a href="Tasks/rpm.html">Rpm</a></li>
+<li><a href="Tasks/schemavalidate.html">SchemaValidate</a></li>
+<li><a href="Tasks/scp.html">Scp</a></li>
+<li><a href="Tasks/script.html">Script</a></li>
+<li><a href="Tasks/scriptdef.html">Scriptdef</a></li>
+<li><a href="Tasks/sequential.html">Sequential</a></li>
+<li><a href="Tasks/serverdeploy.html">ServerDeploy</a></li>
+<li><a href="Tasks/setproxy.html">Setproxy</a></li>
+<li><a href="Tasks/signjar.html">SignJar</a></li>
+<li><a href="Tasks/sleep.html">Sleep</a></li>
+<li><a href="Tasks/sos.html">SourceOffSite</a></li>
+<li><a href="Tasks/sound.html">Sound</a></li>
+<li><a href="Tasks/splash.html">Splash</a></li>
+<li><a href="Tasks/sql.html">Sql</a></li>
+<li><a href="Tasks/sshexec.html">Sshexec</a></li>
+<li><a href="Tasks/sshsession.html">Sshsession</a></li>
+<li><a href="Tasks/subant.html">Subant</a></li>
+<li><a href="Tasks/symlink.html">Symlink</a></li>
+<li><a href="Tasks/sync.html">Sync</a></li>
+<li><a href="Tasks/tar.html">Tar</a></li>
+<li><a href="Tasks/taskdef.html">Taskdef</a></li>
+<li><a href="Tasks/telnet.html">Telnet</a></li>
+<li><a href="Tasks/tempfile.html">Tempfile</a></li>
+<li><a href="Tasks/touch.html">Touch</a></li>
+<li><a href="Tasks/translate.html">Translate</a></li>
+<li><a href="Tasks/truncate.html">Truncate</a></li>
+<li><a href="Tasks/tstamp.html">TStamp</a></li>
+<li><a href="Tasks/typedef.html">Typedef</a></li>
+<li><a href="Tasks/unzip.html">Unjar</a></li>
+<li><a href="Tasks/unzip.html">Untar</a></li>
+<li><a href="Tasks/unzip.html">Unwar</a></li>
+<li><a href="Tasks/unzip.html">Unzip</a></li>
+<li><a href="Tasks/uptodate.html">Uptodate</a></li>
+<li><a href="Tasks/vss.html#tasks">Microsoft Visual SourceSafe Tasks</a></li>
+<li><a href="Tasks/waitfor.html">Waitfor</a></li>
+<li><a href="Tasks/war.html">War</a></li>
+<li><a href="Tasks/whichresource.html">WhichResource</a></li>
+<li><a href="Tasks/wljspc.html">Weblogic JSP Compiler</a></li>
+<li><a href="Tasks/xmlproperty.html">XmlProperty</a></li>
+<li><a href="Tasks/xmlvalidate.html">XmlValidate</a></li>
+<li><a href="Tasks/style.html">XSLT/<i>Style</i></a></li>
+<li><a href="Tasks/zip.html">Zip</a></li>
+</ul>
+</body>
+</html>

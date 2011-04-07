@@ -1,0 +1,114 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Extension Type</title>
+</head>
+
+<body>
+<h2><a name="fileset">Extension</a></h2>
+<p>Utility type that represents either an available "Optional Package"
+ (formerly known as "Standard Extension") as described in the manifest
+ of a JAR file, or the requirement for such an optional package.</p>
+<p>Note that this type
+works with extensions as defined by the "Optional Package" specification.
+ For more information about optional packages, see the document
+<em>Optional Package Versioning</em> in the documentation bundle for your
+Java2 Standard Edition package, in file
+<code>guide/extensions/versioning.html</code> or online at
+<a href="http://download.oracle.com/javase/1.3/docs/guide/extensions/versioning.html">
+http://download.oracle.com/javase/1.3/docs/guide/extensions/versioning.html.</p>
+
+<h3>Attributes</h3>
+<p>The extension type supports the following attributes</a>:
+</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">extensionName</td>
+    <td valign="top">The name of extension</td>
+    <td valign="top" align="center">yes</td>
+  </tr>
+  <tr>
+    <td valign="top">specificationVersion</td>
+    <td valign="top">The version of extension specification (Must be in
+    dewey decimal aka dotted decimal notation. 3.2.4)</td>
+    <td valign="top" align="center">no</td>
+  </tr>
+  <tr>
+    <td valign="top">specificationVendor</td>
+    <td valign="top">The specification vendor</td>
+    <td valign="top" align="center">no</td>
+  </tr>
+  <tr>
+    <td valign="top">implementationVersion</td>
+    <td valign="top">The version of extension implementation (Must be in
+    dewey decimal aka dotted decimal notation. 3.2.4)</td>
+    <td valign="top" align="center">no</td>
+  </tr>
+  <tr>
+    <td valign="top">implementationVendor</td>
+    <td valign="top">The implementation vendor</td>
+    <td valign="top" align="center">no</td>
+  </tr>
+  <tr>
+    <td valign="top">implementationVendorId</td>
+    <td valign="top">The implementation vendor ID</td>
+    <td valign="top" align="center">no</td>
+  </tr>
+  <tr>
+    <td valign="top">implementationURL</td>
+    <td valign="top">The url from which to retrieve extension.</td>
+    <td valign="top" align="center">no</td>
+  </tr>
+</table>
+
+<h4>Examples</h4>
+<blockquote><pre>
+&lt;extension id=&quot;e1&quot;
+    extensionName=&quot;MyExtensions&quot;
+    specificationVersion=&quot;1.0&quot;
+    specificationVendor=&quot;Peter Donald&quot;
+    implementationVendorID=&quot;vv&quot;
+    implementationVendor=&quot;Apache&quot;
+    implementationVersion=&quot;2.0&quot;
+    implementationURL=&quot;http://somewhere.com/myExt.jar&quot;/&gt;
+</pre></blockquote>
+
+<p>Fully specific extension object.</p>
+
+<blockquote><pre>
+&lt;extension id=&quot;e1&quot;
+    extensionName=&quot;MyExtensions&quot;
+    specificationVersion=&quot;1.0&quot;
+    specificationVendor=&quot;Peter Donald&quot;/&gt;
+</pre></blockquote>
+
+<p>Extension object that just species the specification details.</p>
+
+
+
+</body>
+</html>
+

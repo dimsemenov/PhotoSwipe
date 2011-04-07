@@ -1,0 +1,107 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>ResourceCount Task</title>
+</head>
+
+<body>
+
+<h2>ResourceCount</h2>
+
+<h3>Description</h3>
+<p>Display or set a property containing the size of a nested
+   <a href="../Types/resources.html#collection">Resource Collection</a>.
+   Can also be used as a condition. <b>Since Apache Ant 1.7</b></p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">property</td>
+    <td valign="top">The property to set. If omitted the results are written
+      to the log. Ignored when processing as a condition.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">refid</td>
+    <td valign="top">A <a href="../using.html#references">reference</a>
+      to a Resource Collection.</td>
+    <td valign="top" align="center">
+      Yes, unless a nested Resource Collection is supplied
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">count</td>
+    <td valign="top">Comparison count for processing as a condition.</td>
+    <td valign="top" align="center">Yes, in condition mode</td>
+  </tr>
+  <tr>
+    <td valign="top">when</td>
+    <td valign="top">Comparison type: "equal", "eq", "greater", "gt", "less",
+      "lt", "ge" (greater or equal), "ne" (not equal), "le" (less or equal)
+      for use when operating as a condition.</td>
+    <td valign="top" align="center">No; default is "equal"</td>
+  </tr>
+</table>
+
+<h3>Parameters specified as nested elements</h3>
+<h4>Resource Collection</h4>
+<p>A single
+  <a href="../Types/resources.html#collection">Resource Collection</a>
+should be specified via a nested element or the <code>refid</code> attribute.
+</p>
+
+<h3>Examples</h3>
+<pre>&lt;resourcecount property=&quot;count.foo&quot;&gt;
+  &lt;filelist dir=&quot;.&quot; files=&quot;foo,bar&quot; /&gt;
+&lt;/resourcecount&gt;
+</pre>
+<p>Stores the number of resources in the specified filelist (two)
+in the property named <i>count.foo</i>.</p>
+
+<pre>
+&lt;project&gt;
+  &lt;property name=&quot;file&quot; value=&quot;${ant.file}&quot;/&gt;
+  &lt;resourcecount property=&quot;file.lines&quot;&gt;
+    &lt;tokens&gt;
+      &lt;concat&gt;
+        &lt;filterchain&gt;
+          &lt;tokenfilter&gt;
+            &lt;linetokenizer/&gt;
+          &lt;/tokenfilter&gt;
+        &lt;/filterchain&gt;
+        &lt;fileset file=&quot;${file}&quot;/&gt;
+      &lt;/concat&gt;
+    &lt;/tokens&gt;
+  &lt;/resourcecount&gt;
+  &lt;echo&gt;The file '${file}' has ${file.lines} lines.&lt;/echo&gt;
+&lt;/project&gt;
+</pre>
+<p>Stores the number of lines of the current buildfile in the property <tt>file.lines</tt>.
+Requires Ant 1.7.1+ as &lt;concat&gt; has to be resource.</p>
+
+
+</body>
+</html>
+

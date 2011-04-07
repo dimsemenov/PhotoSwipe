@@ -1,0 +1,294 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>ChangeLog Task</title>
+</head>
+
+<body>
+
+<h2><a name="changelog">CvsChangeLog</a></h2>
+<h3>Description</h3>
+<p>Generates an XML-formatted report file of the change logs recorded in a
+<a href="http://www.nongnu.org/cvs/" target="_top">CVS</a> repository. </p>
+<p><b>Important:</b> This task needs &quot;<code>cvs</code>&quot; on the path. If it isn't, you will get
+an error (such as error <code>2</code> on windows). If <code>&lt;cvs&gt;</code> doesn't work, try to execute <code>cvs.exe</code>
+from the command line in the target directory in which you are working.
+Also note that this task assumes that the cvs exceutable is compatible
+with the Unix version from cvshome.org, this is not completely true
+for certain other cvs clients - like CVSNT for example - and some
+operation may fail when using such an incompatible client.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td colspan="3">Attributes from parent Cvs task which are meaningful here<br>
+    Since Apache Ant 1.6.1</td>
+  </tr>
+  <tr>
+    <td valign="top">cvsRoot</td>
+    <td valign="top">the <code>CVSROOT</code> variable.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">cvsRsh</td>
+    <td valign="top">the <code>CVS_RSH</code> variable.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">package</td>
+    <td valign="top">the package/module to check out.  <b>Note:</b>
+      multiple attributes can be split using spaces.  Use a nested
+      &lt;module&gt; element if you want to specify a module with
+      spaces in its name.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">port</td>
+    <td valign="top">Port used by CVS to communicate with the server.</td>
+    <td align="center" valign="top">No, default port 2401.</td>
+  </tr>
+  <tr>
+    <td valign="top">passfile</td>
+    <td valign="top">Password file to read passwords from.</td>
+    <td align="center" valign="top">No, default file <code>~/.cvspass</code>.</td>
+  </tr>
+  <tr>
+    <td valign="top">failonerror</td>
+    <td valign="top">Stop the build process if the command exits with a
+      return code other than <code>0</code>. Defaults to false</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">tag</td>
+    <td valign="top">query the changelog for a specific branch.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td colspan="3">Specific attributes</td>
+  </tr>
+  <tr>
+    <td valign="top">dir</td>
+    <td valign="top">The directory from which to run the CVS <em>log</em>
+     command.</td>
+    <td align="center" valign="top">No; defaults to ${basedir}.</td>
+  </tr>
+  <tr>
+    <td valign="top">destfile</td>
+    <td valign="top">The file in which to write the change log report.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">usersfile</td>
+    <td valign="top">Property file that contains name-value pairs mapping
+     user IDs and names that should be used in the report in place of
+     the user ID.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">daysinpast</td>
+    <td valign="top">Sets the number of days into the past for which the
+     change log information should be retrieved.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">start</td>
+    <td valign="top">The earliest date from which change logs are to be
+     included in the report.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">end</td>
+    <td valign="top">The latest date to which change logs are to be
+     included in the report.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">remote</td>
+    <td valign="top">If set to true, works against the repository
+      (using rlog) without a working copy.  Default is
+      false.  <em>Since Ant 1.8.0</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">startTag</td>
+    <td valign="top">The start of a tag range. If endTag is also
+      specified, they must both be on the same branch. If endTag is not
+      specified, the end of the range will be the latest on the same
+      branch on which startTag lives.  <em>Since Ant 1.8.0</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">endTag</td>
+    <td valign="top">The end of a tag range. If startTag is also
+     specified, they must both be on the same branch. If startTag is
+     not specified, the start of the range will be the top of the
+     branch on which endTag lives.</td>  included in the report.
+    <em>Since Ant 1.8.0</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3>Parameters specified as nested elements</h3>
+<h4><a name="user">user</a></h4>
+<p>The nested <code>&lt;user&gt;</code> element allows you to specify a
+mapping between a user ID as it appears on the CVS server and a name to
+include in the formatted report.
+Anytime the specified user ID has made a change in the repository, the
+<code>&lt;author&gt;</code> tag in the report file will include
+the name specified in <code>displayname</code> rather than the user ID.
+</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">displayname</td>
+    <td valign="top">The name to be used in the CVS change log report.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">userid</td>
+    <td valign="top">The userid of the person as it exists on the CVS server.
+    </td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+</table>
+
+<h4>module</h4>
+
+<p>Specifies a package/module to work on, unlike the package attribute
+  modules specified using this attribute can contain spaces in their
+  name.</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The module's/package's name.</td>
+    <td align="center" valign="top">Yes.</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>  &lt;cvschangelog dir=&quot;dve/network&quot;
+                destfile=&quot;changelog.xml&quot;
+  /&gt;</pre>
+
+<p>Generates a change log report for all the changes that have been made
+under the <code>dve/network</code> directory.
+It writes these changes into the file <code>changelog.xml</code>.</p>
+
+<pre>  &lt;cvschangelog dir=&quot;dve/network&quot;
+                destfile=&quot;changelog.xml&quot;
+                daysinpast=&quot;10&quot;
+  /&gt;</pre>
+
+<p>Generates a change log report for any changes that were made
+under the <code>dve/network</code> directory in the past 10 days.
+It writes these changes into the file <code>changelog.xml</code>.</p>
+
+<pre>  &lt;cvschangelog dir=&quot;dve/network&quot;
+                destfile=&quot;changelog.xml&quot;
+                start=&quot;20 Feb 2002&quot;
+                end=&quot;20 Mar 2002&quot;
+  /&gt;</pre>
+
+<p>Generates a change log report for any changes that were made
+between February 20, 2002 and March 20, 2002
+under the <code>dve/network</code> directory.
+It writes these changes into the file <code>changelog.xml</code>.</p>
+
+<pre>  &lt;cvschangelog dir=&quot;dve/network&quot;
+                destfile=&quot;changelog.xml&quot;
+                start=&quot;20 Feb 2002&quot;
+  /&gt;</pre>
+
+<p>Generates a change log report for any changes that were made
+after February 20, 2002 under the <code>dve/network</code> directory.
+It writes these changes into the file <code>changelog.xml</code>.</p>
+
+<pre>  &lt;cvschangelog dir=&quot;dve/network&quot;
+                destfile=&quot;changelog.xml&quot;&gt;
+       &lt;user displayname=&quot;Peter Donald&quot; userid=&quot;donaldp&quot;/&gt;
+  &lt;/cvschangelog&gt;</pre>
+
+<p>Generates a change log report for all the changes that were made
+under the <code>dve/network</code> directory, substituting the name
+&quot;Peter Donald&quot; in the <code>&lt;author&gt;</code> tags
+anytime it encounters a change made by the user ID &quot;donaldp&quot;.
+It writes these changes into the file <code>changelog.xml</code>.</p>
+
+<p>Generates a change log report on the <code>ANT_16_BRANCH</code>.</p>
+<pre>
+ &lt;cvschangelog dir=&quot;c:/dev/asf/ant.head&quot; passfile=&quot;c:/home/myself/.cvspass&quot;
+                destfile=&quot;changelogant.xml&quot; tag=&quot;ANT_16_BRANCH&quot;/&gt;
+</pre>
+<h4>Generate Report</h4>
+<p>Ant includes a basic XSLT stylesheet that you can use to generate 
+a HTML report based on the xml output. The following example illustrates
+how to generate a HTML report from the XML report.</p>
+
+<pre>
+        &lt;style in="changelog.xml" 
+               out="changelog.html" 
+               style="${ant.home}/etc/changelog.xsl"&gt;
+          &lt;param name="title" expression="Ant ChangeLog"/&gt;
+          &lt;param name="module" expression="ant"/&gt;
+          &lt;param name="cvsweb" expression="http://cvs.apache.org/viewcvs/"/&gt;
+        &lt;/style&gt;
+</pre>
+
+<h4>Sample Output</h4>
+<pre>
+&lt;changelog&gt;
+  &lt;entry&gt;
+    &lt;date&gt;2002-03-06&lt;/date&gt;
+    &lt;time&gt;12:00&lt;/time&gt;
+    &lt;author&gt;Peter Donald&lt;/author&gt;
+    &lt;file&gt;
+      &lt;name&gt;org/apache/myrmidon/build/AntlibDescriptorTask.java&lt;/name&gt;
+      &lt;revision&gt;1.3&lt;/revision&gt;
+      &lt;prevrevision&gt;1.2&lt;/prevrevision&gt;
+    &lt;/file&gt;
+    &lt;msg&gt;&lt;![CDATA[Use URLs directly rather than go via a File.
+
+This allows templates to be stored inside jar]]&gt;&lt;/msg&gt;
+  &lt;/entry&gt;
+&lt;/changelog&gt;
+</pre>
+
+
+
+</body>
+</html>
+

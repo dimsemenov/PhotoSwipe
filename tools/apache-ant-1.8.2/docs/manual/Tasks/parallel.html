@@ -1,0 +1,236 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Parallel Task</title>
+</head>
+
+<body>
+
+<h2>Parallel</h2>
+<h3>Description</h3>
+<p>
+    Executes nested tasks in parallel with no guarantees of thread safety.
+    Every task will run in its own thread, with the likelihood of 
+    concurrency problems scaling with the number of CPUs on the host system.
+</p>
+<p><b>Warning:</b> While the Apache Ant core is believed to be thread safe, no such 
+    guarantees are made about tasks, which are not tested for thread safety during
+    Ant's test process. 
+    Third party tasks may or may not be thread safe, and some of Ant's core tasks, such as
+    <code>&lt;javac&gt;</code> are definitely not re-entrant. This is because they use libraries that
+    were never designed to be used in a multithreaded environment.
+</p>
+<p>
+    The primary use case for <code>&lt;parallel&gt;</code> is to run external programs
+    such as an application server, and the JUnit or TestNG test suites at the
+    same time. Anyone trying to run large Ant task sequences in parallel, such
+    as javadoc and javac at the same time, is implicitly taking on the task
+    of identifying and fixing all concurrency bugs the tasks that they run.
+    
+</p>
+<p>
+    Accordingly, while this task has uses, it should be considered an advanced
+    task which should be used in certain batch-processing or testing situations,
+    rather than an easy trick to speed up build times on a multiway CPU. 
+</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">threadCount</td>
+    <td valign="top">Maximum numbers of thread to use.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">threadsPerProcessor</td>
+    <td valign="top">Maximum number of threads to use per available processor
+(Java 1.4+)</td>
+    <td align="center" valign="top">No, defers to threadCount</td>
+  </tr>
+  <tr>
+    <td valign="top">timeout</td>
+    <td valign="top">Number of milliseconds before execution is terminated</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">failonany</td>
+    <td valign="top">If any of the nested tasks fails, execution of the task completes
+                     at that point without waiting for any other tasks to complete.</td>
+    <td align="center" valign="top">No, default is false.</td>
+  </tr>
+  <tr>
+    <td valign="top">pollInterval</td>
+    <td valign="top">Currently has no effect</td>
+    <td align="center" valign="top">No, default is 1000</td>
+  </tr>
+</table>
+
+<p>Parallel tasks have a number of uses in an Ant build file including:</p>
+<ul>
+<li>Taking advantage of available processing resources to execute external
+ programs simultaneously.</li>
+<li>Testing servers, where the server can be run in one thread and the test
+harness is run in another thread.</li>
+</ul>
+
+<p>Any valid Ant task may be embedded within a
+parallel task, including other parallel tasks, though there is no guarantee that
+the tasks will be thread safe in such an environment.</p>
+
+<p>While the tasks within the parallel task are being run, the main
+thread will be blocked waiting for all the child threads to complete. If
+execution is terminated by a timeout or a nested task failure when the
+<code>failonany</code>
+flag is set, the parallel task will complete without waiting for other nested
+tasks to complete in other threads.
+</p>
+
+<p>If any of the tasks within the <code>&lt;parallel&gt;</code> task fails and failonany is
+not set, the remaining tasks in other threads will continue to run until
+all threads have completed. In this situation, the parallel task will also fail.</p>
+
+<p>The parallel task may be combined with the <a href="sequential.html">
+sequential</a> task to define sequences of tasks to be executed on each thread
+within the parallel block</p>
+
+<p>The <code>threadCount</code> attribute can be used to place a maximum number of available
+threads for the execution.  When not present all child tasks will be executed at
+once.  When present then the maximum number of concurrently executing tasks will
+not exceed the number of threads specified.  Furthermore, each task will be
+started in the order they are given.  But no guarantee is made as to the speed
+of execution or the order of completion of the tasks, only that each will be
+started before the next.<p>
+
+<p>If you are using Java 1.4 or later you can also use the <code>threadsPerProcessor</code>
+and the number of available threads will be the stated multiple of the number of
+processors (there is no affinity to a particular processor however).  This will
+override the value in <code>threadCount</code>.  If <code>threadsPerProcessor</code>
+is specified on any older JVM, then the value in <code>threadCount</code> will be used as is.</p>
+
+<p>When using <code>threadCount</code> and  <code>threadsPerProcessor</code> 
+    care should be taken to ensure that the build does not deadlock.  
+    This can be caused by tasks such as <code>waitfor</code>
+    taking up all available threads before the tasks that would unlock the 
+    <code>waitfor</code>
+would occur.  This is not a replacement for Java Language level thread
+semantics and is best used for "embarassingly parallel" tasks.</p>
+
+
+<h3>Parameters specified as nested elements</h3>
+
+<h4>daemons</h4>
+<p>
+The parallel task supports a <code>&lt;daemons&gt;</code> nested element. This is a list of tasks
+which are to be run in parallel daemon threads. The parallel task will not wait for
+these tasks to complete. Being daemon threads, however, they will not prevent Ant from
+completing, whereupon the threads are terminated. Failures in daemon threads which
+occur before the parallel task itself finishes will be reported and can cause
+parallel to throw an exception. Failures which occur after parallel has completed are not
+reported.
+</p>
+
+<p>Daemon tasks can be used, for example, to start test servers which might not be easily
+terminated from Ant. By using <code>&lt;daemons&gt;</code> such servers do not halt the build.
+</p>
+
+
+<h3>Examples</h3>
+<pre>
+&lt;parallel&gt;
+  &lt;wlrun ... &gt;
+  &lt;sequential&gt;
+    &lt;sleep seconds=&quot;30&quot;/&gt;
+    &lt;junit fork="true" forkmode="once" ... &gt;
+    &lt;wlstop/&gt;
+  &lt;/sequential&gt;
+&lt;/parallel&gt;
+</pre>
+<p>This example represents a typical pattern for testing a server application.
+In one thread the server is started (the <code>&lt;wlrun&gt;</code> task). 
+The other thread consists
+of a three tasks which are performed in sequence. The <code>&lt;sleep&gt;</code> task is used to
+give the server time to come up. Another task which is capable of validating
+that the server is available could be used in place of the <code>&lt;sleep&gt;</code> task. The
+<code>&lt;junit&gt;</code> test harness then runs, again in its own JVM. Once the tests are complete, the server is stopped
+(using <code>&lt;wlstop&gt;</code> in this example), allowing both threads to complete. The
+<code>&lt;parallel&gt;</code> task will also complete at this time and the build will then
+continue.</p>
+
+<pre>
+&lt;parallel&gt;
+  &lt;javac fork="true"...&gt; &lt;!-- compiler servlet code --&gt;
+  &lt;wljspc ...&gt; &lt;!-- precompile JSPs --&gt;
+&lt;/parallel&gt;
+</pre>
+
+<p>This example shows two independent tasks being run to achieve better
+resource utilization during the build. In this instance, some servlets are being
+compiled in one thead and a set of JSPs is being precompiled in another. Developers
+need to be careful that the two tasks are independent, both in
+terms of their dependencies and in terms of their potential interactions in
+Ant's external environment. Here we set <code>fork="true"</code> for the 
+<code>&lt;javac&gt;</code> task, so that it runs in a new process; 
+if the <code>&lt;wljspc&gt;</code> task used the javac compiler in-VM
+(it may), concurrency problems may arise.
+</p>
+
+<taskdef name=""
+<pre>
+ &lt;macrodef name="dbpurge"&gt;
+    &lt;attribute file="file"/&gt;
+   &lt;sequential&gt;
+      &lt;java jar="utils/dbpurge.jar" fork="true" &gt;
+        &lt;arg file="@{file} /&gt;
+      &lt;/java&gt;
+   &lt;/sequential&gt;
+&lt;/macrodef&gt;
+    
+&lt;parallel threadCount='4'&gt;
+  &lt;dbpurge file="db/one" /&gt;
+  &lt;dbpurge file="db/two" /&gt;
+  &lt;dbpurge file="db/three" /&gt;
+  &lt;dbpurge file="db/four" /&gt;
+  &lt;dbpurge file="db/five" /&gt;
+  &lt;dbpurge file="db/six" /&gt;
+  &lt;dbpurge file="db/seven" /&gt;
+  &lt;dbpurge file="db/eight" /&gt;
+  &lt;!-- repeated about 40 times --&gt;
+&lt;/parallel&gt;
+</pre>
+
+<p>This example represents a typical need for use of the threadCount and
+threadsPerProcessor attributes.  Spinning up all 40 of those tasks could cripple
+the system for memory and CPU time.  By limiting the number of
+concurrent executions you can reduce contention for CPU, memory and disk IO, 
+and so actually finish faster.  This is also a good
+candidiate for use of threadCount (and possibly threadsPerProcessor) because
+each task is independent (every new JVM is forked) and has no dependencies on
+the other tasks.</p>
+
+
+</body>
+</html>
+

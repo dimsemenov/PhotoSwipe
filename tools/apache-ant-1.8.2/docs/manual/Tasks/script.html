@@ -1,0 +1,393 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us"></meta>
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Script Task</title>
+</head>
+
+<body>
+
+<h2><a name="script">Script</a></h2>
+<h3>Description</h3>
+  <p>Execute a script in a
+    <a href="http://jakarta.apache.org/bsf" target="_top">Apache BSF</a>
+    or
+    <a href="https://scripting.dev.java.net">JSR 223</a>  supported language.
+  </p>
+  <p><b>Note:</b>
+    This task depends on external libraries not included in the Apache Ant distribution.
+    See <a href="../install.html#librarydependencies">Library Dependencies</a>
+    for more information.
+  </p>
+  <p>
+    The task may use the BSF scripting manager or the JSR 223 manager that
+    is included in JDK6 and higher. This is controlled by the <code>manager</code>
+    attribute. The JSR 223 scripting manager is indicated by "javax".
+  </p>
+  <p>All items (tasks, targets, etc) of the running project are
+    accessible from the script, using either their <code>name</code> or
+    <code>id</code> attributes (as long as their names are considered
+    valid Java identifiers, that is).
+    This is controlled by the "setbeans" attribute of the task.
+    The name "project" is a pre-defined reference to the Project, which can be
+    used instead of the project name. The name "self" is a pre-defined reference to the actual
+    <code>&lt;script&gt;</code>-Task instance.<br>From these objects you have access to the Ant Java API, see the
+<a href="../api/index.html">JavaDoc</a> (especially for
+<a href="../api/org/apache/tools/ant/Project.html">Project</a> and
+<a href="../api/org/apache/tools/ant/taskdefs/optional/Script.html">Script</a>) for more information.</p>
+<p>If you are using JavaScript under BSF, a good resource is <a target="_blank" href="http://www.mozilla.org/rhino/doc.html">
+http://www.mozilla.org/rhino/doc.html</a> as we are using their JavaScript interpreter.</p>
+<p>Scripts can do almost anything a task written in Java could do.</p>
+<p>Rhino provides a special construct - the <i>JavaAdapter</i>. With that you can
+create an object which implements several interfaces, extends classes and for which you
+can overwrite methods. Because this is an undocumented feature (yet), here is the link
+to an explanation: <a href="http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&oe=UTF-8&newwindow=1&frame=right&th=610d2db45c0756bd&seekm=391EEC3C.5236D929%40yahoo.com#link2">
+Groups@Google: "Rhino, enum.js, JavaAdapter?"</a> by Norris Boyd in the newsgroup
+<i>netscape.public.mozilla.jseng</i>.</p>
+
+<p>If you are creating Targets programmatically, make sure you set the
+Location to a useful value.  In particular all targets should have
+different location values.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">language</td>
+    <td valign="top">The programming language the script is written in.
+      Must be a supported Apache BSF or JSR 223 language</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">manager</td>
+    <td valign="top">
+      <em>Since: Ant 1.7. </em>
+      The script engine manager to use. This can have
+      one of three values ("auto", "bsf" or "javax").
+      The default value is "auto".
+      <dl>
+        <li>"bsf" use the BSF scripting manager to run
+          the language.</li>
+        <li>"javax" use the <em>javax.scripting</em> manager
+          to run the language. (This will only work for JDK6 and higher).</li>
+        <li>"auto" use the BSF engine if it exists,
+          otherwise use the <em>javax.scripting</em> manager.</li>
+      </dl>
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">src</td>
+    <td valign="top">The location of the script as a file, if not inline</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">setbeans</td>
+    <td valign="top">
+      This attribute controls whether to set variables for
+      all properties, references and targets in the running script.
+      If this attribute is false, only the the "project" and "self" variables are set.
+      If this attribute is true all the variables are set. The default value of this
+      attribute is "true".  <em>Since Ant 1.7</em>
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">
+      The classpath to pass into the script. <em>Since Ant 1.7</em>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpathref</td>
+    <td valign="top">The classpath to use, given as a
+       <a href="../using.html#references">reference</a> to a path defined elsewhere.
+    <em>Since Ant 1.7</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+<h3>Parameters specified as nested elements</h3>
+<h4>classpath</h4>
+  <p><em>Since Ant 1.7</em></p>
+<p>
+  <code>Script</code>'s <code>classpath</code> attribute is a 
+  <a href="../using.html#path">path-like structure</a> and can also be set via a nested
+  <code>&lt;classpath&gt;</code> element.
+  <p>
+    If a classpath is set, it will be used as the current thread
+    context classloader, and
+    as the classloader given to the BSF manager. 
+    This means that it can be used to specify
+    the classpath containing the language implementation for BSF
+    or for JSR 223 managers.
+    This can be useful if one wants
+    to keep ${user.home}/.ant/lib free of lots of scripting language
+    specific jar files.
+  </p>
+  <p>
+    <b>NB: (Since Ant 1.7.1)</b>
+    This classpath <em>can</em> be used to
+    specify the location of
+    the BSF jar file and/or languages
+    that have engines in the BSF jar file. This includes the
+    javascript, jython, netrexx and jacl languages.
+  </p>
+</p>
+<h3>Examples</h3>
+The following snippet shows use of five different languages:
+  <blockquote><pre>
+    &lt;property name="message" value="Hello world"/&gt;
+
+    &lt;script language="groovy"&gt;
+      println("message is " + message)
+    &lt;/script&gt;
+
+    &lt;script language="beanshell"&gt;
+      System.out.println("message is " + message);
+    &lt;/script&gt;
+
+    &lt;script language="judoscript"&gt;
+        println 'message is ', message
+    &lt;/script&gt;
+
+    &lt;script language="ruby"&gt;
+        print 'message is ', $message, "\n"
+    &lt;/script&gt;
+
+    &lt;script language="jython"&gt;
+print "message is %s" % message
+    &lt;/script&gt;
+</pre>
+  </blockquote>
+  <p>
+  Note that for the <i>jython</i> example, the script contents <b>must</b>
+  start on the first column.
+  </p>
+  <p>
+    Note also that for the <i>ruby</i> example, the names of the set variables are prefixed
+    by a '$'.
+  <p>
+    The following script shows a little more complicated jruby example:
+  </p>
+  <blockquote><pre>
+&lt;script language="ruby"&gt;
+  xmlfiles = Dir.new(".").entries.delete_if { |i| ! (i =~ /\.xml$/) }
+  xmlfiles.sort.each { |i| $self.log(i) }
+&lt;/script&gt;
+</pre>
+  </blockquote>
+  <p>
+    The same example in groovy is:
+  </p>
+  <blockquote><pre>
+&lt;script language="groovy"&gt;
+  xmlfiles = new java.io.File(".").listFiles().findAll{ it =~ "\.xml$"}
+  xmlfiles.sort().each { self.log(it.toString())}
+&lt;/script&gt;
+</pre>
+  </blockquote>
+  <p>
+    The following example shows the use of classpath to specify the location
+    of the beanshell jar file.
+  </p>
+  <blockquote><pre>
+&lt;script language="beanshell" setbeans="true"&gt;
+  &lt;classpath&gt;
+    &lt;fileset dir="${user.home}/lang/beanshell" includes="*.jar" /&gt;
+  &lt;/classpath&gt;
+  System.out.println("Hello world");
+&lt;/script&gt;
+</pre>
+  </blockquote>
+  <p>
+    The following script uses javascript to create a number of
+    echo tasks and execute them.
+  </p>
+<blockquote><pre>
+&lt;project name=&quot;squares&quot; default=&quot;main&quot; basedir=&quot;.&quot;&gt;
+
+  &lt;target name=&quot;main&quot;&gt;
+
+    &lt;script language=&quot;javascript&quot;&gt; &lt;![CDATA[
+
+      for (i=1; i&lt;=10; i++) {
+        echo = squares.createTask(&quot;echo&quot;);
+        echo.setMessage(i*i);
+        echo.perform();
+      }
+
+    ]]&gt; &lt;/script&gt;
+
+  &lt;/target&gt;
+
+&lt;/project&gt;
+</pre></blockquote>
+<p>generates</p>
+<blockquote><pre>
+main:
+1
+4
+9
+16
+25
+36
+49
+64
+81
+100
+
+BUILD SUCCESSFUL
+</pre></blockquote>
+
+<p>Now a more complex example using the Java API and the Ant API. The goal is to list the
+filesizes of all files a <code>&lt;fileset/&gt;</code> caught.</p>
+<blockquote><pre>
+
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;project name="<font color=blue>MyProject</font>" basedir="." default="main"&gt;
+
+  &lt;property name="fs.dir" value="src"/&gt;
+  &lt;property name="fs.includes" value="**/*.txt"/&gt;
+  &lt;property name="fs.excludes" value="**/*.tmp"/&gt;
+
+  &lt;target name="main"&gt;
+    &lt;script language="javascript"&gt; &lt;![CDATA[
+
+      // import statements
+      <font color=blue>// importPackage(java.io)</font>;
+      <font color=blue>importClass(java.io.File)</font>;
+
+      // Access to Ant-Properties by their names
+      dir      = <font color=blue>project</font>.getProperty("fs.dir");
+      includes = <font color=blue>MyProject</font>.getProperty("fs.includes");
+      excludes = <font color=blue>self.getProject()</font>  .<font color=blue>getProperty("fs.excludes")</font>;
+
+      // Create a &lt;fileset dir="" includes=""/&gt;
+      fs = project.<font color=blue>createDataType("fileset")</font>;
+      fs.setDir( new File(dir) );
+      <font color=blue>fs.setIncludes(includes)</font>;
+      fs.setExcludes(excludes);
+
+      // Get the files (array) of that fileset
+      ds = fs.getDirectoryScanner(project);
+      srcFiles = ds.getIncludedFiles();
+
+      // iterate over that array
+      for (i=0; i&lt;srcFiles.length; i++) {
+
+        // get the values via Java API
+        var basedir  = fs.getDir(project);
+        var filename = srcFiles[i];
+        var file = <font color=blue>new File(basedir, filename)</font>;
+        var size = file.length();
+
+        // create and use a Task via Ant API
+        echo = MyProject.<font color=blue>createTask("echo")</font>;
+        echo.setMessage(filename + ": " + size + " byte");
+        echo.<font color=blue>perform()</font>;
+      }
+    ]]&gt;&lt;/script&gt;
+  &lt;/target&gt;
+&lt;/project&gt;
+</pre></blockquote>
+<p>We want to use the Java API. Because we don't want always typing the package signature
+we do an import. Rhino knows two different methods for import statements: one for packages
+and one for a single class. By default only the <i>java</i> packages are available, so
+<i>java.lang.System</i> can be directly imported with <code>importClass/importPackage</code>.
+For other packages you have to prefix the full classified name with <i>Packages</i>.
+For example Ant's <i>FileUtils</i> class can be imported with
+<code>importClass(<b>Packages</b>.org.apache.tools.ant.util.FileUtils)</code>
+<br>
+The <code>&lt;script&gt;</code> task populates the Project instance under
+the name <i>project</i>, so we can use that reference. Another way is to use its given name
+or getting its reference from the task itself.<br>
+The Project provides methods for accessing and setting properties, creating DataTypes and
+Tasks and much more.<br>
+After creating a FileSet object we initialize that by calling its set-methods. Then we can
+use that object like a normal Ant task (<code>&lt;copy&gt;</code> for example).<br>
+For getting the size of a file we instantiate a <code>java.io.File</code>. So we are using
+normal Java API here.<br>
+Finally we use the <code>&lt;echo&gt;</code> task for producing the output. The task is not executed by
+its execute() method, because the perform() method (implemented in Task itself) does the
+appropriate logging before and after invoking execute().
+</p>
+<p>
+  Here is an example of using beanshell to create an ant
+  task. This task will add filesets and paths to a referenced
+  path. If the path does not exist, it will be created.
+</p>
+<blockquote><pre>
+&lt;!--
+       Define addtopath task
+ --&gt;
+&lt;script language="beanshell"&gt;
+    import org.apache.tools.ant.Task;
+    import org.apache.tools.ant.types.Path;
+    import org.apache.tools.ant.types.FileSet;
+    public class AddToPath extends Task {
+        private Path path;
+        public void setRefId(String id) {
+            path = getProject().getReference(id);
+            if (path == null) {
+                path = new Path(getProject());
+                getProject().addReference(id, path);
+            }
+        }
+        public void add(Path c) {
+            path.add(c);
+        }
+        public void add(FileSet c) {
+            path.add(c);
+        }
+        public void execute() {
+            // Do nothing
+        }
+    }
+    project.addTaskDefinition("addtopath", AddToPath.class);
+&lt;/script&gt;
+</pre></blockquote>
+  <p>
+    An example of using this task to create a path
+    from a list of directories (using antcontrib's
+    <a href="http://ant-contrib.sourceforge.net/tasks/tasks/for.html">
+      &lt;for&gt;</a> task) follows:
+  </p>
+<blockquote><pre>
+&lt;path id="main.path"&gt;
+  &lt;fileset dir="build/classes"/&gt;
+&lt;/path&gt;
+&lt;ac:for param="ref" list="commons,fw,lps"
+        xmlns:ac="antlib:net.sf.antcontrib"&gt;
+  &lt;sequential&gt;
+    &lt;addtopath refid="main.path"&gt;
+      &lt;fileset dir="${dist.dir}/@{ref}/main"
+               includes="**/*.jar"/&gt;
+    &lt;/addtopath&gt;
+  &lt;/sequential&gt;
+&lt;/ac:for&gt;
+</pre></blockquote>
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>FileSet Type</title>
+</head>
+
+<body>
+
+<h2><a name="fileset">FileSet</a></h2>
+<p>A FileSet is a group of files. These files can be found in a
+directory tree starting in a base directory and are matched by
+patterns taken from a number of <a
+href="patternset.html">PatternSets</a> and
+<a href="selectors.html">Selectors</a>.
+<p>PatternSets can be specified as nested
+<code>&lt;patternset&gt;</code> elements. In addition, FileSet holds
+an implicit PatternSet and supports the nested
+<code>&lt;include&gt;</code>, <code>&lt;includesfile&gt;</code>,
+<code>&lt;exclude&gt;</code> and <code>&lt;excludesfile&gt;</code>
+elements of PatternSet directly, as well as PatternSet's
+attributes.</p>
+<p>Selectors are available as nested elements within the FileSet.
+If any of the selectors within the FileSet do not select the file, the
+file is not considered part of the FileSet. This makes a FileSet
+equivalent to an <code>&lt;and&gt;</code> selector container.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">dir</td>
+    <td valign="top">the root of the directory tree of this FileSet.</td>
+    <td valign="middle" align="center" rowspan="2">Either dir or file must be specified</td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">shortcut for specifying a single-file fileset</td>
+  </tr>
+  <tr>
+    <td valign="top">defaultexcludes</td>
+    <td valign="top">indicates whether <a href="../dirtasks.html#defaultexcludes">default excludes</a> should be used or not
+      (<code>yes | no</code>); default excludes are used when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      included; all files are included when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includesfile</td>
+    <td valign="top">the name of a file; each line of this file is
+      taken to be an include pattern.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      excluded; no files (except default excludes) are excluded when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludesfile</td>
+    <td valign="top">the name of a file; each line of this file is
+      taken to be an exclude pattern.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">casesensitive</td>
+    <td valign="top">Must the include and exclude patterns be treated in a case sensitive way?
+        Defaults to true.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">followsymlinks</td>
+    <td valign="top">Shall symbolic links be followed? Defaults to
+      true. See the note <a href="#symlink">below</a>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">erroronmissingdir</td>
+    <td valign="top">
+      Specify what happens if the base directory does not exist.
+      If true a build error will happen, if false, the fileset
+      will be ignored/empty.
+      Defaults to true.
+      <em>Since Apache Ant 1.7.1 (default is true for backward compatibility
+        reasons.)</em>
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+
+<p><a name="symlink"><b>Note</b></a>: All files/directories for which
+the canonical path is different from its path are considered symbolic
+links.  On Unix systems this usually means the file really is a
+symbolic link but it may lead to false results on other
+platforms.</p>
+
+<h4>Examples</h4>
+<blockquote><pre>
+&lt;fileset dir=&quot;${server.src}&quot; casesensitive=&quot;yes&quot;&gt;
+  &lt;include name=&quot;**/*.java&quot;/&gt;
+  &lt;exclude name=&quot;**/*Test*&quot;/&gt;
+&lt;/fileset&gt;
+</pre></blockquote>
+<p>Groups all files in directory <code>${server.src}</code> that are Java
+source files and don't have the text <code>Test</code> in their
+name.</p>
+
+<blockquote><pre>
+&lt;fileset dir=&quot;${server.src}&quot; casesensitive=&quot;yes&quot;&gt;
+  &lt;patternset id=&quot;non.test.sources&quot;&gt;
+    &lt;include name=&quot;**/*.java&quot;/&gt;
+    &lt;exclude name=&quot;**/*Test*&quot;/&gt;
+  &lt;/patternset&gt;
+&lt;/fileset&gt;
+</pre></blockquote>
+<p>Groups the same files as the above example, but also establishes
+a PatternSet that can be referenced in other
+<code>&lt;fileset&gt;</code> elements, rooted at a different directory.</p>
+
+<blockquote><pre>
+&lt;fileset dir=&quot;${client.src}&quot; &gt;
+  &lt;patternset refid=&quot;non.test.sources&quot;/&gt;
+&lt;/fileset&gt;
+</pre></blockquote>
+<p>Groups all files in directory <code>${client.src}</code>, using the
+same patterns as the above example.</p>
+
+<blockquote><pre>
+&lt;fileset dir=&quot;${server.src}&quot; casesensitive=&quot;yes&quot;&gt;
+  &lt;filename name=&quot;**/*.java&quot;/&gt;
+  &lt;filename name=&quot;**/*Test*&quot; negate=&quot;true&quot;/&gt;
+&lt;/fileset&gt;
+</pre></blockquote>
+<p>Groups the same files as the top example, but using the
+<code>&lt;filename&gt;</code> selector.</p>
+
+<blockquote><pre>
+&lt;fileset dir=&quot;${server.src}&quot; casesensitive=&quot;yes&quot;&gt;
+  &lt;filename name=&quot;**/*.java&quot;/&gt;
+  &lt;not&gt;
+    &lt;filename name=&quot;**/*Test*&quot;/&gt;
+  &lt;/not&gt;
+&lt;/fileset&gt;
+</pre></blockquote>
+<p>Groups the same files as the previous example using a combination of the
+<code>&lt;filename&gt;</code> selector and the <code>&lt;not&gt;</code>
+selector container.</p>
+
+<blockquote><pre>
+&lt;fileset dir="src" includes="main/" /&gt;
+</pre></blockquote>
+<p>Selects all files in <i>src/main</i> (e.g. <i>src/main/Foo.java</i> or 
+<i>src/main/application/Bar.java</i>).</p>
+
+
+
+</body>
+</html>
+

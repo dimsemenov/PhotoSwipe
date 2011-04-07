@@ -1,0 +1,990 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>StarTeam Tasks</title>
+</head>
+<body>
+<h1>StarTeam Support</h1>
+<ul>
+  <li><a href="#stcheckout">STCheckout</a></li> 
+  <li><a href="#stcheckin">STCheckin</a></li>
+  <li><a href="#stlabel">STLabel</a></li>
+  <li><a href="#stlist">STList</a></li>
+  <li><a href="#starteam"><i>StarTeam (deprecated) </i></a></li>
+</ul>
+
+<p>
+The StarTeam revision control system was recently acquired by Borland.
+These tasks make use of functions from the StarTeam API to work with that system.  
+As a result they are only available to licensed users of StarTeam.  You must have
+<CODE>starteam-sdk.jar</CODE> in your classpath to run these tasks.
+For more information about the StarTeam API and how to license it, see
+the <a href="http://www.borland.com/starteam/">Borland</a> web site.</p>
+  <p>
+    <em>All the StarTeam task names are in lower case.</em>
+  </p>
+<h3>Important Note on Installation and Licensing:</h3>
+<p>
+<b>On Windows machines, the mere presence of <CODE>starteam-sdk.jar</CODE> on the classpath 
+is not sufficient for getting these tasks to work properly.</b>  These tasks also require a 
+fully-installed and fully-licensed version of the StarGate Runtime.  This is part 
+of a StarTeam client installation or may be installed separately.  The full client
+install is not required.  In particular, the Windows path must include the directory where 
+the StarGate Runtime <CODE>.dll</CODE> files are installed.
+</p><p>
+Earlier versions of Apache Ant (prior to 1.5.2) did not have this restriction because they
+were not as dependent on the StarTeam runtime - which the newer versions use to access
+StarTeam file status information.  The older versions lacked this important capability.
+</p>
+<hr></hr>
+
+<a name="common-params">
+<h2>Common Parameters for All Starteam Tasks</h2></a>
+<p>
+The following parameters, having to do with making the connection to a StarTeam project, are common to all the following tasks except the deprecated <i>StarTeam</i> task.
+</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">username</td>
+    <td valign="top">The username of the account used to log in to the StarTeam server.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>
+  <tr>
+    <td valign="top">password</td>
+    <td valign="top">The password of the account used to log in to the StarTeam server.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>
+
+  <tr>
+    <td valign="top">URL</td>
+    <td valign="top">A string of the form <code>servername:portnum/project/view</code> 
+which enables user to set all of these elements in one string. </td>
+    <td align="center" valign="center"> Either this ...</td>
+  </tr>  
+  <tr>
+    <td valign="top">servername</td>
+    <td valign="top">The name of the StarTeam server.</td>
+    <td align="center" valign="center" rowspan = "4">... or <b>all four</b> of these must be defined.</td>  
+   </tr>
+  <tr>
+    <td valign="top">serverport</td>
+    <td valign="top">The port number of the StarTeam server.</td>
+  </tr>
+  <tr>
+    <td valign="top">projectname</td>
+    <td valign="top">The name of the StarTeam project on which to operate.</td>
+  </tr>
+  <tr>
+    <td valign="top">viewname</td>
+    <td valign="top">The name of the view in the StarTeam project on which to operate.</td>
+  </tr>
+
+
+</table>
+
+<hr></hr>
+
+<a name="stcheckout">
+<h2>STCheckout</h2></a>
+
+<h3>Description</h3>
+
+Checks out files from a StarTeam project.
+
+<p>
+The <i>includes</i> and <i>excludes</i> attributes function differently from
+other tasks in Ant. Inclusion/exclusion by folder is NOT supported.
+</p>
+
+<h3>Parameters</h3>
+See also <A href="#common-params">the required common StarTeam parameters</A>.<br></br>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+
+  <tr>
+    <td valign="top">rootstarteamfolder</td>
+    <td valign="top">The root of the subtree in the StarTeam repository from which to 
+    check out files.  Defaults to the root folder of the view ('/'). 
+      <b><i>If supplied, this should always be an "absolute" path, that is, it should begin with a '/'.  
+      Relative paths have little meaning in this context and confuse StarTeam.</i></b>
+      </td>
+    <td align="center" valign="top">no</td>
+  </tr>  
+  <tr>
+    <td valign="top">rootlocalfolder</td>
+    <td valign="top">The local folder which will be the root of the tree to which files are checked out.  If this is not supplied, then the StarTeam "default folder" associated with <i>rootstarteamfolder</i> is used.
+   </td>
+    <td align="center" valign="top">no</td>
+  </tr>  
+  
+  <tr>
+    <td valign="top">createworkingdirs</td>
+    <td valign="top">creates local folders even when the corresponding StarTeam folder is empty.  Defaults to "true".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">deleteuncontrolled</td>
+    <td valign="top">if true, any files NOT in StarTeam will be deleted.  Defaults to "true".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+    <tr>
+    <td valign="top">includes</td>
+    <td valign="top">Only check out files that match at least one of the patterns in this list.  Patterns must be separated by <i>commas</i>.  Patterns in <i>excludes</i> take precedence over patterns in <i>includes</i>.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">Do not check out files that match at least one of the patterns in this list.  Patterns must be separated by  <i>commas</i>.  Patterns in <i>excludes</i> take precedence over patterns in <i>includes</i>.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">label</td>
+    <td valign="top">Check out files as of this label.  The label must exist in starteam or an exception will be thrown.</td>
+    <td align="center" valign="center" rowspan="2">Either or neither, but not both, may be specified.  Neither <code>locked</code> or <code>unlocked</code> may be true if either <code>label</code> or <code>asofdate</code> is specified.</td>
+  </tr>
+  <tr>
+    <td valign="top">asofdate</td>
+    <td valign="top">Check out files as of this date.  The date must
+    be formatted in ISO8601 datetime
+    (<code>yyyy-MM-dd'T'HH:mm:ss</code>), ISO8601
+    date(<code>yyyy-MM-dd</code>) or a user-defined SimpleDateFormat
+    defined in the <code>asofDateFormat</code> attribute.  If the date
+    is not parsable by the default or selected format, an exception
+    will be thrown.  <em>Since Ant 1.6.</em></td>
+  </tr>
+  <tr>
+    <td valign="top">asofdateformat</td>
+    <td valign="top">java.util.SimpleDateFormat compatible string used
+    to parse the <code>asofdate</code> attribute.  <em>Since Ant
+    1.6.</em></td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">recursive</td>
+    <td valign="top">Indicates if subfolders should be searched for files to check out.  Defaults to "true".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">forced</td>
+    <td valign="top">If true, checkouts will occur regardless of the status 
+that StarTeam is maintaining for the file.   If false, status will be used to determine which files to check out. Defaults to "false".</td>
+    <td align="center" valign="top">no</td>
+  </tr> 
+ <tr>
+    <td valign="top">locked</td>
+    <td valign="top">If true, file will be locked against changes by other 
+users.  If false (default) has no effect. 
+    <td align="center" valign="center" rowspan="2">Either or neither, but not both, may be true. Neither may be true if a <code>label</code> or an <code>asofdate</code> is specified.</td>
+  </tr>
+  <tr>
+    <td valign="top">unlocked</td>
+    <td valign="top">If true, file will be unlocked so that other users may
+change it.  This is a way to reverse changes that have not yet been checked in.
+If false (default) has no effect.</td> 
+  </tr>
+  <tr>
+    <td valign="top">userepositorytimestamp</td>
+    <td valign="top">true means checked out files will get the repository timestamp.
+false(default) means the checked out files will be timestamped at the time
+of checkout.</td>    <td align="center" valign="top">no</td>
+
+  </tr>
+  <tr>
+    <td valign="top">preloadfileinformation</td>
+    <td valign="top">The StarTeam server has the ability to preload file metadata for an
+    entire tree prior to beginning action on that tree.  Doing so can in some instances 
+    lead to substantially faster actions, particularly over large trees.  Setting this 
+    to "yes" (default) engages this functionality, setting it to "no" turns it off.</td>    
+    <td align="center" valign="top">no</td>
+  </tr>
+    
+  <tr>
+    <td valign="top">convertEOL</td>
+    <td valign="top">If true, (default) all ascii files will have their end-of-line 
+    characters adjusted to that of the local machine on checkout.  This is normally
+    what you'd want but if for some reason you don't want that to happen, set it to false
+    and the files will be checked out with whatever end-of-line characters are used on
+    the server. </td>    
+    <td align="center" valign="top">no</td>
+  </tr>
+
+</table>
+
+<h3>Examples</h3>
+
+<pre>
+  &lt;stcheckout servername="STARTEAM" 
+              serverport="49201"
+              projectname="AProject" 
+              viewname="AView"
+              username="auser"
+              password="secret"
+              rootlocalfolder="C:\dev\buildtest\co"
+              forced="true"
+  /&gt;
+</pre>
+
+The minimum necessary to check out files out from a StarTeam server.  This will
+check out all files in the <i>AView</i> view of the <i>AProject</i> project to
+<code>C:\dev\buildtest\co</code>.  Empty folders in StarTeam will have local folders 
+created for them and any non-StarTeam files found in the tree will be deleted.
+
+<pre>
+  &lt;stcheckout URL="STARTEAM:49201/Aproject/AView" 
+              username="auser"
+              password="secret"
+              rootlocalfolder="C:\dev\buildtest\co"
+              forced="true"
+  /&gt;
+</pre>
+And this is a simpler way of accomplishing the same thing as the previous example, using the URL attribute.
+<br></br>
+<pre>
+  &lt;stcheckout URL="STARTEAM:49201/Aproject/AView" 
+              username="auser"
+              password="secret"
+              rootlocalfolder="C:\dev\buildtest\co"
+              rootstarteamfolder="\Dev"
+              excludes="*.bak *.old"
+              label="v2.6.001"
+              forced="true"
+  /&gt;
+</pre>
+
+This will check out all files from the <i>Dev</i> folder and below that do not
+end in <i>.bak</i> or <i>.old</i> with the label <i>v2.6.001</i>.  
+
+<pre>
+  &lt;stcheckout URL="STARTEAM:49201/Aproject/AView"
+              username="auser"
+              password="secret"
+              rootlocalfolder="C:\dev\buildtest\co"
+              includes="*.htm,*.html"
+              excludes="index.*"
+              forced="true"
+  /&gt;
+</pre>
+
+     
+This is an example of overlapping <i>includes</i> and <i>excludes</i> attributes.  Because
+<i>excludes</i> takes precedence over <i>includes</i>, files named <code>index.html</code> will
+not be checked out by this command.
+
+<pre>
+  &lt;stcheckout URL="STARTEAM:49201/Aproject/AView"
+              username="auser"
+              password="secret"
+              rootlocalfolder="C:\dev\buildtest\co"
+              includes="*.htm,*.html"
+              excludes="index.*"
+              forced="true"
+              recursive="false"
+  /&gt;
+</pre>
+This example is like the previous one, but will only check out files in 
+C:\dev\buildtest\co, because of the turning off of the recursive attribute.
+
+<pre>
+  &lt;stcheckout URL="STARTEAM:49201/Aproject/AView"
+              username="auser"
+              password="secret"
+              rootstarteamfolder="src/java"
+              rootlocalfolder="C:\dev\buildtest\co"
+              forced="true"
+  /&gt;
+</pre>
+<br></br>
+<pre>
+  &lt;stcheckout URL="STARTEAM:49201/Aproject/AView"
+              username="auser"
+              password="secret"
+              rootstarteamfolder="src/java"
+  /&gt;
+</pre>
+<br></br>
+<pre>
+ &lt;stcheckout URL="STARTEAM:49201/Aproject/AView"
+             username="auser"
+             password="secret"
+             rootstarteamfolder="src/java"
+             rootlocalfolder="C:\dev\buildtest\co\src\java"
+             forced="true"
+  /&gt;
+</pre>
+
+In the preceding three examples, assuming that the AProject project has a default folder of
+"C:\work\AProject", the first example will check out the tree of files rooted in the src/java folder of the AView view of the AProject in the StarTeam repository to a local tree rooted at C:\dev\buildtest\co, 
+the second to a tree rooted at C:\work\AProject\src\java (since no <i>rootlocalfolder</i> is specified) and the third to a tree rooted at C:\dev\buildtest\co\src\java.  Note also, that since the second example does not set "forced" true, only those files which the repository considers out-of-date will be checked out.
+<hr></hr>
+
+<a name="stcheckin">
+<h2>STCheckin</h2></a>
+
+<h3>Description</h3>
+
+Checks files into a StarTeam project.  Optionally adds files and in the local tree that are not managed by the repository to its control.
+
+<p>
+The <i>includes</i> and <i>excludes</i> attributes function differently from
+other tasks in Ant. Inclusion/exclusion by folder is NOT supported.
+</p>
+
+<h3>Parameters</h3>
+See also <A href="#common-params">the required common StarTeam parameters</A>.<br></br>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">rootstarteamfolder</td>
+    <td valign="top">The root of the subtree in the StarTeam repository into which to 
+    files will be checked.  Defaults to the root folder of the view ('/').
+       <b><i>If supplied, this should always be an "absolute" path, that is, it should begin with a '/'.  
+      Relative paths have little meaning in this context and confuse StarTeam.</i></b></td>
+    <td align="center" valign="top">no</td>
+  </tr>  
+  <tr>
+    <td valign="top">rootlocalfolder</td>
+    <td valign="top">The local folder which will be the root of the tree to which files are checked out.  If this is not supplied, then the StarTeam "default folder" associated with <i>rootstarteamfolder</i> is used. </td>
+    <td align="center" valign="top">no</td>
+  </tr>  
+  
+
+  <tr>
+    <td valign="top">comment</td>
+    <td valign="top">Checkin comment to be saved with the file.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+
+  <tr>
+    <td valign="top">adduncontrolled</td>
+    <td valign="top">if true, any files or folders NOT in StarTeam will be 
+added to the repository.  Defaults to "false".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+    <tr>
+    <td valign="top">includes</td>
+    <td valign="top">Only check in files that match at least one of the patterns in this list.  Patterns must be separated by <i>commas</i>.  Patterns in <i>excludes</i> take precedence over patterns in <i>includes</i>.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">Do not check in files that match at least one of the patterns in this list.  Patterns must be separated by  <i>commas</i>.  Patterns in <i>excludes</i> take precedence over patterns in <i>includes</i>.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">recursive</td>
+    <td valign="top">Indicates if subfolders should be searched for files to check in.  Defaults to "false".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">forced</td>
+    <td valign="top">If true, checkins will occur regardless of the status 
+that StarTeam is maintaining for the file.  If false, checkins will use this status to decide which files to update.  Defaults to "false".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+    <td valign="top">unlocked</td>
+    <td valign="top">If true, file will be unlocked so that other users may
+change it.  If false (default) lock status will not change.
+    <td align="center" valign="top">no</td> 
+  </tr>
+  <tr>
+    <td valign="top">preloadfileinformation</td>
+    <td valign="top">The StarTeam server has the ability to preload file metadata for an
+    entire tree prior to beginning action on that tree.  Doing so can in some instances 
+    lead to substantially faster actions, particularly over large trees.  Setting this 
+    to "yes" (default) engages this functionality, setting it to "no" turns it off.</td>    
+    <td align="center" valign="top">no</td>
+  </tr>
+  </table>
+
+<h3>Examples</h3>
+
+<pre>
+  &lt;stcheckin servername="STARTEAM" 
+             serverport="49201"
+             projectname="AProject" 
+             viewname="AView"
+             username="auser"
+             password="secret"
+             rootlocalfolder="C:\dev\buildtest\co"
+             forced="true"
+  /&gt;
+</pre>
+
+The minimum necessary to check files into a StarTeam server.  This will
+check all files on the local tree rooted at <code>C:\dev\buildtest\co</code>
+into the <i>AView</i> view of the <i>AProject</i> project in the repository.
+For files and folders in the local tree but not in starteam, nothing will be done.  Since the <i>forced</i> attribute is set, the files which are checked in will be checked in without regard to what the StarTeam repository considers their status to be.  This is a reasonable choice of attributes since StarTeam's status for a file is calculated based on the local file in the StarTeam default directory, not on the directory we are actually working with.
+
+<pre>
+  &lt;stcheckin URL="STARTEAM:49201/Aproject/AView" 
+             username="auser"
+             password="secret"
+             rootlocalfolder="C:\dev\buildtest\co"
+             forced="true"
+  /&gt;
+</pre>
+And this is a simpler way of giving the same commands as the command above using the URL shortcut.
+<br></br>
+<pre>
+  &lt;stcheckin URL="STARTEAM:49201/Aproject/AView" 
+             username="auser"
+             password="secret"
+             rootlocalfolder="C:\dev\buildtest\co"
+             rootstarteamfolder="\Dev"
+             excludes="*.bak *.old"
+             forced="true"
+  /&gt;
+</pre>
+
+This will check all files in to the <i>Dev</i> folder and below that do not
+end in <i>.bak</i> or <i>.old</i> from the tree rooted at"C:\dev\buildtest\co" .  
+
+<pre>
+  &lt;stcheckin URL="STARTEAM:49201/Aproject/AView"
+             username="auser"
+             password="secret"
+             rootlocalfolder="C:\dev\buildtest\co"
+             includes="*.htm,*.html"
+             excludes="index.*"
+             forced="true"
+  /&gt;
+</pre>
+
+     
+This is an example of overlapping <i>includes</i> and <i>excludes</i> attributes.  Because
+<i>excludes</i> takes precedence over <i>includes</i>, files named <code>index.html</code> will
+not be checked in by this command.
+
+<pre>
+  &lt;stcheckin URL="STARTEAM:49201/Aproject/AView"
+             username="auser"
+             password="secret"
+             rootlocalfolder="C:\dev\buildtest\co"
+             rootstarteamfolder="src/java"
+             includes="*.htm,*.html"
+             excludes="index.*"
+             forced="true"
+             recursive="false"
+  /&gt;
+</pre>
+This example is like the previous one, but will only check in files from 
+C:\dev\buildtest\co, because of the turning off of the recursive attribute.
+
+<pre>
+  &lt;stcheckin URL="STARTEAM:49201/Aproject/AView"
+             username="auser"
+             password="secret"
+             rootlocalfolder="C:\dev\buildtest\co"
+             rootstarteamfolder="src/java"
+             includes="version.txt"
+             forced="true"
+             recursive="false"
+  /&gt;
+</pre>
+This example is like the previous one, but will only check only in one file, C:\dev\buildtest\co\version.txt to the StarTeam folder src/java.
+
+<pre>
+  &lt;stcheckin URL="STARTEAM:49201/Aproject/AView"
+             username="auser"
+             password="secret"
+             rootlocalfolder="C:\dev\buildtest\co"
+             rootstarteamfolder="src/java"
+             includes="version.java"
+             forced="true"
+             recursive="false"
+             addUncontrolled="true"
+             comment="Fix Bug #667"
+  /&gt;
+</pre>
+This example is like the previous one, but will only check only in one file, C:\dev\buildtest\co\version.java to the StarTeam folder src/java.  Because the <i>addUncontrolled</i> attribute has been set, if StarTeam does not already control this file in this location, it will be added to the repository.  Also, it will write a comment to the repository for this version of the file.
+
+<pre>
+  &lt;stcheckin URL="STARTEAM:49201/Aproject/AView"
+             username="auser"
+             password="secret"
+             rootstarteamfolder="src/java"
+             rootlocalfolder="C:\dev\buildtest\co"
+             forced="true"
+  /&gt;
+</pre>
+<br></br>
+<pre>
+  &lt;stcheckin URL="STARTEAM:49201/Aproject/AView"
+             username="auser"
+             password="secret"
+             rootstarteamfolder="src/java"
+  /&gt;
+</pre>
+<br></br>
+<pre>
+ &lt;stcheckin URL="STARTEAM:49201/Aproject/AView"
+             username="auser"
+             password="secret"
+             rootstarteamfolder="src/java"
+             rootlocalfolder="C:\dev\buildtest\co\src\java"
+             forced="true"
+  /&gt;
+</pre>
+
+In the preceding three examples, assuming that the AProject project has a default folder of C:\work\buildtest\co\AProject,  
+the first example will check in files from a tree rooted at C:\dev\buildtest\co, 
+the second from a tree rooted at C:\work\buildtest\co\AProject\src\java, 
+and the third from a tree rooted at C:\dev\buildtest\co\src\java all to a tree rooted at src/java
+
+<hr></hr>
+
+<a name="stlabel">
+<h2>STLabel</h2></a>
+
+<h3>Description</h3>
+
+Creates a view label in StarTeam at the specified view.  The label will be classified by StarTeam as a "build label".  This task will fail if there already exists in <i>viewname</i> a label with the same name as the <i>label</i> parameter. 
+
+<h3>Parameters</h3>
+See also <A href="#common-params">the required common StarTeam parameters</A>.<br></br>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+
+  <tr>
+    <td valign="top">label</td>
+    <td valign="top">The name to be given to the label</td>
+    <td align="center" valign="top">yes</td>
+  </tr> 
+  <tr>
+    <td valign="top">description</td>
+    <td valign="top">A description of the label to be stored in the StarTeam project.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>
+  <tr>
+    <td valign="top">revisionlabel</td>
+    <td valign="top">Yes means that the label attribute is to be saved as a &quot;revision label&quot;.  No (default) means that it will be saved as a &quot;view label&quot;</td>
+    <td align="center" valign="top">no</td>
+  </tr> 
+  <tr>
+    <td valign="top">buildlabel</td>
+    <td valign="top">Yes means that the label attribute is to be saved as a &quot;build label&quot;.  
+      This means that Change Requests which have an &quot;AddressedIn&quot; field value of &quot;next build&quot;
+       will have this label assigned to that field when the label is created.  
+       No (default) means that no CRs will have this label assigned to them.  This will have no effect if <b>revisionlabel</b> is also true.  </td>
+    <td align="center" valign="top">no</td>
+  </tr> 
+
+ <tr>
+    <td valign="top">lastbuild</td>
+    <td valign="top">The timestamp of the build that will be stored with the label.  Must be formatted <code>yyyyMMddHHmmss</code></td>
+    <td align="center" valign="top">no</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+
+This example shows the use of this tag.  It will create a View label that is a build label named <i>Version 6.2</i> with
+<i>&quot;Thorough description&quot;</i> as its description.
+<pre>
+  &lt;tstamp&gt;
+    &lt;format property="nowstamp" pattern="yyyyMMddHHmmss" locale="en"/&gt;
+  &lt;/tstamp&gt;  
+  &lt;stlabel URL="STARTEAM:49201/Aproject/AView"
+           username="auser"
+           password="secret"
+           label="Version 6.2"
+           lastbuild="${nowstamp}"
+           description="Thorough description"
+  /&gt;
+</pre>
+This example creates a non-build View label named <i>Version 6.3</i> with
+<i>&quot;Thorough description&quot;</i> as its description.
+<pre>
+  &lt;tstamp&gt;
+    &lt;format property="nowstamp" pattern="yyyyMMddHHmmss" locale="en"/&gt;
+  &lt;/tstamp&gt;  
+  &lt;stlabel URL="STARTEAM:49201/Aproject/AView"
+           username="auser"
+           password="secret"
+           label="Version 6.3"
+           lastbuild="${nowstamp}"
+           description="Thorough description"
+           buildlabel="false"
+  /&gt;
+</pre>
+This example will create a Revision label that is a build label named <i>Version 6.2.00.001</i> with
+<i>&quot;revision label&quot;</i> as its description.
+<pre>
+  &lt;tstamp&gt;
+    &lt;format property="nowstamp" pattern="yyyyMMddHHmmss" locale="en"/&gt;
+  &lt;/tstamp&gt;  
+  &lt;stlabel URL="STARTEAM:49201/Aproject/AView"
+           username="auser"
+           password="secret"
+           label="Version 6.2.00.001"
+           description="revision label"
+           revisionlabel="true"
+  /&gt;
+</pre>
+
+<hr></hr>
+<a name="stlist">
+<h2>STList</h2></a>
+
+<h3>Description</h3>
+
+Produces a listing of the contents of the StarTeam repository at the specified view and StarTeamFolder.  The listing will contain the name of the user, if any, who has the file locked, the size of the file, its lastModifiedDate in the repository, the name of the file, and the status of the local file in the default local directory relative to the repository. 
+
+<h3>Parameters</h3>
+See also <A href="#common-params">the required common StarTeam parameters</A>.<br></br>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+
+  <tr>
+    <td valign="top">rootstarteamfolder</td>
+    <td valign="top">The root of the subtree in the StarTeam repository to be listed.  Defaults to the root folder of the view ('/'). <b><i>If supplied, this should always be an "absolute" path, that is, it should begin with a '/'.  
+      Relative paths have little meaning in this context and confuse StarTeam.</i></b></td>
+    <td align="center" valign="top">no</td>
+  </tr>  
+  <tr>
+    <td valign="top">rootlocalfolder</td>
+    <td valign="top">The local folder which will be the root of the tree to which files are compared.  If this is not supplied, then the StarTeam "default folder" associated with <i>rootstarteamfolder</i> is used and a status field will appear in the listing.  Otherwise, the status field will not appear.
+   </td>
+    <td align="center" valign="top">no</td>
+  </tr>  
+    <tr>
+    <td valign="top">includes</td>
+    <td valign="top">Only list files that match at least one of the patterns in this list.  Patterns must be separated by <i>commas</i>.  Patterns in <i>excludes</i> take precedence over patterns in <i>includes</i>.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">Do not list files that match at least one of the patterns in this list.  Patterns must be separated by  <i>commas</i>.  Patterns in <i>excludes</i> take precedence over patterns in <i>includes</i>.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">label</td>
+    <td valign="top">List files, dates, and statuses as of this label.  The label must exist in starteam or an exception will be thrown.  If not specified, the most recent version of each file will be listed.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">asofdate</td>
+    <td valign="top">List files, dates, and statuses as of this date.
+    The date must be formatted in ISO8601 datetime
+    (<code>yyyy-MM-dd'T'HH:mm:ss</code>), ISO8601
+    date(<code>yyyy-MM-dd</code>) or a user-defined SimpleDateFormat
+    defined in the <code>asofDateFormat</code> attribute.  If the date
+    is not parsable by the default or selected format, an exception
+    will be thrown.  <em>Since Ant 1.6.</em></td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">asofdateformat</td>
+    <td valign="top">java.util.SimpleDateFormat compatible string used
+    to parse the <code>asofdate</code> attribute.  <em>Since Ant
+    1.6.</em></td>
+    <td align="center" valign="top">no</td>
+  </tr>
+
+  <tr>
+    <td valign="top">recursive</td>
+    <td valign="top">Indicates if subfolders should be searched for files to list.  Defaults to "true".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+    <tr>
+    <td valign="top">listuncontrolled</td>
+    <td valign="top">if true, any files or folders NOT in StarTeam will be included in the listing.
+    If false, they won't.  Defaults to "true".</td>
+    <td align="center" valign="top">no</td>
+    </tr>
+  
+  <tr>
+    <td valign="top">preloadfileinformation</td>
+    <td valign="top">The StarTeam server has the ability to preload file metadata for an
+    entire tree prior to beginning action on that tree.  Doing so can in some instances 
+    lead to substantially faster actions, particularly over large trees.  Setting this 
+    to "yes" (default) engages this functionality, setting it to "no" turns it off.</td>    
+    <td align="center" valign="top">no</td>
+  </tr>
+
+</table>
+<h3>Examples</h3>
+
+<pre>
+
+  &lt;stlist url="WASHINGTON:49201/build"
+          username="auser"
+          password="secret"
+ /&gt;
+</pre>
+
+The above command might produce the following listing:
+
+<pre>
+   [stlist] Folder: Build (Default folder: C:/work/build)
+   [stlist] Folder: dev (Default folder: C:/work/build/dev)
+   [stlist] Out of date  Sue Developer        1/1/02 7:25:47 PM CST     4368 build.xml
+   [stlist] Missing      George Hacker        1/1/02 7:25:49 PM CST       36 Test01.properties
+   [stlist] Current                           1/1/02 7:25:49 PM CST     4368 build2.xml
+   [stlist] Folder: test (Default folder C:/work/build/dev/test)
+   [stlist] Missing                           1/1/02 7:25:50 PM CST     4368 build2.xml
+</pre>
+
+while adding a <i>rootlocalfolder</i> and an <i>excludes</i> param ...
+
+<pre>
+
+  &lt;stlist url="WASHINGTON:49201/build"
+          username="auser"
+          password="secret"
+          rootlocalfolder="srcdir2"
+          excludes="*.properties"
+ /&gt;
+</pre>
+
+might produce this listing. The status is missing because we are not going against the default folder.
+
+<pre>
+   [stlist] overriding local folder to srcdir2
+   [stlist] Folder: Build (Local folder: srcdir2)
+   [stlist] Folder: dev (Local folder: srcdir2/dev)
+   [stlist] Sue Developer        1/1/02 7:25:47 PM CST     4368 build.xml
+   [stlist]                      1/1/02 7:25:49 PM CST     4368 build2.xml
+   [stlist] Folder: test (Local folder: srcdir2/dev/test)
+   [stlist]                      1/1/02 7:25:50 PM CST     4368 build2.xml
+ 
+
+</pre>
+
+<hr></hr>
+
+<a name="starteam">
+<h2>Starteam</h2></a>
+<h3><i>Deprecated</i></h3>
+<p><i>This task has been deprecated.  Use the <a href="#stcheckout">STCheckout</a> task instead.</i></p>
+<h3>Description</h3>
+
+Checks out files from a StarTeam project.
+
+<p>
+The <i>includes</i> and <i>excludes</i> attributes function differently from
+other tasks in Ant.  Multiple patterns must be separated by spaces, not
+commas.  See the examples for more information.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">username</td>
+    <td valign="top">The username of the account used to log in to the StarTeam server.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>
+  <tr>
+    <td valign="top">password</td>
+    <td valign="top">The password of the account used to log in to the StarTeam server.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>  
+  <tr>
+    <td valign="top">servername</td>
+    <td valign="top">The name of the StarTeam server.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>
+  <tr>
+    <td valign="top">serverport</td>
+    <td valign="top">The port number of the StarTeam server.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>
+  <tr>
+    <td valign="top">projectname</td>
+    <td valign="top">The name of the StarTeam project.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>
+  <tr>
+    <td valign="top">viewname</td>
+    <td valign="top">The name of the view in the StarTeam project.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>
+
+  <tr>
+    <td valign="top">targetfolder</td>
+    <td valign="top">The folder to which files are checked out.  What this precisely means is determined by the <i>targetFolderAbsolute</i> param.</td>
+    <td align="center" valign="top">yes</td>
+  </tr>  
+  <tr>
+    <td valign="top">targetFolderAbsolute</td>
+    <td valign="top">Determines how <i>targetfolder</i> is interpreted, that is, whether the StarTeam "default folder" for the project is factored in (false) or whether <i>targetFolder</i> is a complete mapping to <i>foldername</i> (true).
+      If "true", the target tree will be rooted at <i>targetfolder+"default folder"</i>.  If false, the target tree will be rooted at <i>targetfolder</i>.  Defaults to "false".  </td>
+    <td align="center" valign="top">no</td>
+  </tr>  
+  <tr>
+    <td valign="top">foldername</td>
+    <td valign="top">The subfolder in the project from which to check out files.</td>
+    <td align="center" valign="top">no</td>
+  </tr>  
+  <tr>
+    <td valign="top">force</td>
+    <td valign="top">Overwrite existing folders if this is set to "true".  Defaults to "false".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">recursion</td>
+    <td valign="top">Indicates if subfolders should be searched for files to check out.  Defaults to "true".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">verbose</td>
+    <td valign="top">Provides progress information.  Defaults to "false".</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top">Only check out files that match at least one of the patterns in this list.  Patterns must be separated by spaces.  Patterns in <i>excludes</i> take precedence over patterns in <i>includes</i>.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">Do not check out files that match at least one of the patterns in this list.  Patterns must be separated by spaces.  Patterns in <i>excludes</i> take precedence over patterns in <i>includes</i>.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+
+<pre>
+  &lt;starteam servername="STARTEAM" 
+            serverport="49201"
+            projectname="AProject" 
+            viewname="AView"
+            username="auser"
+            password="secret"
+            targetfolder="C:\dev\buildtest\co"
+  /&gt;
+</pre>
+
+The minimum necessary to check out files out from a StarTeam server.  This will
+check out all files in the <i>AView</i> view of the <i>AProject</i> project to
+<code>C:\dev\buildtest\co</code>.
+
+<pre>
+  &lt;starteam servername="STARTEAM" 
+            serverport="49201"
+            projectname="AProject" 
+            viewname="AView"
+            username="auser"
+            password="secret"
+            targetfolder="C:\dev\buildtest\co"
+            foldername="\Dev"
+            excludes="*.bak *.old"
+            force="true"
+  /&gt;
+</pre>
+
+This will checkout all files from the <i>Dev</i> folder and below that do not
+end in <i>.bak</i> or <i>.old</i>.  The force flag will cause any existing files to be
+overwritten by the version in StarTeam.
+
+<pre>
+  &lt;starteam servername="STARTEAM" 
+            serverport="49201"
+            projectname="AProject" 
+            viewname="AView"
+            username="auser"
+            password="secret"
+            targetfolder="C:\dev\buildtest\co"
+            includes="*.htm *.html"
+            excludes="index.*"
+  /&gt;
+</pre>
+
+
+       
+This is an example of overlapping <i>includes</i> and <i>excludes</i> attributes.  Because
+<i>excludes</i> takes precedence over <i>includes</i>, files named <code>index.html</code> will
+not be checked out by this command.
+
+
+<pre>
+ &lt;starteam servername="STARTEAM" 
+            serverport="49201"
+            projectname="AProject" 
+            foldername="src/java"
+            viewname="AView"
+            username="auser"
+            password="secret"
+            targetfolder="C:\dev\buildtest\co"
+            targetfolderabsolute="true"
+  /&gt;
+</pre>
+<br></br>
+<pre>
+ &lt;starteam servername="STARTEAM" 
+            serverport="49201"
+            projectname="AProject" 
+            foldername="src/java"
+            viewname="AView"
+            username="auser"
+            password="secret"
+            targetfolder="C:\dev\buildtest\co"
+            targetfolderabsolute ="false"
+  /&gt;
+</pre>
+<br></br>
+<pre>
+ &lt;starteam servername="STARTEAM" 
+            serverport="49201"
+            projectname="AProject" 
+            foldername="src/java"
+            viewname="AView"
+            username="auser"
+            password="secret"
+            targetfolder="C:\dev\buildtest\co\src\java"
+            targetfolderabsolute="true"
+  /&gt;
+</pre>
+
+In the preceding three examples, assuming that the AProject project has a default folder of
+"AProject", the first example will check the files located in starteam under src/java out to a tree rooted at C:\dev\buildtest\co, 
+the second to a tree rooted at C:\dev\buildtest\co\AProject\src\java and the third to a tree rooted at C:\dev\buildtest\co\src\java.
+
+
+
+</body>
+</html>

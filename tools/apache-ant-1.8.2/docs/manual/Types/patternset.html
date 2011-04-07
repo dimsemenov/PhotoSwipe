@@ -1,0 +1,189 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>PatternSet Type</title>
+</head>
+
+<body>
+
+<h2><a name="patternset">PatternSet</a></h2>
+<p><a href="../dirtasks.html#patterns">Patterns</a> can be grouped to
+sets and later be referenced by their <code>id</code> attribute. They
+are defined via a <code>patternset</code> element, which can appear
+nested into a <a href="fileset.html">FileSet</a> or a directory-based
+task that constitutes an implicit FileSet. In addition,
+<code>patternset</code>s can be defined as a stand alone element at
+the same level as <code>target</code> &#151; i.e., as children of
+<code>project</code> as well as as children of
+<code>target</code>.</p> <p>Patterns can be specified by nested
+<code>&lt;include&gt;</code>, or <code>&lt;exclude&gt;</code> elements
+or the following attributes.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      included. All files are included when omitted.</td>
+  </tr>
+  <tr>
+    <td valign="top">includesfile</td>
+    <td valign="top">the name of a file; each line of this file is
+      taken to be an include pattern. You can specify more than one
+      include file by using a nested includesfile elements.</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      excluded; no files (except default excludes) are excluded when omitted.</td>
+  </tr>
+  <tr>
+    <td valign="top">excludesfile</td>
+    <td valign="top">the name of a file; each line of this file is
+      taken to be an exclude pattern. You can specify more than one
+      exclude file by using a nested excludesfile elements.</td>
+  </tr>
+</table>
+<h3>Parameters specified as nested elements</h3>
+<h4><code>include</code> and <code>exclude</code></h4>
+<p>Each such element defines a single pattern for files to include or
+exclude.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">the <a href="../dirtasks.html#patterns">pattern</a>
+      to in/exclude.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">if</td>
+    <td valign="top">Only use this pattern <a href="../properties.html#if+unless">if the named property is set</a>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">unless</td>
+    <td valign="top">Only use this pattern <a href="../properties.html#if+unless">if the named property is
+       <b>not</b> set</a>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+<h4><code>includesfile</code> and <code>excludesfile</code></h4>
+<p>If you want to list the files to include or exclude external to
+your build file, you should use the includesfile/excludesfile
+attributes or elements.  Using the attribute, you can only specify a
+single file of each type, while the nested elements can be specified
+more than once - the nested elements also support if/unless attributes
+you can use to test the existance of a property.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">the name of the file holding the patterns to
+      in/exclude.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">if</td>
+    <td valign="top">Only read this file <a href="../properties.html#if+unless">if the named property is set</a>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">unless</td>
+    <td valign="top">Only read this file <a href="../properties.html#if+unless">if the named property is
+      <b>not</b> set</a>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+<h4><code>patternset</code></h4>
+<p>Patternsets may be nested within one another, adding the nested
+patterns to the parent patternset.</p>
+<h4><code>invert</code></h4>
+<p>A nested patternset can be inverted using the <code>&lt;invert&gt;</code>
+element. <em>Since Apache Ant 1.7.1</em></p>
+<h3>Examples</h3>
+<blockquote><pre>
+&lt;patternset id=&quot;non.test.sources&quot;&gt;
+  &lt;include name=&quot;**/*.java&quot;/&gt;
+  &lt;exclude name=&quot;**/*Test*&quot;/&gt;
+&lt;/patternset&gt;
+</pre></blockquote>
+<p>Builds a set of patterns that matches all <code>.java</code> files
+that do not contain the text <code>Test</code> in their name. This set
+can be <a href="../using.html#references">referred</a> to via
+<code>&lt;patternset refid=&quot;non.test.sources&quot;/&gt;</code>,
+by tasks that support this feature, or by FileSets.</p>
+<p>Note that while the <code>includes</code> and
+<code>excludes</code> attributes accept
+multiple elements separated by commas or spaces, the nested
+<code>&lt;include&gt;</code> and <code>&lt;exclude&gt;</code> elements expect their name
+attribute to hold a single pattern.</p>
+<p>The nested elements allow you to use if and unless arguments to
+specify that the element should only be used if a property is set, or
+that it should be used only if a property is not set.</p>
+<p>For example</p>
+<blockquote><pre>
+&lt;patternset id=&quot;sources&quot;&gt;
+  &lt;include name=&quot;std/**/*.java&quot;/&gt;
+  &lt;include name=&quot;prof/**/*.java&quot; if=&quot;professional&quot;/&gt;
+  &lt;exclude name=&quot;**/*Test*&quot;/&gt;
+&lt;/patternset&gt;
+</pre></blockquote>
+<p>will only include the files in the sub-directory <em>prof</em> if the property
+<em>professional</em> is set to some value.</p>
+<p>The two sets</p>
+<blockquote><pre>
+&lt;patternset includesfile=&quot;some-file&quot;/&gt;
+</pre></blockquote>
+<p>and</p>
+<blockquote><pre>
+&lt;patternset&gt;
+  &lt;includesfile name=&quot;some-file&quot;/&gt; 
+&lt;patternset/&gt;
+</pre></blockquote>
+<p>are identical.  The include patterns will be read from the file
+<code>some-file</code>, one pattern per line.</p>
+<blockquote><pre>
+&lt;patternset&gt;
+  &lt;includesfile name=&quot;some-file&quot;/&gt; 
+  &lt;includesfile name=&quot;${some-other-file}&quot; 
+                if=&quot;some-other-file&quot;
+  /&gt; 
+&lt;patternset/&gt;
+</pre></blockquote>
+<p>will also read include patterns from the file the property
+<code>some-other-file</code> points to, if a property of that name has
+been defined.</p>
+
+
+</body>
+</html>
+

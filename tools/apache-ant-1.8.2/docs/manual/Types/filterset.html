@@ -1,0 +1,184 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>FilterSet Type</title>
+</head>
+
+<body>
+<h2><a name="filterset">FilterSet</a></h2>
+
+<p>FilterSets are groups of filters. Filters can be defined as token-value
+pairs 
+or be read in from a file. FilterSets can appear inside tasks that support this 
+feature or at the same level as <code>&lt;target&gt;</code> - i.e., as
+children of 
+<code>&lt;project&gt;</code>.</p>
+
+<p>FilterSets support the <code>id</code> and <code>refid</code>
+attributes.  You can define a FilterSet with an <code>id</code>
+attribute and then refer to that definition from another FilterSet
+with a <code>refid</code> attribute.  It is also possible to nest
+filtersets into filtersets to get a set union of the contained
+filters.</p>
+
+<p>In addition, FilterSets can specify
+<code>begintoken</code> and/or 
+<code>endtoken</code> attributes to define what to match.</p>
+<p>Filtersets are used for doing 
+replacements in tasks such as <code>&lt;copy&gt;</code>, etc.</p>
+
+<p>If you specify multiple values for the same token, the last one
+  defined within a filterset will be used.</p>
+
+<p>
+<strong>Note: </strong>When a filterset is used in an operation, the files are 
+processed in text mode and the filters applied line by line. This means that
+the copy operations will typically corrupt binary files. When applying filters
+you should ensure that the set of files being filtered are all text files.
+</p>
+
+<h2>Filterset</h2>
+
+<table cellSpacing=0 cellPadding=2 border=1>
+  <tr>
+    <td vAlign=top><b>Attribute</b></td>
+    <td vAlign=top><b>Description</b></td>
+    <td vAlign=top><b>Default</b></td>
+    <td vAlign=top align="center"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td vAlign=top>begintoken</td>
+    <td vAlign=top>The string marking the beginning of a token (eg.,
+      <code>&#64;DATE&#64;</code>).</td>
+    <td vAlign=top>@</td>
+    <td vAlign=top align="center">No</td>
+  </tr>
+  <tr>
+    <td vAlign=top>endtoken</td>
+    <td vAlign=top>The string marking the end of a token (eg.,
+      <code>&#64;DATE&#64;</code>).</td>
+    <td vAlign=top>@</td>
+    <td vAlign=top align="center">No</td>
+  </tr>
+  <tr>
+    <td vAlign=top>filtersfile</td>
+    <td vAlign=top>Specify a single filtersfile.</td>
+    <td vAlign=top><i>none</i></td>
+    <td vAlign=top align="center">No</td>
+  </tr>
+  <tr>
+    <td vAlign=top>recurse</td>
+    <td vAlign=top>Indicates whether the replacement text of tokens
+      should be searched for more tokens. <b>Since Ant 1.6.3</b></td>
+    <td vAlign=top><i>true</i></td>
+    <td vAlign=top align="center">No</td>
+  </tr>
+  <tr>
+    <td vAlign=top>onmissingfiltersfile</td>
+    <td vAlign=top>Indicate behavior when a nonexistent <i>filtersfile</i>
+      is specified.  One of "fail", "warn", "ignore". <b>Since Ant 1.7</b></td>
+    <td vAlign=top>"fail"</td>
+    <td vAlign=top align="center">No</td>
+  </tr>
+</table>
+
+<h2>Filter</h2>
+<table cellSpacing=0 cellPadding=2 border=1>
+  <tr>
+    <td vAlign=top><b>Attribute</b></td>
+    <td vAlign=top><b>Description</b></td>
+    <td vAlign=top align="center"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td vAlign=top>token</td>
+    <td vAlign=top>The token to replace (eg., <code>&#64;DATE&#64;</code>)</td>
+    <td vAlign=top align="center">Yes</td>
+  </tr>
+  <tr>
+    <td vAlign=top>value</td>
+    <td vAlign=top>The value to replace it with
+     (eg., <code>Thursday, April 26, 2001</code>).</td>
+    <td vAlign=top align="center">Yes</td>
+  </tr>
+</table>
+
+<h2>Filtersfile</h2>
+<table cellSpacing=0 cellPadding=2 border=1>
+  <tr>
+    <td vAlign=top><b>Attribute</b></td>
+    <td vAlign=top><b>Description</b></td>
+    <td vAlign=top align="center"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td vAlign=top>file</td>
+    <td vAlign=top>A properties file of 
+      name-value pairs from which to load the tokens.</td>
+    <td vAlign=top align="center">Yes</td>
+  </tr>
+</table>
+
+<h4>Examples</h4>
+
+<p>You are copying the <code>version.txt</code> file to the <code>dist</code>
+directory from the <code>build</code> directory 
+but wish to replace the token <code>&#64;DATE&#64;</code> with today's date.</p>
+<blockquote><pre>
+&lt;copy file=&quot;${build.dir}/version.txt&quot; toFile=&quot;${dist.dir}/version.txt&quot;&gt;
+  &lt;filterset&gt;
+    &lt;filter token=&quot;DATE&quot; value=&quot;${TODAY}&quot;/&gt;
+  &lt;/filterset&gt;
+&lt;/copy&gt;
+</pre></blockquote>
+
+<p>You are copying the <code>version.txt</code> file to the <code>dist</code>
+directory from the build directory 
+but wish to replace the token <code>%DATE*</code> with today's date.</p>
+<blockquote><pre>
+&lt;copy file=&quot;${build.dir}/version.txt&quot; toFile=&quot;${dist.dir}/version.txt&quot;&gt;
+  &lt;filterset begintoken=&quot;%&quot; endtoken=&quot;*&quot;&gt;
+    &lt;filter token=&quot;DATE&quot; value=&quot;${TODAY}&quot;/&gt;
+  &lt;/filterset&gt;
+&lt;/copy&gt;
+</pre></blockquote>
+
+<p>Copy all the docs but change all dates and appropriate notices as stored in a file.</p>
+<blockquote><pre>
+&lt;copy toDir=&quot;${dist.dir}/docs&quot;&gt;
+  &lt;fileset dir=&quot;${build.dir}/docs&quot;&gt;
+    &lt;include name=&quot;**/*.html&quot;&gt;
+  &lt;/fileset&gt;
+  &lt;filterset begintoken=&quot;%&quot; endtoken=&quot;*&quot;&gt;
+    &lt;filtersfile file=&quot;${user.dir}/dist.properties&quot;/&gt;
+  &lt;/filterset&gt;
+&lt;/copy&gt;
+</pre></blockquote>
+
+<p>Define a FilterSet and reference it later.</p>
+<blockquote><pre>
+&lt;filterset id=&quot;myFilterSet&quot; begintoken=&quot;%&quot; endtoken=&quot;*&quot;&gt;
+  &lt;filter token=&quot;DATE&quot; value=&quot;${TODAY}&quot;/&gt;
+&lt;/filterset&gt;
+
+&lt;copy file=&quot;${build.dir}/version.txt&quot; toFile=&quot;${dist.dir}/version.txt&quot;&gt;
+  &lt;filterset refid=&quot;myFilterSet&quot;/&gt;
+&lt;/copy&gt;
+</pre></blockquote>
+</body></html>

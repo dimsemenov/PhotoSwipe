@@ -1,0 +1,197 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Manifest Task</title>
+</head>
+
+<body>
+
+<h2><a name="manifest">Manifest</a></h2>
+<h3>Description</h3>
+<p>Creates a manifest file.</p>
+
+<p>This task can be used to write a Manifest file, optionally
+replacing or updating an existing file.</p>
+
+
+
+<p>Manifests are processed according to the 
+<a href="http://download.oracle.com/javase/1.5.0/docs/guide/jar/jar.html">Jar
+file specification.</a>. Specifically, a manifest element consists of
+a set of attributes and sections. These sections in turn may contain
+attributes. Note in particular that this may result in manifest lines
+greater than 72 bytes being wrapped and continued on the next
+line.</p>
+
+<p>
+  The Apache Ant team regularly gets complaints that this task in generating invalid
+  manifests. By and large, this is not the case: we believe that we are following
+  the specification to the letter. The usual problem is that some third party
+  manifest reader is not following the same specification as well as they think
+  they should; we cannot generate invalid manifest files just because one
+  single application is broken. J2ME runtimes appear to be particularly troublesome.
+</p>
+
+<p>
+  If you find that Ant generates manifests incompatible with your runtime, take
+  a manifest it has built, fix it up however you need and switch to using the &lt;zip&gt
+  task to create the JAR, feeding in the hand-crafted manifest.
+</p>
+
+
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">the manifest-file to create/update.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">mode</td>
+    <td valign="top">One of "update" or "replace", default is "replace".</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">The encoding used to read the existing manifest
+      when updating.  The task will always use UTF-8 when writing the
+      manifest.</td>
+    <td valign="top" align="center">No, defaults to UTF-8 encoding.</td>
+  </tr>
+  <tr>
+    <td valign="top">mergeClassPathAttributes</td>
+    <td valign="top">Whether to merge the Class-Path attributes found
+      in different manifests (if updating).  If false, only the
+      attribute of the most recent manifest will be preserved.
+      <em>Since Ant 1.8.0</em>.
+      <br/>unless you also set flattenAttributes to true this may
+      result in manifests containing multiple Class-Path attributes
+      which violates the manifest specification.</td>
+    <td align="center" valign="top">No, default is false</td>
+  </tr>
+  <tr>
+    <td valign="top">flattenAttributes</td>
+    <td valign="top">Whether to merge attributes occuring more than
+      once in a section (this can only happen for the Class-Path
+      attribute) into a single attribute.
+      <em>Since Ant 1.8.0</em>.</td>
+    <td align="center" valign="top">No, default is false</td>
+  </tr>
+</table>
+
+<h3>Nested elements</h3>
+<h4><a name="attribute">attribute</a></h4>
+<p>One attribute for the manifest file.  Those attributes that are
+not nested into a section will be added to the "Main" section.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">the name of the attribute, <br>
+        must match the regexp <tt>[A-Za-z0-9][A-Za-z0-9-_]*</tt>.
+    </td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">value</td>
+    <td valign="top">the value of the attribute.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+</table>
+
+
+<h4>section</h4>
+<p>A manifest section - you can nest <a
+href="#attribute">attribute</a> elements into sections.</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">the name of the section.</td>
+    <td valign="top" align="center">No, if omitted it will be assumed
+       to be the main section.</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+
+<pre>
+  &lt;manifest file=&quot;MANIFEST.MF&quot;&gt;
+    &lt;attribute name=&quot;Built-By&quot; value=&quot;${user.name}&quot;/&gt;
+    &lt;section name=&quot;common&quot;&gt;
+      &lt;attribute name=&quot;Specification-Title&quot; value=&quot;Example&quot;/&gt;
+      &lt;attribute name=&quot;Specification-Version&quot; value=&quot;${version}&quot;/&gt;
+      &lt;attribute name=&quot;Specification-Vendor&quot; value=&quot;Example Organization&quot;/&gt;
+      &lt;attribute name=&quot;Implementation-Title&quot; value=&quot;common&quot;/&gt;
+      &lt;attribute name=&quot;Implementation-Version&quot; value=&quot;${version} ${TODAY}&quot;/&gt; 
+      &lt;attribute name=&quot;Implementation-Vendor&quot; value=&quot;Example Corp.&quot;/&gt;
+    &lt;/section&gt;
+    &lt;section name=&quot;common/class1.class&quot;&gt;
+      &lt;attribute name=&quot;Sealed&quot; value=&quot;false&quot;/&gt;
+    &lt;/section&gt;
+  &lt;/manifest&gt;
+</pre>
+
+<p>Creates or replaces the file MANIFEST.MF.  Note that the Built-By
+attribute will take the value of the Ant property ${user.name}.  The
+same is true for the ${version} and ${TODAY} properties.  This example
+produces a MANIFEST.MF that contains 
+<a href="http://download-llnw.oracle.com/javase/1.5.0/docs/guide/versioning/">package
+version identification</a> for the package <code>common</code>.</p>
+
+<p>The manifest produced by the above would look like this:</p>
+
+<pre><code>Manifest-Version: 1.0
+Built-By: bodewig
+Created-By: Apache Ant 1.7
+
+Name: common
+Specification-Title: Example
+Specification-Vendor: Example Organization
+Implementation-Vendor: Example Corp.
+Specification-Version: 1.2
+Implementation-Version: 1.2 February 19 2006
+Implementation-Title: common
+
+Name: common/class1.class
+Sealed: false
+
+</code></pre>
+
+
+</body>
+</html>
+

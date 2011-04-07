@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PhotoSwipe" default="build" basedir=".">
+	
+	<property file="build.properties"/>
+	
+	<taskdef name="jsmin" classname="net.matthaynes.jsmin.JSMin_Task" classpath="tools/jsmin/jsmin.0.2.4.jar"/>
+					 
+	<target name="build">
+		
+		<buildnumber/>
+		
+		<echo>Building = ${project.build.version}</echo>
+		
+		<!-- Delete and re-create working and artifact directory -->
+		<delete dir="${project.build.workdir}"/>
+		<delete dir="${project.build.artifactdir}/${project.build.version}"/>
+		
+		<mkdir dir="${project.build.workdir}"/>
+		<mkdir dir="${project.build.artifactdir}/${project.build.version}"/>
+		
+		
+		<antcall target="buildJs">
+			<param name="engine" value=""/>
+		</antcall>
+		
+		<antcall target="buildJs">
+			<param name="engine" value="-jQuery"/>
+		</antcall>
+		
+		<antcall target="buildLibs" />
+		
+		<antcall target="moveToArtifact" />
+				
+	</target>
+	
+	
+	
+	<target name="buildJs">
+		
+		<concat destfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.js">	
+			
+			<fileset dir="." includes="${project.src.dir}/util.js" />
+			<fileset dir="." includes="${project.src.dir}/util-dom${engine}.js" />
+			<fileset dir="." includes="${project.src.dir}/util-animation${engine}.js" />
+			<fileset dir="." includes="${project.src.dir}/event-class.js" />
+			<fileset dir="." includes="${project.src.dir}/element-class.js" />
+			<fileset dir="." includes="${project.src.dir}/full-size-image-class.js" />
+			<fileset dir="." includes="${project.src.dir}/document-overlay-class.js" />
+			<fileset dir="." includes="${project.src.dir}/viewport-class.js" />
+			<fileset dir="." includes="${project.src.dir}/slider-item-class.js" />
+			<fileset dir="." includes="${project.src.dir}/slider-class.js" />
+			<fileset dir="." includes="${project.src.dir}/caption-class.js" />
+			<fileset dir="." includes="${project.src.dir}/toolbar-class.js" />
+			<fileset dir="." includes="${project.src.dir}/photoswipe.js" />
+			
+		</concat>
+				
+		<!-- Minimise -->
+		<jsmin srcfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.js" suffix="true" />
+		
+		<!-- Add license etc to the minified version -->
+		<concat destfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js">	
+			<fileset dir="." includes="${project.src.dir}/version-header.txt" />
+			<fileset dir="." includes="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js" />
+		</concat>
+		
+		<replace file="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js" token="%%version%%" value="${project.build.version}.${build.number}"/>
+		
+		<delete file="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js"/>
+		
+		<move file="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js" tofile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js" />
+		
+		
+	</target>
+	
+	
+	
+	<target name="buildLibs">
+		
+		<!-- Copy the library folder to the working folder -->
+		<copy todir="${project.build.workdir}/lib">
+			<fileset dir="${project.src.dir}/lib"/>
+		</copy>
+		
+		<jsmin srcfile="${project.build.workdir}/lib/simple-inheritance.js" suffix="true" />
+		
+		<concat destfile="${project.build.workdir}/lib/simple-inheritance.min2.js">	
+			<fileset dir="." includes="${project.build.workdir}/lib/simple-inheritance.txt" />
+			<fileset dir="." includes="${project.build.workdir}/lib/simple-inheritance.min.js" />
+		</concat>
+		
+		<delete file="${project.build.workdir}/lib/simple-inheritance.txt" />
+		<delete file="${project.build.workdir}/lib/simple-inheritance.js" />
+		<delete file="${project.build.workdir}/lib/simple-inheritance.min.js" />
+		
+		<move file="${project.build.workdir}/lib/simple-inheritance.min2.js" tofile="${project.build.workdir}/lib/simple-inheritance.min.js" />
+		
+	</target>
+	
+	
+	
+	<target name="moveToArtifact">
+		
+		<copy todir="${project.build.artifactdir}/${project.build.version}">
+			<fileset dir="${project.build.workdir}"/>
+			<fileset file="MIT-license.txt"/>
+			<fileset file="README.md"/>
+			<fileset file="${project.src.dir}/change-log.html"/>
+			<fileset file="${project.src.dir}/photoswipe.css"/>
+			<fileset file="${project.src.dir}/photoswipe-icons.png"/>
+			<fileset file="${project.src.dir}/photoswipe-loader.gif"/>
+		</copy>
+		
+		<copy todir="${project.build.artifactdir}/${project.build.version}/lib">
+			<fileset dir="${project.build.workdir}/lib"/>
+		</copy>
+		
+		<copy todir="${project.build.artifactdir}/${project.build.version}/examples">
+			<fileset dir="${project.src.dir}/examples"/>
+		</copy>
+		
+		
+		<delete dir="${project.build.workdir}" />
+	
+	</target>
+	
+</project>

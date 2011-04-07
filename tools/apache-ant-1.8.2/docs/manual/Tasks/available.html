@@ -1,0 +1,160 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Available Task</title>
+</head>
+
+<body>
+
+<h2><a name="available">Available</a></h2>
+<h3>Description</h3>
+<p>Sets a property if a resource is available at runtime. This resource can be a
+file, a directory, a class in the classpath, or a JVM system resource.</p>
+<p>If the resource is present, the property value is set to true by
+default; otherwise, the property is not set. You can set the value to
+something other than the default by specifying the <code>value</code> attribute.</p>
+<p>Normally, this task is used to set properties that are useful to avoid target
+execution depending on system parameters.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">property</td>
+    <td valign="top">The name of the property to set.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">value</td>
+    <td valign="top">The value to set the property to. Defaults to &quot;true&quot;.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classname</td>
+    <td valign="top">The class to look for in the classpath.</td>
+    <td valign="middle" align="center" rowspan="3">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">The file to look for.</td>
+  </tr>
+  <tr>
+    <td valign="top">resource</td>
+    <td valign="top">The resource to look for in the JVM.</td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">The classpath to use when looking up <code>classname</code> or <code>resource</code>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">filepath</td>
+    <td valign="top">The path to use when looking up <code>file</code>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpathref</td>
+    <td valign="top">The classpath to use, given as a <a href="../using.html#references">reference</a> to a path defined elsewhere.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">type</td>
+    <td valign="top">The type of <code>file</code> to look for, either a directory (<code>type=&quot;dir&quot;</code>) or a file
+      (<code>type=&quot;file&quot;</code>). If not set, the property will be set if the name specified in the <code>file</code>
+      attribute exists as either a file or a directory.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignoresystemclasses</td>
+    <td valign="top">Ignore Ant's runtime classes, using only the specified
+      classpath.  Only affects the "classname" attribute.  Defaults to &quot;false&quot;</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">searchparents</td>
+    <td valign="top">This contains the behaviour of the "file" type.
+      If true, the available task will, when
+      searching for a file, search not only the directories specified but
+      will also search the parent directories of those
+      specified.
+      If false, only the directories specified will be searched.
+      Defaults to "false".
+      <em>Since Ant 1.7</em>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+<h3>Parameters specified as nested elements</h3>
+<h4>classpath</h4>
+<p><code>Available</code>'s <code>classpath</code> attribute is a <a
+href="../using.html#path">path-like structure</a> and can also be set via a nested
+<code>&lt;classpath&gt;</code> element.</p>
+<h4>filepath</h4>
+<p><code>Available</code>'s <code>filepath</code> attribute is a <a
+href="../using.html#path">path-like structure</a> and can also be set via a nested
+<code>&lt;filepath&gt;</code> element.</p>
+<h3>Examples</h3>
+<blockquote><pre>
+&lt;available classname=&quot;org.whatever.Myclass&quot; property=&quot;Myclass.present&quot;/&gt;
+</pre></blockquote>
+<p>sets the <code>Myclass.present</code> property to the value &quot;true&quot;
+if the class <code>org.whatever.Myclass</code> is found in Ant's classpath.</p>
+<blockquote><pre>
+&lt;property name=&quot;jaxp.jar&quot; value=&quot;./lib/jaxp11/jaxp.jar&quot;/&gt;
+&lt;available file=&quot;${jaxp.jar}&quot; property=&quot;jaxp.jar.present&quot;/&gt;
+</pre></blockquote>
+<p>sets the <code>jaxp.jar.present</code> property to the value &quot;true&quot;
+if the file <code>./lib/jaxp11/jaxp.jar</code> is found.</p>
+<blockquote><pre>
+&lt;available file=&quot;/usr/local/lib&quot; type=&quot;dir&quot;
+           property=&quot;local.lib.present&quot;/&gt;
+</pre></blockquote>
+<p>sets the <code>local.lib.present</code> property to the value &quot;true&quot;
+if the directory <code>/usr/local/lib</code> is found.</p>
+<blockquote><pre>
+...in project ...
+&lt;property name=&quot;jaxp.jar&quot; value=&quot;./lib/jaxp11/jaxp.jar&quot;/&gt;
+&lt;path id=&quot;jaxp&quot; location=&quot;${jaxp.jar}&quot;/&gt;
+...in target ...
+&lt;available classname=&quot;javax.xml.transform.Transformer&quot;
+           classpathref=&quot;jaxp&quot; property=&quot;jaxp11.present&quot;/&gt;
+</pre></blockquote>
+<p>sets the <code>jaxp11.present</code> property to the value &quot;true&quot;
+if the class <code>javax.xml.transform.Transformer</code> is found in the classpath referenced by <code>jaxp</code> (in this case, <code>./lib/jaxp11/jaxp.jar</code>).
+</p>
+<blockquote><pre>
+&lt;available property=&quot;have.extras&quot; resource=&quot;extratasks.properties&quot;&gt;
+  &lt;classpath&gt;
+    &lt;pathelement location=&quot;/usr/local/ant/extra.jar&quot; /&gt;
+&nbsp;&nbsp;&lt;/classpath&gt;
+&lt;/available&gt;
+</pre></blockquote>
+<p>sets the <code>have.extras</code> property to the value &quot;true&quot;
+if the resource-file <code>extratasks.properties</code> is found.
+</p>
+
+
+</body>
+</html>
+

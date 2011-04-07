@@ -1,0 +1,295 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta http-equiv="Content-Language" content="en-us">
+   <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>PVCS task</title>
+</head>
+<body>
+
+<h1>
+Apache Ant Pvcs Task User Manual</h1>
+
+<p><b>Note:</b>
+Before using this task, the user running Ant must have access to the
+commands of PVCS (get and pcli) and must have access to the
+repository. Note that the way to specify the repository is platform
+dependent so use property to specify location of repository.
+</p>
+
+by
+<br><!-- Names are in alphabetical order, on last name -->
+<ul>
+  <li>Thomas Christensen (<a href="mailto:tchristensen@nordija.com">tchristensen@nordija.com</a>)</li>
+  <li>Don Jeffery (<a href="mailto:donj@apogeenet.com">donj@apogeenet.com</a>)</li>
+  <li>Jon Dickinson (<a href="mailto:dickinson.j@ucles.org.uk">dickinson.j@ucles.org.uk</a>)</li>
+</ul>
+Version 1.1 - 2001/06/27<br>
+<p>Problems with UNC pathnames and the use of () in paths are fixed and an updateonly
+  argument introduced.</p>
+Version 1.0 - 2001/01/31<br>
+<p>Initial release.</p>
+<hr>
+<h2>
+Table of Contents</h2>
+<ul>
+  <li><a href="#introduction">Introduction</a></li>
+  <li><a href="#pvcs">Pvcs Task</a></li>
+</ul>
+<hr>
+
+<h2><a NAME="introduction">Introduction</a></h2>
+The pvcs task allows the user of Ant to extract the latest edition
+of the source code from a PVCS repository. PVCS is a version control system
+developed by <a href="http://www.merant.com/products/pvcs">Merant</a>.
+<br>
+This version has been tested against PVCS version 6.5 and 6.6 under Windows and Solaris.
+
+<hr>
+<h2><a NAME="pvcs">Pvcs Task</a></h2>
+<h3>Description</h3>
+The pvcs task is set to point at a PVCS repository and optionally a project
+within that repository, and can from that specification get the latest
+version of the files contained by the repository.
+<h3>
+Parameters</h3>
+
+<table BORDER CELLSPACING=0 CELLPADDING=2 >
+<tr>
+<td VALIGN=TOP WIDTH="12%"><b>Attribute</b></td>
+
+<td VALIGN=TOP WIDTH="78%"><b>Description</b></td>
+
+<td VALIGN=TOP WIDTH="10%"><b>Required</b></td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">repository</td>
+
+<td VALIGN=TOP WIDTH="78%">The location of the repository (see your PVCS
+manuals)</td>
+
+<td VALIGN=TOP WIDTH="10%">Yes</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">pvcsproject</td>
+
+<td VALIGN=TOP WIDTH="78%">The project within the PVCS repository to extract
+files from (&quot;/&quot; is root project and that is default if this attribute isn't
+specified)</td>
+
+<td VALIGN=TOP WIDTH="10%">No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">label</td>
+
+<td VALIGN=TOP WIDTH="78%">Only files marked with this label are extracted.</td>
+
+<td VALIGN=TOP WIDTH="10%">No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">promotiongroup</td>
+
+<td VALIGN=TOP WIDTH="78%">Only files within this promotion group are extracted. Using
+both the <i>label</i> and the <i>promotiongroup</i> tag will cause the files in the
+promotion group and with that label to be extracted.
+</td>
+
+<td VALIGN=TOP WIDTH="10%">No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">config</td>
+
+<td VALIGN=TOP WIDTH="78%">path of a non default .cfg file.
+Can be given absolute or relative to Ant's base directory.
+</td>
+
+<td VALIGN=TOP WIDTH="10%">No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">force</td>
+
+<td VALIGN=TOP WIDTH="78%">If set to <i>yes</i> all files that exists and are writable are overwritten. Default <i>no</i> causes the files that are writable to be ignored. This stops the PVCS command <i>get</i> to stop asking questions!</td>
+
+<td VALIGN=TOP WIDTH="10%">No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">workspace</td>
+
+<td VALIGN=TOP WIDTH="78%">By specifying a workspace, the files are extracted to that location. A PVCS workspace is a
+name for a location of the workfiles and isn't as such the location itself. You define the location for a workspace
+using the PVCS GUI clients. If this isn't specified the default workspace for the current user is used.</td>
+
+<td VALIGN=TOP WIDTH="10%">No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">pvcsbin</td>
+
+<td VALIGN=TOP WIDTH="78%">On some systems the PVCS executables <i>pcli</i>
+and <i>get</i> are not found in the PATH. In such cases this attribute
+should be set to the bin directory of the PVCS installation containing
+the executables mentioned before. If this attribute isn't specified the
+tag expects the executables to be found using the PATH environment variable.</td>
+
+<td VALIGN=TOP WIDTH="10%">No</td>
+</tr>
+    <tr>
+      <td VALIGN=TOP WIDTH="12%">ignorereturncode</td>
+      <td VALIGN=TOP WIDTH="78%">If set to <i>true</i> the return value from executing
+        the pvcs commands are ignored.</td>
+      <td VALIGN=TOP WIDTH="10%">No</td>
+    </tr>
+    <tr>
+      <td VALIGN=TOP WIDTH="12%">updateonly</td>
+      <td VALIGN=TOP WIDTH="78%">If set to <i>true</i> files are gotten only if
+        newer than existing local files.</td>
+      <td VALIGN=TOP WIDTH="10%">No</td>
+    </tr>
+    <tr>
+      <td valign="TOP">filenameformat</td>
+      <td valign="TOP">The format of your folder names in a
+          format suitable for <code>java.text.MessageFormat</code>.
+          Defaults to <code>{0}-arc({1})</code>.  Repositories where
+          the archive extension is not  <code>-arc</code> should set
+          this.</td>
+      <td valign="TOP">No</td>
+    </tr>
+    <tr>
+      <td valign="TOP">linestart</td>
+        <td valign="TOP">Used to parse the output of the pcli
+          command. It defaults to <code>&quot;P:</code>.  The parser already
+          knows about / and \\, this property is useful in cases where the
+          repository is accessed on a Windows platform via a drive letter
+          mapping.</td>
+      <td valign="TOP">No</td>
+    </tr>
+    <tr>
+      <td valign="TOP">revision</td>
+      <td valign="TOP">Retrieve the specified revision.</td>
+      <td valign="TOP">No</td>
+    </tr>
+    <tr>
+      <td valign="TOP">userid</td>
+      <td valign="TOP">Use the specified userid.</td>
+      <td valign="TOP">No</td>
+    </tr>
+</table>
+<h3><a name="nested">Nested Elements</a></h3>
+
+<h3>pvcsproject element</h3>
+<p><code>pvcs</code> supports a nested
+<code>&lt;pvcsproject&gt;</code> element, that represents a project
+within the PVCS repository to extract files from.  By nesting multiple
+<code>&lt;pvcsproject&gt;</code> elements under the
+<code>&lt;pvcs&gt;</code> task, multiple projects can be
+specified.</p>
+
+<h3>Parameters</h3>
+
+<table BORDER CELLSPACING=0 CELLPADDING=2 >
+<tr>
+<td VALIGN=TOP WIDTH="12%"><b>Attribute</b></td>
+
+<td VALIGN=TOP WIDTH="78%"><b>Description</b></td>
+
+<td VALIGN=TOP WIDTH="10%"><b>Required</b></td>
+</tr>
+
+<tr>
+<td VALIGN=TOP WIDTH="12%">name</td>
+
+<td VALIGN=TOP WIDTH="78%">The name of the pvcs project</td>
+
+<td VALIGN=TOP WIDTH="10%">Yes</td>
+</tr>
+</table>
+
+<h3>Examples</h3>
+The following set-up extracts the latest version of the files in the pvcs repository.
+<pre>
+  &lt;!-- =================================================================== --&gt;
+  &lt;!-- Get the latest version                                              --&gt;
+  &lt;!-- =================================================================== --&gt;
+  &lt;target name=&quot;getlatest&quot;&gt;
+    &lt;pvcs repository=&quot;/mnt/pvcs&quot; pvcsproject=&quot;/myprj&quot;/&gt;
+  &lt;/target&gt;</ul>
+</pre>
+<p>Now run:</p>
+<code>ant getlatest</code>
+<p>This will cause the following output to appear:</p>
+<pre>
+  getlatest:
+  [pvcs] PVCS Version Manager (VMGUI) v6.6.10 (Build 870) for Windows NT/80x86
+  [pvcs] Copyright 1985-2000 MERANT. All rights reserved.
+  [pvcs] PVCS Version Manager (get) v6.6.10 (Build 870) for Windows NT/80x86
+  [pvcs] Copyright 1985-2000 MERANT. All rights reserved.
+  [pvcs] c:\myws\myprj\main.java &lt;- C:\mypvcs\archives\myprj\main.java-arc
+  [pvcs] rev 1.1
+  [pvcs] c:\myws\myprj\apache\tool.java &lt;- C:\mypvcs\archives\myprj\apache\tools.java-arc
+  [pvcs] rev 1.5
+
+  BUILD SUCCESSFUL
+
+  Total time: 19 seconds</pre>
+
+This next example extracts the latest version of the files in the pvcs
+repository from two projects using nested <code>&lt;pvcsproject&gt;</code> elements.
+<pre>
+  &lt;!-- ===================================================================--&gt;
+  &lt;!-- Get latest from myprj and myprj2                                   --&gt;
+  &lt;!-- ===================================================================--&gt;
+  &lt;target name=&quot;getlatest2&quot;&gt;
+    &lt;pvcs repository=&quot;/mnt/pvcs&quot;&gt;
+      &lt;pvcsproject name=&quot;/myprj&quot;/&gt;
+      &lt;pvcsproject name=&quot;/myprj2&quot;/&gt;
+    &lt;/pvcs&gt;
+  &lt;/target&gt;</ul>
+</pre>
+<p>Now run:</p>
+<code>ant getlatest2</code>
+<p>This will cause the following output to appear:</p>
+<pre>
+  getlatest2:
+  [pvcs] PVCS Version Manager (VMGUI) v6.6.10 (Build 870) for Windows NT/80x86
+  [pvcs] Copyright 1985-2000 MERANT.  All rights reserved.
+  [pvcs] PVCS Version Manager (get) v6.6.10 (Build 870) for Windows NT/80x86
+  [pvcs] Copyright 1985-2000 MERANT.  All rights reserved.
+  [pvcs] c:\myws\myprj\main.java &lt;- C:\mypvcs\archives\myprj\main.java-arc
+  [pvcs] rev 1.1
+  [pvcs] c:\myws\myprj\apache\tool.java &lt;- C:\mypvcs\archives\myprj\apache\tool.java-arc
+  [pvcs] rev 1.5
+  [pvcs] c:\myws\myprj2\apache\tool2.java &lt;- C:\mypvcs\archives\myprj2\apache\tool2.java-arc
+  [pvcs] rev 1.2
+
+  BUILD SUCCESSFUL
+
+  Total time: 22 seconds</pre>
+
+<hr WIDTH="100%">
+<p>PVCS is a registered trademark of MERANT.</p>
+</body>
+</html>

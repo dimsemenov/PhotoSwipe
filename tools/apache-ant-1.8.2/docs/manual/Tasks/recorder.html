@@ -1,0 +1,172 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Recorder Task</title>
+</head>
+
+<body>
+
+<h2><a name="log">Record</a></h2>
+<h3>Description</h3>
+<p>A recorder is a listener to the current build process that records the
+output to a file.</p>
+
+<p>Several recorders can exist at the same time.  Each recorder is
+associated with a file.  The filename is used as a unique identifier for
+the recorders.  The first call to the recorder task with an unused filename
+will create a recorder (using the parameters provided) and add it to the
+listeners of the build.  All subsequent calls to the recorder task using
+this filename will modify that recorders state (recording or not) or other
+properties (like logging level).</p>
+
+<p>Some technical issues: the file's print stream is flushed for &quot;finished&quot;
+events (buildFinished, targetFinished and taskFinished), and is closed on
+a buildFinished event.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the file this logger is associated with.</td>
+    <td align="center" valign="middle">yes</td>
+  </tr>
+  <tr>
+    <td valign="top">action</td>
+    <td valign="top">This tells the logger what to do: should it start
+    recording or stop?  The first time that the recorder task is called for
+    this logfile, and if this attribute is not provided, then the default
+    for this attribute is &quot;start&quot;.  If this attribute is not provided on
+    subsequent calls, then the state remains as previous.
+    [Values = {start|stop}, Default = no state change]</td>
+    <td align="center" valign="middle">no</td>
+  </tr>
+  <tr>
+    <td valign="top">append</td>
+    <td valign="top">Should the recorder append to a file, or create a new
+    one? This is only applicable the first time this task is called for
+    this file.  [Values = {yes|no}, Default=no]</td>
+    <td align="center" valign="middle">no</td>
+  </tr>
+  <tr>
+    <td valign="top">emacsmode</td>
+    <td valign="top">Removes <code>[task]</code> banners like Apache Ant's
+    <code>-emacs</code> command line switch if set to
+    <em>true</em>.</td>
+    <td align="center" valign="middle">no, default is <em>false</em></td>
+  </tr>
+  <tr>
+    <td valign="top">loglevel</td>
+    <td valign="top">At what logging level should this recorder instance
+    record to?  This is not a once only parameter (like <code>append</code>
+    is) -- you can increase or decrease the logging level as the build process
+    continues.  [Values= {error|warn|info|verbose|debug}, Default = no change]
+    </td>
+    <td align="center" valign="middle">no</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<p>The following build.xml snippet is an example of how to use the recorder
+to record just the <code>&lt;javac&gt;</code> task:</p>
+<pre>
+    ...
+    &lt;compile &gt;
+        &lt;record name=&quot;log.txt&quot; action=&quot;start&quot;/&gt;
+        &lt;javac ...
+        &lt;record name=&quot;log.txt&quot; action=&quot;stop&quot;/&gt;
+    &lt;compile/&gt;
+    ...
+</pre>
+
+<p>The following two calls to <code>&lt;record&gt;</code> set up two
+recorders: one to file &quot;records-simple.log&quot; at logging level <code>info</code>
+(the default) and one to file &quot;ISO.log&quot; using logging level of
+<code>verbose</code>.</p>
+<pre>
+    ...
+    &lt;record name=&quot;records-simple.log&quot;/&gt;
+    &lt;record name=&quot;ISO.log&quot; loglevel=&quot;verbose&quot;/&gt;
+    ...
+</pre>
+
+<h3>Notes</h3>
+<p>There is some functionality that I would like to be able to add in the
+future.  They include things like the following:</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">listener</td>
+    <td valign="top">A classname of a build listener to use from this point
+    on instead of the default listener.</td>
+    <td align="center" valign="middle">no</td>
+  </tr>
+  <tr>
+    <td valign="top">includetarget</td>
+    <td valign="top" rowspan=2>A comma-separated list of targets to automatically
+    record.  If this value is &quot;all&quot;, then all targets are recorded.
+    [Default = all]</td>
+    <td align="center" valign="middle">no</td>
+  </tr>
+  <tr>
+    <td valign="top">excludetarget</td>
+    <td align="center" valign="middle">no</td>
+  </tr>
+  <tr>
+    <td valign="top">includetask</td>
+    <td valign="top" rowspan=2>A comma-separated list of task to automatically
+    record or not.  This could be difficult as it could conflict with the
+    <code>includetarget/excludetarget</code>.  (e.g.:
+    <code>includetarget=&quot;compile&quot; exlcudetask=&quot;javac&quot;</code>, what should
+    happen?)</td>
+    <td align="center" valign="middle">no</td>
+  </tr>
+  <tr>
+    <td valign="top">excludetask</td>
+    <td align="center" valign="middle">no</td>
+  </tr>
+  <tr>
+    <td valign="top">action</td>
+    <td valign="top">add greater flexibility to the action attribute.  Things
+    like <code>close</code> to close the print stream.</td>
+    <td align="center" valign="top">no</td>
+  </tr>
+  <tr>
+    <td valign="top"></td>
+    <td valign="top"></td>
+    <td align="center" valign="top"></td>
+  </tr>
+</table>
+
+
+
+
+
+</body>
+</html>

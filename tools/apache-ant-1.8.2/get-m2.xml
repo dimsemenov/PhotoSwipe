@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!--
+  =======================================================================
+   Build file to fetch maven2 tasks; extracted from (Ant's) fetch.xml
+  =======================================================================
+-->
+<project name="get-m2" default="get-m2" basedir=".">
+
+<description>
+  This build file downloads the Maven2 Ant tasks,
+  and installs them in the location specified by the m2.dest.dir property.
+
+  You may need to set proxy settings. On Java1.5, Ant tries to get
+  this from the OS, unless you use the -noproxy option.
+
+  Proxies can be configured manually setting the JVM proxy values in the
+  ANT_OPTS environment variable.
+
+  For example, to set the proxy up in the tcsh shell, the command would be
+  something like:
+
+  For csh/tcsh:
+    setenv ANT_OPTS "-Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080"
+  For bash:
+    export ANT_OPTS="-Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080"
+  For Windows, set the environment variable in the appropriate dialog box
+  and open a new console. or, by hand
+    set ANT_OPTS = -Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080
+</description>
+
+  <property file="get-m2.properties" />
+
+  <property name="m2.antlib.resource"
+            value="org/apache/maven/artifact/ant/antlib.xml" />
+
+  <property name="m2.antlib.uri"
+            value="antlib:org.apache.maven.artifact.ant" />
+
+  <macrodef name="require">
+    <attribute name="property" />
+    <sequential>
+      <fail unless="@{property}">$${@{property}} not specified</fail>
+    </sequential>
+  </macrodef>
+
+  <target name="probe-m2">
+    <require property="m2.dest.dir" />
+    <require property="m2.jar.name" />
+
+    <!-- Look for M2 ant tasks in our classpath-->
+    <property name="m2.artifact" location="${m2.dest.dir}/${m2.jar.name}" />
+    <available property="m2.antlib.found" resource="${m2.antlib.resource}" />
+    <condition property="m2.antlib.typefound">
+      <typefound name="${m2.antlib.uri}:artifact" />
+    </condition>
+    <available property="m2.artifact.found" file="${m2.artifact}" type="file" />
+  </target>
+
+  <target name="download-m2" depends="probe-m2" unless="m2.artifact.found">
+    <require property="m2.antlib.url" />
+    <echo>Downloading to ${m2.dest.dir}</echo>
+
+    <mkdir dir="${m2.dest.dir}" />
+    <!-- fetch M2 ant tasks into our repository, if it is not there-->
+    <get src="${m2.antlib.url}"
+      dest="${m2.artifact}"
+      verbose="true"
+      usetimestamp="false" />
+  </target>
+
+  <target name="dont-validate-m2-checksum" depends="probe-m2"
+          if="m2.artifact.found">
+    <property name="checksum.equal" value="true" />
+  </target>
+
+  <target name="validate-m2-checksum"
+          depends="download-m2,dont-validate-m2-checksum"
+          if="m2.sha1.checksum" unless="m2.artifact.found">
+    <checksum file="${m2.artifact}"
+        algorithm="SHA"
+        property="${m2.sha1.checksum}"
+        verifyProperty="checksum.equal" />
+  </target>
+
+  <target name="checksum-mismatch" depends="validate-m2-checksum"
+          if="m2.sha1.checksum" unless="checksum.equal">
+    <delete file="${m2.artifact}" />
+    <fail>
+      Failed to verify the downloaded file ${m2.antlib.url}" against the checksum
+      coded into libraries.properties.
+      The local copy has been deleted, for security reasons
+    </fail>
+  </target>
+
+  <target name="checksum-match" depends="checksum-mismatch"
+          unless="m2.antlib.found">
+    <taskdef classpath="${m2.artifact}" resource="${m2.antlib.resource}"
+             uri="${m2.antlib.uri}" />
+  </target>
+
+  <target name="get-m2" depends="checksum-match"
+      description="Download the Maven2 Ant tasks" />
+
+</project>

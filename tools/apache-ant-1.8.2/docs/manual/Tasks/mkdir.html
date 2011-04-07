@@ -1,0 +1,52 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Mkdir Task</title>
+</head>
+
+<body>
+
+<h2><a name="mkdir">Mkdir</a></h2>
+<h3>Description</h3>
+<p>Creates a directory. Also non-existent parent directories are created, when
+necessary. Does nothing if the directory already exist.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">dir</td>
+    <td valign="top">the directory to create.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<pre>&lt;mkdir dir=&quot;${dist}&quot;/&gt;</pre>
+<p>creates a directory <code>${dist}</code>.</p>
+<pre>&lt;mkdir dir=&quot;${dist}/lib&quot;/&gt;</pre>
+<p>creates a directory <code>${dist}/lib</code>.</p>
+
+
+</body>
+</html>

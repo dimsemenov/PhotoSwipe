@@ -1,0 +1,327 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>FixCRLF Task</title>
+</head>
+
+<body>
+
+<h2><a name="fixcrlf">FixCRLF</a></h2>
+<h3>Description</h3>
+  <p>
+    Adjusts a text file to local conventions.
+  </p>
+
+  <p>
+    The set of files to be adjusted can be refined with the
+    <i>includes</i>, <i>includesfile</i>, <i>excludes</i>,
+    <i>excludesfile</i> and <i>defaultexcludes</i>
+    attributes. Patterns provided through the <i>includes</i> or
+    <i>includesfile</i> attributes specify files to be
+    included. Patterns provided through the <i>exclude</i> or
+    <i>excludesfile</i> attribute specify files to be
+    excluded. Additionally, default exclusions can be specified with
+    the <i>defaultexcludes</i> attribute. See the section on <a
+    href="../dirtasks.html#directorybasedtasks">directory-based
+    tasks</a>, for details of file inclusion/exclusion patterns
+    and their usage.
+  </p>
+
+  <p>
+    This task forms an implicit
+    <a href="../Types/fileset.html">FileSet</a> and
+    supports most attributes of <code>&lt;fileset&gt;</code>
+    (<code>dir</code> becomes <code>srcdir</code>) as well as the nested
+    <code>&lt;include&gt;</code>, <code>&lt;exclude&gt;</code> and
+    <code>&lt;patternset&gt;</code> elements.
+  </p>
+
+  <p>
+    The output file is only written if it is a new file, or if it
+    differs from the existing file.  This prevents spurious
+    rebuilds based on unchanged files which have been regenerated
+    by this task.
+  </p>
+
+  <p>
+    Since <b>Apache Ant 1.7</b>, this task can be used in a
+    <a href="../Types/filterchain.html">filterchain</a>.
+  </p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="center" rowspan="2"><b>Attribute</b></td>
+    <td valign="center" rowspan="2"><b>Description</b></td>
+    <td align="center" valign="top" colspan="2"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="center"><b>As Task</b></td>
+    <td valign="center"><b>As Filter</b></td>
+  </tr>
+  <tr>
+    <td valign="top">srcDir</td>
+    <td valign="top">Where to find the files to be fixed up.</td>
+    <td valign="top" align="center" rowspan="2">One of these</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">Name of a single file to fix. <b>Since Ant 1.7</b></td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">destDir</td>
+    <td valign="top">Where to place the corrected files.  Defaults to
+      srcDir (replacing the original file).</td>
+    <td valign="top" align="center">No</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      included. All files are included when omitted.</td>
+    <td valign="top" align="center">No</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">includesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an include pattern.</td>
+    <td valign="top" align="center">No</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      excluded. No files (except default excludes) are excluded when omitted.</td>
+    <td valign="top" align="center">No</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">excludesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an exclude pattern.</td>
+    <td valign="top" align="center">No</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">defaultexcludes</td>
+    <td valign="top">indicates whether default excludes should be used or not
+      (&quot;yes&quot;/&quot;no&quot;). Default excludes are used when omitted.
+    </td>
+    <td valign="top" align="center">No</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">The encoding of the files.</td>
+    <td align="center">No; defaults to default JVM encoding.</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">outputencoding</td>
+    <td valign="top">The encoding to use when writing the files.
+                     <b>Since Ant 1.7</b></td>
+    <td align="center">No; defaults to the value of the encoding attribute.</td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">preservelastmodified</td>
+    <td valign="top">Whether to preserve the last modified
+                     date of source files. <b>Since Ant 1.6.3</b></td>
+    <td align="center">No; default is <i>false</i></td>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top">eol</td>
+    <td valign="top">
+      Specifies how end-of-line (EOL) characters are to be
+      handled.  The EOL characters are CR, LF and the pair CRLF.
+      Valid values for this property are:
+      <ul>
+        <li>asis: leave EOL characters alone</li>
+        <li>cr: convert all EOLs to a single CR</li>
+        <li>lf: convert all EOLs to a single LF</li>
+        <li>crlf: convert all EOLs to the pair CRLF</li>
+        <li>mac: convert all EOLs to a single CR</li>
+        <li>unix: convert all EOLs to a single LF</li>
+        <li>dos: convert all EOLs to the pair CRLF</li>
+      </ul>
+      Default is based on the platform on which you are running this task.
+      For Unix platforms (including Mac OS X), the default is &quot;lf&quot;.
+      For DOS-based systems (including Windows), the default is
+      &quot;crlf&quot;.
+      For Mac environments other than OS X, the default is &quot;cr&quot;.
+      <p>
+        This is the preferred method for specifying EOL.  The
+        &quot;<i><b>cr</b></i>&quot; attribute (see below) is
+        now deprecated.
+      </p>
+      <p>
+        <i>N.B.</i>: One special case is recognized. The three
+        characters CR-CR-LF are regarded as a single EOL.
+        Unless this property is specified as &quot;asis&quot;,
+        this sequence will be converted into the specified EOL
+        type.
+      </p>
+    </td>
+    <td valign="top" align="center" colspan="2">No</td>
+  </tr>
+  <tr>
+    <td valign="top">cr</td>
+    <td valign="top">
+      <i><b>Deprecated.</b></i> Specifies how CR characters are
+      to be handled at end-of-line (EOL).  Valid values for this
+      property are:
+      <ul>
+        <li>asis: leave EOL characters alone.</li>
+        <li>
+          add: add a CR before any single LF characters. The
+          intent is to convert all EOLs to the pair CRLF.
+        </li>
+        <li>
+          remove: remove all CRs from the file.  The intent is
+          to convert all EOLs to a single LF.
+        </li>
+      </ul>
+      Default is based on the platform on which you are running
+      this task.  For Unix platforms, the default is &quot;remove&quot;.
+      For DOS based systems (including Windows), the default is
+      &quot;add&quot;.
+      <p>
+        <i>N.B.</i>: One special case is recognized. The three
+        characters CR-CR-LF are regarded as a single EOL.
+        Unless this property is specified as &quot;asis&quot;,
+        this sequence will be converted into the specified EOL
+        type.
+      </p>
+    </td>
+    <td valign="top" align="center" colspan="2">No</td>
+  </tr>
+  <tr>
+    <td valign="top">javafiles</td>
+    <td valign="top">
+      Used only in association with the
+      &quot;<i><b>tab</b></i>&quot; attribute (see below), this
+      boolean attribute indicates whether the fileset is a set
+      of java source files
+      (&quot;yes&quot;/&quot;no&quot;). Defaults to
+      &quot;no&quot;.  See notes in section on &quot;tab&quot;.
+    </td>
+    <td valign="top" align="center" colspan="2">No</td>
+  </tr>
+  <tr>
+    <td valign="top">tab</td>
+    <td valign="top">Specifies how tab characters are to be handled.  Valid
+      values for this property are:
+      <ul>
+      <li>add: convert sequences of spaces which span a tab stop to tabs</li>
+      <li>asis: leave tab and space characters alone</li>
+      <li>remove: convert tabs to spaces</li>
+      </ul>
+      Default for this parameter is &quot;asis&quot;.
+      <p>
+        <i>N.B.</i>: When the attribute
+        &quot;<i><b>javafiles</b></i>&quot; (see above) is
+        &quot;true&quot;, literal TAB characters occurring
+        within Java string or character constants are never
+        modified.  This functionality also requires the
+        recognition of Java-style comments.
+      </p>
+      <p>
+  	<i>N.B.</i>: There is an incompatibility between this
+  	and the previous version in the handling of white
+  	space at the end of lines.  This version does
+  	<i><b>not</b></i> remove trailing whitespace on lines.
+      </p>
+    </td>
+    <td valign="top" align="center" colspan="2">No</td>
+  </tr>
+  <tr>
+    <td valign="top">tablength</td>
+    <td valign="top">TAB character interval. Valid values are between
+      2 and 80 inclusive.  The default for this parameter is 8.</td>
+    <td valign="top" align="center" colspan="2">No</td>
+  </tr>
+  <tr>
+    <td valign="top">eof</td>
+    <td valign="top">Specifies how DOS end of file (control-Z) characters are
+      to be handled.  Valid values for this property are:
+      <ul>
+      <li>add: ensure that there is an EOF character at the end of the file</li>
+      <li>asis: leave EOF characters alone</li>
+      <li>remove: remove any EOF character found at the end</li>
+      </ul>
+      Default is based on the platform on which you are running this task.
+      For Unix platforms, the default is remove.  For DOS based systems
+      (including Windows), the default is asis.
+      </td>
+    <td valign="top" align="center" colspan="2">No</td>
+  </tr>
+  <tr>
+    <td valign="top">fixlast</td>
+    <td valign="top">Whether to add a missing EOL to the last line
+                     of a processed file. <b>Since Ant 1.6.1</b></td>
+    <td align="center" colspan="2">No; default is <i>true</i></td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<pre>&lt;fixcrlf srcdir=&quot;${src}&quot; includes=&quot;**/*.sh&quot;
+         eol=&quot;lf&quot; eof=&quot;remove&quot; /&gt;</pre>
+<p>Replaces EOLs with LF characters and removes eof characters from
+  the shell scripts.  Tabs and spaces are left as is.</p>
+<pre>&lt;fixcrlf srcdir=&quot;${src}&quot;
+         includes=&quot;**/*.bat&quot; eol=&quot;crlf&quot; /&gt;</pre>
+<p>Replaces all EOLs with cr-lf pairs in the batch files.
+  Tabs and spaces are left as is.
+  EOF characters are left alone if run on
+  DOS systems, and are removed if run on Unix systems.</p>
+<pre>&lt;fixcrlf srcdir=&quot;${src}&quot;
+         includes=&quot;**/Makefile&quot; tab=&quot;add&quot; /&gt;</pre>
+<p>Sets EOLs according to local OS conventions, and
+  converts sequences of spaces and tabs to the minimal set of spaces and
+  tabs which will maintain spacing within the line.  Tabs are
+  set at 8 character intervals.  EOF characters are left alone if
+  run on DOS systems, and are removed if run on Unix systems.
+  Many versions of make require tabs prior to commands.</p>
+  <pre>&lt;fixcrlf srcdir=&quot;${src}&quot; includes=&quot;**/*.java&quot;
+         tab=&quot;remove&quot; tablength=&quot;3&quot;
+         eol=&quot;lf&quot; javafiles=&quot;yes&quot; /&gt;</pre>
+<p>
+  Converts all EOLs in the included java source files to a
+  single LF.  Replace all TAB characters except those in string
+  or character constants with spaces, assuming a tab width of 3.
+  If run on a unix system, any CTRL-Z EOF characters at the end
+  of the file are removed.  On DOS/Windows, any such EOF
+  characters will be left untouched.
+</p>
+<pre>&lt;fixcrlf srcdir=&quot;${src}&quot;
+         includes=&quot;**/README*&quot; tab=&quot;remove&quot; /&gt;</pre>
+<p>Sets EOLs according to local OS conventions, and
+  converts all tabs to spaces, assuming a tab width of 8.
+  EOF characters are left alone if run on
+  DOS systems, and are removed if run on Unix systems.
+  You never know what editor a user will use to browse READMEs.</p>
+
+
+</body>
+</html>

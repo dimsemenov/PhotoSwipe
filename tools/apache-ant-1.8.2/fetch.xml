@@ -1,0 +1,343 @@
+<?xml version="1.0"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!--
+  =======================================================================
+    Build file to fetch optional libraries for Apache Ant
+  =======================================================================
+-->
+<project name="fetch" default="all" basedir=".">
+
+<description>
+  This build file downloads JAR files that optional Ant tasks use,
+  and installs them in a location that is accessible the next time Ant runs.
+
+  You can choose three locations, by going -Ddest=LOCATION on the command line
+  -Ddest=user     user lib dir  ${user.home}/.ant/lib
+  -Ddest=system   ant lib dir   ${ant.home}/lib
+  -Ddest=optional optional dir  $${basedir}/lib/optional  (for Ant developers)
+
+  You may also need to set proxy settings. On Java1.5, Ant tries to get
+  this from the OS, unless you use the -noproxy option.
+
+  Proxies can be configured manually setting the JVM proxy values in the
+  ANT_OPTS environment variable.
+
+  For example, to set the proxy up in the tcsh shell, the command would be
+  something like:
+
+  For csh/tcsh:
+    setenv ANT_OPTS "-Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080"
+  For bash:
+    export ANT_OPTS="-Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080"
+  For Windows, set the environment variable in the appropriate dialog box
+  and open a new console. or, by hand
+    set ANT_OPTS = -Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080
+</description>
+
+  <!-- Give user a chance to override without editing this file
+       (and without typing -D each time it compiles it) -->
+  <property file="${user.home}/.ant/ant.properties"/>
+  <property name="lib.dir" location="lib" />
+  <property name="optional.dir" location="${lib.dir}/optional" />
+  <property name="userlib.dir" location="${user.home}/.ant/lib" />
+
+  <!-- load in our properties table -->
+  <property file="${lib.dir}/libraries.properties"/>
+
+  <!-- Temporary cache for working files -->
+  <property name="temp.dir" location="${user.home}/.ant/tempcache" />
+  <property name="keep.temp.dir" value="true" />
+
+  <import file="get-m2.xml" />
+
+  <target name="pick-dest">
+    <fail>
+      <condition>
+        <not>
+          <isset property="dest"/>
+        </not>
+      </condition>ERROR
+Set -Ddest=LOCATION on the command line
+  -Ddest=user     user lib dir  ${user.home}/.ant/lib
+  -Ddest=system   ant lib dir   ${ant.home}/lib
+  -Ddest=optional optional dir  $${basedir}/lib/optional  (for Ant developers)
+    </fail>
+
+    <condition property="dest.dir"
+      value="${lib.dir}">
+      <equals arg1="${dest}" arg2="system" />
+    </condition>
+    <condition property="dest.dir"
+      value="${optional.dir}">
+      <equals arg1="${dest}" arg2="optional" />
+    </condition>
+    <condition property="dest.dir"
+      value="${userlib.dir}">
+      <equals arg1="${dest}" arg2="user" />
+    </condition>
+    <fail unless="dest.dir">Unknown destination : ${dest}</fail>
+    <echo>Downloading to ${dest.dir}</echo>
+    <property name="m2.dest.dir" value="${dest.dir}" />
+  </target>
+
+
+  <target name="macros" depends="pick-dest,get-m2"
+    xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+    <macrodef name="f2">
+      <attribute name="project" />
+      <attribute name="archive" default="@{project}"/>
+      <attribute name="repository" default="${m2.repo}"/>
+      <sequential>
+        <fail>
+        Unknown archive @{archive} -no property @{archive}.version defined in ${lib.dir}/libraries.properties.
+          <condition>
+            <not>
+            <isset property="@{archive}.version"/>
+            </not>
+          </condition>
+        </fail>
+        <artifact:dependencies pathID="@{archive}.path">
+          <dependency groupID="@{project}"
+            artifactID="@{archive}"
+            version="${@{archive}.version}"/>
+          <remoteRepository url="@{repository}" />
+        </artifact:dependencies>
+        <!-- now we are left with the problem of getting the files
+             into our directory -->
+        <copy todir="${dest.dir}">
+          <path refid="@{archive}.path" />
+          <flattenmapper/>
+        </copy>
+      </sequential>
+    </macrodef>
+  </target>
+
+  <target name="nonm2-macros" depends="pick-dest">
+    <macrodef name="get-ftp-file">
+      <attribute name="host" />
+      <attribute name="port" default="21"/>
+      <attribute name="remotedir" />
+      <attribute name="filename" />
+      <attribute name="localdir" default="${dest.dir}" />
+      <attribute name="user" default="anonymous"/>
+      <attribute name="pw" default="anonymous"/>
+      <sequential>
+        <ftp server="@{host}" port="@{port}" userid="@{user}" password="@{pw}" passive="true"
+            remotedir="@{remotedir}" action="get" depends="true" preserveLastModified="true"
+            skipFailedTransfers="true">
+          <fileset dir="@{localdir}">
+            <include name="@{filename}" />
+          </fileset>
+        </ftp>
+      </sequential>
+    </macrodef>
+
+  </target>
+
+
+
+  <!-- any init stuff -->
+  <target name="init" depends="macros" />
+
+  <target name="init-no-m2" depends="nonm2-macros" />
+
+  <target name="init-cache">
+    <available property="temp.cache.already.exists" file="${temp.dir}" type="dir" />
+    <condition property="user.wants.temp.cache">
+      <and>
+        <isset property="keep.temp.dir" />
+        <not>
+          <or>
+            <equals arg1="${keep.temp.dir}" arg2="false" casesensitive="false" />
+            <equals arg1="${keep.temp.dir}" arg2="no" casesensitive="false" />
+            <equals arg1="${keep.temp.dir}" arg2="off" casesensitive="false" />
+          </or>
+        </not>
+      </and>
+    </condition>
+    <condition property="delete.temp.cache">
+      <and>
+        <not>
+          <isset property="temp.cache.already.exists" />
+        </not>
+        <not>
+          <isset property="user.wants.temp.cache" />
+        </not>
+      </and>
+    </condition>
+  </target>
+
+  <target name="-setup-temp-cache" depends="init-cache" unless="temp.cache.already.exists"
+          description="Setup temporary cache for downloaded files">
+    <mkdir dir="${temp.dir}" />
+  </target>
+
+  <target name="-cleanup-temp-cache" depends="init-cache" if="delete.temp.cache"
+          description="Gets rid of the temporary cache directory">
+    <delete dir="${temp.dir}" />
+  </target>
+
+
+  <target name="diag" depends="init">
+    <echoproperties />
+  </target>
+
+  <target name="logging"
+    description="load logging libraries"
+    depends="init">
+    <f2 project="log4j" />
+    <f2 project="commons-logging" archive="commons-logging-api" />
+  </target>
+
+  <target name="junit"
+    description="load junit libraries"
+    depends="init">
+    <f2 project="junit" />
+  </target>
+
+  <target name="xml"
+    description="load full XML libraries (xalan, resolver)"
+    depends="init">
+    <f2 project="xalan" />
+    <f2 project="xml-resolver" />
+  </target>
+
+  <target name="networking"
+    description="load networking libraries (commons-net; jsch)"
+    depends="init">
+    <f2 project="commons-net" />
+    <f2 project="com.jcraft" archive="jsch"/>
+    <available property="have.commons.net" classname="org.apache.commons.net.ftp.FTPClientConfig"/>
+  </target>
+
+  <target name="regexp"
+    description="load regexp libraries"
+    depends="init">
+    <f2 project="regexp" />
+    <f2 project="oro" />
+  </target>
+
+  <target name="antlr"
+    description="load antlr libraries"
+    depends="init">
+    <f2 project="antlr" />
+  </target>
+
+  <target name="bcel"
+    description="load bcel libraries"
+    depends="init">
+    <f2 project="bcel" />
+  </target>
+
+  <target name="jdepend"
+    description="load jdepend libraries"
+    depends="init">
+    <f2 project="jdepend" />
+  </target>
+
+  <target name="bsf"
+    description="load bsf libraries"
+    depends="init">
+    <f2 project="bsf" />
+  </target>
+
+  <target name="jruby"
+          description="load jruby"
+          depends="bsf">
+    <f2 project="org.jruby" archive="jruby"/>
+  </target>
+
+  <target name="beanshell"
+          description="load beanshell support"
+          depends="bsf">
+    <f2 project="org.beanshell" archive="bsh"/>
+    <f2 project="org.beanshell" archive="bsh-core"/>
+  </target>
+
+  <target name="jython"
+          description="load jython"
+          depends="bsf">
+    <f2 project="jython" archive="jython"/>
+  </target>
+
+  <target name="rhino"
+          description="load rhino"
+          depends="bsf">
+    <f2 project="rhino" archive="js"/>
+  </target>
+
+  <target name="script"
+          description="load script languages (except jython)"
+          depends="bsf,jruby,beanshell,rhino"/>
+
+  <target name="debugging"
+    description="internal ant debugging"
+    depends="init">
+    <f2 project="which" />
+  </target>
+
+  <target name="javamail" depends="init"
+          description="load javamail">
+    <f2 project="javax.mail" archive="mail"/>
+  </target>
+
+  <target name="jspc" depends="init" description="loads Jasper">
+    <f2 project="tomcat" archive="jasper-compiler"/>
+    <f2 project="tomcat" archive="jasper-runtime"/>
+    <f2 project="javax.servlet" archive="servlet-api"/>
+  </target>
+
+  <target name="jai" depends="init"
+          description="load java advanced imaging">
+    <f2 project="javax.media" archive="jai-core" repository="http://repository.jboss.org/maven2"/>
+    <f2 project="com.sun.media" archive="jai-codec" repository="http://repository.jboss.org/maven2"/>
+  </target>
+
+  <target name="netrexx" depends="init-no-m2,-setup-temp-cache,networking,-fetch-netrexx,-fetch-netrexx-no-commons-net,-cleanup-temp-cache"
+          description="load NetRexx compiler" />
+
+  <target name="-fetch-netrexx" depends="-setup-temp-cache"
+          description="FTPs NetRexx compiler from IBM site" if="have.commons.net">
+    <get-ftp-file host="ftp.software.ibm.com" remotedir="/software/awdtools/netrexx"
+            filename="NetRexx.zip" localdir="${temp.dir}" />
+    <copy todir="${dest.dir}" flatten="true">
+      <zipfileset src="${temp.dir}/NetRexx.zip">
+        <include name="NetRexx\lib\NetRexxC.jar" />
+        <include name="NetRexx\browse\license.txt" />
+      </zipfileset>
+    </copy>
+  </target>
+
+  <target name="-fetch-netrexx-no-commons-net" depends="-setup-temp-cache"
+          description="FTPs NetRexx compiler from IBM site" unless="have.commons.net">
+    <get src="ftp://ftp.software.ibm.com/software/awdtools/netrexx/NetRexx.zip" dest="${temp.dir}/NetRexx.zip" skipexisting="true"/>
+    <copy todir="${dest.dir}" flatten="true">
+      <zipfileset src="${temp.dir}/NetRexx.zip">
+        <include name="NetRexx\lib\NetRexxC.jar" />
+        <include name="NetRexx\browse\license.txt" />
+      </zipfileset>
+    </copy>
+  </target>
+
+  <target name="all"
+    description="load all the libraries (except jython)"
+    depends="logging,junit,xml,networking,regexp,antlr,bcel,jdepend,bsf,debugging,script,javamail,jspc,jai,netrexx" />
+
+</project>

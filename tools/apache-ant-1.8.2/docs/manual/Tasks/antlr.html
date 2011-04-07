@@ -1,0 +1,200 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>ANTLR Task</title>
+</head>
+
+<body>
+
+<h2><a name="antlr">ANTLR</a></h2>
+<h3>Description</h3>
+<p>
+  Invokes the <a HREF="http://www.antlr.org/" target="_top">ANTLR</a> Translator generator
+  on a grammar file.
+</p>
+<p>
+  To use the ANTLR task, set the <i>target</i> attribute to the name of the
+  grammar file to process.  Optionally, you can also set the
+  <i>outputdirectory</i> to write the generated file to a specific directory.
+  Otherwise ANTLR writes the generated files to the directory containing
+  the grammar file.
+</p>
+<p>
+  This task only invokes ANTLR if the grammar file (or the
+  supergrammar specified by the glib attribute) is newer than the
+  generated files.
+</p>
+<p>Antlr 2.7.1 Note:
+<i>
+  To successfully run ANTLR, your best option is probably to build the whole
+  jar with the provided script <b>mkalljar</b> and drop the resulting jar (about 300KB)
+  into ${ant.home}/lib. Dropping the default jar (70KB) is probably not enough
+  for most needs and your only option will be to add ANTLR home directory
+  to your classpath as described in ANTLR <tt>install.html</tt> document.
+</i>
+</p>
+<p>Antlr 2.7.2 Note:
+<i>
+  Instead of the above, you will need antlrall.jar that can be created
+  by the <b>antlr-all.jar</b> target of the Makefile provided with the
+  download.
+</i>
+</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">target</td>
+    <td valign="top">The grammar file to process.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">outputdirectory</td>
+    <td valign="top">
+      The directory to write the generated files to.  If not set, the files
+      are written to the directory containing the grammar file.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">glib</td>
+    <td valign="top">
+      An optional super grammar file that the target grammar overrides.  This
+      feature is only needed for advanced vocabularies.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">debug</td>
+    <td valign="top">
+      When set to "yes", this flag adds code to the generated parser that will
+      launch the ParseView debugger upon invocation.  The default is "no".
+      <br>
+      Note: ParseView is a separate component that needs to be installed or your
+      grammar will have compilation errors.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">html</td>
+    <td valign="top">
+      Emit an html version of the grammar with hyperlinked actions.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">diagnostic</td>
+    <td valign="top">
+      Generates a text file with debugging information based on the target grammar.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">trace</td>
+    <td valign="top">
+      Forces <b>all</b> rules to call traceIn/traceOut if set to "yes".
+      The default is "no".
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">traceParser</td>
+    <td valign="top">
+      Only forces parser rules to call traceIn/traceOut if set to "yes".
+      The default is "no".
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">traceLexer</td>
+    <td valign="top">
+      Only forces lexer rules to call traceIn/traceOut if set to "yes".
+      The default is "no".
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">traceTreeWalker</td>
+    <td valign="top">
+      Only forces tree walker rules to call traceIn/traceOut if set to
+      "yes".  The default is "no".
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <!--tr>
+    <td valign="top">fork</td>
+    <td valign="top">Run ANTLR in a separate VM.</td>
+    <td align="center" valign="top">No, default is &quot;off&quot;</td>
+  </tr-->
+  <tr>
+    <td valign="top">dir</td>
+    <td valign="top">The directory to invoke the VM in. <!--(ignored if
+      fork is disabled)--></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3><a name="nested">Nested Elements</a></h3>
+
+<p><code>ANTLR</code> supports a nested <code>&lt;classpath&gt;</code>
+element, that represents a <a href="../using.html#path">PATH like
+structure</a>. It is given as a convenience if you have to specify
+the original ANTLR directory. In most cases, dropping the appropriate
+ANTLR jar in the normal Ant lib repository will be enough.</p>
+
+<h4>jvmarg</h4>
+
+<p><!--If fork is enabled, -->Additional parameters may be passed to the new
+VM via nested <code>&lt;jvmarg&gt;</code> attributes, for example:</p>
+
+<pre>
+&lt;antlr target="..."&gt;
+  &lt;jvmarg value=&quot;-Djava.compiler=NONE&quot;/&gt;
+  ...
+&lt;/antlr&gt;
+</pre>
+
+<p>would run ANTLR in a VM without JIT.</p>
+
+<p><code>&lt;jvmarg&gt;</code> allows all attributes described in <a
+href="../using.html#arg">Command line arguments</a>.</p>
+
+<h3>Example</h3>
+<blockquote><pre>
+&lt;antlr
+    target=&quot;etc/java.g&quot;
+    outputdirectory=&quot;build/src&quot;
+/&gt;
+</pre></blockquote>
+<p>
+  This invokes ANTLR on grammar file etc/java.g, writing the generated
+  files to build/src.
+</p>
+
+
+</body>
+</html>
+

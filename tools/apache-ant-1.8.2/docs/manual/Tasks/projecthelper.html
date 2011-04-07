@@ -1,0 +1,59 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>ProjectHelper Task</title>
+</head>
+
+<body>
+
+<h2>ProjectHelper</h2>
+<h3>Description</h3>
+<p>This task is provided for the purpose of allowing the user to install a different
+ProjectHelper at runtime.
+</p>
+<p>The helpers will be added after all the already registered helpers, but before
+the default one (ProjectHelper2)
+</p>
+<p>See the description of Apache Ant's
+<a href="../projecthelper.html">Project Helper</a> for more information.
+</p>
+<p><b>Since Ant 1.8.2</b></p>
+
+<h3>Parameters specified as nested elements</h3>
+
+You may specify many configured <code>org.apache.tools.ant.ProjectHelper</code> instances.
+
+<h3>Example</h3>
+
+<p>Install a custom ProjectHelper implementation
+  (assuming <code>MyProjectHelper extends ProjectHelper</code>):</p>
+
+<pre>
+&lt;typedef classname="org.example.MyProjectHelper"
+              name="myprojecthelper"/>
+&lt;projecthelper>
+  &lt;myprojecthelper/>
+&lt;/projecthelper>
+</pre>
+
+</body>
+</html>
+

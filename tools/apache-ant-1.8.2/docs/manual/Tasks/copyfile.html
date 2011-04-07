@@ -1,0 +1,73 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Copyfile Task</title>
+</head>
+
+<body>
+
+<h2><a name="copyfile">Copyfile</a></h2>
+<h3><i>Deprecated</i></h3>
+<p><i>This task has been deprecated.  Use the Copy task instead.</i></p>
+<h3>Description</h3>
+<p>Copies a file from the source to the destination. The file is only copied if
+the source file is newer than the destination file, or when the destination file
+does not exist.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">src</td>
+    <td valign="top">the filename of the file to copy.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">dest</td>
+    <td valign="top">the filename of the file where to copy to.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">filtering</td>
+    <td valign="top">indicates whether token filtering should take place during
+      the copy</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">forceoverwrite</td>
+    <td valign="top">overwrite existing files even if the destination
+      files are newer (default is false).</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<blockquote>
+  <p><code>&lt;copyfile src=&quot;test.java&quot; dest=&quot;subdir/test.java&quot;/&gt;</code></p>
+  <p><code>&lt;copyfile src=&quot;${src}/index.html&quot; dest=&quot;${dist}/help/index.html&quot;/&gt;</code></p>
+</blockquote>
+
+
+</body>
+</html>
+

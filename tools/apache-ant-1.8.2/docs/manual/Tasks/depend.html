@@ -1,0 +1,216 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Depend Task</title>
+</head>
+
+<body>
+
+<h2>Depend</h2>
+
+A task to manage Java class file dependencies.
+
+<h3>Description</h3>
+
+<p>
+The depend task works by determining which classes are out of date with
+respect to their source and then removing the class files of any other
+classes which depend on the out-of-date classes.
+</p>
+
+<p> To determine the class dependencies, the depend task analyses the class 
+files of all class files passed to it. Depend does not parse your source code in 
+any way but relies upon the class references encoded into the class files by the 
+compiler. This is generally faster than parsing the Java source.</p>
+
+<p>
+To learn more about how this information is obtained from the class files, 
+please refer to <a href="http://java.sun.com/docs/books/jvms/">the Java 
+Virtual Machine Specification</a>
+</p>
+
+<p> Since a class' dependencies only change when the class itself changes, the 
+depend task is able to cache dependency information. Only those class files 
+which have changed will have their dependency information re-analysed. Note that 
+if you change a class' dependencies by changing the source, it will be 
+recompiled anyway. You can examine the dependency files created to understand 
+the  dependencies of your classes. Please do not rely, however, on the format of 
+the information, as it may change in a later release. </p>
+
+<p> Once depend discovers all of the class dependencies, it &quot;inverts&quot; 
+this relation to determine, for each class, which other classes are dependent 
+upon it. This &quot;affects&quot; list is used to discover which classes are 
+invalidated by the out of date class. The class files of the invalidated 
+classes are removed, triggering the compilation of the affected classes. </p>
+
+<p> The depend task supports an attribute, &quot;closure&quot; which controls 
+whether depend will only consider direct class-class relationships or whether it 
+will also consider transitive, indirect relationships. For example, say there 
+are three classes, A, which depends on B, which in-turn depend on C. Now say 
+that class C is out of date. Without closure, only class B would be removed by 
+depend. With closure set, class A would also be removed. Normally direct 
+relationships are sufficient - it is unusual for a class to depend on another 
+without having a direct relationship. With closure set, you will notice that 
+depend typically removes far more class files. </p>
+
+<p>The classpath attribute for <code>&lt;depend&gt;</code> is optional. If it is present, 
+depend will check class dependencies against classes and jars on this classpath.
+Any classes which depend on an element from this classpath and which are older 
+than that element will be deleted. A typical example where you would use this 
+facility would be where you are building a utility jar and want to make sure 
+classes which are out of date with respect to this jar are rebuilt. You should
+<b>not</b> include jars in this classpath which you do not expect to change, 
+such as the JDK runtime jar or third party jars, since doing so will just slow 
+down the dependency check. This means that if you do use a classpath for the 
+depend task it may be different from the classpath necessary to actually 
+compile your code.</p>
+
+<h3>Performance</h3> 
+
+<p> The performance of the depend task is dependent on a 
+number of factors such as class relationship complexity and how many class files 
+are out of date. The decision about whether it is cheaper to just recompile all 
+classes or to use the depend task will depend on the size of your project and 
+how interrelated your classes are. </p>
+
+
+<h3>Limitations</h3>
+
+<p> There are some source dependencies which depend will not detect. </p>
+
+<ul>
+<li>If the Java compiler optimizes away a class relationship, 
+    there can be a source dependency without a class dependency. </li>
+    
+<li>Non public classes cause two problems. Firstly depend cannot relate
+    the class file to a source file. In the future this may be addressed
+    using the source file attribute in the classfile. Secondly, neither 
+    depend nor the compiler tasks can detect when a non public class is
+    missing. Inner classes are handled by the depend task.</li>
+</ul>
+
+The most obvious example of these limitations is that the task can't tell
+which classes to recompile when a constant primitive data type exported 
+by other classes is changed. For example, a change in the definition of
+something like
+<pre>
+public final class Constants {
+  public final static boolean DEBUG=false;
+}
+</pre> will not be picked up by other classes.
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">srcDir</td>
+    <td valign="top">This is the directory where the source exists. depend
+will examine this to determine which classes are out of date. If you use multiple
+source directories you can pass this attribute a path of source directories.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">destDir</td>
+    <td valign="top">This is the root directory of the class files which
+will be analysed. If this is not present, the srcdir is used.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">cache</td>
+    <td valign="top">This is a directory in which depend can store and
+retrieve dependency information. If this is not present, depend will not
+use a cache </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">closure</td>
+    <td valign="top">This attribute controls whether depend only removes
+classes which directly depend on out of date classes. If this is set to true,
+depend will traverse the class dependency graph deleting all affected
+classes. Defaults to false</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">dump</td>
+    <td valign="top">If true the dependency information will be written to the debug level log
+                     </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">classpath</td>
+    <td valign="top">The classpath containing jars and classes for which <code>&lt;depend&gt;</code> should also
+                     check dependencies</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">warnOnRmiStubs</td>
+    <td valign="top">Flag to disable warnings about files that look like rmic generated stub/skeleton
+    classes, and which have no .java source. Useful when doing rmi development. </td>
+    <td valign="top" align="center">No, default=true</td>
+  </tr>
+</table>
+
+<h3>Parameters specified as nested elements</h3>
+<p>The <code>depend</code> task's <code>classpath</code> attribute is a 
+<a href="../using.html#path">PATH-like structure</a> and can also be set
+via a nested <code>&lt;classpath&gt;</code> element.</p>
+
+<p>Additionally,
+this task forms an implicit
+<a href="../Types/fileset.html">FileSet</a>
+and supports most attributes of
+<code>&lt;fileset&gt;</code> (<code>dir</code> becomes <code>srcdir</code>),
+as well as the nested <code>&lt;include&gt;</code>,
+<code>&lt;exclude&gt;</code>, and <code>&lt;patternset&gt;</code> elements.
+
+<h3>Examples</h3>
+<pre>&lt;depend srcdir=&quot;${java.dir}&quot;
+        destdir=&quot;${build.classes}&quot;
+        cache=&quot;depcache&quot;
+        closure=&quot;yes&quot;/&gt;</pre>
+
+<p>removes any classes in the <code>${build.classes}</code> directory
+that depend on out-of-date classes. Classes are considered out-of-date with 
+respect to the source in the <code>${java.dir}</code> directory, using the same
+mechanism as the <code>&lt;javac&gt;</code> task. In this example, the
+<code>&lt;depend&gt;</code> task caches its dependency 
+information in the <code>depcache</code> directory. </p>
+
+<pre>
+&lt;depend srcdir=&quot;${java.dir}&quot; destdir=&quot;${build.classes}&quot;
+        cache=&quot;depcache&quot; closure=&quot;yes&quot;&gt;
+  &lt;include name=&quot;**/*.java&quot;/&gt;
+  &lt;excludesfile name=&quot;${java.dir}/build_excludes&quot;/&gt;
+&lt;/depend&gt;
+</pre>
+<p>does the same as the previous example, but explicitly includes all
+<code>.java</code> files, except those that match the list given
+in <code>${java.dir}/build_excludes</code>.</p>
+
+
+
+</body>
+</html>
+

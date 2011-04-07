@@ -1,0 +1,123 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Rpm Task</title>
+</head>
+
+<body>
+
+<h2><a name="rpm">Rpm</a></h2>
+<h3>Description</h3>
+<p>
+  A basic task for invoking the rpm executable to build a RedHat Package Manager Linux installation
+  file. The task currently only works on Linux or other Unix platforms with rpm support.
+</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">specFile</td>
+    <td valign="top">The name of the spec file to be used. This must be relative to the SPECS directory
+    under the root of the RPM set in the topDir attribute.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">topDir</td>
+    <td valign="top">
+      This is the directory which will have the expected
+      subdirectories, SPECS, SOURCES, BUILD, SRPMS.  If this isn't specified,
+      the default RPM directory of the system (or user, if ~/.rpmmacros defines it) is used (often
+      /usr/src/rpm.<br>
+      Defining a topdir will set <tt>%_topdir</tt> to the specified directory -there is no need
+      to edit your .rpmmacros file.
+    </td>
+    <td valign="top" align="center">No, but your build file is very brittle if it is not set.</td>
+  </tr>
+  <tr>
+    <td valign="top">cleanBuildDir</td>
+    <td valign="top">This will remove the generated files in the BUILD
+      directory.
+      See the the <tt>--clean</tt> option of rpmbuild.
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">removeSpec</td>
+    <td valign="top">This will remove the spec file from SPECS.
+      See the the <tt>--rmspec</tt> option of rpmbuild.
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">removeSource</td>
+    <td valign="top">Flag (optional, default=false) 
+        to remove the sources after the build.
+        See the the <tt>--rmsource</tt> option of rpmbuild.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">rpmBuildCommand</td>
+    <td valign="top">The executable to use for building the RPM.
+      Defaults to <code>rpmbuild</code> if it can be found or
+      <code>rpm</code> otherwise.  Set this if you don't have either on
+      your PATH or want to use a different executable.  <em>Since Apache Ant
+      1.6</em>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">command</td>
+    <td valign="top">The command to pass to the rpmbuild program. The default is "-bb"</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">quiet</td>
+    <td valign="top">Suppress output. Defaults to false.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">output/error</td>
+    <td valign="top">Where standard output and error go</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">failOnError</td>
+    <td valign="top">Stop the buildprocess if the RPM build command exits with 
+       a non-zero retuncode. Defaults to false</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>
+    &lt;rpm
+        specFile="example.spec"
+        topDir="build/rpm"
+        cleanBuildDir="true"
+        failOnError="true"/&gt;
+</pre>
+</body>
+</html>
+

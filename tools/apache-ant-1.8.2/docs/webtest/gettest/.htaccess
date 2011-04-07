@@ -1,0 +1,10 @@
+Redirect seeother /webtest/gettest/other.txt /webtest/gettest/testother.txt
+Redirect temp /webtest/gettest/temp.txt /webtest/gettest/testtemp.txt
+Redirect permanent /webtest/gettest/permanent.txt /webtest/gettest/testperm.txt
+Redirect /webtest/gettest/infinite.txt /webtest/gettest/infinite2.txt
+Redirect /webtest/gettest/infinite2.txt /webtest/gettest/infinite.txt
+Redirect /webtest/gettest/redir5.txt /webtest/gettest/redir5-1.txt
+Redirect /webtest/gettest/redir5-1.txt /webtest/gettest/redir5-2.txt
+Redirect /webtest/gettest/redir5-2.txt /webtest/gettest/redir5-3.txt
+Redirect /webtest/gettest/redir5-3.txt /webtest/gettest/redir5-4.txt
+Redirect /webtest/gettest/redir5-4.txt /webtest/gettest/testredir5.txt

@@ -1,0 +1,70 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Nice Task</title>
+</head>
+
+<body>
+
+<h2><a name="echo">Nice</a></h2>
+<h3>Description</h3>
+<p>Provide "nice-ness" to the current thread
+   and/or query the current value.</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">currentpriority</td>
+    <td valign="top">the name of the property whose value should be
+                     set to the current &quot;nice-ness&quot; level.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">newpriority</td>
+    <td valign="top">the value to which the
+                     &quot;nice-ness&quot; level should be set.
+                     Must be a valid Java Thread priority.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+<h3>Examples</h3>
+<pre>   &lt;nice newpriority=&quot;10&quot;/&gt;</pre>
+Set the Thread priority to 10 (highest).
+<pre>   &lt;nice currentpriority=&quot;priority&quot;/&gt;</pre>
+Store the current Thread priority in the user property "priority".
+<pre>
+   &lt;nice currentpriority=&quot;currentpriority&quot; newpriority=&quot;1&quot;/&gt;
+</pre>
+<p>Set the current Thread priority to 1 (lowest), storing the original
+priority in the user property "currentpriority".  This
+can be used to set the priority back to its original value later.
+</p>
+
+
+</body>
+</html>
+

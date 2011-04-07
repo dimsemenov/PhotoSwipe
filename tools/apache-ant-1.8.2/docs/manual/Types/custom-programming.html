@@ -1,0 +1,415 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="en-us"></meta>
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Custom Components</title>
+  </head>
+  <body>
+    <h2>Custom Components</h2>
+    <h3>Overview</h3>
+    <p>
+      Custom components are conditions, selectors, filters and other
+      objects that are defined outside Apache Ant core.
+    </p>
+    <p>
+      In Ant 1.6 custom conditions, selectors and filters has
+      been overhauled.
+    </p>
+    <p>
+      It is now possible to define custom conditions, selectors and filters
+      that behave like Ant Core components.
+      This is achieved by allowing datatypes defined in build scripts
+      to be used as custom components if the class of the datatype
+      is compatible, or has been adapted by an adapter class.
+    </p>
+    <p>
+      The old methods of defining custom components are still supported.
+    </p>
+    <h3>Definition and use</h3>
+    <p>
+      A custom component is a normal Java class that implements a particular
+      interface or extends a  particular class, or has been adapted to the
+      interface or class.
+    </p>
+    <p>
+      It is exactly like writing a
+      <a href="../develop.html#writingowntask">custom task</a>.
+      One defines attributes and nested elements by writing <i>setter</i>
+      methods and <i>add</i> methods.
+    </p>
+    <p>
+      After the class has been written, it is added to the ant system
+      by using <code>&lt;typedef&gt;</code>.
+    </p>
+    <h3><a name="customconditions">Custom Conditions</a></h3>
+    <p>
+      Custom conditions are datatypes that implement
+      <code>org.apache.tools.ant.taskdefs.condition.Condition</code>.
+      For example a custom condition that returns true if a
+      string is all upper case could be written as:
+    </p>
+    <blockquote>
+      <pre>
+package com.mydomain;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.taskdefs.condition.Condition;
+
+public class AllUpperCaseCondition implements Condition {
+    private String value;
+
+    // The setter for the "value" attribute
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    // This method evaluates the condition
+    public boolean eval() {
+        if (value == null) {
+            throw new BuildException("value attribute is not set");
+        }
+        return value.toUpperCase().equals(value);
+   }
+}
+      </pre>
+    </blockquote>
+
+    <p>
+        Adding the condition to the system is achieved as follows:
+    </p>
+    <blockquote>
+      <pre>
+&lt;typedef
+    name="alluppercase"
+    classname="com.mydomain.AllUpperCaseCondition"
+    classpath="${mydomain.classes}"/&gt;
+      </pre>
+    </blockquote>
+    <p>
+      This condition can now be used wherever a Core Ant condition
+      is used.
+    </p>
+    <blockquote>
+      <pre>
+&lt;condition property="allupper"&gt;
+   &lt;alluppercase value="THIS IS ALL UPPER CASE"/&gt;
+&lt;/condition&gt;
+      </pre>
+    </blockquote>
+    <h3><a name="customselectors">Custom Selectors</a></h3>
+    <p>
+      Custom selectors are datatypes that implement
+      <code>org.apache.tools.ant.types.selectors.FileSelector</code>.
+    </p>
+    <p>There is only one method required.
+      <code>public boolean isSelected(File basedir, String filename,
+        File file)</code>.
+      It returns true
+      or false depending on whether the given file should be
+      selected or not.
+    </p>
+    <p>
+      An example of a custom selection that selects filenames ending
+      in ".java" would be:
+    </p>
+    <blockquote>
+      <pre>
+package com.mydomain;
+import java.io.File;
+import org.apache.tools.ant.types.selectors.FileSelector;
+public class JavaSelector implements FileSelector {
+    public boolean isSelected(File b, String filename, File f) {
+       return filename.toLowerCase().endsWith(".java");
+    }
+}
+      </pre>
+    </blockquote>
+    <p>
+      Adding the selector to the system is achieved as follows:
+    </p>
+    <blockquote>
+      <pre>
+&lt;typedef
+    name="javaselector"
+    classname="com.mydomain.JavaSelector"
+    classpath="${mydomain.classes}"/&gt;
+      </pre>
+    </blockquote>
+        <p>
+      This selector can now be used wherever a Core Ant selector
+      is used, for example:
+    </p>
+    <blockquote>
+      <pre>
+&lt;copy todir="to"&gt;
+   &lt;fileset dir="src"&gt;
+      &lt;javaselector/&gt;
+   &lt;/fileset&gt;
+&lt;/copy&gt;
+      </pre>
+    </blockquote>
+
+      <p>
+        One may use
+        <code>org.apache.tools.ant.types.selectors.BaseSelector</code>,
+        a convenience class that provides reasonable default
+        behaviour.
+        It has some predefined behaviours you can take advantage
+        of. Any time you encounter a problem when setting attributes or
+        adding tags, you can call setError(String errmsg) and the class
+        will know that there is a problem. Then, at the top of your
+        <code>isSelected()</code> method call <code>validate()</code> and
+        a BuildException will be thrown with the contents of your error
+        message. The <code>validate()</code> method also gives you a
+        last chance to check your settings for consistency because it
+        calls <code>verifySettings()</code>. Override this method and
+        call <code>setError()</code> within it if you detect any
+        problems in how your selector is set up.
+    </p>
+    <p>
+      To write custom selector containers one should extend
+      <code>org.apache.tools.ant.types.selectors.BaseSelectorContainer</code>.
+      Implement the
+      <code>public boolean isSelected(File baseDir, String filename, File file)</code>
+      method to do the right thing. Chances are you'll want to iterate
+      over the selectors under you, so use
+      <code>selectorElements()</code> to get an iterator that will do
+      that.
+    </p>
+    <p>
+      For example to create a selector container that will select files
+      if a certain number of contained selectors select, one could write
+      a selector as follows:
+    </p>
+    <blockquote>
+      <pre>
+public class MatchNumberSelectors extends BaseSelectorContainer {
+    private int number = -1;
+    public void setNumber(int number) {
+        this.number = number;
+    }
+    public void verifySettings() {
+        if (number &lt; 0) {
+           throw new BuildException("Number attribute should be set");
+        }
+    }
+    public boolean isSelected(File baseDir, String filename, File file) {
+        validate();
+        int numberSelected = 0;
+        for (Enumeration e = selectorElements(); e.hasNextElement();) {
+            FileSelector s = (FileSelector) e.nextElement();
+            if (s.isSelected(baseDir, filename, file)) {
+                numberSelected++;
+            }
+        }
+        return numberSelected == number;
+    }
+}
+      </pre>
+    </blockquote>
+    <p>
+      To define and use this selector one could do:
+    </p>
+    <blockquote>
+      <pre>
+&lt;typedef name="numberselected"
+         classname="com.mydomain.MatchNumberSelectors"/&gt;
+...
+&lt;fileset dir="${src.path}"&gt;
+   &lt;numberselected number="2"&gt;
+      &lt;contains text="script" casesensitive="no"/&gt;
+      &lt;size value="4" units="Ki" when="more"/&gt;
+      &lt;javaselector/&gt;
+   &lt;/numberselected&gt;
+&lt;/fileset&gt;
+      </pre>
+    </blockquote>
+    <p>
+      <i>The custom selector</i>
+    </p>
+    <p>
+      The custom selector was the pre ant 1.6 way of defining custom selectors.
+      This method is still supported for backward compatibility.
+    </p>
+    <p>You can write your own selectors and use them within the selector
+      containers by specifying them within the <code>&lt;custom&gt;</code> tag.</p>
+
+        <p>To create a new Custom Selector, you have to create a class that
+        implements
+        <code>org.apache.tools.ant.types.selectors.ExtendFileSelector</code>.
+        The easiest way to do that is through the convenience base class
+        <code>org.apache.tools.ant.types.selectors.BaseExtendSelector</code>,
+        which provides all of the methods for supporting
+        <code>&lt;param&gt;</code> tags. First, override the
+        <code>isSelected()</code> method, and optionally the
+        <code>verifySettings()</code> method. If your custom
+        selector requires parameters to be set, you can also override
+        the <code>setParameters()</code> method and interpret the
+        parameters that are passed in any way you like. Several of the
+        core selectors demonstrate how to do that because they can
+        also be used as custom selectors.</p>
+
+
+    <p>Once that is written, you include it in your build file by using
+      the <code>&lt;custom&gt;</code> tag.
+    </p>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">classname</td>
+        <td valign="top">The name of your class that implements
+          <code>org.apache.tools.ant.types.selectors.FileSelector</code>.
+        </td>
+        <td valign="top" align="center">Yes</td>
+      </tr>
+      <tr>
+        <td valign="top">classpath</td>
+        <td valign="top">The classpath to use in order to load the
+          custom selector class. If neither this classpath nor the
+          classpathref are specified, the class will be
+          loaded from the classpath that Ant uses.
+        </td>
+        <td valign="top" align="center">No</td>
+      </tr>
+      <tr>
+        <td valign="top">classpathref</td>
+        <td valign="top">A reference to a classpath previously
+          defined. If neither this reference nor the
+          classpath above are specified, the class will be
+          loaded from the classpath that Ant uses.
+        </td>
+        <td valign="top" align="center">No</td>
+      </tr>
+    </table>
+
+    <p>Here is how you use <code>&lt;custom&gt;</code> to
+      use your class as a selector:
+    </p>
+
+    <blockquote><pre>
+&lt;fileset dir="${mydir}" includes="**/*"&gt;
+    &lt;custom classname="com.mydomain.MySelector"&gt;
+        &lt;param name="myattribute" value="myvalue"/&gt;
+    &lt;/custom&gt;
+&lt;/fileset&gt;
+      </pre></blockquote>
+
+
+    <p>The core selectors that can also be used as custom selectors
+      are</p>
+
+    <ul>
+      <li><a href="selectors.html#containsselect">Contains Selector</a> with
+        classname <code>org.apache.tools.ant.types.selectors.ContainsSelector</code>
+      </li>
+      <li><a href="selectors.html#dateselect">Date Selector</a> with
+        classname <code>org.apache.tools.ant.types.selectors.DateSelector</code>
+      </li>
+      <li><a href="selectors.html#depthselect">Depth Selector</a> with
+        classname <code>org.apache.tools.ant.types.selectors.DepthSelector</code>
+      </li>
+      <li><a href="selectors.html#filenameselect">Filename Selector</a> with
+        classname <code>org.apache.tools.ant.types.selectors.FilenameSelector</code>
+      </li>
+      <li><a href="selectors.html#sizeselect">Size Selector</a> with
+        classname <code>org.apache.tools.ant.types.selectors.SizeSelector</code>
+      </li>
+    </ul>
+
+    <p>Here is the example from the Depth Selector section rewritten
+    to use the selector through <code>&lt;custom&gt;</code>.</p>
+
+    <blockquote><pre>
+&lt;fileset dir="${doc.path}" includes="**/*"&gt;
+    &lt;custom classname="org.apache.tools.ant.types.selectors.DepthSelector"&gt;
+        &lt;param name="max" value="1"/&gt;
+    &lt;/custom&gt;
+&lt;/fileset&gt;
+      </pre></blockquote>
+
+    <p>Selects all files in the base directory and one directory below
+      that.</p>
+
+    <h3><a name="filterreaders">Custom Filter Readers</a></h3>
+    <p>
+      Custom filter readers selectors are datatypes that implement
+      <code>org.apache.tools.ant.types.filters.ChainableReader</code>.
+    </p>
+    <p>There is only one method required.
+      <code>Reader chain(Reader reader)</code>.
+      This returns a reader that filters input from the specified
+      reader.
+    </p>
+    <p>
+      For example a filterreader that removes every second character
+      could be:
+    </p>
+    <blockquote>
+      <pre>
+public class RemoveOddCharacters implements ChainableReader {
+   public Reader chain(Reader reader) {
+      return new BaseFilterReader(reader) {
+          int count = 0;
+          public int read() throws IOException {
+              while (true) {
+                int c = in.read();
+                if (c == -1) {
+                    return c;
+                }
+                count++;
+                if ((count % 2) == 1) {
+                    return c;
+                }
+              }
+          }
+      }
+   }
+}
+      </pre>
+    </blockquote>
+    <p>
+      For line oriented filters it may be easier to extend
+      <code>ChainableFilterReader</code> an inner class of
+      <code>org.apache.tools.ant.filters.TokenFilter</code>.
+    </p>
+    <p>
+      For example a filter that appends the line number could be
+    </p>
+    <blockquote>
+      <pre>
+public class AddLineNumber extends ChainableReaderFilter {
+   private void lineNumber = 0;
+   public String filter(String string) {
+      lineNumber++;
+      return "" + lineNumber + "\t" + string;
+   }
+}
+      </pre>
+    </blockquote>
+
+
+    <hr></hr>
+  </body>
+</html>
+

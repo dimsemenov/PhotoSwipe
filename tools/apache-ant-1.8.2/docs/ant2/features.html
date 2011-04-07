@@ -1,0 +1,381 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="en-us">
+    <title>Ant2 feature list</title>
+
+      <style type="text/css">
+        .comment {
+          COLOR: #900000;
+	  BACKGROUND: #ffa;
+        }
+      </style>
+
+  </head>
+
+  <body bgcolor="#FFFFFF">
+
+    <p class="comment">If something looks like this, this is either a
+    request for input or a &quot;REVISIT&quot; marker or similar.</p>
+
+    <h1>Ant2 Goals</h1>
+
+    <p>Even though Ant2 is expected to be incompatible with the
+    current Ant1 series, it still has the same goals. Ant is a Java
+    based build tool and this remains the main focus of it. The
+    original goals of simplicity, understandability and extensibility
+    still stand and Ant2 will try to achieve them even better than
+    Ant1 does.</p>
+
+    <h2>Simplicity and Understandability</h2>
+
+    <p>These two goals are closely related. Ant build files shall be
+    easy to read and understand - at the same time it should be easy
+    to write a custom Ant task and to use the utility classes that
+    Ant2 provides.</p>
+
+    <p>Ant2 shall be more consistent than Ant1 is - this means:</p>
+
+    <ul>
+
+      <li>core tasks will use the same attribute names for common
+      functionality</li>
+
+      <li>similar tasks will be unified to use similar forms.</li>
+
+      <li>different implementations for the same functionality will be
+      hidden behind facade tasks.</li>
+
+      <li>properties and data types will be unified so that they share
+      the same namespace and inheritance rules. <i
+      class="comment">Need to talk about how ${} expansion works for
+      filesets and so on.</i></li>
+
+    </ul>
+
+    <p>Furthermore some things will have to become more explicit:</p>
+
+    <ul>
+
+      <li>remove all magic properties</li>
+
+      <li>make build file writers explicitly state which
+      filters/filtersets a copy task will use</li>
+
+      <li>add scoping rules for properties so that not all of them
+      will be inherited by sub-builds, only those that have been
+      specified explicitly. <i class="comment">Fill in details once
+      they've been sorted out.</i></li>
+
+    </ul>
+
+    <p>The front-ends for Ant2 shall be smart enough to automatically
+    detect the required libraries (like <code>tools.jar</code>), the
+    use of native scripts shall be kept to a minimum.</p>
+
+    <p>Build file writers can attach a message to targets that will be
+    presented to the user if that target is going to be skipped (based
+    on the if/unless attribute of the target).</p>
+
+    <p>Even though Ant installation already is quite simple in Ant1
+    (extract the archive and set two environment variables),
+    alternative ways to install Ant like using 
+    <a href="http://java.sun.com/products/javawebstart/">Webstart</a> or
+    a "self-extracting" JAR file will be explored.</p>
+
+    <h2>Extensibility</h2>
+
+    <p>Ant2 like Ant1 uses build files written in XML as its main
+    input, but it will not be restricted to it. The core of Ant2 will
+    work on an object model of Project/Target/Task that is independent
+    of any external representation.</p> 
+
+    <p>As an extension of the current <code>&lt;taskdef&gt;</code>
+    concept, tasks can be bundled into task libraries (together with
+    data types and other utility classes). These task libraries are
+    special JAR archives that somehow describe the contained tasks to
+    Ant. Ant will automatically know all tasks contained in task
+    libraries that have been placed into a special directory - in
+    addition task libraries can be referenced and used in a build file
+    explicitly. <i class="comment">Fill in details once they've been
+    sorted out.</i></p>
+
+    <p>It has become apparent, that several &quot;aspects&quot; of
+    tasks are so common that task writers find themselves duplicating
+    code all over again - things like classpath handling or &quot;do
+    we stop the build if this task fails?&quot; functionality for
+    example. Ant2 will provide a way to let the user attach an
+    &quot;aspect handler&quot; to a project - all attributes that live
+    in a certain namespace are going to be passed to this handler. <i
+    class="comment">Need to talk about TaskContext here.</i></p>
+
+    <p>Ant2 will farm out common functionality from tasks into utility
+    classes so that task writers can benefit from a tested and stable
+    framework - they shouldn't need to deal with existing tasks
+    directly (like some tasks &quot;abuse&quot; the
+    <code>&lt;touch&gt;</code> task in Ant1).</p>
+
+    <p>Ant2 will provide a way to define tasks that itself can have
+    tasks as child elements without knowing all defined tasks at
+    compile time.  Discussions on ant-dev usually talk about
+    &quot;container tasks&quot; in this context.</p>
+
+    <p>The only way to &quot;include&quot; common XML snippets so far
+    has been the usage of external SYSTEM entities, a mechanism that
+    is tied to DTDs and doesn't mix well with alternative
+    approaches like XML Schema.  Ant2 will provide a built-in include
+    mechanism.</p>
+
+    <h1>New/Modified Features</h1>
+
+    <p>Ant2 will run the build process fully dynamically, which means
+    that task won't be instantiated before they are actually being run
+    and <code>${}</code> expansion will see the very latest value of a
+    property. It will be possible to reassign values of properties via
+    a built-in task.</p>
+
+    <h2>Compatibility with Ant1</h2>
+
+    <p>Ant2 is going to break Ant1 in several ways:</p>
+
+    <ul>
+
+      <li>Tasks written for Ant1 won't work in Ant2 as the API of
+      Ant's core and the names of utility classes are going to
+      change. There will probably be adaptors and utility classes to
+      ease the transition for task writers.</li>
+
+      <li>Build files written for Ant1 will probably not be valid in
+      Ant2 or at least not yield the same results. It is expected that
+      Ant2 will come with a tool to translate Ant1 build files into
+      equivalent Ant2 versions</li>
+
+      <li>magic properties like <code>build.compiler</code> may
+      disappear and be replaced by a different customization
+      concept.</li>
+
+      <li>Ant2 is going to require a JDK version 1.2 or above and a
+      JAXP compliant parser version 1.1 or above.</li>
+
+      <li>If you specify more than one target in another target's
+      depends attribute, Ant1 will execute these targets from left to
+      right (as long as the dependency tree permits it) - Ant2 will
+      not guarantee this behavior but will allow build file writers to
+      specify the order explicitly.</li>
+
+      <li>Dereferencing a non existent property a via ${a} will result
+      in a build failure.</li>
+
+    </ul>
+
+    <h2>Support Integration of Ant Into Other Tools</h2>
+
+    <p>Ant2 will have a clear separation between the front-end that is
+    responsible for user interactions, the object model that
+    represents the project to build and the part of Ant that runs the
+    build process itself <i class="comment">Name that TaskEngine,
+    ProjectEngine, ExecutionEngine or what?</i>. This separation is
+    expected to ease the integration of Ant (or parts of it) into
+    other products.</p>
+
+    <p>Ant2 itself will include a command line front-end and Antidote
+    will become the GUI front-end to it. Other front-ends like a
+    servlet front-end are expected <i class="comment">outside of
+    Ant's core</i> as well.</p>
+
+    <p>In addition to this separation, the following features should
+    help people who want to integrate Ant into their products:</p>
+
+    <ul>
+
+      <li>It will be possible to cancel a running build process.</li>
+
+      <li>Ant will detach from <code>System.err/.out/.in</code>
+      completely and communicate with the front-end via a well defined
+      API.  The front-end will have to handle user input for tasks
+      that need it (tasks that ask for a password for example).</li>
+
+      <li>Tasks will provide some way to identify their attributes
+      from the outside. <i class="default">fill in details</i></li>
+
+    </ul>
+
+    <h2>More Control for Users and Build File Writers</h2>
+
+    <p>Ant2 will use a <code>BuildListener</code> concept similar to
+    the one of Ant1 but may provide a richer set of events. It will be
+    possible to attach and detach listeners to a build process from
+    within the build file and to modify the behavior of attached
+    listeners.</p>
+
+    <p>In Ant1 users have little control over how things work.  There
+    are a couple of magic properties to make Ant chose a preferred
+    compiler or modify the CLASSPATH, but they are barely documented.
+    If users want to set these properties for every build process,
+    they have to learn the undocumented tricks of the
+    <code>ANT_OPTS</code> environment variable or the
+    <code>~/.antrc</code> file.</p>
+
+    <p>Ant2 will have a well defined system to specify user
+    preferences.  This system will not only let user chose their
+    compiler but also give them a chance to provide default values for
+    attributes (say you always want the <code>debug</code> attribute
+    of the <code>javac</code> task to be true - unless it has been
+    disabled explicitly). <i class="comment">Need to give details once
+    they've been sorted out.</i></p>
+
+    <h2>Documentation System</h2>
+
+    <p>All tasks will be documented in XML files using a common DTD <i
+    class="comment">Still need to define it</i> - task libraries are
+    expected to include the documentation using this DTD inside the
+    library itself.</p>
+
+    <h2>Better Subbuild Handling</h2>
+
+    <p class="comment">Is there something beyond &quot;should become
+    better&quot; right now?</p>
+
+    <h2>Data Types</h2>
+
+    <p>Ant1 supports a limited set of data types (fileset, patternset
+    and path) and at least up to Ant 1.3 it is not possible to
+    register custom data types without writing a task that does this.
+    Ant2 will provide a built-in mechanism to define new data
+    types.</p>
+
+    <p>Existing data-types will be improved, the files in a fileset
+    can be chosen based on more than just pattern matching for example
+    (modification time or permissions for example).  Ant2 will have
+    built-in tasks for set operations.</p>
+
+    <p>Data types and properties will share the same name space and
+    follow the same scoping and precedence rules. 
+    <i class="comment">${} again.</i></p>
+
+    <h2>Multi-Threading of Tasks Within a Target</h2>
+
+    <p>It will be possible to run several tasks in parallel - these
+    tasks will belong to the same target and all tasks will be joined
+    at the end of the target.</p>
+
+    <h2>Internationalization</h2>
+
+    <p>Ant2 itself will provide internationalized (error) messages and
+    provide utility classes to help task writers to do the same.  
+    <i class="comment">These utility classes may very well come from a
+    different (Jakarta) project</i>.</p>
+
+    <p>Ant's primary language and the language of the build file
+    will continue to be English.</p>
+
+    <h1>Rejected Features</h1>
+
+    <p>This is list is not complete, it just highlights some of the
+    rejected features and tries to explain why they've been
+    rejected.  Two very common reasons to reject something were, that
+    the request has been too vague or the same functionality could
+    already be provided by some other accepted new feature.</p>
+
+    <p>For a complete listing of all requested features, see <a
+    href="requested-features.html">requested-features.html</a>. The
+    discussion on all topics can be followed in the <a
+    href="http://marc.theaimsgroup.com/?l=ant-dev&r=1&w=2">archives
+    for ant-dev</a> in threads starting from 2001-03-21 - the subject
+    lines contained either <code>[VOTE]</code> or
+    <code>[DISC]</code>.</p>
+
+    <h2>Simple Flow-Control</h2>
+
+    <p>People asking for these kind of things have often heard the
+    standard "Ant shall not become yet another scripting language, Ant
+    shall not fall into the same traps make/Perl did ..." response
+    from the committers and some long-term ant-dev people.</p>
+
+    <p>The long version of that answer is:</p>
+
+    <ul>
+      <li>There are lots of open source scripting languages, there is
+      no need to define a new one.</li>
+
+      <li>Ant has been created to be a build tool.  While you can use
+      it for a whole lot of other things, this is not Ant's primary
+      focus (and it shouldn't be).  Most use-cases that ask for
+      flow-control are out of Ant's scope.</li>
+
+      <li>Ant already provides the requested functionality for many
+      common situations.  The execon and apply tasks can be used to
+      iterate over a set of files as the (planed for Ant2) javaon and
+      anton tasks will do.</li>
+
+      <li>Providing flow-control inside Ant's core would increase the
+      complexity of this core.  This would make it difficult for new
+      contributors to understand how Ant works and increase the
+      maintenance cost for Ant at the same time.  The goal of the Ant
+      developers is to push as much complexity and functionality out
+      of Ant's core into the tasks as possible.</li>
+    </ul>
+
+    <p>That being said, Ant2 will make it easy to write iteration or
+    conditional tasks via the new container task concept.  We expect
+    foreach, switch and if tasks to be written, but they will probably
+    not become core parts of the Ant distribution.</p>
+
+    <h2>Advanced Conditionals for if/unless Attributes</h2>
+
+    <p>The argument here is the same as for flow-control.  We are
+    talking about complexity that can be pushed from the core to tasks
+    - and that is what will be done.  Instead of additional power for
+    the if/unless attributes, Ant2 will have a new task that can set
+    properties based on the values of other properties or logical
+    combinations of other conditions, something like (making up
+    syntax):</p>
+
+<pre>
+&lt;condition name=&quot;javamail-complete&quot;&gt;
+  &lt;and&gt;
+    &lt;available class=&quot;javax.mail.Transport&quot;/&gt;
+    &lt;available class=&quot;javax.activation.DataHandler&quot;/&gt;
+  &lt;/and&gt;
+&lt;/condition&gt;
+</pre>
+
+    <p>will become possible</p>
+
+    <h2>Multi-Threaded Execution of Targets</h2>
+
+    <p>The general feeling was, that the combination of target
+    dependencies and multi-threading would soon become too complex,
+    especially since Ant2 will allow people to explicitly enforce the
+    order in which (independent) targets will be executed.</p>
+
+    <p>This issue will be explored again later, it has not been
+    rejected for all time being, but it is out of scope for
+    Ant&nbsp;2.0</p>
+
+    <h1>Ideas for New Tasks and Tools</h1>
+
+    <p>Please refer to <a
+    href="requested-features.html">requested-features.html</a> in the
+    section &quot;I. Things that don't affect the core but are
+    requests for new tasks or enhancements to existing tasks.&quot;
+    for this.</p>
+
+  </body>
+</html>

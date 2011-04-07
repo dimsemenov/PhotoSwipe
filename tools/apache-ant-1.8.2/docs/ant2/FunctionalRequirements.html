@@ -1,0 +1,70 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  <title>Ant Functional Requirements Document</title>
+</head>
+<body>
+<h2>Ant Functional Requirements</h2>
+<h3>Roles</h3>
+<p><b>User: </b>runs Ant with a complete build specification and/or
+writes Ant build specifications.</p>
+<p><b>Task Developer: </b>writes/modifies Ant tasks.</p>
+<p><b>Extensions Developer: </b>develops extensions like a GUI, IDE plugin,
+ (scripting extension?)</p>
+<p><b>Core Developer: </b>works on the Ant core</p>
+<h3>Requirements from the Ant User perspective</h3>
+<p>It should be easy to write a build file for small Java programs. It should
+ be possible to write a build file set for large Java systems. Maintenance
+ of such a set should be easy (e.g. no duplication of information).</p>
+<p>Every build process contains dependencies (e.g. item A needs B to be available
+ before its own build can start). It should be possible to specify these
+ dependencies in a declarative way.</p>
+<p>Suppose a working build specification for system A is available. It should
+ be possible for system B to declare dependencies to <i>(modules of?)</i> system
+ A without touching the build specification of A. Ant should be able to handle
+ dependencies between modules which form a DAG.</p>
+<p>It should be possible to modify details of the actual build (e.g. classpath,
+ used compiler) without the need to change the build specification. This
+ feature is needed when starting Ant (e.g. configuration with command line
+ parameters) and for a subproject build driven by the build of a dependent
+ project.</p>
+<p>Often similar items have to be built. Therefore it should be possible
+ to provide general <i>(template?)</i> build specifications, and to declare for
+ a concrete item that it should be built according to such a general specification.</p>
+<p>One result of the build process should be a log which shows what has been done.</p>
+<h3>Requirements from the task developer perspective</h3>
+<p>A task should not need to know the structure of a build specification.
+ It would have to provide an interface (not necessarily in the Java language
+ sense) for the Ant core to input the necessary configuration attributes
+ and to execute the task). There should be a standard functionality to allow
+ a task doing log output.</p>
+<p>An interface (again not necessarily in the Java language sense) should
+ be provided which allows a task to get <i>(and set?)</i> information about it's
+ context in the build process.</p>
+<h3>Requirements from the extensions developer perspective</h3>
+<p>The Ant core should be independent from a specific representation of the
+ build specification. It should be possible to create a specification programmatically
+ (thereby allowing the introduction of new representations). The core should
+ do no in- or output itself. Build errors should always lead to throwing
+ an Exception.</p>
+<p>Access to the current state of a build should be available, and its modification
+ possible.</p>
+</body>
+</html>
+

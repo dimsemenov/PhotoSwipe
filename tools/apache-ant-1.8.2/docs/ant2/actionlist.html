@@ -1,0 +1,492 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+  <head><title>Ant1.9 Action List</title></head>
+  <body bgcolor="#ffffff">
+  <center>
+    <h1>Ant1.9 Action List</h1>
+    <h2>Precursor to Ant2</h2>
+    <i>Peter Donald [<a href="mailto:peter at apache.org">peter at apache.org</a>]</i>
+  </center>
+
+  <div align="center">
+  <table width="80%"><tr><td>
+    <blockquote>
+    <p>
+      This document aims to contain a list of actions that people can take
+      to produce Ant1.9. Ant1.9 is a refactoring of the Ant1.x line and a jump
+      point for Ant2. Some changes will be backported to Ant1.x over time when 
+      they have proven themselves while other changes may only become available
+      via Ant2.0. Ant1.9 is our melting pot where we can experiment and refactor 
+      without a thought to backwards compatability but only to the "right" way 
+      of doing things.
+    </p>
+    </blockquote></td></tr>
+  </table>
+  </div>
+
+  <h2>Introduction</h2>
+
+  <blockquote>
+    <p>
+      This document will list a bunch of actions that will guide us in the evolution 
+      of Ant1.x and provide a solid basis on which to launch Ant2.0. Feel free to add to 
+      this list of actions as our vision of Ant2 solidifies. Associated with each action
+      is a list of victims who have "volunteered" to have a go at the action and a status.
+      The status just tells us where they are at while the victim column will tell us exactly
+      who is doing what. It is fine for a group of people to work on a single area.
+    </p>
+    <br />
+    <br />
+    <br />
+    <div align="center">
+    <table cellspacing="2" cellpadding="5" width="80%">
+      <tr>
+        <td bgcolor="#eeeeee" align="center">Action</td>
+        <td bgcolor="#eeeeee" align="center">Victims</td>
+        <td bgcolor="#eeeeee" align="center">Status</td>
+      </tr>
+      <tr>
+        <td><a href="#vfs">Create a Virtual Filesystem layer</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#naming">Formalize a naming scheme for task attributes/elements</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#selector">Design and implement s Selector API for Filesets and other Itemsets</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#coloring">Develope the infrastructure for coloring (or "environmental" dependency analysis)</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#structural">Develope the infrastructure for structural dependency analysis</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#exec">Refactor the Exec infrastructure into JavaBeans</a></td>
+        <td>Peter Donald</td>
+        <td>80%</td>
+      </tr>
+      <tr>
+        <td><a href="#java">Refactor the Java infrastructure into JavaBeans</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#facade">Design and implement a generic solution for creating Task facades</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#packaging">Sketch out a basic way of separating all the tasks into type libraries</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#mapperext">Design and implement an API that allows mapping of file attributes during copy/move/etc tasks</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#filters">Design and implement an API so that Filters could be implemented as FilteredOutputStreams</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#catalog">Design and implement a XML "catalog" so the snippets of XML can be injected based on URI rather than relative location</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#i18n">Look at the feasability of i18n'ing tasks and the runtime</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#doco">Write a document describing the way that tasks should be written in context of Ant2</a></td>
+        <td>Peter Donald<br />(peter at apache.org)</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#embeddor">Design an API to embed Ant into other applications</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#info">Design a TypeInfo system similar to BeanInfo to describe Tasks</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td><a href="#antdoc">Design Antdoc to generate manual from .java files</a></td>
+        <td>None</td>
+        <td>Not Started</td>
+      </tr>
+    </table>
+    </div>
+  </blockquote>
+
+  <h3>Virtual File System</h3>
+  <a name="vfs" />
+  <blockquote>
+    <p>
+      There has long been a recognition that it would be nice if ant supported some 
+      notion of a virtual filesystem layer. This layer would allow you to treat 
+      resources located and retrieved from different mechanisms in a uniform way.
+      For instance it would allow the copy task to copy from a http server, a cvs server,
+      a ftp server or the local filesystem using a uniform mechanism. So instead of
+      having separate tasks to operate on each different resource type we would use
+      just one task that plugged into multiple filesystems.
+    </p>
+    <p>
+      When we are talking about a virtual filesystem or VFS, one of the concerns we must 
+      address is how to "name" the resource. In most cases a URL or URI style access will 
+      be sufficient but in other cases we may need to consider other options. So 
+      "cvs://localhost:/home/cvs/jakarta-avalon/README.txt?version=1.1", 
+      "ftp://some.server.com/dir/file.zip" and "file://C/WINDOWS/Desktop/MyFile.txt"
+      are all examples of referring to different resources.
+    </p>
+    <p>
+      Another concern that must be addressed is capabilities of both the resources and
+      the filesystem. For instance it is possible to both read and write to resources
+      using the "file" protocol but only possible to write resources using "mailto".
+      The act of copying a file to a "mailto" url would actuall post the files as 
+      resources while copying to a "file" would duplicate the resource somewhere on 
+      the local filesystem. 
+    </p>
+    <p>
+      So we need to determine a list of capabilities. Some examples would be "read", 
+      "write", "list" (can you list dirs), "type" (can you get mime type), 
+      "access permissions" (can you tell if resource has permissions), 
+      "modify permissions" (can you modify permissions) etc. Some of these capabilities
+      can be associated with the particular reosurces, while others may need to be 
+      associated with a whole filesystem/protocol (ie there is no standard mechanism
+      to perform "list" on general "http" URLs). Thus a list of all these capabilities
+      and mapping to various protocols will need to be established.
+    </p>
+    <p>
+      Next we need to determine if we are going to support the notion of "mounting"
+      URLs. For instance if we need to copy files from a FTP server do we allways
+      need to specify the full URL - no matter how convoluted it is (ie
+      "ftp://fred:secret@some.server.com:28763/home/fred/project2/dir/file.zip")
+      or can we mount this on a VFS and access it via that shorter url. ie We could 
+      mount "ftp://fred:secret@some.server.com:28763/home/fred/" onto "vfs:/home" 
+      and then just access the resources via "vfs:/home/project2/dir/file.zip".
+      This would make dealing with large urls easier and more uniform.
+    </p>
+    <p>
+      So after we have decided what our options are we need to actually go about
+      implementing the solution. It may be the case that existing VFS solutions
+      could be reused with minor changes and thus we could save ourselves a lot of 
+      work. Candidates would be the Netbeans VFS, Suns XFile API or other 
+      available directory APIs (like JNDI). If none of them suit then we will need 
+      to write our own layer.
+    </p>
+  </blockquote>
+
+  <h3>Naming</h3>
+  <a name="naming" />
+  <blockquote>
+    <p>
+      Currently Ant has a mixture of tasks from various stages it's evolution, with different
+      authors and each utilizing different naming patterns. Some tasks use names such as
+      "src" and "dest" while others use "file" and "tofile". It would be preferrable if 
+      consistent naming patterns were used. It is recomended that we come up with a "best
+      practices" document to document our recomended naming patterns.
+    </p>
+    <p>
+      Before we can come up with such a document we need to identify common patterns through
+      out the tasks. Several tasks have the notion of transforming input from a "source"
+      to a "destination". So we should have consistent naming schemes for these attributes and 
+      elements. Analysis of existing tasks will likely bring out other similar patterns. Once
+      we have identified and documented these similarities then we can establish conventions.
+    </p>
+  </blockquote>
+
+  <h3>Selector API</h3>
+  <a name="selector" />
+  <blockquote>
+    <p>
+      Currently our filesets allow us to select a set of files based on name patterns.
+      For instance we could create a set of all the files that end with ".java". However
+      there are cases when you wish to select files based on their other attributes, such as 
+      if they are read only or if they are older than a specified date etc.
+    </p>
+    <p>
+      The selector API is one such mechanism to do this. The selector API will allow you to 
+      build file sets based on criteria other than name. Some possible criteria would be
+    </p>
+    <ul>
+      <li>Is the file readable?</li> 
+      <li>Is the file writeable?</li> 
+      <li>What date was the file modified on?</li> 
+      <li>What size is the file?</li> 
+      <li>Does the contents contain the string "magic"?</li> 
+    </ul>
+    <p>
+      If we end up supporting a VFS then we could expand the number of selectors 
+      considerably. A mock representation that has been proposed before is the following. 
+      Of course this is subject to change as soon as someone wants to tackle this action ;)
+    </p>
+<pre> 
+ &lt;include&gt;
+   &lt;selector type="name" value="**/*.java"/&gt;
+   &lt;selector type="permission" value="r"/&gt;
+
+   &lt;!-- could optionally be directory/or some other system specific features --&gt;
+   &lt;selector type="type" value="file"/&gt; 
+   &lt;selector type="modify-time" 
+             operation="greater-than" 
+             value="29th Feb 2003"/&gt;
+ &lt;/include&gt;
+</pre>
+  </blockquote>
+
+  <h3>Coloring API</h3>
+  <a name="coloring" />
+  <blockquote>
+    <p>
+      When you execute a task such as "javac" there is two types of dependency information
+      that is important to analyze before we determine if we need to recompile a file. Say
+      we are compiling <code>Foo.java</code>, it may depend on the <code>Bar.java</code>
+      file. We call this "structural" dependency information - the structure of the source file 
+      determines what other files it depend upon. However there is also "environmental" 
+      dependency information. For instance if the <code>Foo.java</code> file was compiled with 
+      <code>debug="true"</code> last run and this time needs to be compiled with 
+      <code>debug="false"</code> then it is out of date and needs to be recompiled. We call this 
+      "environmental" dependency information "coloring".
+    </p>
+    <p>
+      So we need to create an infrastructure that allows tasks to manage "coloring". So a task
+      should be able to add coloring information for each resource processed. When the task
+      comes to process the resource again it will detect if the coloring has changed and if it
+      has will force a recompile.
+    </p>
+    <p>
+      An API for such a bean has yet to be established but an example API would be.
+    </p>
+    <pre>
+ColoringManager cm = ...;
+cm.addColor( "debug", "true" );
+cm.addColor( "optimize", "false" );
+cm.setFileSet( myFileSet );
+File[] files = cm.getOutOfDate();
+    </pre>
+  </blockquote>
+
+  <h3>Structural Dependency Utils</h3>
+  <a name="structural" />
+  <blockquote>
+    <p>
+      In the present ant, it is required that each task manage dependency separately. 
+      This makes it a lot of work to implement even simple dependency checking. To this
+      day many of the core tasks do not implement it correctly. I am specifically
+      talking about "structural" dependency information. The main reason is that it is
+      painful to implement.
+    </p>
+    <p>
+      Some tasks do no dependency checking and will recompile/transform/etc everytime. 
+      Others may perform a simple dependency checking (ie if source file is newer than 
+      destination file then recompile). Ideally a dependency system would actually
+      calculate the dependencies correctly. So we need to have some mechanism to determine
+      that <code>foo.c</code> actually depends upon <code>foo.h</code>, <code>bar.h</code> 
+      and <code>baz.h</code>. As this information is particular to each different task
+      we need to allow tasks to implement this behaviour. Possibly by supplying an interface
+      of the form;
+    </p>
+    <pre>
+public interface DependencyGenerator
+{
+  File[] generateDependencies( File file );
+}
+    </pre>
+    <p>
+      Generating the dependency information is a costly operation and thus we do not want to
+      be doing it everytime you run ant. We want to generate it on the initial build and then 
+      persist somewhere. Everytime a file is out of date, it's dependency information would
+      be regenerated and stored in the dependency cache. Ideally this cache would also store the
+      above mentioned coloring information. So the entry for <code>foo.c</code> may declare that 
+      it is dependent upon <code>foo.h</code>, <code>bar.h</code> and <code>baz.h</code>, aswell 
+      as being compiled with -O2 flag. If any of the dependencies have changed or are out of date 
+      then foo.c would need to be recompiled.
+    </p>
+    <p>
+      A possible API would be
+    </p>
+    <pre>
+DependencyManager dm = ...;
+dm.setFileSet( myFileSet );
+dm.setDependencyCache( myDependencyCacheFile );
+File[] files = cm.getOutOfDate();
+    </pre>
+  </blockquote>
+
+  <h3>Refactor &lt;exec&gt; infrastructure into Beans</h3>
+  <a name="exec" />
+  <blockquote>
+    <p>
+      Exec and its related classes have currently evolved through several iterations and thus
+      it is not as cleanly designed and as reusable as it could be. Someone needs to pull apart
+      exec and analyze which parts can be turned into JavaBeans and decouple them from the Ant 
+      infrastructure. Once that is done it will make these beans much easier to reuse from other
+      tasks without relying on gaining access to the other task instance.
+    </p>
+  </blockquote>
+
+  <h3>Refactor &lt;java&gt; infrastructure into Beans</h3>
+  <a name="java" />
+  <blockquote>
+    <p>
+      Much like Exec should be decoupled from Ant runtime, so should classes to implement java 
+      task for the same benefits.
+    </p>
+  </blockquote>
+
+  <h3>Generic Task Facades</h3>
+  <a name="facade" />
+  <blockquote>
+    <p>
+      Currently we have a few tasks that have multiple implementations. For instance Javac task
+      can actually call jikes, jvc, classic javac or modern javac. Similar things will be seen
+      with the jspc task and the cc task (if it ever gets written). We need to examine this 
+      pattern and see if there is a way to generalize this and make it easier to write such tasks.
+    </p>
+  </blockquote>
+
+  <h3>Task Packaging</h3>
+  <a name="packaging" />
+  <blockquote>
+    <p>
+      We have already decided that we are going to package Ant tasks in separate jars and
+      have some sort of descriptor that to describe the contents of the jar. However we have 
+      not yet decided how we will break up the tasks. Do we break up the tasks up into 
+      related tasks or into groups that ar elikely to be used together or what? A possible
+      breakdown would be
+    </p>
+    <ul>
+      <li>jdk tasks: javac, javadoc, rmic etc</li>
+      <li>text tasks: regex replace, fixcrlf etc</li>
+      <li>unix tasks: chmod, etc</li>
+      <li>file tasks: copy, move, etc</li>
+    </ul>
+  </blockquote>
+
+  <h3>Mapping File Attributes during transformation</h3>
+  <a name="mapperext" />
+  <blockquote>
+    <p>
+      When we are copying files from one location to another it is currently possible
+      to rename them using a mapper. So we could rename <code>Foo.java</code> to 
+      <code>Foo.java.bak</code>. On occasion it is useful to modify file attributes
+      other than its name in such operations. So we could copy the files to another
+      location and make them read-only in one operation.
+    </p>
+  </blockquote>
+
+  <h3>Filters extensions</h3>
+  <a name="filters" />
+  <blockquote>
+    <p>
+      This is partially related to the above action. Filters could be seen as a way 
+      to modify the content attribute of a file during a copy/move. It would be 
+      preferrable if filtering could be abstracted to use <code>FilteredOutputStream</code>s
+      to perform the content modification. That way new Filter types could be constructed
+      and used during file copy (ie an example would be a Perl FilterOutputStream that 
+      allowed you to use perl expressions to transform input).
+    </p>
+  </blockquote>
+
+  <h3>XML Catalog to load XML Fragments</h3>
+  <a name="catalog" />
+  <blockquote>
+    <p>
+      When including fragments of XML we are currently forced to use relative paths.
+      However this is sometimes undesirable when a single fragment needs to be used
+      across several projects in several different locations. Instead we could use
+      a Catalog to name the fragment and then each developer would only need to install
+      the fragment once and it would be accessible from all the projects.
+    </p>
+  </blockquote>
+
+  <h3>i18n the Runtime and tasks</h3>
+  <a name="i18n" />
+  <blockquote>
+    <p>
+      Look at the feasability of performing i18n on Ant runtime and core tasks. Look at
+      how much work it will be and how useful it would be. Look at utilizing i18n from 
+      existing projects such as Avalon.
+    </p>
+  </blockquote>
+
+  <h3>Embeddor API for Ant</h3>
+  <a name="embeddor" />
+  <blockquote>
+    <p>
+      Identify different environments in which it would be useful to embed Ant or an Ant-like 
+      tool. Identify what these environments are likely to demand in terms of API and support
+      and then design a system that works in these environments without compromising ants 
+      core goal (ie a build system). Some suggestions for such an API include;
+    </p>
+    <ul>
+      <li>Pluggable ProjectBuilders to allow building of project from a variety of sources,
+       file, URL, InputStream, SAX etc</li>
+      <li>Pluggable ClassLoader arrangement</li>
+      <li>Ability to set User Properties</li>
+      <li>Ability to add Task/Data/Type definitions</li>
+      <li>Ability to add/remove Listeners</li>
+      <li>Ability to add/remove Loggers</li>
+      <li>Ability to get meta-information about targets (such as name and description)</li>
+      <li>The ability to execute a task and/or targets</li>
+      <li>The ability to add tasklibs</li>
+      <li>The ability to add VFS mount points</li>
+      <li>The ability to manipulate ProjectModel and build it from GUIs</li>
+      <li>A general task engine API</li>
+    </ul>
+  </blockquote>
+
+  <h3>TypeInfo system</h3>
+  <a name="info" />
+  <blockquote>
+    <p>
+      Add in the ability to represent tasks using specified meta-info, This would allow 
+      generation and manipulation of information such as what attributes are available, 
+      what elements are supported etc. 
+    </p>
+  </blockquote>
+
+  <h3>Antdoc</h3>
+  <a name="antdoc" />
+  <blockquote>
+    <p>
+      This is partially based on the above TypeInfo system. It involves the ability to 
+      take the TypeInfo made available and generate documentation for the tasks. This 
+      would allow multiple formats of documentaiton to be easily maintained and reduce 
+      the chance that documentation gets out of whack.
+    </p>
+  </blockquote>
+
+  </body>
+</html>

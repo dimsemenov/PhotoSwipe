@@ -1,0 +1,161 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>TStamp Task</title>
+</head>
+
+<body>
+
+<h2><a name="tstamp">Tstamp</a></h2>
+
+<h3>Description</h3>
+<p>Sets the <code>DSTAMP</code>, <code>TSTAMP</code>, and <code>TODAY</code>
+properties in the current project. By default,
+the <code>DSTAMP</code> property is in the
+format &quot;yyyyMMdd&quot;, <code>TSTAMP</code> is in the
+format &quot;hhmm&quot;, and <code>TODAY</code> is in the
+format &quot;MMMM dd yyyy&quot;. Use the nested <code>&lt;format&gt;</code> element
+to specify a different format.</p>
+
+<p>These properties can be used in the build-file, for instance, to create
+time-stamped filenames, or used to replace placeholder tags inside documents
+to indicate, for example, the release date. The best place for this task is
+probably in an initialization target.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">prefix</td>
+    <td valign="top">Prefix used for all properties set. The default is no prefix.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3>Nested Elements</h3>
+The Tstamp task supports a <code>&lt;format&gt;</code> nested element that
+allows a property to be set to the current date and time in a given format.
+The date/time patterns are as defined in the Java
+<a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a> class.
+The format element also allows offsets to be applied to the time to generate different time values.
+<br><br>
+<table width="60%" border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">property</td>
+    <td valign="top">
+        The property to receive the date/time string in the given pattern.
+    </td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">pattern</td>
+    <td valign="top">The date/time pattern to be used. The values are as defined by the Java SimpleDateFormat class.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">timezone</td>
+    <td valign="top">The timezone to use for displaying time. The values are as defined by the Java <a href="http://download.oracle.com/javase/6/docs/api/java/util/TimeZone.html">TimeZone</a> class.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">offset</td>
+    <td valign="top">The numeric offset to the current time</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">unit</td>
+    <td valign="top">The unit of the offset to be applied to the current time.
+                     Valid Values are
+                     <ul>
+                        <li>millisecond</li>
+                        <li>second</li>
+                        <li>minute</li>
+                        <li>hour</li>
+                        <li>day</li>
+                        <li>week</li>
+                        <li>month</li>
+                        <li>year</li>
+                     </ul>
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">locale</td>
+    <td valign="top">The locale used to create date/time string. The general
+      form is &quot;language, country, variant&quot; but either variant or variant and
+      country may be omitted. For more information please refer to documentation
+      for the
+      <a href="http://download.oracle.com/javase/6/docs/api/java/util/Locale.html">Locale</a>
+      class.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+
+<pre>
+  &lt;tstamp/&gt;
+</pre>
+
+<p>
+sets the standard <code>DSTAMP</code>, <code>TSTAMP</code>,
+and <code>TODAY</code> properties according to the default formats.</p>
+<pre>
+  &lt;tstamp&gt;
+    &lt;format property=&quot;TODAY_UK&quot; pattern=&quot;d-MMMM-yyyy&quot; locale=&quot;en,UK&quot;/&gt;
+  &lt;/tstamp&gt;
+</pre>
+<p>
+sets the standard properties as well as the property
+<code>TODAY_UK</code> with the date/time pattern &quot;d-MMMM-yyyy&quot;
+using English locale (eg. 21-May-2001).</p>
+
+<pre>
+  &lt;tstamp&gt;
+      &lt;format property=&quot;touch.time&quot; pattern=&quot;MM/dd/yyyy hh:mm aa&quot;
+              offset=&quot;-5&quot; unit=&quot;hour&quot;/&gt;
+  &lt;/tstamp&gt;
+</pre>
+<p>
+Creates a timestamp, in the property touch.time, 5 hours before the current time. The format in this example
+is suitable for use with the <code>&lt;touch&gt;</code> task. The standard properties are set also.</p>
+
+<pre>
+  &lt;tstamp prefix="start"/&gt;
+</pre>
+<p>
+Sets three properties with the standard formats, prefixed with "start.":
+<code>start.DSTAMP</code>, <code>start.TSTAMP</code>, and <code>start.TODAY</code>.</p>
+
+
+
+
+</body>
+</html>

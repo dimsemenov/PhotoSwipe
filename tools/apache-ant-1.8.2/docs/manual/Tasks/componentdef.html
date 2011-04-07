@@ -1,0 +1,62 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Componentdef Task</title>
+</head>
+
+<body>
+
+<h2><a name="componentdef">componentdef</a></h2>
+<h3>Description</h3>
+  <p>
+    Adds a component definition to the current project.
+    A compenent definition is the same as a
+    <a href="typedef.html">typedef</a> except:
+  </p>
+    <ol>
+      <li>
+        that it can only be used in other types or tasks that
+        accept components (by having an <i>add()</i> method).
+      </li>
+      <li>
+        multiple components may have the same name, provided they
+        implement different interfaces.
+      </li>
+    </ol>
+  <p>
+    The purpose of this is to allow internal Apache Ant definitions to be
+    made for tags like "and" or "or".
+  </p>
+
+  <h3>Examples</h3>
+
+<pre> &lt;componentdef name="or" onerror="ignore"
+    classname="com.apache.tools.ant.taskdefs.conditions.Or"/&gt;
+  &lt;componentdef name="or" onerror="ignore"
+    classname="com.apache.tools.ant.types.resources.selectors.Or"/&gt;</pre>
+  <p>
+    defines two components with the same name "or"; one is a condition
+    (see <a href="conditions.html">conditions</a>) and one is 
+    a selector (see <a href="../Types/selectors.html">selectors</a>).
+  </p>
+</body>
+</html>
+

@@ -1,0 +1,344 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+  <title>Include Task</title>
+</head>
+<body>
+  <h2><a name="include">Include</a></h2>
+  <h3>Description</h3>
+  <p>
+    Include another build file into the current project.
+  </p>
+
+  <p><em>since Apache Ant 1.8.0</em></p>
+
+  <p>
+    <b>Note</b> this task heavily relies on the ProjectHelper
+    implementation and doesn't really perform any work of its own.  If
+    you have configured Ant to use a ProjectHelper other than Ant's
+    default, this task may or may not work.
+  </p>
+
+  <p>
+    On execution it will read another Ant file into the same Project
+    rewriting the included target names and depends lists.  This is
+    different
+    from <a href="http://ant.apache.org/faq.html#xml-entity-include">Entity
+    Includes as explained in the Ant FAQ</a> insofar as the target
+    names get prefixed by the included project's name or the as
+    attribute and do not appear as if the file was contained in the
+    including file.
+  </p>
+  <p>
+    The include task may only be used as a top-level task. This means that
+    it may not be used in a target.
+  </p>
+  <p>
+There are two further functional aspects that pertain to this task and
+that are not possible with entity includes:
+<ul>
+  <li>target rewriting</li>
+  <li>special properties</li>
+</ul>
+  </p>
+<h4>Target rewriting</h4>
+
+<p>Any target in the included file will be renamed
+  to <i>prefix.name</i> where <i>name</i> is the original target's
+  name and <i>prefix</i> is either the value of the <i>as</i>
+  attribute or the <i>name</i> attribute of the <i>project</i> tag of
+  the included file.</p>
+
+<p>The depends attribute of all included targets is rewritten so that
+  all target names are prefixed as well.  This makes the included file
+  self-contained.</p>
+
+<p>Note that prefixes nest, so if a build file includes a file with
+  prefix "a" and the included file includes another file with prefix
+  "b", then the targets of that last build file will be prefixed by
+  "a.b.".</p>
+
+<p><code>&lt;import&gt;</code> contribute to the prefix as well, but
+  only if their <code>as</code> attribute has been specified.
+
+<h4>Special Properties</h4>
+
+<p>Included files are treated as they are present in the main
+buildfile. This makes it easy to understand, but it makes it impossible
+for them to reference files and resources relative to their path.
+Because of this, for every included file, Ant adds a property that
+contains the path to the included buildfile. With this path, the
+included buildfile can keep resources and be able to reference them
+relative to its position.</p>
+
+<p>So if I include for example a <i>docsbuild.xml</i> file named <b>builddocs</b>,
+I can get its path as <b>ant.file.builddocs</b>, similarly to the <b>ant.file</b>
+property of the main buildfile.</p>
+
+<p>Note that &quot;builddocs&quot; is not the filename, but the name attribute
+present in the included project tag.</p>
+  <p>
+    If the included file does not have a name attribute, the ant.file.projectname
+    property will not be set.
+  </p>
+
+<p>If you need to know whether the current build file's source has
+  been a file or an URL you can consult the
+  property <b>ant.file.type.<em>projectname</em></b> (using the same
+  example as above <b>ant.file.type.builddocs</b>) which either have
+  the value "file" or "url".</p>
+
+<h4>Resolving files against the included file</h4>
+
+<p>Suppose your main build file called <code>including.xml</code>
+includes a build file <code>included.xml</code>, located anywhere on
+the file system, and <code>included.xml</code> reads a set of
+properties from <code>included.properties</code>:</p>
+
+<pre>&lt;!-- including.xml --&gt;
+&lt;project name="including" basedir="." default="..."&gt;
+&nbsp; &lt;include file="${path_to_included}/included.xml"/&gt;
+&lt;/project&gt;
+
+&lt;!-- included.xml --&gt;
+&lt;project name="included" basedir="." default="..."&gt;
+&nbsp; &lt;property file="included.properties"/&gt;
+&lt;/project&gt;
+</pre>
+
+<p>This snippet however will resolve <code>included.properties</code>
+against the basedir of <code>including.xml</code>, because the basedir
+of <code>included.xml</code> is ignored by Ant. The right way to use
+<code>included.properties</code> is:</p>
+
+<pre>
+&lt;!-- included.xml --&gt;
+&lt;project name="included" basedir="." default="..."&gt;
+&nbsp; &lt;dirname property="included.basedir" file="${ant.file.included}"/&gt;
+&nbsp; &lt;property file="${included.basedir}/included.properties"/&gt;
+&lt;/project&gt;
+</pre>
+
+<p>As explained above <code>${ant.file.included}</code> stores the
+path of the build script, that defines the project called
+<code>included</code>, (in short it stores the path to
+<code>included.xml</code>) and <a
+href="dirname.html"><code>&lt;dirname&gt;</code></a> takes its
+directory. This technique also allows <code>included.xml</code> to be
+used as a standalone file (without being included in other
+project).</p>
+
+<p>The above description only works for included files that actually
+  are included from files and not from URLs.  For files included from
+  URLs using resources relative to the included file requires you to
+  use tasks that can work on non-file resources in the first place.
+  To create a relative resource you'd use something like:</p>
+
+<pre>
+  &lt;loadproperties&gt;
+    &lt;url baseUrl="${ant.file.included}"
+         relativePath="included.properties"/&gt;
+  &lt;/loadproperties&gt;
+</pre>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tbody>
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">
+        file
+      </td>
+      <td valign="top">
+        The file to include. If this is a relative file name, the file name will be resolved
+        relative to the <i>including</i> file. <b>Note</b>, this is unlike most other
+        ant file attributes, where relative files are resolved relative to ${basedir}.
+      </td>
+      <td valign="top" align="center">Yes or a nested resource collection</td>
+    </tr>
+    <tr>
+      <td valign="top">
+        optional
+      </td>
+      <td valign="top">
+        If true, do not stop the build if the file does not exist,
+        default is false.
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
+      <td valign="top">
+        as
+      </td>
+      <td valign="top">
+        Specifies the prefix prepended to the target names.  If
+        ommitted, the name attribute of the project tag of the
+        included file will be used.
+      </td>
+      <td valign="top" align="center">Yes, if the included file's
+        project tag doesn't specify a name attribute.</td>
+    </tr>
+    <tr>
+      <td valign="top">
+        prefixSeparator
+      </td>
+      <td valign="top">
+        Specifies the separator to be used between the prefix and the
+        target name.  Defaults to ".".
+      </td>
+      <td valign="top" align="center">No</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Parameters specified as nested elements</h3>
+
+<h4>any <a href="../Types/resources.html">resource</a> or resource
+collection</h4>
+
+<p>The specified resources will be included.</p>
+
+<h3>Examples</h3>
+<pre>&nbsp; &lt;include file=&quot;../common-targets.xml&quot;/&gt;
+</pre>
+
+<p>Includes targets from the common-targets.xml file that is in a parent
+directory.</p>
+
+<pre>&nbsp; &lt;include file=&quot;${deploy-platform}.xml&quot;/&gt;
+</pre>
+
+<p>Includes the project defined by the property deploy-platform</p>
+
+<pre>
+  &lt;include&gt;
+    &lt;javaresource name="common/targets.xml"&gt;
+      &lt;classpath location="common.jar"/&gt;
+    &lt;/javaresource&gt;
+  &lt;/include&gt;
+</pre>
+
+<p>Includes targets from the targets.xml file that is inside the
+  directory common inside the jar file common.jar.</p>
+
+<h3>How is <a href="import.html">&lt;import&gt;</a> different
+  from &lt;include&gt;?</h3>
+
+<p>The short version: Use import if you intend to override a target,
+  otherwise use include.</p>
+
+<p>When using import the imported targets are available by up to two
+  names.  Their "normal" name without any prefix and potentially with
+  a prefixed name (the value of the as attribute or the imported
+  project's name attribute, if any).</p>
+
+<p>When using include the included targets are only available in the
+  prefixed form.</p>
+
+<p>When using import, the imported target's depends attribute
+  remains unchanged, i.e. it uses "normal" names and allows you to
+  override targets in the dependency list.</p>
+
+<p>When using include, the included targets cannot be overridden and
+  their depends attributes are rewritten so that prefixed names are
+  used.  This allows writers of the included file to control which
+  target is invoked as part of the dependencies.</p>
+
+<p>It is possible to include the same file more than once by using
+  different prefixes, it is not possible to import the same file more
+  than once.</p>
+
+<h4>Examples</h4>
+
+<p><i>nested.xml</i> shall be:</p>
+
+<pre>
+&lt;project&gt;
+  &lt;target name="setUp"&gt;
+    &lt;property name="prop" value="in nested"/&gt;
+  &lt;/target&gt;
+
+  &lt;target name="echo" depends="setUp"&gt;
+    &lt;echo&gt;prop has the value ${prop}&lt;/echo&gt;
+  &lt;/target&gt;
+&lt;/project&gt;
+</pre>
+
+<p>When using import like in</p>
+
+<pre>
+&lt;project default="test"&gt;
+  &lt;target name="setUp"&gt;
+    &lt;property name="prop" value="in importing"/&gt;
+  &lt;/target&gt;
+
+  &lt;import file="nested.xml" as="nested"/&gt;
+
+  &lt;target name="test" depends="nested.echo"/&gt;
+&lt;/project&gt;
+</pre>
+
+<p>Running the build file will emit:
+
+<pre>
+setUp:
+
+nested.echo:
+     [echo] prop has the value in importing
+
+test:
+
+</pre>
+
+<p>When using include like in</p>
+
+<pre>
+&lt;project default="test"&gt;
+  &lt;target name="setUp"&gt;
+    &lt;property name="prop" value="in importing"/&gt;
+  &lt;/target&gt;
+
+  &lt;include file="nested.xml" as="nested"/&gt;
+
+  &lt;target name="test" depends="nested.echo"/&gt;
+&lt;/project&gt;
+</pre>
+
+<p>Running the target build file will emit:
+
+<pre>
+nested.setUp:
+
+nested.echo:
+     [echo] prop has the value in nested
+
+test:
+
+</pre>
+
+<p>and there won't be any target named "echo" on the including build file.</p>
+
+</body>
+</html>

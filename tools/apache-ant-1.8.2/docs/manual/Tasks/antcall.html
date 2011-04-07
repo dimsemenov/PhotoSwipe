@@ -1,0 +1,201 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>AntCall Task</title>
+</head>
+
+<body>
+
+<h2><a name="antcall">AntCall</a></h2>
+<h3>Description</h3>
+
+<p>Call another target within the same buildfile optionally
+specifying some properties (params in this context).  <strong>This
+task must not be used outside of a <code>target</code>.</strong></p>
+
+<p>By default, all of the properties of the current project will be
+available in the new project.   Alternatively, you can
+set the <i>inheritAll</i> attribute to <code>false</code> and only
+&quot;user&quot; properties (i.e., those passed on the command-line)
+will be passed to the new project.  In either case, the set of
+properties passed to the new project will override the properties that
+are set in the new project (See also the <a href="property.html">property task</a>).</p>
+<p>You can also set properties in the new project from the old project
+by using nested param tags. These properties are always passed
+to the new project and any project created in that project
+regardless of the setting of <i>inheritAll</i>.  This allows you to
+parameterize your subprojects.  Properties defined on the command line
+can not be overridden by nested <code>&lt;param&gt;</code> elements.</p>
+
+<p>When more than one nested <code>&lt;param&gt;</code> element
+  would set a property of the same name, the one declared last will
+  win.  This is for backwards compatibility reasons even so it is
+  different from the way <code>&lt;property&gt;</code> tasks in build
+  files behave.</p>
+
+<p>Nested <a href="#reference"><i><code>&lt;reference&gt</code>;</i></a> elements can
+be used to copy references from the calling project to the new
+project, optionally under a different id.  References taken from
+nested elements will override existing references that have been
+defined outside of targets in the new project - but not those defined
+inside of targets.</p>
+
+<p>
+When a target is invoked by antcall, all of its dependent targets will
+also be called within the context of any new parameters. For example. if
+the target &quot;doSomethingElse&quot; depended on the target &quot;init&quot;, then the
+<i>antcall</i> of &quot;doSomethingElse&quot; will call &quot;init&quot; during the call.
+Of course, any properties defined in the antcall task or inherited from the calling target
+will be fixed and not overridable in the init task--or indeed in the &quot;doSomethingElse&quot; task.
+</p>
+
+<p>The called target(s) are run in a new project; be aware that this
+means properties, references, etc.  set by called targets will not
+persist back to the calling project.</p>
+
+<p>If the build file changes after you've started the build, the
+behavior of this task is undefined.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">target</td>
+    <td valign="top">The target to execute.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">inheritAll</td>
+    <td valign="top">If <code>true</code>, pass all properties to the new Apache Ant
+    project.  Defaults to <code>true</code>.
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">inheritRefs</td>
+    <td valign="top">If <code>true</code>, pass all references to the
+      new Ant project.  Defaults to <code>false</code>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3>Note on <code>inheritRefs</code></h3>
+
+<p><code>&lt;antcall&gt;</code> will not override existing references,
+even if you set <code>inheritRefs</code> to true.  As the called build
+files is the same build file as the calling one, this means it will
+not override any reference set via an <code>id</code> attribute at
+all.  The only references that can be inherited by the child project
+are those defined by nested <code>&lt;reference&gt;</code> elements or
+references defined by tasks directly (not using the <code>id</code>
+attribute).</p>
+
+<h3>Parameters specified as nested elements</h3>
+<h4>param</h4>
+<p>Specifies the properties to set before running the specified target. See <a
+href="property.html">property</a> for usage guidelines.<br>
+These properties become equivalent to properties you define on
+the command line. These are special properties and they will always get passed
+down, even through additional <code>&lt;*ant*&gt;</code> tasks with inheritall set to
+false (see above).
+</p>
+
+<h4><a name="reference">reference</a></h4>
+<p>Used to choose references that shall be copied into the new project,
+optionally changing their id.</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">refid</td>
+    <td valign="top">The id of the reference in the calling project.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">torefid</td>
+    <td valign="top">The id of the reference in the new project.</td>
+    <td valign="top" align="center">No, defaults to the value of refid.</td>
+  </tr>
+</table>
+
+<h4>propertyset</h4>
+
+<p>You can specify a set of properties to be copied into the new
+project with <a
+href="../Types/propertyset.html">propertyset</a>s.</p>
+
+<p><em>since Ant 1.6</em>.</p>
+
+<h4>target</h4>
+
+<p>You can specify multiple targets using nested <code>&lt;target&gt;</code> elements
+instead of using the target attribute.  These will be executed as if
+Ant had been invoked with a single target whose dependencies are the
+targets so specified, in the order specified.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the called target.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+</table>
+<p><em>since Ant 1.6.3</em>.</p>
+
+<h3>Examples</h3>
+<blockquote><pre>
+&lt;target name=&quot;default&quot;&gt;
+  &lt;antcall target=&quot;doSomethingElse&quot;&gt;
+    &lt;param name=&quot;param1&quot; value=&quot;value&quot;/&gt;
+  &lt;/antcall&gt;
+&lt;/target&gt;
+
+&lt;target name=&quot;doSomethingElse&quot;&gt;
+  &lt;echo message=&quot;param1=${param1}&quot;/&gt;
+&lt;/target&gt;
+</pre></blockquote>
+<p>Will run the target 'doSomethingElse' and echo 'param1=value'.</p>
+
+<blockquote><pre>
+&lt;antcall ... &gt;
+  &lt;reference refid=&quot;path1&quot; torefid=&quot;path2&quot;/&gt;
+&lt;/antcall&gt;
+</pre></blockquote>
+
+<p>will copy the parent's definition of <code>path1</code> into the
+new project using the id <code>path2</code>.</p>
+
+
+
+</body>
+</html>

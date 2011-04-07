@@ -1,0 +1,193 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Echo Task</title>
+</head>
+
+<body>
+
+<h2><a name="echo">Echo</a></h2>
+<h3>Description</h3>
+<p>Echoes a message to the current loggers and listeners which
+means <tt>System.out</tt> unless overridden. A <tt>level</tt>
+can be specified, which controls at what logging level the message is
+filtered at.
+<p>
+The task can also echo to a file, in which case the option to append rather
+than overwrite the file is available, and the <tt>level</tt> option is
+ignored</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">message</td>
+    <td valign="top">the message to echo.</td>
+    <td valign="top" align="center">No.  Text may also be included in a
+      character section within this element.  If neither is included a 
+      blank line will be emitted in the output.</td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">the file to write the message to.</td>
+    <td valign="top" align="center" rowspan="2">Optionally one of these may be specified.</td>
+  </tr>
+  <tr>
+    <td valign="top">output</td>
+    <td valign="top">the <a href="../Types/resources.html">Resource</a>
+      to write the message to (see <a href="../develop.html#set-magic">note</a>).
+      <b>Since Apache Ant 1.8</b></td>
+  </tr>
+  <tr>
+    <td valign="top">append</td>
+    <td valign="top">Append to an existing file (or
+      <a href="http://download.oracle.com/javase/6/docs/api/java/io/FileWriter.html#FileWriter%28java.lang.String,%20boolean%29" target="_blank">
+      open a new file / overwrite an existing file</a>)? Default <i>false</i>.
+    </td>
+    <td valign="top" align="center">No; ignored unless <i>output</i> indicates a
+      filesystem destination.</td>
+  </tr>
+  <tr>
+    <td valign="top">level</td>
+    <td valign="top">Control the level at which this message is reported.
+            One of "error", "warning", "info", "verbose", "debug" (decreasing order)</td>
+    <td valign="top" align="center">No - default is "warning".</td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">encoding to use, default is ""; the local system encoding. <em>since Ant 1.7</em></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">force</td>
+    <td valign="top">Overwrite read-only destination
+      files.  <em>since Ant 1.8.2</em></td>
+    <td valign="top" align="center">No; defaults to false.</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>
+&lt;echo message=&quot;Hello, world&quot;/&gt;
+</pre>
+<pre>
+&lt;echo message=&quot;Embed a line break:${line.separator}&quot;/&gt;
+</pre>
+<pre>
+&lt;echo&gt;Embed another:${line.separator}&lt;/echo&gt;
+</pre>
+<pre>
+&lt;echo&gt;This is a longer message stretching over
+two lines.
+&lt;/echo&gt;
+</pre>
+<pre>
+&lt;echo&gt;
+This is a longer message stretching over
+three lines; the first line is a blank
+&lt;/echo&gt;
+</pre>
+The newline immediately following the &lt;echo&gt; tag will be part of the output.<br>
+Newlines in character data within the content of an element are not discarded by XML parsers.<br>
+See <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#sec-line-ends">
+W3C Recommendation 04 February 2004 / End of Line handling
+</a> for more details.
+
+<pre>&lt;echo message=&quot;Deleting drive C:&quot; level=&quot;debug&quot;/&gt;</pre>
+A message which only appears in <tt>-debug</tt> mode.
+<pre>&lt;echo level=&quot;error&quot;&gt;
+Imminent failure in the antimatter containment facility.
+Please withdraw to safe location at least 50km away.
+&lt;/echo&gt;
+</pre>
+A message which appears even in <tt>-quiet</tt> mode.
+
+<pre>&lt;echo file="runner.csh" append="false"&gt;#\!/bin/tcsh
+java-1.3.1 -mx1024m ${project.entrypoint} $$*
+&lt;/echo&gt;</pre>
+Generate a shell script by echoing to a file.
+Note the use of a double $ symbol to stop Ant
+filtering out the single $ during variable expansion
+
+<p>Depending on the loglevel Ant runs, messages are print out or silently
+ignored:
+<table>
+<tr>
+  <th>Ant-Statement</th>
+  <th>-quiet, -q</th>
+  <th><i>no statement</th>
+  <th>-verbose, -v</th>
+  <th>-debug, -d</th>
+</tr>
+<tr>
+  <td><pre>&lt;echo message="This is error message." level="error" /&gt;</pre></td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+</tr>
+<tr>
+  <td><pre>&lt;echo message="This is warning message." /&gt;</pre></td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+</tr>
+<tr>
+  <td><pre>&lt;echo message="This is warning message." level="warning" /&gt;</pre></td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+</tr>
+<tr>
+  <td><pre>&lt;echo message="This is info message." level="info" /&gt;</pre></td>
+  <td align="center">not logged</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+</tr>
+<tr>
+  <td><pre>&lt;echo message="This is verbose message." level="verbose" /&gt;</pre></td>
+  <td align="center">not logged</td>
+  <td align="center">not logged</td>
+  <td align="center">ok</td>
+  <td align="center">ok</td>
+</tr>
+<tr>
+  <td><pre>&lt;echo message="This is debug message." level="debug" /&gt;</pre></td>
+  <td align="center">not logged</td>
+  <td align="center">not logged</td>
+  <td align="center">not logged</td>
+  <td align="center">ok</td>
+</tr>
+</table>
+
+
+
+
+
+
+</body>
+</html>

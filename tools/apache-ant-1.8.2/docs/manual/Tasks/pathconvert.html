@@ -1,0 +1,224 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>PathConvert Task</title>
+</head>
+
+<body>
+
+<h2><a name="pathconvert">Pathconvert</a></h2>
+<h3>Description</h3>
+<p>Converts nested <a href="../Types/resources.html#collection">
+ResourceCollection</a>s, or a reference to just one, into a path
+form for a particular platform, optionally storing the result into
+a given property. It can also be used when you need
+to convert a Resource Collection into a list, separated by a given
+character, such as a comma or space, or, conversely, e.g. to convert a list
+of files in a FileList into a path.
+</p>
+<p>Nested <code>&lt;map&gt;</code> elements can be specified to map Windows
+drive letters to Unix paths, and vice-versa.</p>
+<p>More complex transformations can be achieved using a nested
+<a href="../Types/mapper.html"><code>&lt;mapper&gt;</code></a>
+(since Apache Ant 1.6.2).
+</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">targetos</td>
+    <td valign="top">
+        The target architecture.  Must be one of 'unix', 'windows', 
+        'netware', 'tandem' or 'os/2'.
+        This is a shorthand mechanism for specifying both
+        <code>pathsep</code> and <code>dirsep</code>
+        according to the specified target architecture.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">dirsep</td>
+    <td valign="top">
+       The character(s) to use as the directory separator in the
+       generated paths.
+    </td>
+    <td valign="top" align="center">No, defaults to current JVM <tt>File.separator</tt></td>
+  </tr>
+  <tr>
+    <td valign="top">pathsep</td>
+    <td valign="top">
+       The character(s) to use as the path-element separator in the
+       generated paths.
+    </td>
+    <td valign="top" align="center">No, defaults to current JVM <tt>File.pathSeparator</tt></td>
+  </tr>
+  <tr>
+    <td valign="top">property</td>
+    <td valign="top">The name of the property in which to place the converted path.</td>
+    <td valign="top" align="center">No, result will be logged if unset</td>
+  </tr>
+  <tr>
+    <td valign="top">refid</td>
+    <td valign="top">What to convert, given as a
+        <a href="../using.html#references">reference</a> to a
+        <code>&lt;path&gt;</code>, <code>&lt;fileset&gt;</code>,
+        <code>&lt;dirset&gt;</code>, or <code>&lt;filelist&gt;</code>
+        defined elsewhere</td>
+    <td valign="top" align="center">No; if omitted, a nested
+        <code>&lt;path&gt;</code> element must be supplied.</td>
+  </tr>
+  <tr>
+    <td valign="top">setonempty</td>
+    <td valign="top">Should the property be set, even if the result
+      is the empty string?
+    <td valign="top" align="center">No; default is &quot;true&quot;.
+  </tr>
+  <tr>
+    <td valign="top">preserveduplicates</td>
+    <td valign="top">Whether to preserve duplicate resources. <b>Since Ant 1.8</b></td>
+    <td valign="top" align="center">No; default &quot;false&quot;.
+  </tr>
+</table>
+<h3>Parameters specified as nested elements</h3>
+<h4>map</h4>
+<p>Specifies the mapping of path prefixes between Unix and Windows.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">from</td>
+    <td valign="top">
+      The prefix to match.  Note that this value is case-insensitive when
+      the build is running on a Windows platform and case-sensitive 
+      when running on a Unix platform.
+      <em>Since Ant 1.7.0</em>, on Windows this value is also insensitive
+      to the slash style used for directories, one can use '/' or '\'.
+    </td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">to</td>
+    <td valign="top">The replacement text to use when <code>from</code> is matched.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+</table>
+
+<p>Each map element specifies a single replacement map to be applied to the elements of
+   the path being processed.  If no map entries are specified, then no path prefix mapping
+   is performed.
+</p>
+<p><strong>Note</strong>: The map elements are applied in the order specified,
+and only the first matching map element is applied.  So, the ordering of
+your map elements can be important, if any <code>from</code> values are
+prefixes of other <code>from</code> values.</i>
+</p>   
+<h4>Resource Collections</h4>
+<p>If the <code>refid</code> attribute is not specified, then one or more
+   nested <a href="../Types/resources.html#collection">Resource
+Collection</a>s must be supplied.</p>
+<h4>mapper</h4>
+<p>A single nested <a href="../Types/mapper.html">
+<code>&lt;mapper&gt;</code></a> element can be specified
+to perform any of various filename transformations (since Ant 1.6.2).
+</p>
+
+<h3>Examples</h3>
+<p>In the examples below, assume that the <code>${wl.home}</code> property
+has the value
+<code>d:\weblogic</code>, and <code>${wl.home.unix}</code> has the value
+<code>/weblogic</code>.</p>
+<h4>Example 1</h4>
+<pre>
+    &lt;path id="wl.path"&gt;
+      &lt;pathelement location=&quot;${wl.home}/lib/weblogicaux.jar&quot;/&gt;
+      &lt;pathelement location=&quot;${wl.home}/classes&quot;/&gt;
+      &lt;pathelement location=&quot;${wl.home}/mssqlserver4/classes&quot;/&gt;
+      &lt;pathelement location=&quot;c:\winnt\System32&quot;/&gt;
+    &lt;/path&gt;
+    
+    &lt;pathconvert targetos=&quot;unix&quot; property=&quot;wl.path.unix&quot; refid=&quot;wl.path&quot;&gt;
+      &lt;map from=&quot;${wl.home}&quot; to=&quot;${wl.home.unix}&quot;/&gt;
+      &lt;map from=&quot;c:&quot; to=&quot;&quot;/&gt;
+    &lt;/pathconvert&gt;
+</pre>
+<p> will generate the path shown below
+and store it in the property named <code>wl.path.unix</code>.
+</p>   
+<pre>
+/weblogic/lib/weblogicaux.jar:/weblogic/classes:/weblogic/mssqlserver4/classes:/WINNT/SYSTEM32
+</pre>
+
+<h4>Example 2</h4>
+Given a FileList defined as:
+<pre>
+  &lt;filelist id=&quot;custom_tasks.jars&quot;
+        dir=&quot;${env.HOME}/ant/lib&quot;
+        files=&quot;njavac.jar,xproperty.jar&quot;/&gt;
+</pre>
+then:
+<pre>
+    &lt;pathconvert targetos=&quot;unix&quot; property=&quot;custom_tasks.jars&quot; refid=&quot;custom_tasks.jars&quot;&gt;
+      &lt;map from=&quot;${env.HOME}&quot; to=&quot;/usr/local&quot;/&gt;
+    &lt;/pathconvert&gt;
+</pre>
+will convert the list of files to the following Unix path:
+<pre>
+/usr/local/ant/lib/njavac.jar:/usr/local/ant/lib/xproperty.jar
+</pre>
+
+<h4>Example 3</h4>
+<pre>
+    &lt;fileset dir=&quot;${src.dir}&quot; id=&quot;src.files&quot;&gt;
+      &lt;include name=&quot;**/*.java&quot;/&gt;
+    &lt;/fileset&gt;
+  
+    &lt;pathconvert pathsep=&quot;,&quot; property=&quot;javafiles&quot; refid=&quot;src.files&quot;/&gt;
+</pre>
+<p>This example takes the set of files determined by the fileset (all files ending
+in <tt>.java</tt>), joins them together separated by commas, and places the resulting
+list into the property <tt>javafiles</tt>.  The directory separator is not specified, so
+it defaults to the appropriate character for the current platform.  Such a list could
+then be used in another task, like <tt>javadoc</tt>, that requires a comma separated
+list of files.
+</p>
+<h4>Example 4</h4>
+<pre>
+    &lt;pathconvert property="prop" dirsep="|"&gt;
+      &lt;map from="${basedir}/abc/" to=''/&gt;
+      &lt;path location="abc/def/ghi"/&gt;
+    &lt;/pathconvert&gt;
+</pre>
+  <p>
+    This example sets the property "prop" to "def|ghi" on
+    Windows and on Unix.
+  </p>
+</body>
+</html>
+
+ 

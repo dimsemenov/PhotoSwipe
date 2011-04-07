@@ -1,0 +1,72 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+<title>Apache Ant User Manual - Feedback</title>
+</head>
+
+<body>
+
+<h1><a name="feedback">Feedback</a> and Troubleshooting</h1>
+<p>If things do not work, especially simple things like <tt>ant -version</tt>, 
+  then something is wrong with your configuration. Before filing bug reports and 
+  emailing all the Apache Ant mailing lists</p>
+<ol>
+  <li>Check your environment variables. Are ANT_HOME and JAVA_HOME correct? If 
+    they have quotes or trailing slashes, remove them.</li>
+  <li>Unset CLASSPATH; if that is wrong things go horribly wrong. Ant does not 
+    need the CLASSPATH variable defined to anything to work.</li>
+  <li>Make sure there are no versions of crimson.jar or other XML parsers in JRE/ext</li>
+  <li>Is your path correct? is Ant on it? What about JDK/bin? have you tested 
+    this? If you are using Jikes, is it on the path? A createProcess error (especially 
+    with ID=2 on windows) usually means executable not found on the path.</li>
+  <li>Which version of ant are you running? Other applications distribute a copy 
+    -it may be being picked up by accident.</li>
+  <li>If a task is failing to run is optional.jar in ANT_HOME/lib? Are there any 
+    libraries which it depends on missing?</li>
+  <li>If a task doesn't do what you expect, run <tt>ant -verbose</tt> or <tt>ant 
+    -debug</tt> to see what is happening</li>
+</ol>
+<p>If you can't fix your problem, start with the <a href="http://ant.apache.org/mail.html" target="_top">Ant 
+  User Mailing List</a> . These are other ant users who will help you learn to 
+  use ant. If they cannot fix it then someone may suggest filing a bug report, 
+  which will escalate the issue. Remember of course, that support, like all open 
+  source development tasks, is voluntary. If you haven't invested time in helping 
+  yourself by following the steps above, it is unlikely that anyone will invest 
+  the time in helping you. </p>
+<p>Also, if you don't understand something, the <a href="http://ant.apache.org/mail.html" target="_top">Ant 
+  User Mailing List</a> is the place to ask questions. Not the developer list, 
+  nor the individuals whose names appears in the source and documentation. If 
+  they answered all such emails, nobody would have any time to improve ant. </p>
+<p>To provide feedback on this software, please subscribe to the <a href="http://ant.apache.org/mail.html" target="_top">Ant 
+  User Mailing List</a> </p>
+
+<p>If you want to contribute to Ant or stay current with the latest
+development, join the
+<a href="http://ant.apache.org/mail.html" target="_top">Ant Development Mailing List</a>
+</p>
+<p>A searchable archive can be found at <a
+href="http://marc.theaimsgroup.com" target="_top">http://marc.theaimsgroup.com</a>.
+Other archives will be documented online at  <a href="http://ant.apache.org/mail.html#Archives" target="_top">Mailing Lists Archives</a> </p>
+
+
+</body>
+</html>
+

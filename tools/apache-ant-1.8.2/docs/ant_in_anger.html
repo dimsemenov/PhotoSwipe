@@ -1,0 +1,1115 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<head>
+<title>
+    Apache Ant in Anger
+</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Apache Ant&trade; in Anger:
+</h1>
+<h2 align="center">
+        Using Apache Ant in a Production Development System
+</h2>
+
+<h4  align="center">
+Steve Loughran<br>
+Last updated 2005-03-16
+</h4>
+
+<a name="introduction">
+
+<h2>Introduction</h2>
+</a>
+
+<a href="http://ant.apache.org/">Apache Ant</a>
+ can be an invaluable tool in a team development process - or it can
+be yet another source of problems in that ongoing crises we call
+development . This
+document contains some strategies and tactics for making the most of
+Ant. It is moderately frivolous in places, and lacks almost any actual
+examples of Ant XML. The lack of examples is entirely deliberate - it
+keeps document maintenance costs down. Most of the concepts covered
+don't need the detail provided by XML representations, as it is the processes we
+are concerned about, not the syntax. Finally, please be aware that the
+comments here are only suggestions which need to be customised to meet
+your own needs, not strict rules about what should and should not be
+done.
+
+<p>
+Firstly, here are some assumptions about the projects which this
+document covers:
+<ul>
+<li> Pretty much pure Java, maybe with some legacy cruft on the edges.
+
+<li> Team efforts, usually with the petulant prima-donnas all us Java
+programmers become once we realise how much in demand we are.
+
+<li> A fairly distributed development team - spread across locations and
+maybe time zones.
+
+<li> Separate sub projects - from separate beans in a big
+enterprise application to separate enterprise applications which need to
+be vaguely aware of each other.
+
+<li> Significant mismatch between expectations and time available to
+deliver. 'Last Week' is the ideal delivery date handed down from above,
+late next century the date coming up from below.
+
+<li> Everyone is struggling to keep up with platform and tool evolution.
+
+<li> Extensive use of external libraries, both open and closed source.
+</ul>
+
+What that all means is that there is no time to spend getting things
+right, you don't have that tight control on how the rest of the team
+works and the development process is often more one of chaos minimisation
+than anything else. The role of Ant in such projects is to ensure that
+the build, test and deploy processes run smoothly, leaving you with all
+the other problems.
+
+<a name="core">
+<h2>Core Practices</h2>
+</a>
+<h3>
+Clarify what you want Ant to do</h3>
+
+Ant is not a silver bullet. It is just another rusty bullet in the armory of
+development tools available at your disposal. Its primary purpose is to
+accelerate the construction and deployment of Java projects. You could certainly
+extend Ant to do anything Java makes possible: it is easy to imagine writing an
+image processing task to help in web site deployment by shrinking and
+recompressing jpeg files, for example. But that would be pushing the boundary of
+what Ant is really intended to do - so should be considered with care.
+
+<p>
+Ant is also a great adjunct to an IDE; a way of doing all the housekeeping of
+deployment and for clean, automated builds. But a good modern IDE is a
+productivity tool in its own right - one you should continue to use. Ant
+just lets you give the teams somewhat more freedom in IDE choice - &quot;you can
+use whatever you want in development, but Ant for the deployment
+builds&quot; Now that many modern open source and commercial IDEs
+include Ant support (including jEdit, Forte, Eclipse and IDEA),
+developers can use a great IDE, with Ant providing a rigorous and portable 
+build process integrated into the tool. 
+
+<h3>
+Define standard targets
+</h3>
+
+When you have multiple sub projects, define a standard set of targets.
+Projects with a split between interface and implementation jar files
+could consider <b>impl</b> and <b>intf</b> targets - with separate
+<b>debug-impl</b> and <b>debug-intf</b> targets for the debug version.
+And of course, the ubiquitous <b>clean</b> target.
+
+<p>
+
+With standard target names, it is easy to build encompassing Ant build
+files which just hand off the work to the classes below using the
+<a href="manual/Tasks/ant.html">ant</a>
+task. For example. the clean target could be handed down to the <tt>intf</tt> and
+<tt>impl</tt> subdirectories from a parent directory
+
+<pre>&lt;target name=&quot;clean&quot;  depends=&quot;clean-intf, clean-impl&quot;&gt;
+&lt;/target&gt;
+
+&lt;target name=&quot;clean-intf&quot; &gt;
+    &lt;ant dir=&quot;intf&quot; target=&quot;clean&quot; /&gt;
+&lt;/target&gt;
+
+&lt;target name=&quot;clean-impl&quot;&gt;
+    &lt;ant dir=&quot;impl&quot; target=&quot;clean&quot; /&gt;
+&lt;/target&gt;  </pre>
+
+If you give targets a <tt>description</tt> tag, then calling <tt>ant
+-projecthelp</tt> will list all tasks with their description as 'main targets', and 
+all tasks without a description as subtargets. Describing all your
+entry points is therefore very useful, even before a project becomes big and complicated.
+  
+<h3>
+    Extend Ant through new tasks
+</h3>
+
+If Ant does not do what you want, you can use the
+<a href="manual/Tasks/exec.html">exec</a> and
+<a href="manual/Tasks/java.html">java</a> tasks or
+<a href="manual/Tasks/script.html">inline scripting</a> to extend it. In a
+project with many <tt>build.xml</tt> files, you soon find that having a single
+central place for implementing the functionality keeps maintenance
+overhead down. Implementing task extensions through Java code seems
+extra effort at first, but gives extra benefits:-
+
+<ul>
+<li>Cross platform support can be added later without changing any
+<tt>build.xml</tt> files</li>
+
+<li>The code can be submitted to the Ant project itself, for other
+people to use and maintain</li>
+
+<li>It keeps the build files simpler</li>
+</ul>
+
+In a way, it is this decoupling of functionality, "the tasks", from
+the declaration of use, "the build file", that has helped Ant succeed.
+If you have to get something complex done in Make or an IDE, you have a
+hairy makefile that everyone is scared of, or an IDE configuration that
+is invariably very brittle. But an Ant task is reusable and shareable
+among all Ant users. Many of the core and optional tasks in Ant today,
+tasks you do or will come to depend on, were written by people trying to
+solve their own pressing problems.
+
+<h3>
+Embrace Automated Testing
+</h3>
+
+<b>(alternatively "recriminate early, recriminate often")</b>
+<p>
+Ant lets you call <a href="manual/Tasks/junit.html">JUnit</a>
+tasks, which unit test the code your team has written. Automated testing
+may seem like extra work at first, but JUnit makes writing unit tests so
+easy that you have almost no reason not to. Invest the time in learning
+how to use JUnit, write the test cases, and integrate them in a 'test'
+target from Ant so that your daily or hourly team build can have the
+tests applied automatically. One of the free to download chapters of
+<a href="http://manning.com/hatcher">Java Development with Ant</a>
+shows you how to use JUnit from inside Ant.  
+
+<p>
+Once you add a way to fetch code from the SCM system, either as an Ant
+task, in some shell script or batch file or via some continuous
+integration tool. the integration test code can be a pure Ant task run
+on any box dedicated to the task. This is ideal for verifying that the
+build and unit tests work on different targets from the usual
+development machines. For example, a Win95/Java1.1 combination could be
+used even though no developer would willingly use that configuration
+given the choice.
+
+<p>
+System tests are harder to automate than unit tests, but if you can
+write java code to stress large portions of the system - even if the code
+can not run as JUnit tasks - then the <a href= "manual/Tasks/java.html">java</a>
+task can be used to invoke them. It is best to specify that you want a
+new JVM for these tests, so that a significant crash does not break the
+full build. The Junit extensions such as 
+<a href="http://httpunit.sourceforge.net/">HttpUnit</a> for web pages, and 
+<a href="http://jakarta.apache.org/cactus/">Cactus</a> for J2EE and servlet 
+testing help to expand the testing framework. To test properly you will still
+need to invest a lot of effort in getting these to work with your project, and 
+deriving great unit, system and regression tests - but your customers will love 
+you for shipping software that works.   
+
+<h3>Learn to Use and love the add-ons to Ant</h3>
+The Ant distribution is not the limit of the Ant universe, it is only
+the beginning. Look at the 
+<a href="http://ant.apache.org/external.html">
+External Tools and Tasks page
+</a> for an up to date list. Here are some of them that .
+
+<ul>
+<li>
+<a href="http://checkstyle.sourceforge.net/">Checkstyle</a><br>
+This tool audits your code and generates HTML reports of wherever any
+style rule gets broken. Nobody can hide from the code police now! tip:
+start using this early, so there's less to correct.</li>
+<li>
+<a href="http://ant-contrib.sf.net/">Ant-contrib</a><br>
+This sourceforge project contains helper tasks that are kept separate
+from core Ant for ideological purity; the foreach and trycatch tasks in
+particular. These give you iteration and extra error handling. Also on
+the site is the &lt;cc&gt; task suite, that compile and link native code
+on a variety of platforms.</li>
+<li>
+<a href="http://xdoclet.sourceforge.net/">XDoclet</a>
+XDoclet adds attributed oriented programming to Java. By adding javadoc
+tags to your code you can have XDoclet automatically generate <tt>web.xml</tt>
+descriptors, taglib descriptors, EJB interfaces, JMX interface classes,
+Castor XML/SQL bindings, and many more. The key here is that all those
+fiddly little XML files you need to create, and those interfaces EJB and
+JMX requires to implement, all can be autogenerated from your Java
+code with a few helper attributes. This reduces
+errors and means you can change your code and have the rest of the app
+take its cue from the source. Never do EJB, JMX or webapps without it!
+</li>
+</ul>
+
+<a name="crossplatform">
+<h2>
+Cross Platform Ant
+</h2>
+</a>
+Ant is the best foundation for cross platform Java development and
+testing to date. But if you are not paying attention, it is possible to
+produce build files which only work on one platform - or indeed, one
+single workstation.
+
+<p>
+The common barriers to cross-platform Ant are the use of command line
+tools (exec tasks) which are not portable, path issues, and hard coding
+in the location of things.
+
+<h3>Command Line apps: <a href="manual/Tasks/exec.html">Exec</a> /
+ <a href= "manual/Tasks/apply.html">Apply</a></h3>
+
+The trouble with external invocation is that not all functions are found
+cross platform, and those that are often have different names - DOS
+descendants often expect <tt>.exe</tt> or <tt>.bat</tt> at the end of files. That can be
+bad if you explicitly include the extension in the naming of the command
+(don't!), good when it lets you keep the unix and DOS versions of an
+executable in the same bin directory of the project without name
+clashes arising.
+
+<p>
+Both the command line invocation tasks let you specify which platform
+you want the code to run on, so you could write different tasks for each
+platform you are targeting. Alternatively, the platform differences
+could be handled inside some external code which Ant calls. This can be
+some compiled down java in a new task, or an external script file.
+
+<h3>Cross platform paths</h3>
+
+Unix paths use forward slashes between directories and a colon to
+split entries. Thus
+<i>"/bin/java/lib/xerces.jar:/bin/java/lib/ant.jar"</i> is
+a path in unix. In Windows the path must use semicolon separators,
+colons being used to specify disk drives, and backslash separators
+<i>"c:\bin\java\lib\xerces.jar;c:\bin\java\lib\ant.jar"</i>.
+<p>
+This difference between platforms (indeed, the whole java classpath
+paradigm) can cause hours of fun.
+
+<p>
+Ant reduces path problems; but does not eliminate them entirely. You
+need to put in some effort too. The rules for handling path names are
+that 'DOS-like pathnames are handled', 'Unix like paths are handled'.
+Disk drives -'C:'- are handled on DOS-based boxes, but placing them in
+the <tt>build.xml</tt> file ruins all chances of portability. Relative file paths
+are much more portable. Semicolons work as path separators - a fact which
+is useful if your Ant invocation wrapper includes a list of jars as a
+defined property in the command line. In the build files you may find it
+better to build a classpath by listing individual files (using location=
+attributes), or by including a fileset of <tt>*.jar</tt> in the classpath
+definition.
+<p>
+There is also the <a
+href="manual/Tasks/pathconvert.html">PathConvert</a> task which
+can put a fully resolved path into a property. Why do that? Because then 
+you can use that path in other ways - such as pass it as a parameter to 
+some application you are calling, or use the replace task to patch it
+into a localised shell script or batch file.
+<p>
+Note that DOS descended file systems are case insensitive (apart from
+the obscure aberration of the WinNT POSIX subsystem run against NTFS),
+and that Windows pretends that all file extensions with four or more
+letters are also three letter extensions (try <tt>DELETE *.jav</tt> in your java
+directories to see a disastrous example of this).
+
+<p>
+Ant's policy on case sensitivity is whatever the underlying file system
+implements, and its handling of file extensions is that <tt>*.jav</tt> does not
+find any <tt>.java</tt> files. The Java compiler is of course case sensitive - you can
+not have a class 'ExampleThree' implemented in "examplethree.java".
+
+<p>
+Some tasks only work on one platform - <a href= "manual/Tasks/chmod.html">
+Chmod</a> being a classic example. These tasks usually result in just a
+warning message on an unsupported platform - the rest of the target's
+tasks will still be called. Other tasks degrade their functionality on
+platforms or Java versions. In particular, any task which adjusts the
+timestamp of files can not do so properly on Java 1.1. Tasks which can
+do that - <a href="manual/Tasks/get.html">Get</a>, <a
+href="manual/Tasks/touch.html">Touch</a> and <A href="manual/Tasks/unzip.html">
+Unjar/Unwar/Unzip</a> for example, degrade their functionality on
+Java1.1, usually resorting to the current timestamp instead.
+
+<p>
+Finally, Perl makes a good place to wrap up Java invocations cross
+platform, rather than batch files. It is included in most Unix
+distributions, and is a simple download for <a href=
+"http://www.activestate.com/Products/ActivePerl/">Win32 platforms from
+ActiveState</a>. A Perl file with <tt>.pl</tt> extension, the usual Unix
+path to perl on the line 1 comment and marked as executable can be run
+on Windows, OS/2 and Unix and hence called from Ant without issues. The
+perl code can be left to resolve its own platform issues. Don't forget to
+set the line endings of the file to the appropriate platform when you
+redistribute Perl code; <a
+href="manual/Tasks/fixcrlf.html">fixCRLF</a> 
+can do that for you.
+
+<a name="team">
+<h2>Team Development Processes</h2>
+</a>
+Even if each team member is allowed their choice of IDE/editor, or even
+OS, you need to set a baseline of functionality on each box. In
+particular, the JDKs and jars need to be in perfect sync. Ideally pick
+the latest stable Java/JDK version available on all developer/target
+systems and stick with it for a while. Consider assigning one person to
+be the contact point for all tools coming in - particularly open source
+tools when a new build is available on a nightly basis. Unless needed,
+these tools should only really be updated monthly, or when a formal
+release is made.
+
+<p>
+Another good tactic is to use a unified directory tree, and add on extra
+tools inside that tree. All references can be made relative to the tree.
+If team members are expected to add a directory in the project to their
+path, then command line tools can be included there - including those
+invoked by Ant exec tasks. Put everything under source code control and
+you have a one stop shop for getting a build/execute environment purely
+from CVS or your equivalent.
+
+<a name="deploying">
+<h2>Deploying with Ant</h2>
+</a>
+One big difference between Ant and older tools such as Make is that the
+processes for deploying Java to remote sites are reasonably well
+evolved in Ant. That is because we all have to do it these days, so
+many people have put in the effort to make the tasks easier.
+<p>
+Ant can <a href="manual/Tasks/jar.html">Jar</a>, <a href=
+"manual/Tasks/tar.html">Tar</a> or <a
+href="manual/Tasks/zip.html">Zip</a> files for deployment, while the
+<a href="manual/Tasks/war.html">War</a> task extends the jar task
+for better servlet deployment. 
+<a href ="manual/Tasks/jlink.html">Jlink</a> is a
+jar generation file which lets you merge multiple sub jars. This is
+ideal for a build process in which separate jars are generated by sub
+projects, yet the final output is a merged jar. <a href=
+"manual/Tasks/cab.html">Cab</a> can be used on Win32 boxes to
+build a cab file which is useful if you still have to target IE deployment.
+
+<p>
+The <a href="index.html#ftp">ftp</a> task lets you move stuff up to a
+server. Beware of putting the ftp password in the build file - a property
+file with tight access control is slightly better. The <a href=
+"manual/Tasks/fixcrlf.html">FixCRLF</a> task is often a useful interim step if
+you need to to adjust the line endings of files. A
+WebDav task has long been discussed, which would provide a more secure
+upload to web servers, but it is still in the todo list. Rumour has it
+that there is such a task in the jakarta-slide libraries. With MacOS X,
+Linux and Windows XP all supporting WebDAV file systems, you may even be able
+to use <a href="manual/Tasks/copy.html">copy</a> to deploy
+though a firewall. 
+
+<p>
+EJB deployment is aided by the <a href="manual/Tasks/ejb.html">ejb</a> tasks,
+while the 
+<a
+href="manual/Tasks/serverdeploy.html">serverdeploy</a>
+suite can deploy to multiple servers. The popularity of Ant has
+encouraged vendors to produce their own deployment tasks which they
+redistribute with their servers. For example, the Tomcat4.1 installation
+includes tasks to deploy, undeploy and reload web applications.
+
+<p>
+Finally, there are of course the fallbacks of just copying files to a
+destination using <a href="manual/Tasks/copy.html">Copy</a> and <a href="index.html#copydir">Copydir</a> , or just sending them to a person or
+process using <a href="manual/Tasks/mail.html">Mail</a> or the attachment
+aware <a href= "manual/Tasks/mimemail.html">MimeMail</a>.
+In one project our team even used Ant to build CD images through a build followed
+by a long set of Copy tasks, which worked surprisingly well, certainly
+easier than when we mailed them to the free email service on
+myrealbox.com, then pulled them down from the far end's web browser, which we
+were running over WinNT remote desktop connection, that being tunneled
+through SSH.
+
+<a name="directories">
+<h2> Directory Structures</h2>
+</a>
+
+How you structure your directory tree is very dependent upon the
+project. Here are some directory layout patterns which can be used as
+starting points. All the jakarta projects follow a roughly similar
+style, which makes it easy to navigate around one from one project to
+another, and easy to clean up when desired. 
+
+<h3>Simple Project</h3>
+
+The project contains sub directories
+<table width="100%">
+<tr>
+    <td><b>bin</b>
+    </td>
+    <td>common binaries, scripts - put this on the path.
+    </td>
+</tr>
+
+<tr>
+    <td><b>build</b>
+    </td>
+    <td>This is the tree for building; Ant creates it and can empty it
+    in the 'clean' project.
+    </td>
+</tr>
+<tr>
+    <td><b>dist</b>
+    </td>
+    <td>Distribution outputs go in here; the directory is created in Ant
+    and clean empties it out
+    </td>
+</tr>
+<tr>
+    <td><b>doc</b>
+    </td>
+    <td>Hand crafted documentation
+    </td>
+</tr>
+<tr>
+    <td><b>lib</b>
+    </td>
+    <td>Imported Java libraries go in to this directory
+    </td>
+</tr>
+<tr>
+    <td><b>src</b>
+    </td>
+    <td>source goes in under this tree <i>in a hierarchy which matches
+    the package names<i>. The dependency rules of &lt;javac&gt; requires this.  
+    </td>
+</tr>
+</table>
+
+The bin, lib, doc and src directories should be under source code control.
+Slight variations include an extra tree of content to be included in the
+distribution jars - inf files, images, etc. These can go under source
+too, with a <tt>metadata</tt> directory for <tt>web.xml</tt> and similar
+manifests, and a <tt>web</tt> folder for web content - JSP, html, images
+and so on. Keeping the content in this folder (or sub hierarchy)
+together makes it easier to test links before deployment. The actual
+production of a deployment image, such as a war file, can be left to the
+appropriate Ant task: there is no need to completely model your source tree 
+upon the deployment hierarchy. 
+<p> 
+Javadoc output can be
+directed to a <tt>doc/</tt> folder beneath <tt>build/</tt>, or to <tt>doc/javadoc</tt>.
+
+<h3>Interface and Implementation split</h3>
+
+If the interface is split from the implementation code then this can be
+supported with minor changes just by having a separate build path for
+the interface directory - or better still just in the jar construction:
+one jar for interface and one jar for implementation.
+
+<h3>Loosely Coupled Sub Projects</h3>
+
+In the loosely coupled approach multiple projects can have their own
+copy of the tree, with their own source code access rights.
+One difference to consider is only having one instance of the bin and
+lib directories across all projects. This is sometimes good - it helps
+keep copies of xerces.jar in sync, and sometimes bad - it can update
+foundational jar files before unit testing is complete.
+
+<p>
+To still have a single build across the sub projects, use parent
+<tt>build.xml</tt> files which call down into the sub projects.
+<p>
+This style works well if different teams have different code
+access/commitment rights. The risk is that by giving extra leeway to the
+sub projects, you can end up with incompatible source, libraries, build
+processes and just increase your workload and integration grief all round.
+<p>
+The only way to retain control over a fairly loosely integrated
+collection of projects is to have a fully automated  build 
+and test process which verifies that everything is still compatible. Sam
+Ruby runs one for all the apache java libraries and emails everyone when
+something breaks; your own project may be able to make use of 
+<A href="http://cruisecontrol.sourceforge.net/">Cruise Control</a> for
+an automated, continuous, background build process. 
+
+<h3>Integrated sub projects</h3>
+
+Tightly coupled projects have all the source in the same tree; different
+projects own different subdirectories. Build files can be moved down to
+those subdirectories (say <tt>src/com/iseran/core</tt> and <tt>src/com/iseran/extras</tt>),
+or kept at the top - with independent build files named <tt>core.xml</tt> and
+<tt>extras.xml</tt>.
+
+<p>
+This project style works well if everyone trusts each other and the
+sub projects are not too huge or complex. The risk is that a split to a
+more loosely coupled design will become a requirement as the projects
+progress - but by the time this is realised schedule pressure and
+intertwined build files make executing the split well nigh impossible.
+If that happens then just keep with it until there is the time to
+refactor the project directory structures. 
+
+<a name="antupdate">
+<h2>
+    Ant Update Policies
+</h2>
+</a>
+
+Once you start using Ant, you should have a policy on when and how the
+team updates their copies. A simple policy is &quot;every official release
+after whatever high stress milestone has pushed all unimportant tasks
+(like sleep and seeing daylight) on the back burner&quot;. This insulates you
+from the changes and occasional instabilities that Ant goes through
+during development. Its main disadvantage is that it isolates you from
+the new tasks and features that Ant is constantly adding.
+
+<p>
+Often an update will require changes to the <tt>build.xml</tt> files. Most
+changes are intended to be backwards compatible, but sometimes an
+incompatible change turns out to be
+necessary. That is why doing the update in the lull after a big
+milestone is important. It is also why including <tt>ant.jar</tt> and related
+files in the CVS tree helps ensure that old versions of your software
+can be still be built.
+
+<p>
+The most aggressive strategy is to get a weekly or daily snapshot of the
+ant source, build it up and use it. This forces you to tweak the
+<tt>build.xml</tt> files more regularly, as new tasks and attributes can take
+while to stabilise. You really have to want the new features, enjoy
+gratuitous extra work or take pleasure in upsetting your colleagues to
+take this approach.
+
+<p>
+Once you start extending Ant with new tasks, it suddenly becomes much
+more tempting to pull down regular builds. The most recent Ant builds
+are invariably the best platform for writing your extensions, as you
+can take advantage of the regular enhancements to the foundational
+classes. It also prevents you from wasting time working on something
+which has already been done. A newly submitted task to do something
+complex such as talk to EJB engines, SOAP servers or just convert a text
+file to uppercase may be almost exactly what you need - so take it,
+enhance it and offer up the enhancements to the rest of the world. This
+is certainly better than starting work on your 'text case converter'
+task on Ant 0.8 in isolation, announcing its existence six months later
+and discovering that instead of adulation all you get are helpful
+pointers to the existing implementation. The final benefit of being
+involved with the process is that it makes it easier for your tasks to 
+be added with the Ant CVS tree, bringing forward the date when Ant has
+taken on all the changes you needed to make to get your project to work.
+If that happens you can revert to an official Ant release, and get on
+with all the other crises. 
+
+<p>
+You should also get on the <a href =
+"mailto:dev-subscribe@ant.apache.org">dev mailing list
+</a>, as it is where the other developers post their work, problems and
+experience. The volume can be quite high: 40+ messages a day, so
+consider routing it to an email address you don't use for much else. And
+don't make everyone on the team subscribe; it can be too much of a
+distraction.
+
+<a name="install">
+<h2>
+Installing with Ant.
+</h2>
+</a>
+Because Ant can read environment variables, copy, unzip and delete files
+and make java and OS calls, it can be used for simple installation
+tasks. For example, an installer for tomcat could extract the
+environment variable <tt>TOMCAT_HOME</tt>, stop tomcat running, and copy a war
+file to <tt>TOMCAT_HOME/webapps</tt>. It could even start tomcat again, but the
+build wouldn't complete until tomcat exited, which is probably not what
+was wanted. 
+
+<p>
+The advantage of using Ant is firstly that the same install targets
+can be used from your local build files (via an <tt>ant</tt> invocation
+of the <tt>install.xml</tt> file), and secondly that a basic install target is
+quite easy to write. The disadvantages of this approach are that the
+destination must have an up to date version of Ant correctly
+pre-installed, and Ant doesn't allow you to handle failures well - and a
+good installer is all about handling when things go wrong, from files
+being in use to jar versions being different. This means that Ant is not
+suited for shrink wrapped software, but it does work for deployment and
+installation to your local servers.
+
+<p>
+One major build project I was involved in had an Ant install build file
+for the bluestone application server, which would shutdown all four
+instances of the app server on a single machine, copy the new version of
+the war file (with datestamp and buildstamp) to an archive directory,
+clean up the current deployed version of the war and then install the
+new version. Because bluestone restarted JVMs on demand, this script was
+all you needed for web service deployment. On the systems behind the
+firewall, we upped the ante in the deployment process by using the ftp
+task to copy out the war and build files, then the telnet task to
+remotely invoke the build file. The result was we had automated
+recompile and redeploy to local servers from inside our IDE (Jedit) or
+the command line, which was simply invaluable. Imagine pressing a button
+on your IDE toolbar to build, unit test, deploy and then functional test
+your webapp. 
+
+<p>
+One extra trick I added later was a junit test case to run through the
+install check list. With tests to verify access permissions on network
+drives, approximate clock synchronisation between servers, DNS
+functionality, ability to spawn executables and all the other trouble
+spots, the install script could automatically do a system health test
+during install time and report problems. [The same tests could also be
+invoked from a JMX MBean, but that's another story]. 
+
+<p>
+So, Ant is not a substitute for a real installer tool, except in the
+special case of servers you control, but in that context it does let
+you integrate remote installation with your build. 
+
+
+<a name="tips">
+<h2>
+Tips and Tricks</h2>
+</a>
+<dl>
+<dt><b>
+    get
+</b><dd>
+
+The <a href="manual/Tasks/get.html">get</a> task can fetch any URL, so be used
+to trigger remote server side code during the build process, from remote
+server restarts to sending SMS/pager messages to the developer
+cellphones.
+
+<dt><b>
+i18n
+</b><dd>
+
+Internationalisation is always trouble. Ant helps here with the <a href=
+"manual/Tasks/native2ascii.html">native2ascii</a> task which can escape out all non
+ascii characters into unicode. You can use this to write java files
+which include strings (and indeed comments) in your own non-ASCII
+language and then use native2ascii to convert to ascii prior to feeding
+through javac. The rest of i18n and l12n is left to you...
+
+<dt><b>
+Use Property Files
+</b><dd>
+
+Use external property files to keep per-user settings out the build
+files - especially passwords. Property files can also be used to
+dynamically set a number of properties based on the value of a single
+property, simply by dynamically generating the property filename from the
+source property. They can also be used as a source of constants across
+multiple build files.
+
+<dt><b>
+Faster compiles with Jikes
+</b><dd>
+
+The <a href="http://jikes.sourceforge.net/">jikes compiler</a> is usually much
+faster than javac, does dependency checking and has better error
+messages (usually). Get it. Then set
+<tt>build.compiler</tt> to "jikes" for it to be used in your build files.
+Doing this explicitly in your build files is a bit dubious as it requires the
+whole team (and sub projects) to be using jikes too - something you can only
+control in small, closed source projects. But if you set 
+<tt>ANT_OPTS&nbsp;=&nbsp;-Dbuild.compiler=jikes</tt>
+in your environment, then all your builds on your system will use 
+Jikes automatically, while others can choose their own compiler, or let
+ant choose whichever is appropriate for the current version of Java.   
+
+<dt><b>
+#include targets to simplify multi <tt>build.xml</tt> projects
+</b><dd>
+
+You can import XML files into a build file using the XML parser itself.
+This lets a multi-project development program share code through reference,
+rather than cut and paste re-use. It also lets one build up a file of
+standard tasks which can be reused over time. Because the import
+mechanism is at a level below which Ant is aware, treat it as
+equivalent to the #include mechanism of the 'legacy' languages C and
+C++.
+
+<p>
+There are two inclusion mechanisms, an ugly one for all parsers and a
+clean one. The ugly method is the only one that was available on Ant1.5 and
+earlier:-
+<pre>
+    &lt;!DOCTYPE project [
+      &lt;!ENTITY propertiesAndPaths SYSTEM &quot;propertiesAndPaths.xml&quot;&gt;
+      &lt;!ENTITY taskdefs SYSTEM &quot;taskdefs.xml&quot;&gt;
+    ]&gt;  
+    
+        &amp;propertiesAndPaths;
+        &amp;taskdefs;
+</pre>
+The cleaner method in Ant1.6 is the <tt>&lt;import&gt;</tt> task that imports
+whole build files into other projects. The entity inclusion example
+could <i>almost</i> be replaced by two import statements:-
+<pre>
+ &lt;import file="propertiesAndPaths.xml"&gt;
+ &lt;import file="taskdefs.xml"&gt;
+</pre>
+
+We say almost as top level declarations (properties and taskdefs) 
+do not get inserted into the XML file exactly where the import statement
+goes, but added to the end of the file. This is because the import process
+takes place after the main build file is parsed, during execution, whereas
+XML entity expansion is handled during the parsing process.
+
+<p>
+The <tt>&lt;import&gt;</tt> task does powerful things, such as let you override targets,
+and use ant properties to name the location of the file to import. Consult the
+<a href="manual/Tasks/import.html">documentation</a> for the specifics of
+these features.  
+
+<p>
+Before you go overboard with using XML inclusion, note that the
+<tt>ant</tt> task lets you call any target in any other build
+file - with all your property settings propagating down to that target.
+So you can actually have a suite of utility targets
+- "<tt>deploy-to-stack-a</tt>", "<tt>email-to-team</tt>", "<tt>cleanup-installation</tt>" which can
+be called from any of your main build files, perhaps with subtly changed
+parameters. Indeed, after a couple of projects you may be able to create
+a re-usable core build file which contains the core targets of a basic
+Java development project - compile, debug, deploy - which project specific
+build files call with their own settings. If you can achieve this then
+you are definitely making your way up the software maturity ladder. With
+a bit of work you may progress from being a SEI CMM Level 0 organisation
+&quot;Individual Heroics are not enough&quot; to SEI CMM Level 1, &quot;Projects only
+succeed due to individual heroics&quot;
+
+<p>
+NB, <tt>ant</tt> copies all your properties unless the
+<i>inheritall</i> attribute is set to false. Before that attribute
+existed you had to carefully name all property definitions in all build
+files to prevent unintentional overwriting of the invoked property by
+that of the caller, now you just have to remember to set
+<tt>inheritall="false"</tt> on all uses of the &lt;ant&gt; task.
+
+    
+<dt><b>
+Implement complex Ant builds through XSL
+</b><dd>
+
+XSLT can be used to dynamically generate build.xml files from a source
+xml file, with the <a href="manual/Tasks/style.html">xslt</a> task controlling
+the transform. This is the current recommended strategy for creating
+complex build files dynamically. However, its use is still apparently
+quite rare - which means you will be on the bleeding edge of technology.
+
+
+<dt><b>
+Change the invocation scripts
+</b><dd>
+
+By writing your own invocation script - using the DOS, Unix or Perl
+script as a starting point - you can modify Ant's settings and behavior for an
+individual project. For example, you can use an alternate variable to
+<tt>ANT_HOME</tt> as the base, extend the classpath differently, or dynamically
+create a new command line property &quot;<tt>project.interfaces</tt>&quot; from all <tt>.jar</tt>
+files in an interfaces directory.
+
+<p>
+Having a custom invocation script which runs off a CVS controlled
+library tree under <tt>PROJECT_HOME</tt> also lets you control Ant versions
+across the team - developers can have other copies of Ant if they want,
+but the CVS tree always contains the jar set used to build your project.
+
+<p>
+You can also write wrapper scripts which invoke the existing Ant
+scripts. This is an easy way to extend them. The wrapper scripts can add
+extra definitions and name explicit targets, redefine <tt>ANT_HOME</tt> and
+generally make development easier. Note that &quot;ant&quot; in Windows is really
+&quot;ant.bat&quot;, so should be invoked from another batch file with a "CALL
+ant" statement - otherwise it never returns to your wrapper.
+
+
+<dt><b>
+Write all code so that it can be called from Ant
+</b><dd>
+This seems a bit strange and idealistic, but what it means is that you should
+write all your java code as if it may be called as a library at some point in
+future. So do not place calls to <tt>System.exit()</tt> deep in the code - if you
+want to exit a few functions in, raise an exception instead and have
+<tt>main()</tt> deal with it.
+
+<p>
+Moving one step further, consider proving an Ant Task interface to the
+code as a secondary, primary or even sole interface to the
+functionality. Ant actually makes a great bootloader for Java apps as it
+handles classpath setup, and you can re-use all the built in tasks for
+preamble and postamble work. Some projects, such as 
+<a href="http://xdoclet.sf.net">XDoclet</a> only run under Ant, because
+that is the right place to be.
+
+<dt><b>
+Use the replace task to programmatic modify text files in your project.  
+</b><dd>
+Imagine your project has some source files - BAT files, ASPX pages(!), anything
+which needs to be statically customised at compile time for particular
+installations, such driven from some properties of the project such as JVM options, or the URL
+to direct errors too. The replace task can be used to modify files, substituting text and creating
+versions customised for that build or destination. Of course, per-destination customisation
+should be delayed until installation, but if you are using Ant for the remote installation
+that suddenly becomes feasible.     
+
+<dt><b>
+Use the mailing lists
+</b><dd>
+There are two 
+<a href="http://ant.apache.org/mail.html">mailing lists</a> 
+related to Ant, user and developer. Ant user is where <i>all</i>
+questions related to using Ant should go. Installation, syntax, code
+samples, etc - post your questions there or search the archives for 
+whether the query has been posted and answered before. Ant-developer
+is where Ant development takes place - so it is <i>not</i> the place to
+post things like &quot;I get a compilation error when I build my project&quot; or
+&quot;how do I make a zip file&quot;. If you are actually extending Ant, on the other
+hand, it is the ideal place to ask questions about how to add new tasks, make
+changes to existing ones - and to post the results of your work, if you want them
+incorporated into the Ant source tree.  
+</dl>
+
+<a name="puttingtogether">
+    <h2>
+        Putting it all together
+    </h2>
+</a>
+
+What does an Ant build process look like in this world? Assuming a
+single directory structure for simplicity, the build file
+should contain a number of top level targets
+<ul>
+<li>build - do an (incremental) build
+<li>test - run the junit tests
+<li>clean - clean out the output directories
+<li>deploy - ship the jars, wars, whatever to the execution system
+<li>publish - output the source and binaries to any distribution site
+<li>fetch - get the latest source from the cvs tree
+<li>docs/javadocs - do the documentation
+<li>all - clean, fetch, build, test, docs, deploy
+<li>main - the default build process (usually build or build &amp; test)
+</ul>
+Sub projects &quot;web&quot;, &quot;bean-1&quot;, &quot;bean-2&quot; can be given their own build
+files - <tt>web.xml</tt>, <tt>bean-1.xml</tt>, <tt>bean-2.xml</tt> - with the same entry points.
+Extra toplevel tasks related to databases, web site images and the like
+should be considered if they are part of the process.
+
+<p>
+Debug/release switching can be handled with separate initialisation
+targets called before the compile tasks which define the appropriate
+properties. Antcall is the trick here, as it allows you to have two paths
+of property initialisation in a build file.   
+
+<p>
+Internal targets should be used to structure the process
+<ul>
+<li> init - initialise properties, extra-tasks, read in per-user
+property files.
+<li> init-release - initialise release properties
+<li> compile - do the actual compilation
+<li> link/jar - make the jars or equivalent
+<li> staging - any pre-deployment process in which the output is dropped
+    off then tested before being moved to the production site.
+</ul>
+
+The switching between debug and release can be done by making
+init-release conditional on a property, such as <tt>release.build</tt> 
+being set :-
+
+<pre>&lt;target name=&quot;init-release&quot; if=&quot;release.build&quot;&gt;
+    &lt;property name=&quot;build.debuglevel&quot; value=&quot;lines,source&quot;/&gt;    
+  &lt;/target&gt;
+</pre>
+
+You then have dependent targets, such as &quot;compile&quot;, depend on this
+conditional target; there the &quot;default&quot; properties are set, and then the
+property is actually used. Because Ant properties are <i>immutable</i>,
+if the release target was executed its settings will override the
+default values:
+
+<pre>&lt;target name=&quot;compile&quot; depends=&quot;init,init-release&quot;&gt;
+    &lt;property name=&quot;build.debuglevel&quot; value=&quot;lines,vars,source&quot;/&gt; 
+    &lt;echo&gt;debug level=${build.debuglevel}&lt;/echo&gt;
+    &lt;javac destdir=&quot;${build.classes.dir}&quot;
+       debug=&quot;true&quot;
+       debuglevel=&quot;${build.debuglevel}&quot;
+       includeAntRuntime=&quot;false&quot;
+       srcdir=&quot;src&quot;&gt;
+      &lt;classpath refid=&quot;compile.classpath&quot;/&gt;
+    &lt;/javac&gt;
+  &lt;/target&gt;
+</pre>
+
+As a result, we now have a build where the release mode only includes
+the filename and line debug information (useful for bug reports), while
+the development system included variables too. 
+<p>
+It is useful to define a project name property which can be echoed in
+the init task. This lets you work out which Ant file is breaking in a
+multi file build.
+
+<p>
+What goes in to the internal Ant tasks depends on your own projects. One
+very important tactic is &quot;keep path redefinition down through
+references&quot; - you can reuse paths by giving them an ID and then
+referring to them via the &quot;refid&quot; attribute you should only need to
+define a shared classpath once in the file; filesets can be reused
+similarly.
+
+<p>
+Once you have set up the directory structures, and defined the Ant tasks
+it is time to start coding. An early priority must be to set up the
+automated test process, as that not only helps ensures that the code
+works, it verifies that the build process is working.
+
+<p>
+And that's it. The build file shouldn't need changing as new source
+files get added, only when you want to change the deliverables or part
+of the build process. At some point you may want to massively
+restructure the entire build process, restructuring projects and the
+like, but even then the build file you have should act as a foundation
+for a split build file process -just pull out the common properties into
+a properties file all build files read in, keep the target names unified
+and keep going with the project. Restructuring the source code control
+system is often much harder work.
+
+<h2>The Limits of Ant</h2>
+
+Before you start adopting Ant as the sole mechanism for the build
+process, you need to be aware of what it doesn't do.
+<p>
+
+<h3>It's not a scripting language</h3>
+
+Ant lets you declare what you want done, with a bit of testing of the
+platform and class libraries first to enable some platform specific
+builds to take place. It does not let you specify how to handle things
+going wrong (a listener class can do that), or support complex
+conditional statements.
+
+<p>
+If your build needs to handle exceptions then look at the sound listener
+as a simple example of how to write your own listener class. Complex
+conditional statements can be handled by having something else do the
+tests and then build the appropriate Ant task. XSLT can be used for
+this.
+
+<h3>It's not Make</h3>
+
+Some of the features of make, specifically inference rules and
+dependency checking are not included in Ant. That's because they are
+&quot;different&quot; ways of doing a build. Make requires you to state
+dependencies and the build steps, Ant wants you to state tasks and the
+order between them, the tasks themselves can do dependency checking or
+not. A full java build using Jikes is so fast that dependency checking
+is relatively moot, while many of the other tasks (but not all), compare
+the timestamp of the source file with that of the destination file
+before acting.
+
+<h3>It's not meant to be a nice language for humans</h3>
+
+XML isn't a nice representation of information for humans. It's a
+reasonable representation for programs, and text editors and source code
+management systems can all handle it nicely. But a complex Ant file can
+get ugly because XML is a bit ugly, and a complex build is, well,
+complicated. Use XML comments so that the file you wrote last month
+still makes sense when you get back to it, and use proper xml editors to edit the
+files if you prefer it. 
+
+<h3>Big projects still get complicated fast</h3>
+
+Large software projects create their own complexity, with inter-dependent
+libraries, long test cycles, hard deployment processes and a multitude of
+people each working on their own bit of the solution. That's even before
+the deadlines loom close, the integration problems become insurmountable,
+weekends become indistinguishable from weekdays in terms of workload and 
+half the team stops talking to the other half. Ant may simplify the
+build and test process, and can eliminate the full time &quot;makefile engineer&quot;
+role, but that doesn't mean that someone can stop &quot;owning the build&quot;. 
+Being in charge of the build has to mean more than they type &quot;<tt>ant all</tt>&quot; on
+their system, it means they need to set the standards of what build tools to
+use, what the common targets, what property names and files should be
+and generally oversee the sub projects build processes. On a small project,
+you don't need to do that - but remember: small projects become big projects
+when you aren't looking. If you start off with a little bit of process, then
+you can scale it if needed. If you start with none, by the time you need 
+it will be too late.   
+
+<h3>You still need all the other foundational bits of a software
+project</h3>
+
+If you don't have an source code management system, you are going to end
+up hosed. If you don't have everything under SCM, including web pages,
+dependent jars, installation files, you are still going to end up hosed,
+it's just a question of when it's going to happen.
+CVS is effectively free and works well with Ant, but Sourcesafe, Perforce,
+Clearcase and StarTeam also have Ant tasks. These tasks
+let you have auto-incrementing build counters, and automated file
+update processes. 
+
+<p>
+You also need some kind of change control process, to resist
+uncontrolled feature creep. Bugzilla is a simple and low cost tool for
+this, using Ant and a continuous test process enables a rapid evolution of code
+to adapt to those changes which are inevitable.  
+
+<h2>End piece</h2>
+
+Software development is meant to be fun. Being in the maelstrom of a
+tight project with the stress of integration and trying to code
+everything up for an insane deadline can be fun - it is certainly
+exhilarating. Adding a bit of automation to the process may make things
+less chaotic, and bit less entertaining, but it is a start to putting
+you in control of your development process. You can still have fun, you
+should just have less to worry about, a shorter build/test/deploy cycle
+and more time to spend on feature creep or important things like skiing.
+So get out there and have fun!
+
+<a name="reading">
+<h2>Further Reading</h2>
+</a>
+<ul>
+<li>
+<a
+href="http://www.martinfowler.com/articles/continuousIntegration.html">
+<i>Continuous Integration</i></a>; Martin Fowler. <br>
+A paper on using Ant within a software project
+running a continuous integration/testing process.
+<li><i> Refactoring</i>; Martin Fowler, ISBN: 0201485672 <br>
+    Covers JUnit as well as tactics for making some headway with the mess of
+    code you will soon have.
+
+<li><a href="http://manning.com/hatcher"><i>Java Development with
+Ant</i></a>;
+    Erik Hatcher and Steve Loughran. 
+
+    
+<li>
+<a href="http://www.iseran.com/Steve/papers/when_web_services_go_bad.html">
+    <i>When Web Services Go Bad</i></a>; Steve Loughran.<br>
+    One of the projects this paper is based on.    
+    
+    
+</ul>
+
+<a name="author">
+<h3>About the Author</h3>
+</a>
+
+Steve Loughran is a research scientist at a corporate R&amp;D lab,
+currently on a sabbatical building production web services against
+implausible deadlines for the fun of it. He is also a committer on
+Apache Ant and Apache Axis, and co-author of 
+<a href="http://manning.com/hatcher"><i>Java Development with Ant</i></a>. 
+He thinks that if you liked this document you'll love that book because
+it doesn't just explain Ant, it goes into processes, deployment and best practices
+and other corners of stuff that really make Ant useful. (It would 
+have been easier to just rehash the manual, but that wouldn't have been
+so useful or as much fun).  
+
+<p>
+For questions related to this document, use the Ant mailing list.
+
+
+</body>
+</html>

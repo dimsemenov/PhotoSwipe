@@ -1,0 +1,143 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>PropertySet Type</title>
+</head>
+
+<body>
+
+<h2><a name="propertyset">PropertySet</a></h2>
+<p><em>Since Apache Ant 1.6</em></p>
+
+<p>Groups a set of properties to be used by reference in a task that
+supports this.</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">dynamic</td>
+    <td valign="top">Whether to reevaluate the set everytime the set
+      is used.  Default is &quot;<code>true</code>&quot;.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">negate</td>
+    <td valign="top">Whether to negate results. If
+      &quot;<code>true</code>&quot;, all properties <i>not</i>
+      selected by nested elements will be returned. Default is
+      &quot;<code>false</code>&quot;. <em>Since Ant 1.6.2</em>
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+<h3>Parameters specified as nested elements</h3>
+
+<h4>propertyref</h4>
+
+<p>Selects properties from the current project to be included in the
+set.</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">Select the property with the given name.</td>
+    <td align="center" valign="top" rowspan="4">Exactly one of these.</td>
+  </tr>
+  <tr>
+    <td valign="top">prefix</td>
+    <td valign="top">Select the properties whose name starts with the
+      given string.</td>
+  </tr>
+  <tr>
+    <td valign="top">regex</td>
+    <td valign="top">Select the properties that match the given
+      regular expression.  Similar to <a
+      href="mapper.html#regexp-mapper">regexp type mappers</a>, this
+      requires a supported regular expression library.</td>
+  </tr>
+  <tr>
+    <td valign="top">builtin</td>
+    <td valign="top">Selects a builtin set of properties.  Valid
+      values for this attribute are <code>all</code> for all Ant
+      properties, <code>system</code> for the system properties and
+      <code>commandline</code> for all properties specified on the
+      command line when invoking Ant (plus a number of special
+      internal Ant properties).</td>
+  </tr>
+</table>
+
+<h4>propertyset</h4>
+
+<p>A <code>propertyset</code> can be used as the set union of more
+<code>propertyset</code>s.</p>
+
+<p>For example:</p>
+
+<blockquote><pre>
+&lt;propertyset id=&quot;properties-starting-with-foo&quot;&gt;
+  &lt;propertyref prefix=&quot;foo&quot;/&gt;
+&lt;/propertyset&gt;
+&lt;propertyset id=&quot;properties-starting-with-bar&quot;&gt;
+  &lt;propertyref prefix=&quot;bar&quot;/&gt;
+&lt;/propertyset&gt;
+&lt;propertyset id=&quot;my-set&quot;&gt;
+  &lt;propertyset refid=&quot;properties-starting-with-foo&quot;/&gt;
+  &lt;propertyset refid=&quot;properties-starting-with-bar&quot;/&gt;
+&lt;/propertyset&gt;
+</pre></blockquote>
+
+<p>collects all properties whose name starts with either
+&quot;foo&quot; or &quot;bar&quot; in the set named
+&quot;my-set&quot;.</p>
+
+<h4>mapper</h4>
+
+<p>A <a href="mapper.html">mapper</a> - at maximum one mapper can be
+specified.  The mapper is used to change the names of the property
+keys, for example:
+
+<blockquote><pre>
+&lt;propertyset id=&quot;properties-starting-with-foo&quot;&gt;
+  &lt;propertyref prefix=&quot;foo&quot;/&gt;
+  &lt;mapper type=&quot;glob&quot; from=&quot;foo*&quot; to=&quot;bar*&quot;/&gt;
+&lt;/propertyset&gt;
+</pre></blockquote>
+
+<p>collects all properties whose name starts with &quot;foo&quot;, but
+changes the names to start with &quot;bar&quot; instead.</p>
+
+<p>If supplied, the nested mapper will be applied
+subsequent to any negation of matched properties.</p>
+
+
+
+</body>
+</html>
+

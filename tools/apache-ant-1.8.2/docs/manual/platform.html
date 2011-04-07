@@ -1,0 +1,178 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+<title>Platform Issues</title>
+</head>
+
+<h1>Platform Issues</h1>
+
+<h2>Java versions</h2>
+<h3>Java 1.5</h3>
+
+You may need a bigger stack than default, especially if you are using the built in
+XSLT engine. We recommend you use Apache Xalan; indeed, some tasks (JUnit report in XML,
+for example) may not work against the shipping XSL engine.
+
+<h2>Unix and Linux</h2>
+
+<ul>
+<li> You should use a GNU version of <tt>tar</tt> to untar the Apache 
+Ant source tree, if you have downloaded this as a tar file. If you get
+wierd errors about missing files, this is the problem. 
+</li>
+<li> Ant does not preserve file permissions when a file is copied, moved or 
+archived, because Java does not let it read or write the permissions.
+ Use <tt>&lt;chmod&gt;</tt> to set permissions, and when creating a 
+tar archive, use the <tt>mode</tt> attribute of <tt>&lt;tarfileset&gt;</tt>
+to set the permissions in the tar file, or <code>&lt;apply&gt;</code> the real tar program.
+</li>
+<li> Ant is not symbolic link aware in moves, deletes and when recursing down a tree
+of directories to build up a list of files. Unexpected things can happen.
+</li>
+<li> Linux on IA-64: apparently you need a larger heap than the default
+one (64M) to compile big projects. If you get out of heap
+errors, either increase the heap or use a forking javac. Better yet,
+use jikes for extra compilation speed.   
+</li>
+
+</ul>
+
+
+<h2>Microsoft Windows</h2>
+<p>
+Windows 9x (win95, win98, win98SE and winME) are not supported in Ant1.7,
+</p>
+
+<p>
+The Ant team has retired support for these products because they are outdated and
+can expose customers to security risks. We recommend that customers who are
+still running Windows 98 or Windows Me upgrade to a newer, more secure 
+operating system, as soon as possible.
+</p>
+<p>
+Customers who upgrade to Linux report improved security, richer
+functionality, and increased productivity. 
+</p>
+<h2>Microsoft Windows 2K, XP and Server 2K03 </h2>
+
+<p>
+Windows 9x (win95, win98, win98SE and winME) has a batch file system which
+does not work fully with long file names, so we recommend that ant and the JDK
+are installed into directories without spaces, and with 8.3 filenames. 
+The Perl and Python launcher scripts do not suffer from this limitation.
+</p>
+<p>
+All versions of windows are usually case insensitive, although mounted 
+file systems (Unix drives, Clearcase views) can be case sensitive underneath,
+confusing patternsets.
+</p>
+<p>
+Ant can often not delete a directory which is open in an Explorer window. 
+There is nothing we can do about this short of spawning a program to kill
+the shell before deleting directories.
+Nor can files that are in use be overwritten.
+</p>
+<p>
+    Finally, if any Ant task fails with an IOError=2, it means that whatever
+    native program Ant is trying to run, it is not on the path.
+</p>
+
+<h2>Microsoft Windows Vista</h2>
+<p>
+    There are reports of problems with Windows Vista security bringing up
+    dialog boxes asking if the user wants to run an untrusted executable
+    during an ant run, such as when the &lt;signjar&gt task runs the jarsigner.exe
+    program. This is beyond Ant's control, and stems from the OS trying to provide
+    some illusion of security by being reluctant to run unsigned native executables.
+    The latest Java versions appear to resolve this problem by having signed
+    binaries. 
+</p>
+
+
+<h2>Cygwin</h2>
+
+Cygwin is not an operating system; rather it is an application suite 
+running under Windows and providing some UNIX like functionality. Sun has 
+not created any specific Java Development Kit or Java Runtime Environment for 
+cygwin. See this link : 
+<a href="http://www.inonit.com/cygwin/faq/">http://www.inonit.com/cygwin/faq/</a> . 
+Only Windows path 
+names are supported by JDK and JRE tools under Windows or cygwin. Relative path 
+names such as "src/org/apache/tools" are supported, but Java tools do not 
+understand /cygdrive/c to mean c:\.
+<p>
+The utility cygpath (used industrially in the ant script to support cygwin) can 
+convert cygwin path names to Windows.
+You can use the <code>&lt;exec&gt;</code> task in ant to convert cygwin paths to Windows path, for 
+instance like that :
+<pre>
+&lt;property name=&quot;some.cygwin.path&quot; value=&quot;/cygdrive/h/somepath&quot;/&gt;
+&lt;exec executable=&quot;cygpath&quot; outputproperty=&quot;windows.pathname&quot;&gt;
+   &lt;arg value=&quot;--windows&quot;/&gt;
+   &lt;arg value=&quot;${some.cygwin.path}&quot;/&gt;
+&lt;/exec&gt;
+&lt;echo message=&quot;${windows.pathname}&quot;/&gt;
+</pre>
+
+We get lots of support calls from Cygwin users. Either it is incredibly
+popular, or it is trouble. If you do use it, remember that Java is a
+Windows application, so Ant is running in a Windows process, not a
+Cygwin one. This will save us having to mark your bug reports as invalid. 
+
+<h2>Apple MacOS X</h2>
+
+MacOS X is the first of the Apple platforms that Ant supports completely;
+it is treated like any other Unix. 
+
+<h2>Novell Netware</h2>
+
+<p>To give the same level of sophisticated control as Ant's startup scripts on other platforms, it was decided to make the main ant startup on NetWare be via a Perl Script, "runant.pl".  This is found in the bin directory (for instance - bootstrap\bin or dist\bin).</p>
+
+<p>One important item of note is that you need to set up the following to run ant:</p>
+<ul><li><code>CLASSPATH</code> - put ant.jar and any other needed jars on the system classpath.</li>
+   <li><code>ANT_OPTS</code> - On NetWare, <code>ANT_OPTS</code> needs to include a parameter of the form, <nobr>"-envCWD=<code>ANT_HOME</code>"</nobr>, with <code>ANT_HOME</code> being the fully expanded location of Ant, <b>not</b> an environment variable.  This is due to the fact that the NetWare System Console has no notion of a current working directory.</li>
+</ul>
+<p>It is suggested that you create up an ant.ncf that sets up these parameters, and calls <code>perl ANT_HOME/dist/bin/runant.pl</code></p>
+<p>The following is an example of such an NCF file(assuming ant is installed in <nobr>'sys:/apache-ant/'):</nobr></p>
+<code>
+   &nbsp;&nbsp;&nbsp;envset CLASSPATH=SYS:/apache-ant/bootstrap/lib/ant.jar<br>
+   &nbsp;&nbsp;&nbsp;envset CLASSPATH=$CLASSPATH;SYS:/apache-ant/lib/optional/junit.jar <br>
+   &nbsp;&nbsp;&nbsp;envset CLASSPATH=$CLASSPATH;SYS:/apache-ant/bootstrap/lib/optional.jar <br>
+<br>
+   &nbsp;&nbsp;&nbsp;setenv ANT_OPTS=-envCWD=sys:/apache-ant <br>
+   &nbsp;&nbsp;&nbsp;envset ANT_OPTS=-envCWD=sys:/apache-ant <br>
+   &nbsp;&nbsp;&nbsp;setenv ANT_HOME=sys:/apache-ant/dist/lib <br>
+   &nbsp;&nbsp;&nbsp;envset ANT_HOME=sys:/apache-ant/dist/lib <br>
+<br>
+   &nbsp;&nbsp;&nbsp;perl sys:/apache-ant/dist/bin/runant.pl <br>
+</code>
+
+<p>Ant works on JVM version 1.3 or higher.  You may have some luck running it on JVM 1.2, but serious problems have been found running Ant on JVM 1.1.7B.  These problems are caused by JVM bugs that will not be fixed.</p>
+<p>JVM 1.3 is supported on Novell NetWare versions 5.1 and higher.</p>
+
+
+<h2>Other platforms</h2>
+Support for other platforms is not guaranteed to be complete, as certain 
+techniques to hide platform details from build files need to be written and
+tested on every particular platform. Contributions in this area are welcome.
+
+
+</html>

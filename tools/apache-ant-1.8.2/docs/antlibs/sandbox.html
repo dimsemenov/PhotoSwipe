@@ -1,0 +1,735 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+        <html lang="en">
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <head>
+      <META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        <title>Apache Ant - Apache Ant&#x2122; Libraries - The Sandbox</title>
+        <link type="text/css" href="../page.css" rel="stylesheet">
+        </head>
+
+    <body>
+      <p class="navpath">
+        <script src="../breadcrumbs.js" language="JavaScript" type="text/javascript"></script>
+      </p>
+
+      <div class="logobar">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="left"><img border="0" alt="Apache Ant site" src="../images/group-logo.gif"></td>
+            <td align="center" width="100%"><img alt="Apache Ant logo" border="0" src="../images/project-logo.gif"></td>
+            <td align="right">
+              <form target="_blank" onsubmit="q.value = query.value + ' site:ant.apache.org'" action="http://www.google.com/search" method="get">
+                <table summary="search" border="0" cellspacing="0" cellpadding="0" bgcolor="#4C6C8F">
+                  <tr>
+                    <td colspan="3"><img height="10" width="1" alt="" src="../images/spacer.gif"></td>
+                  </tr>
+                  <tr>
+                    <td><img height="1" width="1" alt="" src="../images/spacer.gif"></td>
+                    <td nowrap="nowrap" class="searchcaption">
+                      <input name="q" type="hidden">
+                      <input size="15" id="query" type="text">
+                      <img height="1" width="5" alt="" src="../images/spacer.gif">
+                      <input name="Search" value="Search" type="submit">
+                      <br>
+                      the Apache Ant site
+                    </td>
+                    <td><img height="1" width="1" alt="" src="../images/spacer.gif"></td>
+                  </tr>
+                  <tr>
+                    <td><img alt="" border="0" height="10" width="9" src="../images/search-left.gif"></td>
+                    <td><img height="1" width="1" alt="" src="../images/spacer.gif"></td>
+                    <td><img alt="" border="0" height="10" width="9" src="../images/search-right.gif"></td>
+                  </tr>
+                </table>
+              </form>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+                  <div class="tab">
+              <table summary="tab bar" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                                  <td width="5"><img alt="" height="8" width="8" src="../images/spacer.gif"></td><td valign="bottom">
+                      <table summary="non selected tab" style="height: 1.4em" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td valign="top" width="5" bgcolor="#B2C4E0"><img height="5" width="5" alt="" src="../images/tab-left.gif"></td><td valign="middle" bgcolor="#B2C4E0"><a href="../index.html"><font size="2" face="Arial, Helvetica, Sans-serif">Home</font></a></td><td valign="top" width="5" bgcolor="#B2C4E0"><img height="5" width="5" alt="" src="../images/tab-right.gif"></td>
+                        </tr>
+                      </table>
+                    </td>
+                                    <td width="8"><img alt="" height="5" width="8" src="../images/spacer.gif"></td><td valign="bottom">
+                      <table summary="selected tab" style="height: 1.5em" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                        <td valign="top" width="5" bgcolor="#4C6C8F"><img height="5" width="5" alt="" src="../images/tabSel-left.gif"></td><td valign="middle" bgcolor="#4C6C8F"><font color="#ffffff" size="2" face="Arial, Helvetica, Sans-serif"><b>Projects</b></font></td><td valign="top" width="5" bgcolor="#4C6C8F"><img height="5" width="5" alt="" src="../images/tabSel-right.gif"></td>
+                        </tr>
+                      </table>
+                    </td>
+                            </tr>
+              </table>
+            </div>
+
+      <div class="bluebar"></div>
+                                                              
+  <div class="menucontainer">
+    <div class="menu">
+      <ul>
+              <li class="menuheader">Projects
+          <ul>
+                            <li>
+                                    <a href="../projects/index.html">Welcome</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Apache Ant Libraries
+          <ul>
+                            <li>
+                                    <a href="../antlibs/index.html">Introduction</a>
+                                </li>
+                            <li>
+                                    <a href="../antlibs/charter.html">Charter</a>
+                                </li>
+                            <li>
+                                    <a href="../antlibs/proper.html">Ant Libraries</a>
+                                </li>
+                            <li>
+                                    <a href="../antlibs/sandbox.html">Sandbox Ant Libraries</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/antlibs/bindownload.cgi">Binary Distributions</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/antlibs/srcdownload.cgi">Source Distributions</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Apache Ivy
+          <ul>
+                            <li>
+                                    <a href="../projects/ivy.html">Introduction</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/">Homepage</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/download.cgi">Distributions</a>
+                                </li>
+                            <li>
+                                    <a href="http://cwiki.apache.org/IVY/">Wiki</a>
+                                </li>
+                      </ul>
+        </li>
+              <li class="menuheader">Apache IvyDE
+          <ul>
+                            <li>
+                                    <a href="../projects/ivyde.html">Introduction</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/ivyde">Homepage</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/ivyde/screenshots.html">Screenshots</a>
+                                </li>
+                            <li>
+                                    <a href="http://ant.apache.org/ivy/ivyde/download.cgi">Distributions</a>
+                                </li>
+                      </ul>
+        </li>
+            </ul>
+    </div>
+    <center>
+    <a href="http://www.apache.org/events/current-event.html"><img border="0" title="ApacheCon" alt="ApacheCon - logo" src="http://www.apache.org/events/current-event-125x125.png" style="width: 125px;height: 125px;"></a>
+    </center>
+    <img style="float: left" height="10" width="10" border="0" alt="" src="../images/menu-left.gif">
+    <img style="float: right" height="10" width="10" border="0" alt="" src="../images/menu-right.gif">
+  </div>
+      <div class="lightbluebar">&nbsp;</div>
+  <div class="main">
+  <div class="content">
+    <h1 class="title">Apache Ant&#x2122; Libraries - The Sandbox</h1>
+            <h3 class="section">
+      <a name="Apache Ant Libraries - The Sandbox"></a>
+      Apache Ant Libraries - The Sandbox
+    </h3>
+                        <p>The sandbox is the place where new Apache Ant Libraries start their
+      life, it is a playground for Ant committers and other
+      contributors who find committers to sponsor their ideas.</p>
+                                <p>The sandbox is no dumping ground.  If a Sandbox Ant Library
+      fails to attract interest within a reasonable amount of time, it
+      gets removed from the sandbox.</p>
+                        <h3 class="section">
+      <a name="Current Sandbox Ant Libraries"></a>
+      Current Sandbox Ant Libraries
+    </h3>
+                              <h4 class="subsection">
+        <a name="DBPatch"></a>
+        DBPatch
+      </h4>
+                        <p>DBPatch library is intended to maintain versioning of a
+        database schema and data during iterative development.</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="https://svn.apache.org/repos/asf/ant/sandbox/antlibs/dbpatch/">https://svn.apache.org/repos/asf/ant/sandbox/antlibs/dbpatch/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/dbpatch/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/dbpatch/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.7.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2008-04-22
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Stefan Bodewig
+      </td>
+      </tr>
+          </table>
+                                                          <h4 class="subsection">
+        <a name="Debian - Debian related tasks"></a>
+        Debian - Debian related tasks
+      </h4>
+                        <p>Debian provides tasks for generating Debian packages.</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="https://svn.apache.org/repos/asf/ant/sandbox/antlibs/debian/trunk/">https://svn.apache.org/repos/asf/ant/sandbox/antlibs/debian/trunk/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/debian/trunk/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/debian/trunk/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.7.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2007-05-18
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Kevin Jackson
+      </td>
+      </tr>
+          </table>
+                                                          <h4 class="subsection">
+        <a name="FSCache - Filesystem Resource cache"></a>
+        FSCache - Filesystem Resource cache
+      </h4>
+                        <p>This is a library of tasks and types to cache arbitrary Ant resources
+          to the filesystem for processing with file-based tools.</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="https://svn.apache.org/repos/asf/ant/sandbox/antlibs/fscache/trunk/">https://svn.apache.org/repos/asf/ant/sandbox/antlibs/fscache/trunk/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/fscache/trunk/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/fscache/trunk/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.8.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2008-06-30
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Matt Benson
+      </td>
+      </tr>
+          </table>
+                                                          <h4 class="subsection">
+        <a name="GenDoc - Generate the manual for Ant Tasks from their sources"></a>
+        GenDoc - Generate the manual for Ant Tasks from their sources
+      </h4>
+                        <p>Most of the information needed for writing the manual is inside the sources: attributes, nested elements (especially
+        inherited one). GenDoc collects these information and generates the manual as xml page. Following steps transform this
+        xml into the final format (HTML in the first step, PDF may follow).</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/repos/asf/ant/sandbox/antlibs/gendoc/">http://svn.apache.org/repos/asf/ant/sandbox/antlibs/gendoc/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/gendoc/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/gendoc/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.7.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2005-04-15
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+           
+      </td>
+      </tr>
+          </table>
+                                                          <h4 class="subsection">
+        <a name="HTTP - tasks for handling HTTP requests"></a>
+        HTTP - tasks for handling HTTP requests
+      </h4>
+                        <p>This antlib contains tasks to make the basic HTTP requests: get, post, head, put, with Basicauthentication.</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/repos/asf/ant/sandbox/antlibs/http/">http://svn.apache.org/repos/asf/ant/sandbox/antlibs/http/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/http/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/http/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.7.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2006-06-27
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+            
+      </td>
+      </tr>
+          </table>
+                                                          <h4 class="subsection">
+        <a name="Manual4Eclipse - Generate an Eclipse Help PlugIn from Ant's manual"></a>
+        Manual4Eclipse - Generate an Eclipse Help PlugIn from Ant's manual
+      </h4>
+                        <p>This AntLib provides tasks for generating an Eclipse Help PlugIn from Ant's manual.</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/repos/asf/ant/sandbox/antlibs/manual4eclipse/">http://svn.apache.org/repos/asf/ant/sandbox/antlibs/manual4eclipse/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/manual4eclipse/trunk/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/manual4eclipse/trunk/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.7.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Java compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Java 1.5+
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2007-03-01
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+           
+      </td>
+      </tr>
+          </table>
+                                                          <h4 class="subsection">
+        <a name="Minify"></a>
+        Minify
+      </h4>
+                        <p>Minify library offers tasks for minimizing JavaScript scripts.</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="https://svn.apache.org/repos/asf/ant/sandbox/antlibs/minify/">https://svn.apache.org/repos/asf/ant/sandbox/antlibs/minify/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/minify/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/minify/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.7.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2009-01-01
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Kevin Jackson
+      </td>
+      </tr>
+          </table>
+                                                          <h4 class="subsection">
+        <a name="StarTeam"></a>
+        StarTeam
+      </h4>
+                        <p>This antlib provides tasks for working with the StarTeam SCM.</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="https://svn.apache.org/repos/asf/ant/sandbox/antlibs/starteam/">https://svn.apache.org/repos/asf/ant/sandbox/antlibs/starteam/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/starteam/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/starteam/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.7.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2007-08-27
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Peter Reilly
+      </td>
+      </tr>
+          </table>
+                                                          <h4 class="subsection">
+        <a name="WebLogic"></a>
+        WebLogic
+      </h4>
+                        <p>This antlib provides tasks for working with the WebLogic app server.</p>
+                                      <table class="ForrestTable" cellspacing="1" cellpadding="4">
+              <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          SVN URL:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="https://svn.apache.org/repos/asf/ant/sandbox/antlibs/weblogic/">https://svn.apache.org/repos/asf/ant/sandbox/antlibs/weblogic/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          ViewSVN:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          <a href="http://svn.apache.org/viewvc/ant/sandbox/antlibs/weblogic/">http://svn.apache.org/viewvc/ant/sandbox/antlibs/weblogic/</a>
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant compatibility:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Ant 1.7.x
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Added to sandbox:
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          2007-08-20
+      </td>
+      </tr>
+                  <tr>
+                      <th colspan="1" rowspan="1"
+      valign="top" align="left">
+          Sponsoring Committers
+      </th>
+                          <td colspan="1" rowspan="1"
+      valign="top" align="left">
+          Peter Reilly, Stefan Bodewig
+      </td>
+      </tr>
+          </table>
+                                    
+    </div>
+  </div>
+
+        <p class="copyright">
+      Apache Ant, Apache Ivy, Ant, Ivy, Apache, the Apache feather logo, and the Apache Ant project logos are trademarks of The Apache Software Foundation.
+        <script type="text/javascript" language="JavaScript"><!--
+                document.write(" - "+"Last Published: " + document.lastModified);
+              //  -->
+        </script>
+      </p>
+    </body>
+  </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

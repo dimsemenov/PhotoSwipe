@@ -1,0 +1,184 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+  
+  <head>
+    <meta http-equiv="Content-Language" content="en-us"></meta>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>PreSetDef Task</title>
+    <style type="text/css">
+      <!--
+           .code { background: #EFEFEF; margin-top: }
+           -->
+    </style>
+  </head>
+  
+  <body>
+    
+    <h2><a name="presetdef">PreSetDef</a></h2>
+    <h3>Description</h3>
+    <p>
+      The preset definition generates a new definition
+      based on a current definition with some attributes
+      or elements preset.
+    </p>
+    <p>
+      <em>since Apache Ant 1.6</em>
+    </p>
+    <p>
+      The resolution of properties in any of the attributes or
+      nested text takes place with the definition is used and <em>not</em>
+      when the preset definition is defined.
+    </p>
+    <h3>Parameters</h3>
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tr>
+        <td valign="top"><b>Attribute</b></td>
+        <td valign="top"><b>Description</b></td>
+        <td align="center" valign="top"><b>Required</b></td>
+      </tr>
+      <tr>
+        <td valign="top">name</td>
+        <td valign="top">the name of the new definition</td>
+        <td valign="top" align="center">Yes</td>
+      </tr>
+      <tr>
+        <td valign="top">uri</td>
+        <td valign="top">
+          The uri that this definition should live in.
+        </td>
+        <td valign="top" align="center">No</td>
+      </tr>
+    </table>
+    <h3>Parameters specified as nested elements</h3>
+    <h4>another type with attributes or elements set</h4>
+    <p>The <code>&lt;presetdef&gt;</code> task takes one nested element as a parameter.
+      This nested element can be any other type or task. The attributes
+      and elements that need to be preset are placed here.
+    </p>
+    
+    <h3>Examples</h3>
+      The following fragment defines a javac task with the debug, deprecation
+      srcdir and destdir
+      attributes set. It also has a src element to source files from a generated
+      directory.
+    <blockquote>
+<pre class="code">
+&lt;presetdef name="my.javac"&gt;
+   &lt;javac debug="${debug}" deprecation="${deprecation}"
+          srcdir="${src.dir}" destdir="${classes.dir}"&gt;
+      &lt;src path="${gen.dir}"/&gt;
+   &lt;/javac&gt;
+&lt;/presetdef&gt;
+</pre>
+    </blockquote>
+      This can be used as a normal javac task - example:
+    <blockquote>
+<pre class="code">
+&lt;my.javac/&gt;
+</pre>
+    </blockquote>
+      The attributes specified in the preset task may be overridden - i.e.
+      they may be seen as optional attributes - example:
+    <blockquote>
+<pre class="code">
+&lt;my.javac srcdir="${test.src}" deprecation="no"/&gt;
+</pre>
+    </blockquote>
+      One may put a presetdef definition in an antlib.
+      For example suppose the jar file antgoodies.jar has
+      the antlib.xml as follows:
+    <blockquote>
+<pre class="code">
+&lt;antlib&gt;
+   &lt;taskdef resource="com/acme/antgoodies/tasks.properties"/&gt;
+   &lt;!-- Implement the common use of the javac command --&gt;
+   &lt;presetdef name="javac"&gt;
+      &lt;javac deprecation="${deprecation}" debug="${debug}"
+             srcdir="src" destdir="classes"/&gt;
+   &lt;/presetdef&gt;
+&lt;/antlib&gt;
+</pre>
+    </blockquote>
+      One may then use this in a build file as follows:
+    <blockquote>
+<pre class="code">
+&lt;project default="example" xmlns:antgoodies="antlib:com.acme.antgoodies"&gt;
+   &lt;target name="example"&gt;
+      &lt;!-- Compile source --&gt;
+      &lt;antgoodies:javac srcdir="src/main"/&gt;
+      &lt;!-- Compile test code --&gt;
+      &lt;antgoodies:javac srcdir="src/test"/&gt;
+   &lt;/target&gt;
+&lt;/project&gt;
+</pre>
+    </blockquote>
+    <p>
+      The following is an example of evaluation of properties when the
+      definition is used:
+    </p>
+     <blockquote>
+<pre class="code">
+&lt;target name="defineandcall"&gt;
+   &lt;presetdef name="showmessage"&gt;
+      &lt;echo&gt;message is '${message}'&lt;/echo&gt;
+   &lt;/presetdef&gt;
+   &lt;showmessage/&gt;
+   &lt;property name="message" value="Message 1"/&gt;
+   &lt;showmessage/&gt;
+   &lt;antcall target="called"&gt;
+      &lt;param name="message" value="Message 2"/&gt;
+   &lt;/antcall&gt;
+&lt;/target&gt;
+&lt;target name="called"&gt;
+   &lt;showmessage/&gt;
+&lt;/target&gt;
+</pre>
+     </blockquote>
+     <p>
+        The command ant defineandcall results in the output:
+     </p>
+     <blockquote>
+<pre class="code">
+defineandcall:
+[showmessage] message is '${message}'
+[showmessage] message is 'Message 1'
+
+called:
+[showmessage] message is 'Message 2'
+</pre>
+     </blockquote>
+<p>
+It is possible to use a trick to evaluate properties when the definition is
+<em>made</em> rather than used. This can be useful if you do not expect some
+properties to be available in child builds run with
+<code>&lt;ant ... inheritall="false"&gt;</code>:
+</p>
+<blockquote><pre class="code">
+&lt;macrodef name="showmessage-presetdef"&gt;
+  &lt;attribute name="messageval"/&gt;
+  &lt;presetdef name="showmessage"&gt;
+    &lt;echo&gt;message is '@{messageval}'&lt;/echo&gt;
+  &lt;/presetdef&gt;
+&lt;/macrodef&gt;
+&lt;showmessage-presetdef messageval="${message}"/&gt;
+</pre></blockquote>
+    <hr></hr>
+    
+  </body>
+</html>
+
