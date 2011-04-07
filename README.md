@@ -123,10 +123,12 @@ Options
 	
 - **getImageSource**: Function to specify how the gallery obatins image sources. By default, the gallery assumes you send it a list of images with each image wrapped in an anchor tag. The anchor tag will contain the URL to the full size image. You can change this e.g. if you supply a list of images without an anchor tag, and supply the full size URL on the image's "rel" attribute:
 
-		$('div.gallery a').swipeGallery({
-			getImageSource: function(){ 
-				return $j(this).attr('rel'); 
+		Code.photoSwipe('a', '#Gallery', {
+		
+			getImageSource: function(el){ 
+				return el.getAttribute('rel'); 
 			}
+		
 		});
 	
 - **getImageCaption**: Like "getImageSource", function to specify how the gallery obatins image captions. By default, the gallery looks for an images "alt" tag.
