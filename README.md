@@ -131,7 +131,7 @@ Options
 		
 		});
 	
-- **getImageCaption**: Like "getImageSource", function to specify how the gallery obatins image captions. By default, the gallery looks for an images "alt" tag.
+- **getImageCaption**: Like "getImageSource", function to specify how the gallery obatins image captions. By default, the gallery looks for an image's "alt" tag.
 
 	
 	
