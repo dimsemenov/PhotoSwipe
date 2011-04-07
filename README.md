@@ -3,7 +3,7 @@ PhotoSwipe - The ultimate web photo gallery for your mobile device
 
 [www.photoswipe.com](http://www.photoswipe.com)
 
-Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript based photo viewer specifically targeting mobile devices.
+Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript based image gallery specifically targeting mobile devices.
 
 The current version supports mobile handsets running WebKit based browsers, i.e. iOS, Android and Blackberry 6.
 
