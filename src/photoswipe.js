@@ -22,7 +22,7 @@
 		slideshowTimeout: null,
 		
 		
-		documentOverlayFadeInEventHandler: null,
+		viewportFadeInEventHandler: null,
 		windowResizeEventHandler: null,
 		windowOrientationChangeEventHandler: null,
 		windowScrollEventHandler: null,
@@ -68,7 +68,7 @@
 			};
 			
 			// Set pointers to event handlers
-			this.documentOverlayFadeInEventHandler = this.onDocumentOverlayFadeIn.bind(this);
+			this.viewportFadeInEventHandler = this.onViewportFadeIn.bind(this);
 			this.windowResizeEventHandler = this.onWindowResize.bind(this);
 			this.windowOrientationChangeEventHandler = this.onWindowOrientationChange.bind(this);
 			this.windowScrollEventHandler = this.onWindowScroll.bind(this);
@@ -163,18 +163,18 @@
 			
 			this.currentIndex = startingIndex;
 			
-			if (Util.isNothing(this.documentOverlay)){
+			if (Util.isNothing(this.viewport)){
 				this.build();
 			}
 			
-			// Fade in the document overlay,
+			// Fade in the viewport,
 			// then show the viewport, slider and toolbar etc
-			this.documentOverlay.addEventListener(
+			this.viewport.addEventListener(
 				ElementClass.EventTypes.onFadeIn,
-				this.documentOverlayFadeInEventHandler
+				this.viewportFadeInEventHandler
 			);
 			
-			this.documentOverlay.fadeIn();
+			this.viewport.fadeIn();
 			
 		},
 		
@@ -184,12 +184,6 @@
 		 * Function: build
 		 */
 		build: function(){
-			
-			// Create the document overlay
-			this.documentOverlay = new DocumentOverlayClass({ 
-				opacity: 1, 
-				fadeSpeed: this.settings.fadeSpeed 
-			});
 			
 			// Create the viewport
 			this.viewport = new ViewportClass({ 
@@ -289,18 +283,16 @@
 		
 		
 		/*
-		 * Function: onDocumentOverlayFadeIn
+		 * Function: onViewportFadeIn
 		 */
-		onDocumentOverlayFadeIn: function(e){
+		onViewportFadeIn: function(e){
 			
 			// Remove the ElementClass.EventTypes.onFadeIn
 			// event handler
-			this.documentOverlay.removeEventListener(
+			this.viewport.removeEventListener(
 				ElementClass.EventTypes.onFadeIn,
-				this.documentOverlayFadeInEventHandler
+				this.viewportFadeInEventHandler
 			);
-			
-			this.viewport.show();
 			
 			this.slider.show();
 			
@@ -438,7 +430,6 @@
 			
 			this.viewport.resetPosition();
 			this.slider.resetPosition();
-			this.documentOverlay.resetPosition();
 			this.caption.resetPosition();
 			this.toolbar.resetPosition();
 			
@@ -502,7 +493,6 @@
 			
 			this.removeEventListeners();
 			
-			this.documentOverlay.hide();
 			this.caption.hide();
 			this.toolbar.hide();
 			this.slider.hide();

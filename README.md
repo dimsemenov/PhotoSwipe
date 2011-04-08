@@ -1,5 +1,5 @@
-PhotoSwipe - The ultimate web image gallery for your mobile device
-==================================================================
+PhotoSwipe - Teh web image gallery for your mobile device
+=========================================================
 
 [www.photoswipe.com](http://www.photoswipe.com)
 
