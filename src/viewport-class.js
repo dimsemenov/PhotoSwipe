@@ -11,7 +11,6 @@
 		
 		touchStartPoint: null,
 		touchFingerCount: null,
-		touchCancelsMouseEvents: null,
 		
 		touchStartHandler: null,
 		touchMoveHandler: null,
@@ -36,7 +35,6 @@
 			
 			this.touchFingerCount = 0;
 			this.touchStartPoint = { x: 0, y: 0 };
-			this.touchCancelsMouseEvents = false;
 			
 			this.touchStartHandler = this.onTouchStart.bind(this);
 			this.touchMoveHandler = this.onTouchMove.bind(this);
@@ -139,7 +137,7 @@
 		onTouchStart: function(e){
 			
 			e.preventDefault();
-			
+						
 			this.setCurrentTouchPoint(this.touchStartPoint, Util.DOM.getTouchEvent(e).touches);
 			
 		},
@@ -197,9 +195,6 @@
 		onMouseDown: function(e){
 			
 			e.preventDefault();
-				if (this.touchCancelsMouseEvents){
-				return;
-			}
 			
 			this.touchStartPoint = Util.DOM.getMousePosition(e);
 		
@@ -213,9 +208,6 @@
 		onMouseUp: function(e){
 		
 			e.preventDefault();
-			if (this.touchCancelsMouseEvents){
-				return;
-			}
 			
 			this.fireTouchEvent(this.touchStartPoint, Util.DOM.getMousePosition(e));
 			

@@ -15,6 +15,7 @@
 		playEl: null,
 		
 		clickHandler: null,
+		touchStartHandler: null,
 		
 		fadeOutTimeout: null,
 		isNextActive: null,
@@ -39,6 +40,7 @@
 			this.isPreviousActive = true;
 			
 			this.clickHandler = this.onClick.bind(this);
+			this.touchStartHandler = this.onTouchStart.bind(this);
 			
 			// Create element and append to body
 			var cssClass = Code.PhotoSwipe.ToolbarClass.CssClasses.caption;
@@ -81,6 +83,11 @@
 		 */
 		addEventListeners: function(){
 			
+			try{
+				Util.DOM.addEventListener(this.el, 'touchstart', this.touchStartHandler);
+			}
+			catch (err){ }
+			
 			Util.DOM.addEventListener(this.el, 'click', this.clickHandler);
 			
 		},
@@ -91,7 +98,23 @@
 		 */
 		removeEventListeners: function(){
 			
+			try{
+				Util.DOM.removeEventListener(this.el, 'touchstart', this.touchStartHandler);
+			}
+			catch (err){ }
 			Util.DOM.removeEventListener(this.el, 'click', this.clickHandler);
+			
+		},
+		
+		
+		/*
+		 * Function: onTouch
+		 */
+		onTouchStart: function(e){
+			
+			e.preventDefault();
+			
+			this.onClick(e);
 			
 		},
 		
