@@ -436,9 +436,9 @@
 				return;
 			}
 			
-			this.documentOverlay.resetPosition();
 			this.viewport.resetPosition();
 			this.slider.resetPosition();
+			this.documentOverlay.resetPosition();
 			this.caption.resetPosition();
 			this.toolbar.resetPosition();
 			
