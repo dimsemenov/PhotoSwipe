@@ -22,7 +22,7 @@
 		slideshowTimeout: null,
 		
 		
-		documentOverlayFadeInEventHandler: null,
+		viewportFadeInEventHandler: null,
 		windowResizeEventHandler: null,
 		windowOrientationChangeEventHandler: null,
 		windowScrollEventHandler: null,
@@ -68,7 +68,7 @@
 			};
 			
 			// Set pointers to event handlers
-			this.documentOverlayFadeInEventHandler = this.onDocumentOverlayFadeIn.bind(this);
+			this.viewportFadeInEventHandler = this.onViewportFadeIn.bind(this);
 			this.windowResizeEventHandler = this.onWindowResize.bind(this);
 			this.windowOrientationChangeEventHandler = this.onWindowOrientationChange.bind(this);
 			this.windowScrollEventHandler = this.onWindowScroll.bind(this);
@@ -167,14 +167,14 @@
 				this.build();
 			}
 			
-			// Fade in the document overlay,
+			// Fade in the viewport overlay,
 			// then show the viewport, slider and toolbar etc
-			this.documentOverlay.addEventListener(
+			this.viewport.addEventListener(
 				ElementClass.EventTypes.onFadeIn,
-				this.documentOverlayFadeInEventHandler
+				this.viewportFadeInEventHandler
 			);
 			
-			this.documentOverlay.fadeIn();
+			this.viewport.fadeIn();
 			
 		},
 		
@@ -289,18 +289,18 @@
 		
 		
 		/*
-		 * Function: onDocumentOverlayFadeIn
+		 * Function: onViewportFadeIn
 		 */
-		onDocumentOverlayFadeIn: function(e){
+		onViewportFadeIn: function(e){
 			
 			// Remove the ElementClass.EventTypes.onFadeIn
 			// event handler
-			this.documentOverlay.removeEventListener(
+			this.viewport.removeEventListener(
 				ElementClass.EventTypes.onFadeIn,
-				this.documentOverlayFadeInEventHandler
+				this.viewportFadeInEventHandler
 			);
 			
-			this.viewport.show();
+			this.documentOverlay.show();
 			
 			this.slider.show();
 			
