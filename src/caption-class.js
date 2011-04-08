@@ -148,8 +148,10 @@
 		 */
 		setEmptyCaption: function(){
 			
-			Util.DOM.removeChildren(this.contentEl);
-			Util.DOM.appendText('\u00A0', this.contentEl);	
+			// This is causing random slowness when swiping on iOS
+			// needs review
+			//Util.DOM.removeChildren(this.contentEl);
+			//Util.DOM.appendText('\u00A0', this.contentEl);	
 			
 		},
 		
