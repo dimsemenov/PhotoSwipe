@@ -384,6 +384,8 @@
 		 */
 		onKeyDown: function(e){
 			
+			this.stopSlideshow();
+			
 			if (e.keyCode === 37) { // Left
 				e.preventDefault();
 				this.showPrevious(true);
@@ -453,6 +455,8 @@
 		 * Function: onViewportClick
 		 */
 		onViewportTouch: function(e){
+			
+			this.stopSlideshow();
 			
 			switch(e.action){
 			
@@ -690,7 +694,9 @@
 		 * Function: onToolbarClick
 		 */
 		onToolbarClick: function(e){
-		
+			
+			this.stopSlideshow();
+			
 			switch (e.action){
 				
 				case ToolbarClass.Actions.previous:
