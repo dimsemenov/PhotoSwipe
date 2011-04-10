@@ -201,6 +201,31 @@
 		 */
 		postShow: function(){
 			
+			this.setFadeOutTimeout();
+			this._super();
+			
+		},
+		
+		
+		/*
+		 * Function: postFadeIn
+		 */
+		postFadeIn: function(){
+			
+			this.setFadeOutTimeout();
+			this._super();
+			
+		},
+		
+		
+		
+		/*
+		 * Function: setFadeOutTimeout
+		 */
+		setFadeOutTimeout: function(){
+			
+			window.clearTimeout(this.fadeOutTimeout);
+			
 			if (this.settings.toolbarDelay > 0){
 				
 				this.fadeOutTimeout = window.setTimeout(
@@ -210,9 +235,8 @@
 				
 			}
 			
-			this._super();
-			
 		},
+		
 		
 		
 		/*

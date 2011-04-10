@@ -14,6 +14,7 @@
 		el: null,
 		settings: null,
 		isFading: null,
+		isHidden: null,
 		
 		fadeInHandler: null,
 		fadeOutHandler: null,
@@ -28,7 +29,8 @@
 			
 			this.settings = {
 				opacity: 1,
-				fadeSpeed: 500
+				fadeInSpeed: 250,
+				fadeOutSpeed: 500
 			};
 			
 			Util.extend(this.settings, options);
@@ -37,6 +39,7 @@
 			
 			this.fadeInHandler = this.postFadeIn.bind(this);
 			this.fadeOutHandler = this.postFadeOut.bind(this);
+			this.isHidden = true;
 			
 		},
 		
@@ -59,10 +62,7 @@
 				return;
 			}
 			
-			this.stopFade();		
-			
-			// Set position
-			this.resetPosition();
+			this.preShow();
 			
 			// Show
 			Util.DOM.setStyle(this.el, 'opacity', this.settings.opacity);
@@ -73,6 +73,19 @@
 		},
 		
 		
+		/*
+		 * Function: preShow
+		 */
+		preShow: function(){
+			
+			this.stopFade();		
+			
+			// Set position
+			this.resetPosition();
+			
+		
+		},
+		
 		
 		/*
 		 * Function: postShow
@@ -80,6 +93,7 @@
 		 */
 		postShow: function(){
 			
+			this.isHidden = false;
 			this.addEventListeners();		
 			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onShow);
 		
@@ -112,21 +126,31 @@
 				return;
 			}
 			
-			this.stopFade();
-			
-			this.isFading = true;
-			
-			// Set position
-			this.resetPosition();
+			this.preFadeIn();
 			
 			// Fade in
 			Util.DOM.show(this.el);
 			Util.Animation.fadeIn(
 				this.el, 
 				this.settings.opacity, 
-				this.settings.fadeSpeed, 
+				this.settings.fadeInSpeed, 
 				this.fadeInHandler
 			);
+			
+		},
+		
+		
+		/*
+		 * Function: preFadeIn
+		 */
+		preFadeIn: function(){
+			
+			this.stopFade();
+			
+			this.isFading = true;
+			
+			// Set position
+			this.resetPosition();
 			
 		},
 		
@@ -137,6 +161,7 @@
 		postFadeIn: function(e){
 			
 			this.isFading = false;
+			this.isHidden = false;
 			this.addEventListeners();			
 			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onFadeIn);
 			
@@ -168,6 +193,7 @@
 		 */
 		postHide: function(){
 			
+			this.isHidden = true;
 			this.removeEventListeners();	
 			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onHide);
 			
@@ -183,7 +209,7 @@
 			
 			this.isFading = true;
 			
-			Util.Animation.fadeOut(this.el, this.settings.fadeSpeed, this.fadeOutHandler);
+			Util.Animation.fadeOut(this.el, this.settings.fadeOutSpeed, this.fadeOutHandler);
 			
 		},
 		
@@ -193,8 +219,9 @@
 		 */
 		postFadeOut: function(e){
 			
+			this.isHidden = true;
 			this.isFading = false;
-			
+	
 			Util.DOM.hide(this.el);
 			
 			this.removeEventListeners();

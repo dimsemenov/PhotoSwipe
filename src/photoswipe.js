@@ -15,12 +15,11 @@
 		toolbar: null,
 		
 		settings: null,
-		slideShowSettingsSaved: null,
 		currentIndex: null,	
 		isBusy: null,
 		
 		slideshowTimeout: null,
-		
+		isSlideshowActive: null,
 		
 		viewportFadeInEventHandler: null,
 		windowResizeEventHandler: null,
@@ -42,23 +41,25 @@
 						
 			this.currentIndex = 0;
 			this.isBusy = false;
+			this.isSlideshowActive = false;
 			
 			this.settings = { 
 				getImageSource: Code.PhotoSwipe.GetImageSource,
 				getImageCaption: Code.PhotoSwipe.GetImageCaption,
-				fadeSpeed: 400,
+				fadeInSpeed: 200,
+				fadeOutSpeed: 500,
 				slideSpeed: 250,
 				swipeThreshold: 50,
 				loop: true,
 				
 				flipCaptionAndToolbar: false,
 				
-				captionDelay: 3000,
+				captionDelay: 5000,
 				captionOpacity: 0.8,
 				hideCaption: false,
 				showEmptyCaptions: true,
 				
-				toolbarDelay: 3000,
+				toolbarDelay: 5000,
 				toolbarOpacity: 0.8,
 				hideToolbar: false,
 				
@@ -187,22 +188,22 @@
 			
 			// Create the document overlay
 			this.documentOverlay = new DocumentOverlayClass({ 
-				opacity: 1, 
-				fadeSpeed: this.settings.fadeSpeed 
+				fadeInSpeed: this.settings.fadeInSpeed,
+				fadeOutSpeed: this.settings.fadeOutSpeed
 			});
 			
 			// Create the viewport
 			this.viewport = new ViewportClass({ 
-				opacity: 1, 
-				fadeSpeed: this.settings.fadeSpeed, 
+				fadeInSpeed: this.settings.fadeInSpeed,
+				fadeOutSpeed: this.settings.fadeOutSpeed, 
 				swipeThreshold: this.settings.swipeThreshold 
 			});
 			
 			// Create the slider
 			this.slider = new SliderClass(
 				{
-					opacity: 1, 
-					fadeSpeed: this.settings.fadeSpeed,
+					fadeInSpeed: this.settings.fadeInSpeed,
+					fadeOutSpeed: this.settings.fadeOutSpeed,
 					slideSpeed: this.settings.slideSpeed
 				}, 
 				this.viewport.el
@@ -211,7 +212,8 @@
 			// Create the caption bar
 			this.caption = new CaptionClass({
 				opacity: this.settings.captionOpacity,
-				fadeSpeed: this.settings.fadeSpeed,
+				fadeInSpeed: this.settings.fadeInSpeed,
+				fadeOutSpeed: this.settings.fadeOutSpeed,
 				captionDelay: this.settings.captionDelay,
 				position: (this.settings.flipCaptionAndToolbar) ? 'bottom' : 'top'
 			});
@@ -220,7 +222,8 @@
 			// Create the toolbar
 			this.toolbar = new ToolbarClass({
 				opacity: this.settings.toolbarOpacity,
-				fadeSpeed: this.settings.fadeSpeed,
+				fadeInSpeed: this.settings.fadeInSpeed,
+				fadeOutSpeed: this.settings.fadeOutSpeed,
 				toolbarDelay: this.settings.toolbarDelay,
 				position: (this.settings.flipCaptionAndToolbar) ? 'top' : 'bottom'
 			});
@@ -304,11 +307,11 @@
 			
 			this.slider.show();
 			
-			this.toolbar.show();
-			
 			this.addEventListeners();
 			
 			this.slider.setCurrentFullSizeImage(this.fullSizeImages[this.currentIndex]);
+			
+			this.showCaptionAndToolbar();
 			
 			this.isBusy = false;
 			
@@ -383,11 +386,11 @@
 			
 			if (e.keyCode === 37) { // Left
 				e.preventDefault();
-				this.showPrevious();
+				this.showPrevious(true);
 			}
 			else if (e.keyCode === 39) { // Right
 				e.preventDefault();
-				this.showNext();
+				this.showNext(true);
 			}
 			else if (e.keyCode === 38 || e.keyCode === 40) { // Up and down
 				e.preventDefault();
@@ -454,15 +457,16 @@
 			switch(e.action){
 			
 				case ViewportClass.Actions.swipeLeft:
-					this.showNext();
+					this.showNext(true);
 					break;
 					
 				case ViewportClass.Actions.swipeRight:
-					this.showPrevious();
+					this.showPrevious(true);
 					break;
 				
 				default:
-					if (this.isSlideShowActive() || !this.settings.hideToolbar){
+					// Click event
+					if (!this.settings.hideToolbar){
 						this.showCaptionAndToolbar();
 					}
 					else{
@@ -520,7 +524,7 @@
 		/*
 		 * Function: showNext
 		 */
-		showNext: function(){
+		showNext: function(fadeOutCaptionAndToolbar){
 			
 			if (this.isBusy){
 				return;
@@ -528,7 +532,13 @@
 			
 			this.isBusy = true;
 			
-			this.caption.setEmptyCaption();
+			if (fadeOutCaptionAndToolbar){
+				this.fadeOutCaptionAndToolbar();
+			}
+			else{
+				this.caption.setFadeOutTimeout();
+				this.toolbar.setFadeOutTimeout();
+			}
 			
 			this.slider.showNext();
 		
@@ -539,7 +549,7 @@
 		/*
 		 * Function: showPrevious
 		 */
-		showPrevious: function(){
+		showPrevious: function(fadeOutCaptionAndToolbar){
 			
 			if (this.isBusy){
 				return;
@@ -547,7 +557,13 @@
 			
 			this.isBusy = true;
 			
-			this.caption.setEmptyCaption();
+			if (fadeOutCaptionAndToolbar){
+				this.fadeOutCaptionAndToolbar();
+			}
+			else{
+				this.caption.setFadeOutTimeout();
+				this.toolbar.setFadeOutTimeout();
+			}
 			
 			this.slider.showPrevious();
 		
@@ -566,23 +582,13 @@
 			// Set the previous and next images for the slider
 			this.setSliderPreviousAndNextFullSizeImages();
 			
-			this.isBusy = false;
+			if (this.isSlideshowActive){
 			
-			if (this.isSlideShowActive()){
-				if (!this.settings.loop && this.currentIndex === this.fullSizeImages.length-1){
-					// Slideshow as reached the end
-					this.slideshowTimeout = window.setTimeout(
-						this.showCaptionAndToolbar.bind(this),
-						this.settings.slideshowDelay
-					);
-				}
-				else{
-					this.fireSlideshowTimeout();
-				}
+				this.fireSlideshowTimeout();
+
 			}
-			else{
-				this.showCaptionAndToolbar();
-			}
+			
+			this.isBusy = false;
 			
 		},
 		
@@ -600,14 +606,26 @@
 				this.caption.hide();
 			}
 			else{
-				captionValue = Util.coalesce(captionValue, this.fullSizeImages[this.currentIndex].caption);
+				
+				if (this.caption.isHidden){
+					
+					// Show the caption
+					captionValue = Util.coalesce(captionValue, this.fullSizeImages[this.currentIndex].caption);
 			
-				if ( (Util.isNothing(captionValue) || captionValue === '') && !this.settings.showEmptyCaptions ){
-					this.caption.hide();
-					return;
+					if ( (Util.isNothing(captionValue) || captionValue === '') && !this.settings.showEmptyCaptions ){
+						this.caption.fadeOut();
+						return;
+					}
+					
+					this.caption.setCaptionValue(captionValue);
+					this.caption.fadeIn();
+				
 				}
-								
-				this.caption.show(captionValue);
+				else{
+					this.caption.fadeOut();
+				}
+			
+				
 			}
 			
 			
@@ -617,27 +635,51 @@
 				this.toolbar.hide();
 			}
 			else{
-				if (this.settings.loop) {
-					this.toolbar.setNextState(false);
-					this.toolbar.setPreviousState(false);
-				}
-				else{
-					if (this.currentIndex >= this.fullSizeImages.length - 1) {
-						this.toolbar.setNextState(true);
-					}
-					else {
+				
+				if (this.toolbar.isHidden){
+					if (this.settings.loop) {
 						this.toolbar.setNextState(false);
-					}
-					
-					if (this.currentIndex < 1) {
-						this.toolbar.setPreviousState(true);
-					}
-					else {
 						this.toolbar.setPreviousState(false);
 					}
+					else{
+						if (this.currentIndex >= this.fullSizeImages.length - 1) {
+							this.toolbar.setNextState(true);
+						}
+						else {
+							this.toolbar.setNextState(false);
+						}
+						
+						if (this.currentIndex < 1) {
+							this.toolbar.setPreviousState(true);
+						}
+						else {
+							this.toolbar.setPreviousState(false);
+						}
+					}
+				
+					this.toolbar.fadeIn();
+				}
+				else{
+					this.toolbar.fadeOut();
 				}
 				
-				this.toolbar.show();
+			}
+			
+		},
+		
+		
+		
+		/*
+		 * Function: fadeOutCaptionAndToolbar
+		 */
+		fadeOutCaptionAndToolbar: function(){
+			
+			if (!this.settings.hideCaption){
+				this.caption.fadeOut();
+			}
+			
+			if (!this.settings.hideToolbar){
+				this.toolbar.fadeOut();
 			}
 			
 		},
@@ -652,11 +694,11 @@
 			switch (e.action){
 				
 				case ToolbarClass.Actions.previous:
-					this.showPrevious();
+					this.showPrevious(false);
 					break;
 					
 				case ToolbarClass.Actions.next:
-					this.showNext();
+					this.showNext(false);
 					break;
 				
 				case ToolbarClass.Actions.play:
@@ -684,16 +726,9 @@
 			
 			window.clearTimeout(this.slideshowTimeout);
 			
-			this.slideShowSettingsSaved = {
-				hideCaption: this.settings.hideCaption,
-				hideToolbar: this.settings.hideToolbar
-			};
+			this.isSlideshowActive = true;
 			
-			this.settings.hideCaption = true;
-			this.settings.hideToolbar = true;
-			
-			this.caption.fadeOut();
-			this.toolbar.fadeOut();
+			this.fadeOutCaptionAndToolbar();
 			
 			this.fireSlideshowTimeout();
 			
@@ -706,39 +741,41 @@
 		 */
 		stopSlideshow: function(){
 			
-			if (!this.isSlideShowActive()){
-				return;
-			}
-			
 			window.clearTimeout(this.slideshowTimeout);
 			
-			this.settings.hideCaption = this.slideShowSettingsSaved.hideCaption;
-			this.settings.hideToolbar = this.slideShowSettingsSaved.hideToolbar;
-			
-			this.slideShowSettingsSaved = null;
+			this.isSlideshowActive = false;
 			
 		},
 		
 		
-		/*
-		 * Function: isSlideShowActive
-		 */
-		isSlideShowActive: function(){
-			
-			return (!Util.isNothing(this.slideShowSettingsSaved));
-					
-		},
-		
+	
 		
 		/*
 		 * Function: fireSlideshowTimeout
 		 */
 		fireSlideshowTimeout: function(){
-		
-			this.slideshowTimeout = window.setTimeout(
-				this.showNext.bind(this),
-				this.settings.slideshowDelay
-			);
+				
+			var fire = false;
+			
+			if (this.settings.loop){
+				if (this.fullSizeImages.length > 1){
+					fire = true;
+				}
+			}
+			else{
+				if (this.currentIndex < this.fullSizeImages.length){
+					fire = true;
+				}
+			}
+			
+			if (fire){
+			
+				this.slideshowTimeout = window.setTimeout(
+					this.showNext.bind(this),
+					this.settings.slideshowDelay
+				);
+			
+			}
 			
 		}
 		

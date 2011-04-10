@@ -53,6 +53,7 @@
 		},
 		
 		
+		
 		/*
 		 * Function: addEventListeners
 		 */
@@ -64,6 +65,7 @@
 			catch (err){ }
 			
 		},
+		
 		
 		
 		/*
@@ -79,6 +81,7 @@
 		},
 		
 		
+		
 		/*
 		 * Function: onTouch
 		 */
@@ -87,6 +90,7 @@
 			e.preventDefault();
 			
 		},
+		
 		
 		
 		/*
@@ -111,12 +115,10 @@
 		
 		
 		/*
-		 * Function: captionToShow
+		 * Function: setCaptionValue
 		 */
-		show: function(captionValue){
-			
-			this.stopFade();
-			
+		setCaptionValue: function(captionValue){
+		
 			Util.DOM.removeChildren(this.contentEl);
 			
 			captionValue = Util.coalesce(captionValue, '\u00A0');
@@ -131,30 +133,8 @@
 				Util.DOM.appendText(captionValue, this.contentEl);	
 			}
 			
-			Util.DOM.setStyle(this.el, 'opacity', this.settings.opacity);
-			Util.DOM.show(this.el);
-			
-				// Set position
-			this.resetPosition();
-			
-			this.postShow();
-		
 		},
-		
-		
-		
-		/*
-		 * Function: setEmptyCaption
-		 */
-		setEmptyCaption: function(){
-			
-			// This is causing random slowness when swiping on iOS
-			// needs review
-			//Util.DOM.removeChildren(this.contentEl);
-			//Util.DOM.appendText('\u00A0', this.contentEl);	
-			
-		},
-		
+
 		
 		
 		/*
@@ -173,6 +153,30 @@
 		 */
 		postShow: function(){
 			
+			this.setFadeOutTimeout();
+			this._super();
+			
+		},
+		
+		
+		/*
+		 * Function: postFadeIn
+		 */
+		postFadeIn: function(){
+			
+			this.setFadeOutTimeout();
+			this._super();
+			
+		},
+		
+		
+		/*
+		 * Function: setFadeOutTimeout
+		 */
+		setFadeOutTimeout: function(){
+			
+			window.clearTimeout(this.fadeOutTimeout);
+			
 			if (this.settings.captionDelay > 0){
 				
 				this.fadeOutTimeout = window.setTimeout(
@@ -181,8 +185,6 @@
 				);
 				
 			}
-			
-			this._super();
 			
 		}
 	
