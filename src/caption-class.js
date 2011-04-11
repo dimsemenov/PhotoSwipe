@@ -11,9 +11,10 @@
 		
 		contentEl: null,
 		
-		fadeOutTimeout: null,
-		
 		touchStartHandler: null,
+		
+		captionValue: null,
+		
 		
 		/*
 		 * Function: init
@@ -21,13 +22,14 @@
 		init: function(options){
 			
 			this.settings = {
-				captionDelay: 4000,
 				position: 'bottom'
 			};
 			
 			Util.extend(this.settings, options);
 			
 			this._super(options);
+			
+			this.captionValue = '';
 			
 			this.touchStartHandler = this.onTouchStart.bind(this);
 			
@@ -42,7 +44,8 @@
 				left: 0,
 				position: 'absolute',
 				overflow: 'hidden',
-				zIndex: 1000
+				zIndex: 1000,
+				opacity: 0
 			});
 			Util.DOM.hide(this.el);
 			Util.DOM.appendToBody(this.el);
@@ -133,60 +136,16 @@
 				Util.DOM.appendText(captionValue, this.contentEl);	
 			}
 			
-		},
-
-		
-		
-		/*
-		 * Function: stopFade
-		 */
-		stopFade: function(){
-		
-			window.clearTimeout(this.fadeOutTimeout);
-			this._super();
+			this.captionValue = (captionValue === '\u00A0') ? '' : captionValue;
 			
-		},
-		
-		
-		/*
-		 * Function: postShow
-		 */
-		postShow: function(){
-			
-			this.setFadeOutTimeout();
-			this._super();
-			
-		},
-		
-		
-		/*
-		 * Function: postFadeIn
-		 */
-		postFadeIn: function(){
-			
-			this.setFadeOutTimeout();
-			this._super();
-			
-		},
-		
-		
-		/*
-		 * Function: setFadeOutTimeout
-		 */
-		setFadeOutTimeout: function(){
-			
-			window.clearTimeout(this.fadeOutTimeout);
-			
-			if (this.settings.captionDelay > 0){
-				
-				this.fadeOutTimeout = window.setTimeout(
-					this.fadeOut.bind(this),
-					this.settings.captionDelay
-				);
-				
-			}
+			//Util.DOM.show(this.el);
+			//var height = Util.DOM.height(this.el);
+			//Util.DOM.hide(this.el);
+			//console.log(height);			
 			
 		}
+
+		
 	
 	});
 	

@@ -9,7 +9,7 @@
 		
 		Animation: {
 			
-			_applyTransitionDelay: 100,
+			_applyTransitionDelay: 50,
 			
 			/*
 			 * Function: _setTransition
@@ -230,7 +230,7 @@
 						MozTransform: 'translate(' + xPos + 'px, ' + yPos + 'px)',
 						transform: 'translate(' + xPos + 'px, ' + yPos + 'px)'
 					});
-					
+										
 				});
 				
 			},

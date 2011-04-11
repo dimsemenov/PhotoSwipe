@@ -51,6 +51,7 @@
 			<fileset dir="." includes="${project.src.dir}/slider-class.js" />
 			<fileset dir="." includes="${project.src.dir}/caption-class.js" />
 			<fileset dir="." includes="${project.src.dir}/toolbar-class.js" />
+			<fileset dir="." includes="${project.src.dir}/caption-toolbar-class.js" />
 			<fileset dir="." includes="${project.src.dir}/photoswipe.js" />
 			
 		</concat>
@@ -70,6 +71,15 @@
 		
 		<move file="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js" tofile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js" />
 		
+		
+		<copy todir="${project.build.workdir}/examples">
+			<fileset dir="${project.src.dir}/examples"/>
+		</copy>
+				
+		<replace file="${project.build.workdir}/examples/index.html" token="%%version%%" value="${project.build.version}"/>
+		<replace file="${project.build.workdir}/examples/jquery-plugin.html" token="%%version%%" value="${project.build.version}"/>
+		<replace file="${project.build.workdir}/examples/jquery-engine.html" token="%%version%%" value="${project.build.version}"/>
+		<replace file="${project.build.workdir}/examples/advanced-setup.html" token="%%version%%" value="${project.build.version}"/>
 		
 	</target>
 	
@@ -116,7 +126,7 @@
 		</copy>
 		
 		<copy todir="${project.build.artifactdir}/${project.build.version}/examples">
-			<fileset dir="${project.src.dir}/examples"/>
+			<fileset dir="${project.build.workdir}/examples"/>
 		</copy>
 		
 		

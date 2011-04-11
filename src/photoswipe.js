@@ -2,7 +2,7 @@
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
 
-(function(Util, ElementClass, DocumentOverlayClass, FullSizeImageClass, ViewportClass, SliderClass, CaptionClass, ToolbarClass){
+(function(Util, ElementClass, DocumentOverlayClass, FullSizeImageClass, ViewportClass, SliderClass, CaptionClass, ToolbarClass, CaptionToolbarClass){
 
 	var photoSwipe = Code.PhotoSwipe.EventClass.extend({
 		
@@ -11,8 +11,7 @@
 		documentOverlay: null,
 		viewport: null,
 		slider: null,
-		caption: null,
-		toolbar: null,
+		captionAndToolbar: null,
 		
 		settings: null,
 		currentIndex: null,	
@@ -20,6 +19,8 @@
 		
 		slideshowTimeout: null,
 		isSlideshowActive: null,
+		
+		lastShowPrevTrigger: null,
 		
 		viewportFadeInEventHandler: null,
 		windowResizeEventHandler: null,
@@ -46,26 +47,20 @@
 			this.settings = { 
 				getImageSource: Code.PhotoSwipe.GetImageSource,
 				getImageCaption: Code.PhotoSwipe.GetImageCaption,
-				fadeInSpeed: 200,
+				fadeInSpeed: 250,
 				fadeOutSpeed: 500,
 				slideSpeed: 250,
 				swipeThreshold: 50,
 				loop: true,
-				
-				flipCaptionAndToolbar: false,
-				
-				captionDelay: 5000,
-				captionOpacity: 0.8,
-				hideCaption: false,
-				showEmptyCaptions: true,
-				
-				toolbarDelay: 5000,
-				toolbarOpacity: 0.8,
-				hideToolbar: false,
-				
 				slideshowDelay: 3000,
+				imageScaleMethod: 'fit', // Either "fit" or "zoom"
 				
-				imageScaleMethod: 'fit' // Either "fit" or "zoom"
+				captionAndToolbarHide: false,
+				captionAndToolbarHideOnSwipe: true,
+				captionAndToolbarFlipPosition: false,
+				captionAndToolbarAutoHideDelay: 5000,
+				captionAndToolbarOpacity: 0.8,
+				captionAndToolbarShowEmptyCaptions: true				
 			};
 			
 			// Set pointers to event handlers
@@ -152,6 +147,8 @@
 			
 			this.isBusy = true;
 			
+			this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.show;
+			
 			Util.DOM.addClass(document.body, Code.PhotoSwipe.CssClasses.activeBody);
 			
 			
@@ -208,26 +205,18 @@
 				}, 
 				this.viewport.el
 			);
-			
-			// Create the caption bar
-			this.caption = new CaptionClass({
-				opacity: this.settings.captionOpacity,
-				fadeInSpeed: this.settings.fadeInSpeed,
-				fadeOutSpeed: this.settings.fadeOutSpeed,
-				captionDelay: this.settings.captionDelay,
-				position: (this.settings.flipCaptionAndToolbar) ? 'bottom' : 'top'
-			});
-			
 				
-			// Create the toolbar
-			this.toolbar = new ToolbarClass({
-				opacity: this.settings.toolbarOpacity,
+			this.captionAndToolbar = new CaptionToolbarClass({
+				
+				opacity: this.settings.captionAndToolbarOpacity,
 				fadeInSpeed: this.settings.fadeInSpeed,
 				fadeOutSpeed: this.settings.fadeOutSpeed,
-				toolbarDelay: this.settings.toolbarDelay,
-				position: (this.settings.flipCaptionAndToolbar) ? 'top' : 'bottom'
-			});
+				autoHideDelay: this.settings.captionAndToolbarAutoHideDelay,
+				flipPosition: this.settings.captionAndToolbarFlipPosition,
+				showEmptyCaptions: this.settings.captionAndToolbarShowEmptyCaptions
 			
+			});
+		
 		},
 		
 		
@@ -254,8 +243,8 @@
 			// Set slider handlers
 			this.slider.addEventListener(SliderClass.EventTypes.onDisplayCurrentFullSizeImage, this.sliderDisplayCurrentFullSizeImageEventHandler);
 			
-			// Set toolbar handlers
-			this.toolbar.addEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
+			// Set captionAndToolbar handlers
+			this.captionAndToolbar.addEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
 			
 		},
 		
@@ -284,8 +273,8 @@
 			// Remove slider handlers
 			this.slider.removeEventListener(SliderClass.EventTypes.onDisplayCurrentFullSizeImage, this.sliderDisplayCurrentFullSizeImageEventHandler);
 			
-			// Remove toolbar handlers
-			this.toolbar.removeEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
+			// Remove captionAndToolbar handlers
+			this.captionAndToolbar.removeEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
 			
 		},
 		
@@ -305,17 +294,16 @@
 			
 			this.documentOverlay.show();
 			
-			this.slider.show();
+			this.slider.fadeIn();
 			
 			this.addEventListeners();
 			
 			this.slider.setCurrentFullSizeImage(this.fullSizeImages[this.currentIndex]);
 			
-			this.showCaptionAndToolbar();
-			
 			this.isBusy = false;
 			
 		},
+		
 		
 		
 		/*
@@ -388,21 +376,28 @@
 			
 			if (e.keyCode === 37) { // Left
 				e.preventDefault();
-				this.showPrevious(true);
+				this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.keyboard;
+				this.showPrevious();
 			}
 			else if (e.keyCode === 39) { // Right
 				e.preventDefault();
-				this.showNext(true);
+				this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.keyboard;
+				this.showNext();
 			}
 			else if (e.keyCode === 38 || e.keyCode === 40) { // Up and down
 				e.preventDefault();
 			}
 			else if (e.keyCode === 27) { // Escape
 				e.preventDefault();
-				//this.pause();
 				this.hide();
 			}
 			else if (e.keyCode === 32) { // Spacebar
+				if (!this.settings.hideToolbar){
+					this.toggleCaptionAndToolbar();
+				}
+				else{
+					this.hide();
+				}
 				e.preventDefault();
 			}
 			
@@ -414,7 +409,7 @@
 		 * Function: onWindowOrientationChange
 		 */
 		onWindowOrientationChange: function(e){
-		
+			
 			this.resetPosition();
 			
 		},
@@ -444,8 +439,7 @@
 			this.viewport.resetPosition();
 			this.slider.resetPosition();
 			this.documentOverlay.resetPosition();
-			this.caption.resetPosition();
-			this.toolbar.resetPosition();
+			this.captionAndToolbar.resetPosition();
 			
 		},
 		
@@ -461,17 +455,19 @@
 			switch(e.action){
 			
 				case ViewportClass.Actions.swipeLeft:
-					this.showNext(true);
+					this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.swipe;
+					this.showNext();
 					break;
 					
 				case ViewportClass.Actions.swipeRight:
-					this.showPrevious(true);
+					this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.swipe;
+					this.showPrevious();
 					break;
 				
 				default:
 					// Click event
 					if (!this.settings.hideToolbar){
-						this.showCaptionAndToolbar();
+						this.toggleCaptionAndToolbar();
 					}
 					else{
 						this.hide();
@@ -511,8 +507,7 @@
 			this.removeEventListeners();
 			
 			this.documentOverlay.hide();
-			this.caption.hide();
-			this.toolbar.hide();
+			this.captionAndToolbar.hide();
 			this.slider.hide();
 			
 			Util.DOM.removeClass(document.body, Code.PhotoSwipe.CssClasses.activeBody);
@@ -536,13 +531,7 @@
 			
 			this.isBusy = true;
 			
-			if (fadeOutCaptionAndToolbar){
-				this.fadeOutCaptionAndToolbar();
-			}
-			else{
-				this.caption.setFadeOutTimeout();
-				this.toolbar.setFadeOutTimeout();
-			}
+			this.setCaptionAndToolbarOnShowPreviousNext();
 			
 			this.slider.showNext();
 		
@@ -561,19 +550,55 @@
 			
 			this.isBusy = true;
 			
-			if (fadeOutCaptionAndToolbar){
-				this.fadeOutCaptionAndToolbar();
-			}
-			else{
-				this.caption.setFadeOutTimeout();
-				this.toolbar.setFadeOutTimeout();
-			}
+			this.setCaptionAndToolbarOnShowPreviousNext();
 			
 			this.slider.showPrevious();
 		
 		},
 		
-	
+		
+		
+		/*
+		 * Function: setCaptionAndToolbarOnShowPreviousNext
+		 */
+		setCaptionAndToolbarOnShowPreviousNext: function(){
+		
+			if (this.settings.captionAndToolbarHide){
+				return;
+			}
+			
+			var resetAutoTimeout = false;
+			
+			switch (this.lastShowPrevTrigger){
+				
+				case Code.PhotoSwipe.ShowPrevTriggers.toolbar:
+					resetAutoTimeout = true;
+					break;
+					
+				case Code.PhotoSwipe.ShowPrevTriggers.slideshow:
+					resetAutoTimeout = false;
+					break;
+				
+				default: 
+					resetAutoTimeout = !this.settings.captionAndToolbarHideOnSwipe;
+					break;
+			}
+			
+			
+			if (resetAutoTimeout) {
+		
+				// Reset the caption and toolbar's fadeOut timeout
+				this.captionAndToolbar.resetAutoHideTimeout();
+					
+			}
+			else{
+				
+				this.fadeOutCaptionAndToolbar();
+				
+			}
+						
+		},
+		
 		
 		
 		/*
@@ -583,11 +608,70 @@
 			
 			this.currentIndex = e.fullSizeImage.index;
 			
+			
+			// Set caption and toolbar
+			if (!this.settings.captionAndToolbarHide){
+				
+				if (this.settings.loop) {
+					this.captionAndToolbar.setNextState(false);
+					this.captionAndToolbar.setPreviousState(false);
+				}
+				else{
+					if (this.currentIndex >= this.fullSizeImages.length - 1) {
+						this.captionAndToolbar.setNextState(true);
+					}
+					else {
+						this.captionAndToolbar.setNextState(false);
+					}
+					
+					if (this.currentIndex < 1) {
+						this.captionAndToolbar.setPreviousState(true);
+					}
+					else {
+						this.captionAndToolbar.setPreviousState(false);
+					}
+				}
+				
+				this.captionAndToolbar.setCaptionValue(this.fullSizeImages[this.currentIndex].caption);
+				
+				var fadeIn = false;
+				
+				switch (this.lastShowPrevTrigger){
+					
+					case Code.PhotoSwipe.ShowPrevTriggers.toolbar:
+						fadeIn = true;
+						break;
+						
+					case Code.PhotoSwipe.ShowPrevTriggers.show:
+						fadeIn = true;
+						break;
+						
+					case Code.PhotoSwipe.ShowPrevTriggers.slideshow:
+						fadeIn = false;
+						break;
+						
+					default:
+						fadeIn = !this.settings.captionAndToolbarHideOnSwipe;
+						break;
+					
+				}
+				
+				
+				if (fadeIn){
+					
+					this.captionAndToolbar.fadeIn();
+					
+				}
+				
+			}
+			
+			this.lastShowPrevTrigger = '';
+			
 			// Set the previous and next images for the slider
 			this.setSliderPreviousAndNextFullSizeImages();
 			
 			if (this.isSlideshowActive){
-			
+				
 				this.fireSlideshowTimeout();
 
 			}
@@ -597,77 +681,35 @@
 		},
 		
 		
+		
 		/*
-		 * Function: showCaptionAndToolbar
+		 * Function: toggleCaptionAndToolbar
 		 */
-		showCaptionAndToolbar: function(captionValue){
+		toggleCaptionAndToolbar: function(){
 			
-			this.stopSlideshow();
+			if (this.settings.captionAndToolbarHide){
+				
+				this.captionAndToolbar.hide();
+				return;
+				
+			}
 			
-	
-			// Caption
-			if (this.settings.hideCaption){
-				this.caption.hide();
+			
+			if (this.captionAndToolbar.isFading){
+				return;
+			}
+			
+			if (this.captionAndToolbar.isHidden){
+				
+				this.captionAndToolbar.fadeIn();
+			
 			}
 			else{
 				
-				if (this.caption.isHidden){
-					
-					// Show the caption
-					captionValue = Util.coalesce(captionValue, this.fullSizeImages[this.currentIndex].caption);
-			
-					if ( (Util.isNothing(captionValue) || captionValue === '') && !this.settings.showEmptyCaptions ){
-						this.caption.fadeOut();
-						return;
-					}
-					
-					this.caption.setCaptionValue(captionValue);
-					this.caption.fadeIn();
-				
-				}
-				else{
-					this.caption.fadeOut();
-				}
-			
+				this.captionAndToolbar.fadeOut();
 				
 			}
 			
-			
-			
-			// Toolbar
-			if (this.settings.hideToolbar){
-				this.toolbar.hide();
-			}
-			else{
-				
-				if (this.toolbar.isHidden){
-					if (this.settings.loop) {
-						this.toolbar.setNextState(false);
-						this.toolbar.setPreviousState(false);
-					}
-					else{
-						if (this.currentIndex >= this.fullSizeImages.length - 1) {
-							this.toolbar.setNextState(true);
-						}
-						else {
-							this.toolbar.setNextState(false);
-						}
-						
-						if (this.currentIndex < 1) {
-							this.toolbar.setPreviousState(true);
-						}
-						else {
-							this.toolbar.setPreviousState(false);
-						}
-					}
-				
-					this.toolbar.fadeIn();
-				}
-				else{
-					this.toolbar.fadeOut();
-				}
-				
-			}
 			
 		},
 		
@@ -678,14 +720,10 @@
 		 */
 		fadeOutCaptionAndToolbar: function(){
 			
-			if (!this.settings.hideCaption){
-				this.caption.fadeOut();
+			if (!this.settings.captionAndToolbarHide){
+				this.captionAndToolbar.fadeOut();
 			}
-			
-			if (!this.settings.hideToolbar){
-				this.toolbar.fadeOut();
-			}
-			
+		
 		},
 		
 		
@@ -700,11 +738,13 @@
 			switch (e.action){
 				
 				case ToolbarClass.Actions.previous:
-					this.showPrevious(false);
+					this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.toolbar;
+					this.showPrevious();
 					break;
 					
 				case ToolbarClass.Actions.next:
-					this.showNext(false);
+					this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.toolbar;
+					this.showNext();
 					break;
 				
 				case ToolbarClass.Actions.play:
@@ -769,13 +809,14 @@
 				}
 			}
 			else{
-				if (this.currentIndex < this.fullSizeImages.length){
+				if (this.currentIndex < this.fullSizeImages.length-1){
 					fire = true;
 				}
 			}
 			
 			if (fire){
-			
+				
+				this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.slideshow;
 				this.slideshowTimeout = window.setTimeout(
 					this.showNext.bind(this),
 					this.settings.slideshowDelay
@@ -792,6 +833,18 @@
 	Code.PhotoSwipe.CssClasses = {
 		activeBody: 'ps-active'
 	};
+	
+	
+	Code.PhotoSwipe.ShowPrevTriggers = {
+		
+		show: 'show',
+		toolbar: 'toobar',
+		swipe: 'swipe',
+		keyboard: 'keyboard',
+		slideshow: 'slideshow'
+		
+	};
+	
 	
 	/*
 	 * Function: Code.PhotoSwipe.GetImageSource
@@ -853,6 +906,29 @@
 		}
 		
 		
+		var onClick = function(e){
+		
+			e.preventDefault();
+					
+			showPhotoSwipe(e.currentTarget);
+			
+		};
+		
+		var showPhotoSwipe = function(clickedEl){
+			
+			var startingIndex = 0;
+			for (startingIndex; startingIndex < thumbEls.length; startingIndex++){
+				if (thumbEls[startingIndex] === clickedEl){
+					break;
+				}
+			}
+			
+			Code.PhotoSwipe.Current.show(startingIndex);
+				
+		};
+		
+		
+		
 		// Set up the options 
 		Code.PhotoSwipe.Current.setOptions(opts);
 		
@@ -889,7 +965,7 @@
 						return null;
 					}
 										
-					return findNode(clickedEl.parentNode, targetNodeName, stopAtEl)
+					return findNode(clickedEl.parentNode, targetNodeName, stopAtEl);
 				};
 				
 				
@@ -910,31 +986,12 @@
 			for (var i = 0; i < thumbEls.length; i++){
 				
 				var thumbEl = thumbEls[i];
-				thumbEl.addEventListener('click', function(e){
-					
-					e.preventDefault();
-					
-					showPhotoSwipe(e.currentTarget);
-				
-				}, false);
+				thumbEl.addEventListener('click', onClick, false);
 				
 			}
 		
 		}
 		
-		
-		var showPhotoSwipe = function(clickedEl){
-			
-			var startingIndex = 0;
-			for (startingIndex; startingIndex < thumbEls.length; startingIndex++){
-				if (thumbEls[startingIndex] === clickedEl){
-					break;
-				}
-			}
-			
-			Code.PhotoSwipe.Current.show(startingIndex);
-				
-		};
 			
 	};
 	
@@ -974,5 +1031,6 @@
 	Code.PhotoSwipe.ViewportClass,
 	Code.PhotoSwipe.SliderClass,
 	Code.PhotoSwipe.CaptionClass,
-	Code.PhotoSwipe.ToolbarClass
+	Code.PhotoSwipe.ToolbarClass,
+	Code.PhotoSwipe.CaptionToolbarClass
 );

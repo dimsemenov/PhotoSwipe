@@ -2,3 +2,19 @@
 --------------
 Initial release by Ste Brennan
 
+
+1.0.1 11.04.11
+--------------
+Major update:
+
+- Fading of caption and toolbar more like iOS photo view by default.
+
+- Individual settings of toolbar and caption consolidated into "captionAndToolbarHide, captionAndToolbarHideOnSwipe, captionAndToolbarFlipPosition, captionAndToolbarAutoHideDelay, captionAndToolbarOpacity, captionAndToolbarShowEmptyCaptions". This was done to simplify logic and reduce a timeout. Previous caption and toolbar settings are not longer valid.
+
+- Fixed "zoom" for imageScaleMethod.
+
+- Fixed issue where loop was set to false and slideshow was active.
+
+- Fixed issue with placement of caption if at the bottom
+
+

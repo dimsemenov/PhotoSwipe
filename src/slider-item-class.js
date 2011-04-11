@@ -31,6 +31,7 @@
 			this.el = Util.DOM.createElement('div', { 'class': Code.PhotoSwipe.SliderItemClass.CssClasses.item + ' ' + Code.PhotoSwipe.SliderItemClass.CssClasses.loading }, '');
 			Util.DOM.setStyle(this.el, {
 				position: 'absolute',
+				overflow: 'hidden',
 				top: 0
 			});
 			Util.DOM.resetTranslate(this.el);
@@ -98,7 +99,23 @@
 			newWidth = Math.round(this.fullSizeImage.naturalWidth * scale);
 			newHeight = Math.round(this.fullSizeImage.naturalHeight * scale);
 			
-			if (this.fullSizeImage.scaleMethod === 'fit') {
+			if (this.fullSizeImage.scaleMethod === 'zoom'){
+				
+				scale = 1;
+				if (newHeight < maxHeight){
+					scale = maxHeight /newHeight;	
+				}
+				else if (newWidth < maxWidth){
+					scale = maxWidth /newWidth;	
+				}
+				
+				if (scale !== 1) {
+					newWidth = Math.round(newWidth * scale);
+					newHeight = Math.round(newHeight * scale);
+				}
+				
+			}
+			else if (this.fullSizeImage.scaleMethod === 'fit') {
 				// Rescale again to ensure full image fits into the viewport
 				scale = 1;
 				if (newWidth > maxWidth) {

@@ -278,7 +278,7 @@
 					el.style.width = value;
 				}
 				
-				return window.parseInt(window.getComputedStyle(el,'').getPropertyValue('width'));
+				return this._getDimension(el, 'width');
 				
 			},
 			
@@ -306,9 +306,39 @@
 					el.style.height = value;
 				}
 				
-				return window.parseInt(window.getComputedStyle(el,'').getPropertyValue('height'));
+				return this._getDimension(el, 'height');
 				
 			},
+			
+			
+			/*
+			 * Function: _getDimension
+			 */
+			_getDimension: function(el, dimension){
+				
+				var retval = window.parseInt(window.getComputedStyle(el,'').getPropertyValue(dimension));
+				
+				if (isNaN(retval)){
+					
+					// If this is the case, chances are the element is not displayed and we can't get
+					// the width and height. This temporarily shows and hides to get the value
+					var styleBackup = { 
+						display: el.style.display,
+						left: el.style.left
+					}
+					
+					el.style.display = 'block';
+					el.style.left = '-1000000px';
+					
+					retval = window.parseInt(window.getComputedStyle(el,'').getPropertyValue(dimension));
+					
+					el.style.display = styleBackup.display;
+					el.style.left = styleBackup.left;
+				}
+				return retval;
+				
+			},
+			
 			
 			
 			/*

@@ -17,7 +17,6 @@
 		clickHandler: null,
 		touchStartHandler: null,
 		
-		fadeOutTimeout: null,
 		isNextActive: null,
 		isPreviousActive: null,
 		
@@ -28,7 +27,6 @@
 		init: function(options){
 			
 			this.settings = {
-				toolbarDelay: 4000,
 				position: 'bottom'
 			};
 			
@@ -54,7 +52,8 @@
 				position: 'absolute',
 				overflow: 'hidden',
 				zIndex: 1001,
-				display: 'table'
+				display: 'table',
+				opacity: 0
 			});
 			Util.DOM.hide(this.el);
 			Util.DOM.appendToBody(this.el);
@@ -92,7 +91,7 @@
 			
 		},
 		
-		
+				
 		/*
 		 * Function: removeEventListeners
 		 */
@@ -179,61 +178,6 @@
 			
 			Util.DOM.setStyle(this.el, 'top', top + 'px');
 			Util.DOM.width(this.el, Util.DOM.bodyWidth());
-			
-		},
-		
-		
-		
-		/*
-		 * Function: stopFade
-		 */
-		stopFade: function(){
-		
-			window.clearTimeout(this.fadeOutTimeout);
-			this._super();
-			
-		},
-		
-		
-		
-		/*
-		 * Function: postShow
-		 */
-		postShow: function(){
-			
-			this.setFadeOutTimeout();
-			this._super();
-			
-		},
-		
-		
-		/*
-		 * Function: postFadeIn
-		 */
-		postFadeIn: function(){
-			
-			this.setFadeOutTimeout();
-			this._super();
-			
-		},
-		
-		
-		
-		/*
-		 * Function: setFadeOutTimeout
-		 */
-		setFadeOutTimeout: function(){
-			
-			window.clearTimeout(this.fadeOutTimeout);
-			
-			if (this.settings.toolbarDelay > 0){
-				
-				this.fadeOutTimeout = window.setTimeout(
-					this.fadeOut.bind(this),
-					this.settings.toolbarDelay
-				);
-				
-			}
 			
 		},
 		

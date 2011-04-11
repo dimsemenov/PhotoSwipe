@@ -20,6 +20,7 @@
 	<script type="text/javascript" src="../slider-class.js"></script>
 	<script type="text/javascript" src="../caption-class.js"></script>
 	<script type="text/javascript" src="../toolbar-class.js"></script>
+	<script type="text/javascript" src="../caption-toolbar-class.js"></script>
 	<script type="text/javascript" src="../photoswipe.js"></script>
 	
 	
@@ -28,7 +29,27 @@
 		// Set up PhotoSwipe with all anchor tags in the Gallery container 
 		document.addEventListener('DOMContentLoaded', function(){
 			
-			Code.photoSwipe('a', '#Gallery');
+			Code.photoSwipe('a', '#Gallery', {
+			
+				getImageSource: Code.PhotoSwipe.GetImageSource,
+				getImageCaption: Code.PhotoSwipe.GetImageCaption,
+				fadeInSpeed: 250,
+				fadeOutSpeed: 500,
+				slideSpeed: 250,
+				swipeThreshold: 50,
+				loop: true,
+				slideshowDelay: 3000,
+				imageScaleMethod: 'fit', // Either "fit" or "zoom"
+				
+				captionAndToolbarHide: false,
+				captionAndToolbarHideOnSwipe: true,
+				captionAndToolbarFlipPosition: false,
+				captionAndToolbarAutoHideDelay: 5000,
+				captionAndToolbarOpacity: 0.8,
+				captionAndToolbarShowEmptyCaptions: true			
+				
+			});
+			
 			
 		}, false);
 		

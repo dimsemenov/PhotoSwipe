@@ -93,34 +93,32 @@ This example assumes you want to use jQuery for the gallery's engine as well as 
 Options
 -------
 
-- **fadeSpeed**: The speed of any fading elements in milliseconds. Default "400"
-	
+- **fadeInSpeed**: The speed of any fading-in elements in milliseconds. Default "250"
+
+- **fadeOutSpeed**: The speed of any fading-out elements in milliseconds. Default "500"
+
 - **slideSpeed**: How fast images slide into view in milliseconds. Default "250"
 	
 - **swipeThreshold**: How many pixels your finger has to move across the screen to register a swipe gesture. Default "50"
 	
 - **loop**: Whether the gallery auto-loops back to the beginning when you reach the end. Default "true"
-	
-- **flipCaptionAndToolbar**: Place the caption at the bottom and the toolbar at the top
-	
-- **captionDelay**: How long before the caption is hidden from view in milliseconds. Default "3000"
-	
-- **captionOpacity**: The opacity of the caption. Default "0.8"
-	
-- **hideCaption**: Whether to hide the caption or not. If an image does not have a caption, the caption will be hidden irrespective. Default "false"
 
-- **showEmptyCaptions**: Shows a blank caption area even if a caption cannot be found for the current image. Default "false" 
-	
-- **toolbarDelay**: How long before the toolbar is hidden from view in milliseconds. Default "3000"
-	
-- **toolbarOpacity**: The opacity of the toolbar. Default "0.8"
-	
-- **hideToolbar**: Whether to hide the toolbar or not. Default "false"
-	
-- **slideshowDelay**: The delay between showing the next image when in slideshow mode
+- **slideshowDelay**: The delay between showing the next image when in slideshow mode	. Default "3000"
 	
 - **imageScaleMethod**: How images will fit onto the screen. Either "fit" or "zoom". "fit" ensures the image always fits the screen. "zoom" the image will always fill the full screen, this may cause the image to be "zoomed" in and cropped. Default "fit"
-	
+
+- **captionAndToolbarHide**: Hide the caption and toolbar. Default "false"
+
+- **captionAndToolbarHideOnSwipe**: Hide the caption and toolbar when you swipe to the next image. Default "true"
+
+- **captionAndToolbarFlipPosition**: Place the caption at the bottom and the toolbar at the top. Default "false"
+
+- **captionAndToolbarAutoHideDelay**: How long to wait before the caption and toolbar automatically disappear. Default "5000". Set to "0" to prevent auto disappearing
+
+- **captionAndToolbarOpacity**: The opacity of the caption and toolbar. Default "0.8"
+
+- **captionAndToolbarShowEmptyCaptions**: Shows a blank caption area even if a caption cannot be found for the current image. Default "false" 
+
 - **getImageSource**: Function to specify how the gallery obatins image sources. By default, the gallery assumes you send it a list of images with each image wrapped in an anchor tag. The anchor tag will contain the URL to the full size image. You can change this e.g. if you supply a list of images without an anchor tag, and supply the full size URL on the image's "rel" attribute:
 
 		Code.photoSwipe('a', '#Gallery', {
