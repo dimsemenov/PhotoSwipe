@@ -73,6 +73,13 @@ See "examples/index.html".
 
 This example assumes no jQuery at all and is heavily optimised for WebKit and Mozilla browsers.
 
+	// Set up PhotoSwipe with all anchor tags in the Gallery container 
+	document.addEventListener('DOMContentLoaded', function(){
+		
+		Code.photoSwipe('a', '#Gallery');
+		
+	}, false);
+	
 	
 Getting Started - Default Distribution (with jQuery plugin)
 -----------------------------------------------------------
@@ -80,6 +87,12 @@ Getting Started - Default Distribution (with jQuery plugin)
 See "examples/jquery-plugin.html". 
 
 This example assumes you want to use the convience of jQuery for initiating the gallery, but still the  optimised engine for WebKit and Mozilla browsers.
+
+	$(document).ready(function(){
+			
+		$("#Gallery a").photoSwipe();
+				
+	});
 
 	
 Getting Started - Default Distribution (with jQuery engine)
@@ -103,9 +116,11 @@ Options
 	
 - **loop**: Whether the gallery auto-loops back to the beginning when you reach the end. Default "true"
 
-- **slideshowDelay**: The delay between showing the next image when in slideshow mode	. Default "3000"
+- **slideshowDelay**: The delay between showing the next image when in slideshow mode. Default "3000"
 	
 - **imageScaleMethod**: How images will fit onto the screen. Either "fit" or "zoom". "fit" ensures the image always fits the screen. "zoom" the image will always fill the full screen, this may cause the image to be "zoomed" in and cropped. Default "fit"
+
+- **preventHide**: Once PhotoSwipe is active, prevents the user closing it. Useful for "exclusive mode" (see examples/exclusive-mode.html). Default: "false"
 
 - **captionAndToolbarHide**: Hide the caption and toolbar. Default "false"
 

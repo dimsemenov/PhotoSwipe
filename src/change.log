@@ -1,10 +1,10 @@
-1.0.0 07.04.11
---------------
-Initial release by Ste Brennan
+1.0.0 07.04.11 - Ste Brennan
+----------------------------
+Initial release
 
 
-1.0.1 11.04.11
---------------
+1.0.1 11.04.11 - Ste Brennan
+----------------------------
 Major update:
 
 - Fading of caption and toolbar more like iOS photo view by default.
@@ -18,3 +18,20 @@ Major update:
 - Fixed issue with placement of caption if at the bottom
 
 
+
+1.0.2 14.04.11 - Ste Brennan
+----------------------------
+
+- PhotoSwipe now dispatches the following events which you can listen out for in your code (see examples/events.html)
+	* onShow: When the gallery is displayed
+	* onHide: When the gallery is hidden
+	* onShowNext: When the gallery has been issued the command to show the next image
+	* onShowPrevious: When the gallery has been issued the command to show the previous image
+	* onDisplayImage: When the gallery displays an image. Typically fired after onShowNext and onShowPrevious
+	* onResetPosition: When the gallery resets the size and position of itself. Typically fired after device orientation change or window resize
+	* onSlideshowStart: When the gallery has started the slideshow
+	* onSlideshowStop: When the gallery has stopped the slideshow
+
+- Added "exclusive mode". This means the user will only be able to interact with PhotoSwipe, and not the underlying document. They will be unable to close PhotoSwipe once it is active. (see examples/exclusive-mode.html)
+	
+- Fixed Issue #1 - Line break in thumbnail anchor can cause a JS error

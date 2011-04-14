@@ -29,7 +29,65 @@
 		// Set up PhotoSwipe with all anchor tags in the Gallery container 
 		document.addEventListener('DOMContentLoaded', function(){
 			
-			Code.photoSwipe('a', '#Gallery', {
+			// Add event listeners
+			
+			// onShow
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShow, function(e){
+				
+				console.log('onShow');
+				
+			});
+			
+			// onHide
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onHide, function(e){
+				
+				console.log('onHide');
+				
+			});
+			
+			// onShowNext
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowNext, function(e){
+				
+				console.log('onShowNext');
+				
+			});
+	
+			// onShowPrevious
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowPrevious, function(e){
+				
+				console.log('onShowPrevious');
+				
+			});
+			
+			// onDisplayImage
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onDisplayImage, function(e){
+				
+				console.log('onDisplayImage');
+				
+			});
+			
+			// onResetPosition
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onResetPosition, function(e){
+				
+				console.log('onResetPosition');
+				
+			});
+			
+			// onSlideshowStart
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStart, function(e){
+				
+				console.log('onSlideshowStart');
+				
+			});
+			
+			// onSlideshowStop
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStop, function(e){
+				
+				console.log('onSlideshowStop');
+				
+			});
+						
+			var thumbEls = Code.photoSwipe('a', '#Gallery', {
 			
 				getImageSource: Code.PhotoSwipe.GetImageSource,
 				getImageCaption: Code.PhotoSwipe.GetImageCaption,
@@ -40,6 +98,7 @@
 				loop: true,
 				slideshowDelay: 3000,
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
+				preventHide: false,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
@@ -50,7 +109,8 @@
 				
 			});
 			
-			
+			console.log(thumbEls);
+		
 		}, false);
 		
 		
@@ -102,11 +162,23 @@
 	
 		<div class="gallery-row">
 	
-			<div class="gallery-item"><a href="images/full/001.jpg"><img src="images/thumb/001.jpg" alt="Image 001" /></a></div>
+			<div class="gallery-item">
+				<a href="images/full/001.jpg">
+					<img src="images/thumb/001.jpg" alt="Image 001" />
+				</a>
+			</div>
 			
-			<div class="gallery-item"><a href="images/full/002.jpg"><img src="images/thumb/002.jpg" alt="Image 002" /></a></div>
+			<div class="gallery-item">
+				<a href="images/full/002.jpg">
+					<img src="images/thumb/002.jpg" alt="Image 002" />
+				</a>
+			</div>
 			
-			<div class="gallery-item"><a href="images/full/003.jpg"><img src="images/thumb/003.jpg" alt="" /></a></div>
+			<div class="gallery-item">
+				<a href="images/full/003.jpg">
+					<img src="images/thumb/003.jpg" alt="" />
+				</a>
+			</div>
 			
 		</div>
 

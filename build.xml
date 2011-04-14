@@ -55,7 +55,11 @@
 			<fileset dir="." includes="${project.src.dir}/photoswipe.js" />
 			
 		</concat>
-				
+		
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.js"/>
+		</antcall>
+		
 		<!-- Minimise -->
 		<jsmin srcfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.js" suffix="true" />
 		
@@ -65,7 +69,9 @@
 			<fileset dir="." includes="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js" />
 		</concat>
 		
-		<replace file="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js" token="%%version%%" value="${project.build.version}.${build.number}"/>
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js"/>
+		</antcall>
 		
 		<delete file="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js"/>
 		
@@ -76,11 +82,25 @@
 			<fileset dir="${project.src.dir}/examples"/>
 		</copy>
 				
-		<replace file="${project.build.workdir}/examples/index.html" token="%%version%%" value="${project.build.version}"/>
-		<replace file="${project.build.workdir}/examples/jquery-plugin.html" token="%%version%%" value="${project.build.version}"/>
-		<replace file="${project.build.workdir}/examples/jquery-engine.html" token="%%version%%" value="${project.build.version}"/>
-		<replace file="${project.build.workdir}/examples/advanced-setup.html" token="%%version%%" value="${project.build.version}"/>
-		
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/index.html"/>
+		</antcall>
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/jquery-plugin.html"/>
+		</antcall>
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/jquery-engine.html"/>
+		</antcall>
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/advanced-setup.html"/>
+		</antcall>
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/events.html"/>
+		</antcall>
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/exclusive-mode.html"/>
+		</antcall>
+						
 	</target>
 	
 	
@@ -107,6 +127,13 @@
 		
 	</target>
 	
+	
+	<target name="versionStamp">
+		
+		<replace file="${filePath}" token="%%version%%" value="${project.build.version}"/>
+		<replace file="${filePath}" token="%%year%%" value="${project.build.year}"/>
+	
+	</target>
 	
 	
 	<target name="moveToArtifact">

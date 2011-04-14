@@ -1,6 +1,7 @@
 // PhotoSwipe - http://www.photoswipe.com/
-// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
+// Copyright (c) %%year%% by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
+// version: %%version%%
 
 (function(Util){
 	
@@ -27,12 +28,13 @@
 		init: function(options){
 			
 			this.settings = {
-				position: 'bottom'
+				position: 'bottom',
+				hideClose: false
 			};
 			
 			Util.extend(this.settings, options);
 			
-			this._super(options);
+			this._super(this.settings);
 			
 			this.isNextActive = true;
 			this.isPreviousActive = true;
@@ -60,6 +62,10 @@
 			
 			// Close
 			this.closeEl = Util.DOM.createElement('div', { 'class': Code.PhotoSwipe.ToolbarClass.CssClasses.close }, '<div class="' + Code.PhotoSwipe.ToolbarClass.CssClasses.content + '"></div>');
+			
+			if (this.settings.hideClose){
+				Util.DOM.hide(this.closeEl);
+			}
 			Util.DOM.appendChild(this.closeEl, this.el);
 			
 			// Play

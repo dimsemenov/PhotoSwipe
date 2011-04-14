@@ -1,6 +1,7 @@
 // PhotoSwipe - http://www.photoswipe.com/
-// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
+// Copyright (c) %%year%% by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
+// version: %%version%%
 
 (function(Util, ElementClass, DocumentOverlayClass, FullSizeImageClass, ViewportClass, SliderClass, CaptionClass, ToolbarClass, CaptionToolbarClass){
 
@@ -54,6 +55,7 @@
 				loop: true,
 				slideshowDelay: 3000,
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
+				preventHide: false,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
@@ -213,7 +215,8 @@
 				fadeOutSpeed: this.settings.fadeOutSpeed,
 				autoHideDelay: this.settings.captionAndToolbarAutoHideDelay,
 				flipPosition: this.settings.captionAndToolbarFlipPosition,
-				showEmptyCaptions: this.settings.captionAndToolbarShowEmptyCaptions
+				showEmptyCaptions: this.settings.captionAndToolbarShowEmptyCaptions,
+				hideClose: this.settings.preventHide
 			
 			});
 		
@@ -301,6 +304,8 @@
 			this.slider.setCurrentFullSizeImage(this.fullSizeImages[this.currentIndex]);
 			
 			this.isBusy = false;
+			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onShow);
 			
 		},
 		
@@ -441,6 +446,8 @@
 			this.documentOverlay.resetPosition();
 			this.captionAndToolbar.resetPosition();
 			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onResetPosition);
+			
 		},
 		
 		
@@ -489,6 +496,8 @@
 			
 			this.isBusy = false;
 			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onHide);
+			
 		},
 		
 		
@@ -498,7 +507,7 @@
 		 */
 		hide: function(){
 			
-			if (this.isBusy){
+			if (this.isBusy || this.settings.preventHide){
 				return;
 			}
 			
@@ -534,7 +543,9 @@
 			this.setCaptionAndToolbarOnShowPreviousNext();
 			
 			this.slider.showNext();
-		
+			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onShowNext);
+			
 		},
 		
 		
@@ -553,7 +564,9 @@
 			this.setCaptionAndToolbarOnShowPreviousNext();
 			
 			this.slider.showPrevious();
-		
+			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onShowPrevious);
+			
 		},
 		
 		
@@ -662,6 +675,8 @@
 					this.captionAndToolbar.fadeIn();
 					
 				}
+				
+				this.dispatchEvent(Code.PhotoSwipe.EventTypes.onDisplayImage);
 				
 			}
 			
@@ -778,6 +793,8 @@
 			
 			this.fireSlideshowTimeout();
 			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onSlideshowStart);
+			
 		},
 		
 		
@@ -790,6 +807,8 @@
 			window.clearTimeout(this.slideshowTimeout);
 			
 			this.isSlideshowActive = false;
+			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onSlideshowStop);
 			
 		},
 		
@@ -846,6 +865,20 @@
 	};
 	
 	
+	Code.PhotoSwipe.EventTypes = {
+		
+		onShow: 'onShow',
+		onHide: 'onHide',
+		onShowNext: 'onShowNext',
+		onShowPrevious: 'onShowPrevious',
+		onDisplayImage: 'onDisplayImage',
+		onResetPosition: 'onResetPosition',
+		onSlideshowStart: 'onSlideshowStart',
+		onSlideshowStop: 'onSlideshowStop'
+	
+	};
+	
+	
 	/*
 	 * Function: Code.PhotoSwipe.GetImageSource
 	 * Default method for returning an image's source
@@ -867,7 +900,13 @@
 		if (el.nodeName === "IMG"){
 			return Util.DOM.getAttribute(el, 'alt'); 
 		}
-		return Util.DOM.getAttribute(el.firstChild, 'alt'); 
+		var i, childEl;
+		for (i=0; i<el.childNodes.length; i++){
+			childEl = el.childNodes[i];
+			if (el.childNodes[i].nodeName === 'IMG'){
+				return Util.DOM.getAttribute(childEl, 'alt'); 
+			}
+		}
 	};
 	
 	
@@ -992,6 +1031,7 @@
 		
 		}
 		
+		return thumbEls;
 			
 	};
 	

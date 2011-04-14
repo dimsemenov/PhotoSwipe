@@ -7,30 +7,91 @@
 	
 	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
 	
-	<script type="text/javascript" src="../lib/jquery-1.5.1.min.js"></script>
 	<script type="text/javascript" src="../lib/simple-inheritance.min.js"></script>
 	<script type="text/javascript" src="../code-photoswipe-%%version%%.min.js"></script>
 	
 	
 	<script type="text/javascript">
 		
-		$(document).ready(function(){
-			
-			$("#Gallery a").photoSwipe();
-					
-		});
-		
 		/*
-			This example shows how to set up PhotoSwipe using the jQuery plugin.
-			It does not use jQuery as the engine so is still running on the 
-			optimised version for mobile devices, WebKit browsers and Mozilla
+		 This example shows how to listen and respond to gallery events.
+		 
+		 - onShow: When the gallery is displayed
+		 - onHide: When the gallery is hidden
+		 - onShowNext: When the gallery has been issued the command to show the next image
+		 - onShowPrevious: When the gallery has been issued the command to show the previous image
+		 - onDisplayImage: When the gallery displays an image. Typically fired after onShowNext and onShowPrevious
+		 - onResetPosition: When the gallery resets the size and position of itself. Typically fired after device orientation change or window resize
+		 - onSlideshowStart: When the gallery has started the slideshow
+		 - onSlideshowStop: When the gallery has stopped the slideshow
+		 
+		 */
+		 
+		document.addEventListener('DOMContentLoaded', function(){
 			
-			To pass your own settings:
 			
-			$("#Gallery a").photoSwipe({
-				loop: false
+			// onShow
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShow, function(e){
+				
+				console.log('onShow');
+				
 			});
-		*/
+			
+			// onHide
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onHide, function(e){
+				
+				console.log('onHide');
+				
+			});
+			
+			// onShowNext
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowNext, function(e){
+				
+				console.log('onShowNext');
+				
+			});
+	
+			// onShowPrevious
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowPrevious, function(e){
+				
+				console.log('onShowPrevious');
+				
+			});
+			
+			// onDisplayImage
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onDisplayImage, function(e){
+				
+				console.log('onDisplayImage');
+				
+			});
+			
+			// onResetPosition
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onResetPosition, function(e){
+				
+				console.log('onResetPosition');
+				
+			});
+			
+			// onSlideshowStart
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStart, function(e){
+				
+				console.log('onSlideshowStart');
+				
+			});
+			
+			// onSlideshowStop
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStop, function(e){
+				
+				console.log('onSlideshowStop');
+				
+			});
+			
+			
+			Code.photoSwipe('a', '#Gallery');
+			
+		}, false);
+		
+						
 		
 	</script>
 	

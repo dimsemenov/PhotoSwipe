@@ -1,6 +1,7 @@
 // PhotoSwipe - http://www.photoswipe.com/
-// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
+// Copyright (c) %%year%% by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
+// version: %%version%%
 
 (function(Util, CaptionClass, ToolbarClass){
 
@@ -33,7 +34,8 @@
 				fadeOutSpeed: 500,
 				autoHideDelay: 5000,
 				flipPosition: false,
-				showEmptyCaptions: true
+				showEmptyCaptions: true,
+				hideClose: false
 			};
 			
 			Util.extend(this.settings, options);
@@ -56,7 +58,8 @@
 				fadeInSpeed: this.settings.fadeInSpeed,
 				fadeOutSpeed: this.settings.fadeOutSpeed,
 				opacity: this.settings.opacity,
-				position: (this.settings.flipPosition) ? 'top' : 'bottom'
+				position: (this.settings.flipPosition) ? 'top' : 'bottom',
+				hideClose: this.settings.hideClose
 			});
 						
 		},
