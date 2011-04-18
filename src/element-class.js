@@ -14,7 +14,6 @@
 		
 		el: null,
 		settings: null,
-		isFading: null,
 		isHidden: null,
 		
 		fadeInHandler: null,
@@ -35,8 +34,6 @@
 			};
 			
 			Util.extend(this.settings, options);
-			
-			this.isFading = false;
 			
 			this.fadeInHandler = this.postFadeIn.bind(this);
 			this.fadeOutHandler = this.postFadeOut.bind(this);
@@ -59,14 +56,8 @@
 		 */
 		show: function(){
 			
-			if (this.el === null){
-				return;
-			}
-			
-			this.preShow();
-			
-			this.isHidden = false;
-			
+			this.stopFade();
+						
 			// Show
 			Util.DOM.setStyle(this.el, 'opacity', this.settings.opacity);
 			Util.DOM.show(this.el);
@@ -76,19 +67,6 @@
 		},
 		
 		
-		/*
-		 * Function: preShow
-		 */
-		preShow: function(){
-			
-			this.stopFade();		
-			
-			// Set position
-			this.resetPosition();
-			
-		
-		},
-		
 		
 		/*
 		 * Function: postShow
@@ -96,6 +74,7 @@
 		 */
 		postShow: function(){
 			
+			this.isHidden = false;
 			this.addEventListeners();		
 			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onShow);
 		
@@ -108,10 +87,6 @@
 		 */
 		fadeIn: function(){
 			
-			if (this.el === null){
-				return;
-			}
-			
 			Util.DOM.setStyle(this.el, 'opacity', 0);
 			
 			this.fadeInFromCurrentOpacity();
@@ -119,18 +94,14 @@
 		},
 		
 		
+		
 		/*
 		 * Function: fadeInFromCurrentOpacity
 		 */
 		fadeInFromCurrentOpacity: function(){
 			
-			if (this.el === null){
-				return;
-			}
+			this.stopFade();
 			
-			this.preFadeIn();
-			
-			this.isFading = true;
 			this.isHidden = false;
 			
 			// Fade in
@@ -145,54 +116,30 @@
 		},
 		
 		
-		/*
-		 * Function: preFadeIn
-		 */
-		preFadeIn: function(){
-			
-			this.stopFade();
-			
-			// Set position
-			this.resetPosition();
-			
-		},
-		
 				
 		/*
 		 * Function: postFadeIn
 		 */
 		postFadeIn: function(e){
 			
-			this.isFading = false;
+			if (this.isHidden){
+				return;
+			}
+			
 			this.addEventListeners();			
 			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onFadeIn);
 			
 		},
 		
-		
-		/*
-		 * Function: preHide
-		 */
-		preHide: function(){
-			
-			this.stopFade();
-			
-		},
-		
-		
+	
 				
 		/*
 		 * Function: hide
 		 */
 		hide: function(){
+					
+			this.stopFade();
 			
-			if (this.el === null){
-				return;
-			}
-			
-			this.preHide();
-			
-			this.isHidden = true;
 			Util.DOM.hide(this.el);
 			
 			this.postHide();
@@ -206,6 +153,7 @@
 		 */
 		postHide: function(){
 			
+			this.isHidden = true;
 			this.removeEventListeners();	
 			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onHide);
 			
@@ -217,22 +165,15 @@
 		 */
 		fadeOut: function(){
 			
-			this.isFading = true;
+			this.stopFade();
+				
 			this.isHidden = true;
-			
+						
 			Util.Animation.fadeOut(this.el, this.settings.fadeOutSpeed, this.fadeOutHandler);
 			
 		},
 		
 		
-		/*
-		 * Function: preFadeOut
-		 */
-		preFadeOut: function(){
-		
-			this.stopFade();
-			
-		},
 		
 		
 		/*
@@ -240,10 +181,11 @@
 		 */
 		postFadeOut: function(e){
 			
-			this.isFading = false;
-	
-			Util.DOM.hide(this.el);
+			if (!this.isHidden){
+				return;
+			}
 			
+			Util.DOM.hide(this.el);
 			this.removeEventListeners();
 			
 			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onFadeOut);
@@ -251,17 +193,13 @@
 		},
 		
 		
+		
 		/*
 		 * Function: stopFade
 		 */
 		stopFade: function(){
 			
-			if (this.el === null){
-				return;
-			}
-			
 			Util.Animation.stopFade(this.el);
-			this.isFading = false;
 		
 		},
 		

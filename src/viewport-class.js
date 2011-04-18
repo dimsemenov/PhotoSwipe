@@ -27,7 +27,8 @@
 		init: function(options){
 			
 			this.settings = {
-				swipeThreshold: 500
+				swipeThreshold: 500,
+				zIndex: 1000
 			};
 			
 			Util.extend(this.settings, options);
@@ -49,6 +50,7 @@
 			Util.DOM.setStyle(this.el, {
 				position: 'absolute',
 				left: 0,
+				zIndex: this.settings.zIndex,
 				overflow: 'hidden'
 			});
 			Util.DOM.hide(this.el);

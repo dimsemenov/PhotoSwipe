@@ -29,7 +29,8 @@
 			
 			this.settings = {
 				position: 'bottom',
-				hideClose: false
+				hideClose: false,
+				zIndex: 1000
 			};
 			
 			Util.extend(this.settings, options);
@@ -53,12 +54,13 @@
 				left: 0,
 				position: 'absolute',
 				overflow: 'hidden',
-				zIndex: 1001,
+				zIndex: this.settings.zIndex,
 				display: 'table',
 				opacity: 0
 			});
 			Util.DOM.hide(this.el);
 			Util.DOM.appendToBody(this.el);
+			
 			
 			// Close
 			this.closeEl = Util.DOM.createElement('div', { 'class': Code.PhotoSwipe.ToolbarClass.CssClasses.close }, '<div class="' + Code.PhotoSwipe.ToolbarClass.CssClasses.content + '"></div>');
@@ -166,7 +168,7 @@
 			
 		},
 		
-		
+	
 		
 		/*
 		 * Function: resetPosition
@@ -176,15 +178,15 @@
 			var top;
 			
 			if (this.settings.position === 'bottom') {
-				top = Util.DOM.windowHeight() - Util.DOM.height(this.el) + Util.DOM.windowScrollTop();
+				top = Util.DOM.windowHeight() - Util.DOM.outerHeight(this.el) + Util.DOM.windowScrollTop();
 			}
 			else {
 				top = Util.DOM.windowScrollTop();
 			}
-			
+					
 			Util.DOM.setStyle(this.el, 'top', top + 'px');
 			Util.DOM.width(this.el, Util.DOM.bodyWidth());
-			
+						
 		},
 		
 		

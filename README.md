@@ -106,6 +106,8 @@ This example assumes you want to use jQuery for the gallery's engine as well as 
 Options
 -------
 
+- **zIndex**: The intial zIndex for PhotoSwipe. Default "1000"
+
 - **fadeInSpeed**: The speed of any fading-in elements in milliseconds. Default "250"
 
 - **fadeOutSpeed**: The speed of any fading-out elements in milliseconds. Default "500"

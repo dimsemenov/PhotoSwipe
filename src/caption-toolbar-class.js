@@ -14,7 +14,6 @@
 		caption: null,
 		
 		isHidden: null,
-		isFading: null,
 		
 		hasAddedEventListeners: null,
 		
@@ -35,13 +34,13 @@
 				autoHideDelay: 5000,
 				flipPosition: false,
 				showEmptyCaptions: true,
-				hideClose: false
+				hideClose: false,
+				zIndex: 1000
 			};
 			
 			Util.extend(this.settings, options);
 			
 			this.isHidden = true;
-			this.isFading = false;
 			this.hasAddedEventListeners = false;
 			
 			this.toolbarClickEventHandler = this.onToolbarClick.bind(this);
@@ -50,7 +49,8 @@
 				fadeInSpeed: this.settings.fadeInSpeed,
 				fadeOutSpeed: this.settings.fadeOutSpeed,
 				opacity: this.settings.opacity,
-				position: (this.settings.flipPosition) ? 'bottom' : 'top'
+				position: (this.settings.flipPosition) ? 'bottom' : 'top',
+				zIndex: this.settings.zIndex
 			});
 			
 			
@@ -59,7 +59,8 @@
 				fadeOutSpeed: this.settings.fadeOutSpeed,
 				opacity: this.settings.opacity,
 				position: (this.settings.flipPosition) ? 'top' : 'bottom',
-				hideClose: this.settings.hideClose
+				hideClose: this.settings.hideClose,
+				zIndex: this.settings.zIndex+1
 			});
 						
 		},
@@ -104,7 +105,7 @@
 			this.hasAddedEventListeners = false;
 		
 		},
-		
+			
 		
 		
 		/*
@@ -118,7 +119,6 @@
 			if (this.isHidden){
 				
 				this.isHidden = false;
-				this.isFading = true;
 				
 				// Already hidden so fade in
 				this.fadeInCaption();
@@ -143,6 +143,24 @@
 				
 			}
 		
+		},
+		
+		
+		
+		showCaption: function(){
+		
+			if (this.caption.captionValue === ''){
+				
+				// Caption is empty
+				if (this.settings.showEmptyCaptions){
+					this.caption.show();
+				}
+				
+			}
+			else{
+				this.caption.show();
+			}
+			
 		},
 		
 		
@@ -172,8 +190,6 @@
 		onFadeIn: function(){
 			
 			this.addEventListeners();
-			
-			this.isFading = false;
 			this.resetAutoHideTimeout();
 			
 		},
@@ -189,7 +205,6 @@
 			this.stopFade();
 			
 			this.isHidden = true;
-			this.isFading = true;
 			
 			this.caption.fadeOut();
 			this.toolbar.fadeOut();
@@ -206,7 +221,6 @@
 		 * Function: onFadeOut
 		 */
 		onFadeOut: function(){
-			this.isFading = false;
 		},
 		
 		

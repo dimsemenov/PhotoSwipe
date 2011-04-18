@@ -24,7 +24,6 @@
 		lastShowPrevTrigger: null,
 		
 		viewportFadeInEventHandler: null,
-		windowResizeEventHandler: null,
 		windowOrientationChangeEventHandler: null,
 		windowScrollEventHandler: null,
 		keyDownEventHandler: null,
@@ -32,6 +31,7 @@
 		viewportFadeOutEventHandler: null,
 		sliderDisplayCurrentFullSizeImageEventHandler: null,
 		toolbarClickEventHandler: null,
+		orientationEventName: null,
 		
 		
 		/*
@@ -56,6 +56,7 @@
 				slideshowDelay: 3000,
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
 				preventHide: false,
+				zIndex: 1000,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
@@ -67,7 +68,6 @@
 			
 			// Set pointers to event handlers
 			this.viewportFadeInEventHandler = this.onViewportFadeIn.bind(this);
-			this.windowResizeEventHandler = this.onWindowResize.bind(this);
 			this.windowOrientationChangeEventHandler = this.onWindowOrientationChange.bind(this);
 			this.windowScrollEventHandler = this.onWindowScroll.bind(this);
 			this.keyDownEventHandler = this.onKeyDown.bind(this);
@@ -166,6 +166,9 @@
 			if (Util.isNothing(this.documentOverlay)){
 				this.build();
 			}
+			else{
+				this.resetPosition();
+			}
 			
 			// Fade in the viewport overlay,
 			// then show the viewport, slider and toolbar etc
@@ -188,14 +191,16 @@
 			// Create the document overlay
 			this.documentOverlay = new DocumentOverlayClass({ 
 				fadeInSpeed: this.settings.fadeInSpeed,
-				fadeOutSpeed: this.settings.fadeOutSpeed
+				fadeOutSpeed: this.settings.fadeOutSpeed,
+				zIndex: this.settings.zIndex
 			});
 			
 			// Create the viewport
 			this.viewport = new ViewportClass({ 
 				fadeInSpeed: this.settings.fadeInSpeed,
 				fadeOutSpeed: this.settings.fadeOutSpeed, 
-				swipeThreshold: this.settings.swipeThreshold 
+				swipeThreshold: this.settings.swipeThreshold,
+				zIndex: this.settings.zIndex+1 
 			});
 			
 			// Create the slider
@@ -216,10 +221,13 @@
 				autoHideDelay: this.settings.captionAndToolbarAutoHideDelay,
 				flipPosition: this.settings.captionAndToolbarFlipPosition,
 				showEmptyCaptions: this.settings.captionAndToolbarShowEmptyCaptions,
-				hideClose: this.settings.preventHide
+				hideClose: this.settings.preventHide,
+				zIndex: this.settings.zIndex+2
 			
 			});
-		
+			
+			this.resetPosition();
+			
 		},
 		
 		
@@ -229,11 +237,11 @@
 		 */
 		addEventListeners: function(){
 			
-			// Set window size handlers
-			if (!Util.isNothing(window.orientation)){
-				Util.DOM.addEventListener(window, 'orientationchange', this.windowOrientationChangeEventHandler);
-			}
-			Util.DOM.addEventListener(window, 'resize', this.windowResizeEventHandler);
+			// Set window handlers
+			var supportsOrientationChange = "onorientationchange" in window;
+			this.orientationEventName = supportsOrientationChange ? "orientationchange" : "resize";
+			
+			Util.DOM.addEventListener(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
 			
 			Util.DOM.addEventListener(window, 'scroll', this.windowScrollEventHandler);
 			
@@ -258,12 +266,8 @@
 		 */
 		removeEventListeners: function(){
 			
-			// Remove window size handlers
-			if (!Util.isNothing(window.orientation)){
-				Util.DOM.removeEventListener(window, 'orientationchange', this.windowOrientationChangeEventHandler);
-			}
-			
-			Util.DOM.removeEventListener(window, 'resize', this.windowResizeEventHandler);
+			// Remove window handlers
+			Util.DOM.removeEventListener(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
 			
 			Util.DOM.removeEventListener(window, 'scroll', this.windowScrollEventHandler);
 			
@@ -362,17 +366,6 @@
 		
 		
 		/*
-		 * Function: onWindowResize
-		 */
-		onWindowResize: function(e){
-			
-			this.resetPosition();
-		
-		},
-		
-		
-		
-		/*
 		 * Function: onKeyDown
 		 */
 		onKeyDown: function(e){
@@ -437,10 +430,6 @@
 		 */
 		resetPosition: function(){
 		
-			if (this.isBusy){
-				return;
-			}
-			
 			this.viewport.resetPosition();
 			this.slider.resetPosition();
 			this.documentOverlay.resetPosition();
@@ -532,7 +521,7 @@
 		/*
 		 * Function: showNext
 		 */
-		showNext: function(fadeOutCaptionAndToolbar){
+		showNext: function(){
 			
 			if (this.isBusy){
 				return;
@@ -553,7 +542,7 @@
 		/*
 		 * Function: showPrevious
 		 */
-		showPrevious: function(fadeOutCaptionAndToolbar){
+		showPrevious: function(){
 			
 			if (this.isBusy){
 				return;
@@ -710,14 +699,14 @@
 			}
 			
 			
-			if (this.captionAndToolbar.isFading){
-				return;
-			}
+			//if (this.captionAndToolbar.isFading){
+			//	return;
+			//}
 			
 			if (this.captionAndToolbar.isHidden){
 				
 				this.captionAndToolbar.fadeIn();
-			
+
 			}
 			else{
 				
@@ -875,7 +864,7 @@
 		onResetPosition: 'onResetPosition',
 		onSlideshowStart: 'onSlideshowStart',
 		onSlideshowStop: 'onSlideshowStop'
-	
+		
 	};
 	
 	
@@ -955,8 +944,8 @@
 		
 		var showPhotoSwipe = function(clickedEl){
 			
-			var startingIndex = 0;
-			for (startingIndex; startingIndex < thumbEls.length; startingIndex++){
+			var startingIndex;
+			for (startingIndex = 0; startingIndex < thumbEls.length; startingIndex++){
 				if (thumbEls[startingIndex] === clickedEl){
 					break;
 				}

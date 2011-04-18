@@ -86,6 +86,20 @@
 				console.log('onSlideshowStop');
 				
 			});
+			
+			// onCaptionAndToolbarShow
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarShow, function(e){
+				
+				console.log('onCaptionAndToolbarShow');
+				
+			});
+			
+			// onCaptionAndToolbarHide
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarHide, function(e){
+				
+				console.log('onCaptionAndToolbarHide');
+				
+			});
 						
 			var thumbEls = Code.photoSwipe('a', '#Gallery', {
 			
@@ -99,6 +113,7 @@
 				slideshowDelay: 3000,
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
 				preventHide: false,
+				zIndex: 1000,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,

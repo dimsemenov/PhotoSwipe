@@ -83,7 +83,6 @@ div.ps-toolbar
 	font-family: "Lucida Grande", Helvetica, Arial,Verdana, sans-serif;
 	text-align: center;
 	height: 44px;
-	border-collapse: collapse;
 	display: table;
 	table-layout: fixed;
 }

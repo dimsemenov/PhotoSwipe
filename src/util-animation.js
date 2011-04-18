@@ -35,11 +35,14 @@
 					de = Util.coalesce(delay, '');
 				}
 				
-				Util.DOM.setStyle(el, transitionPrefix + 'Property', p);
-				Util.DOM.setStyle(el, transitionPrefix + 'Duration', d);
-				Util.DOM.setStyle(el, transitionPrefix + 'TimingFunction', t);
-				Util.DOM.setStyle(el, transitionPrefix + 'Delay', de);
-				
+				var transitionValues = {};
+				transitionValues[transitionPrefix + 'Property'] = p;
+				transitionValues[transitionPrefix + 'Duration'] = d;
+				transitionValues[transitionPrefix + 'TimingFunction'] = t;
+				transitionValues[transitionPrefix + 'Delay'] = de;
+								
+				Util.DOM.setStyle(el, transitionValues);
+								
 				// Wait for the above transitions to get applied
 				if (Util.isFunction(c)){
 					window.setTimeout(
@@ -105,11 +108,14 @@
 				
 				var transitionPrefix = Util.Animation._getTransitionPrefix();
 				
-				Util.DOM.setStyle(el, transitionPrefix + 'Property', '');
-				Util.DOM.setStyle(el, transitionPrefix + 'Duration', '');
-				Util.DOM.setStyle(el, transitionPrefix + 'TimingFunction', '');
-				Util.DOM.setStyle(el, transitionPrefix + 'Delay', '');
-				
+				var transitionValues = {};
+				transitionValues[transitionPrefix + 'Property'] = '';
+				transitionValues[transitionPrefix + 'Duration'] = '';
+				transitionValues[transitionPrefix + 'TimingFunction'] = '';
+				transitionValues[transitionPrefix + 'Delay'] = '';
+								
+				Util.DOM.setStyle(el, transitionValues);
+								
 			},
 			
 			
@@ -135,17 +141,21 @@
 			 */
 			stopFade: function(el){
 				
+				var fadeCallback = Util.getElementData(el, 'transitionEndEvent');
+				if (Util.isNothing(fadeCallback)){
+					return;
+				}
+				
 				Util.DOM.removeEventListener(
 					el, 
 					Util.Animation._getTransitionEndEventLabel(), 
 					Util.getElementData(el, 'transitionEndEvent')
 				);
 				
-				var transitionPrefix = Util.Animation._getTransitionPrefix();
 				var currentOpacity = window.getComputedStyle(el,'').getPropertyValue('opacity');
-				
+							
 				Util.Animation._removeTransitions(el);
-			
+				
 				Util.DOM.setStyle(el, 'opacity', currentOpacity);
 				
 			},
@@ -157,7 +167,7 @@
 			 * Make sure the element is displayed before calling
 			 */
 			fadeIn: function(el, opacity, duration, callback){
-				
+					
 				opacity = Util.coalesce(opacity, 1);
 				duration = Util.coalesce(duration, 500);
 				

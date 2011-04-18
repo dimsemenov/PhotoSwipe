@@ -15,6 +15,12 @@
 		 */
 		init: function(options){
 			
+			this.settings = {
+				zIndex: 1000
+			};
+			
+			Util.extend(this.settings, options);
+			
 			this._super(options);
 			
 			// Create element and append to body
@@ -22,6 +28,7 @@
 			Util.DOM.setStyle(this.el, {
 				left: 0,
 				position: 'absolute',
+				zIndex: this.settings.zIndex,
 				top: 0
 			});
 			Util.DOM.hide(this.el);

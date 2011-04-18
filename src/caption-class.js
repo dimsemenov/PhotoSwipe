@@ -23,7 +23,8 @@
 		init: function(options){
 			
 			this.settings = {
-				position: 'bottom'
+				position: 'top',
+				zIndex: 1000
 			};
 			
 			Util.extend(this.settings, options);
@@ -45,7 +46,7 @@
 				left: 0,
 				position: 'absolute',
 				overflow: 'hidden',
-				zIndex: 1000,
+				zIndex: this.settings.zIndex,
 				opacity: 0
 			});
 			Util.DOM.hide(this.el);
@@ -105,7 +106,7 @@
 			var top;
 			
 			if (this.settings.position === 'bottom') {
-				top = Util.DOM.windowHeight() - Util.DOM.height(this.el) + Util.DOM.windowScrollTop();
+				top = Util.DOM.windowHeight() - Util.DOM.outerHeight(this.el) + Util.DOM.windowScrollTop();
 			}
 			else {
 				top = Util.DOM.windowScrollTop();

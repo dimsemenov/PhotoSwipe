@@ -35,3 +35,19 @@ Major update:
 - Added "exclusive mode". This means the user will only be able to interact with PhotoSwipe, and not the underlying document. They will be unable to close PhotoSwipe once it is active. (see examples/exclusive-mode.html)
 	
 - Fixed Issue #1 - Line break in thumbnail anchor can cause a JS error
+
+
+
+1.0.3 18.04.11 - Ste Brennan
+----------------------------
+
+- Fixed issue with orientation change not triggering on Android
+
+- Added new zIndex setting. Lets you specify the starting zIndex for PhotoSwipe
+
+- Reduced the number of times the internal function "resetPosition" was being fired
+
+- Fixed issue with show and hide of toolbar / caption. Has occasionally locking up.
+
+- Now compliled with Google Closure. Overall smaller file size
+

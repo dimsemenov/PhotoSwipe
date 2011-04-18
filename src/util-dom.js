@@ -255,7 +255,7 @@
 			 */
 			show: function(el){
 				
-				if (Util.DOM.getStyle(el, 'display') === 'none'){
+				if (Util.DOM.getStyle(el, 'display') == 'none'){
 					var oldDisplayValue = Util.getElementData(el, 'oldDisplayValue', 'block');
 					if (oldDisplayValue === 'none'){
 						oldDisplayValue = 'block';
@@ -289,7 +289,12 @@
 			 */
 			outerWidth: function(el){
 				
-				return el.offsetWidth;
+				var retval = Util.DOM.width(el);
+				
+				retval += parseInt(Util.DOM.getStyle(el, 'padding-left'), 10) + parseInt(Util.DOM.getStyle(el, 'padding-right'), 10); 
+				retval += parseInt(Util.DOM.getStyle(el, 'margin-left'), 10) + parseInt(Util.DOM.getStyle(el, 'margin-right'), 10); 
+				retval += parseInt(Util.DOM.getStyle(el, 'border-left-width'), 10) + parseInt(Util.DOM.getStyle(el, 'border-right-width'), 10); 
+				return retval;
 			
 			},
 			
@@ -347,7 +352,13 @@
 			 */
 			outerHeight: function(el){
 				
-				return el.offsetHeight;
+				var retval = Util.DOM.height(el);
+				
+				retval += parseInt(Util.DOM.getStyle(el, 'padding-top'), 10) + parseInt(Util.DOM.getStyle(el, 'padding-bottom'), 10); 
+				retval += parseInt(Util.DOM.getStyle(el, 'margin-top'), 10) + parseInt(Util.DOM.getStyle(el, 'margin-bottom'), 10); 
+				retval += parseInt(Util.DOM.getStyle(el, 'border-top-width'), 10) + parseInt(Util.DOM.getStyle(el, 'border-bottom-width'), 10); 
+								
+				return retval;
 			
 			},
 			

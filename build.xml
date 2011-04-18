@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="PhotoSwipe" default="build" basedir=".">
 	
+	<property name="jscompjar" location="${project.tools.dir}/google-closure/compiler.jar" />
+	
+	<taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="tools/google-closure/compiler.jar" />
+	
 	<property file="build.properties"/>
 	
+	<!--
 	<taskdef name="jsmin" classname="net.matthaynes.jsmin.JSMin_Task" classpath="tools/jsmin/jsmin.0.2.4.jar"/>
-					 
+	-->
+	
 	<target name="build">
 		
 		<buildnumber/>
-		
+	
 		<echo>Building = ${project.build.version}</echo>
 		
 		<!-- Delete and re-create working and artifact directory -->
@@ -61,7 +67,15 @@
 		</antcall>
 		
 		<!-- Minimise -->
+		<jscomp compilationLevel="simple" debug="false" output="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js">
+			<sources dir="${project.build.workdir}">
+				<file name="code-photoswipe${engine}-${project.build.version}.js" />
+			</sources>
+		</jscomp>
+		
+		<!--
 		<jsmin srcfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.js" suffix="true" />
+		-->
 		
 		<!-- Add license etc to the minified version -->
 		<concat destfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js">	
@@ -112,7 +126,15 @@
 			<fileset dir="${project.src.dir}/lib"/>
 		</copy>
 		
+		<jscomp compilationLevel="simple" warning="quiet" debug="false" output="${project.build.workdir}/lib/simple-inheritance.min.js">
+			<sources dir="${project.build.workdir}/lib">
+				<file name="simple-inheritance.js" />
+			</sources>
+		</jscomp>
+		
+		<!--
 		<jsmin srcfile="${project.build.workdir}/lib/simple-inheritance.js" suffix="true" />
+		-->
 		
 		<concat destfile="${project.build.workdir}/lib/simple-inheritance.min2.js">	
 			<fileset dir="." includes="${project.build.workdir}/lib/simple-inheritance.txt" />
