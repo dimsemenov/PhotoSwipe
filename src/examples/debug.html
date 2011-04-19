@@ -17,6 +17,7 @@
 	<script type="text/javascript" src="../document-overlay-class.js"></script>
 	<script type="text/javascript" src="../viewport-class.js"></script>
 	<script type="text/javascript" src="../slider-item-class.js"></script>
+	<script type="text/javascript" src="../zoom-pan-rotate-item-class.js"></script>
 	<script type="text/javascript" src="../slider-class.js"></script>
 	<script type="text/javascript" src="../caption-class.js"></script>
 	<script type="text/javascript" src="../toolbar-class.js"></script>
@@ -100,7 +101,8 @@
 				console.log('onCaptionAndToolbarHide');
 				
 			});
-						
+			
+			
 			var thumbEls = Code.photoSwipe('a', '#Gallery', {
 			
 				getImageSource: Code.PhotoSwipe.GetImageSource,
@@ -109,18 +111,23 @@
 				fadeOutSpeed: 500,
 				slideSpeed: 250,
 				swipeThreshold: 50,
+				swipeTimeThreshold: 250,
 				loop: true,
 				slideshowDelay: 3000,
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
 				preventHide: false,
 				zIndex: 1000,
 				
+				/* Experimental! */
+				allowUserZoom: true, 
+				allowRotationOnUserZoom: true,
+				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
 				captionAndToolbarFlipPosition: false,
 				captionAndToolbarAutoHideDelay: 5000,
 				captionAndToolbarOpacity: 0.8,
-				captionAndToolbarShowEmptyCaptions: true			
+				captionAndToolbarShowEmptyCaptions: true	
 				
 			});
 			

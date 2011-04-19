@@ -52,11 +52,16 @@
 				fadeOutSpeed: 500,
 				slideSpeed: 250,
 				swipeThreshold: 50,
+				swipeTimeThreshold: 250,
 				loop: true,
 				slideshowDelay: 3000,
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
 				preventHide: false,
 				zIndex: 1000,
+				
+				/* Experimental! */
+				allowUserZoom: true, 
+				allowRotationOnUserZoom: true,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
@@ -200,6 +205,7 @@
 				fadeInSpeed: this.settings.fadeInSpeed,
 				fadeOutSpeed: this.settings.fadeOutSpeed, 
 				swipeThreshold: this.settings.swipeThreshold,
+				swipeTimeThreshold: this.settings.swipeTimeThreshold,
 				zIndex: this.settings.zIndex+1 
 			});
 			
@@ -442,14 +448,54 @@
 		
 		
 		/*
-		 * Function: onViewportClick
+		 * Function: onViewportTouch
 		 */
 		onViewportTouch: function(e){
 			
 			this.stopSlideshow();
 			
 			switch(e.action){
-			
+				
+				case ViewportClass.Actions.gestureStart:
+					if (this.settings.allowUserZoom && !this.isBusy){
+						this.fadeOutCaptionAndToolbar();
+						this.slider.zoomStart();
+					}
+					break;
+					
+				case ViewportClass.Actions.gestureChange:
+					if (this.settings.allowUserZoom && !this.isBusy){
+						this.slider.zoom(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
+					}
+					break;
+					
+				case ViewportClass.Actions.gestureEnd:
+					if (this.settings.allowUserZoom && !this.isBusy){
+						this.slider.zoomEnd(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
+					}
+					break;
+					
+				case ViewportClass.Actions.touchStart:
+					if (this.settings.allowUserZoom && !this.isBusy){
+						this.slider.panStart(e.point);
+					}
+					break;
+					
+				case ViewportClass.Actions.touchMove:
+					if (this.settings.allowUserZoom && !this.isBusy){
+						this.slider.pan(e.point);
+					}
+					break;
+					
+				case ViewportClass.Actions.click:
+					if (!this.settings.hideToolbar){
+						this.toggleCaptionAndToolbar();
+					}
+					else{
+						this.hide();
+					}
+					break;
+				
 				case ViewportClass.Actions.swipeLeft:
 					this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.swipe;
 					this.showNext();
@@ -458,16 +504,6 @@
 				case ViewportClass.Actions.swipeRight:
 					this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.swipe;
 					this.showPrevious();
-					break;
-				
-				default:
-					// Click event
-					if (!this.settings.hideToolbar){
-						this.toggleCaptionAndToolbar();
-					}
-					else{
-						this.hide();
-					}
 					break;
 					
 			}
@@ -697,11 +733,6 @@
 				return;
 				
 			}
-			
-			
-			//if (this.captionAndToolbar.isFading){
-			//	return;
-			//}
 			
 			if (this.captionAndToolbar.isHidden){
 				

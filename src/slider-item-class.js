@@ -11,11 +11,16 @@
 	Code.PhotoSwipe.SliderItemClass = Code.PhotoSwipe.EventClass.extend({
 		
 		el: null,
+		imageContainerEl: null,
 		imageEl: null,
 		parentEl: null,
 		fullSizeImage: null,
 		
 		fullSizeImageLoadEventHandler: null,
+		
+		savedImageWidth: null,
+		savedImageHeight: null,
+		
 		
 		/*
 		 * Function: init
@@ -25,7 +30,7 @@
 			this._super();
 			
 			this.parentEl = parentEl;	
-			
+						
 			this.fullSizeImageLoadEventHandler = this.onFullSizeImageLoad.bind(this);
 			
 			// Create element and append to parentEl
@@ -38,6 +43,15 @@
 			Util.DOM.resetTranslate(this.el);
 			Util.DOM.appendChild(this.el, this.parentEl);
 			
+			this.imageContainerEl = Util.DOM.createElement('div');
+			Util.DOM.setStyle(this.imageContainerEl, {
+				position: 'absolute',
+				overflow: 'hidden',
+				top: 0,
+				left: 0
+			});
+			Util.DOM.appendChild(this.imageContainerEl, this.el);
+			
 			// Create image element and append to slider item
 			this.imageEl = new Image();
 			Util.DOM.setStyle(this.imageEl, {
@@ -47,7 +61,7 @@
 				padding: 0
 			});
 			Util.DOM.hide(this.imageEl);
-			Util.DOM.appendChild(this.imageEl, this.el);
+			Util.DOM.appendChild(this.imageEl, this.imageContainerEl);
 			
 		},
 		
@@ -62,11 +76,14 @@
 			Util.DOM.height(this.el, height);
 			Util.DOM.setStyle(this.el, 'left', xPos + 'px');
 			
+			Util.DOM.width(this.imageContainerEl, width);
+			Util.DOM.height(this.imageContainerEl, height);
+			
 			this.resetImagePosition();
 			
 		},
 		
-		
+				
 		
 		/*
 		 * Function: resetImagePosition
@@ -143,6 +160,8 @@
 			
 			Util.DOM.show(this.imageEl);
 			
+			this.savedImageWidth = newWidth;
+			this.savedImageHeight = newHeight;
 		},
 		
 		

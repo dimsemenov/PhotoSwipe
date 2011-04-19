@@ -9,6 +9,34 @@
 		
 		DOM: {
 		
+			_eventTagNames: {
+				'select':'input',
+				'change':'input',
+				'submit':'form',
+				'reset':'form',
+				'error':'img',
+				'load':'img',
+				'abort':'img'
+			},
+			
+			
+			/*
+			 * Function: isEventSupported
+			 * http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
+			 */
+			isEventSupported: function(eventName) {
+				var el = document.createElement(this._eventTagNames[eventName] || 'div');
+				eventName = 'on' + eventName;
+				var isSupported = (eventName in el);
+				if (!isSupported) {
+					el.setAttribute(eventName, 'return;');
+					isSupported = typeof el[eventName] == 'function';
+				}
+				el = null;
+				return isSupported;
+			},
+			
+		
 			/*
 			 * Function: resetTranslate
 			 * Required for smoother transition on iOS

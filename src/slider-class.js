@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util, SliderItemClass){
+(function(Util, SliderItemClass, ZoomPanRotateItemClass){
 
 	/*
 	 * Class: Code.PhotoSwipe.SliderClass
@@ -14,10 +14,14 @@
 		parentElWidth: null,
 		parentElHeight: null,
 		items: null,
+		scaleEl: null,
+		
+		lastScaleValue: null,
 		
 		previousItem: null,
 		currentItem: null,
 		nextItem: null,
+		zoomPanRotateItem: null,
 		
 		hasBounced: null,
 		lastShowAction: null,
@@ -120,6 +124,8 @@
 		 */
 		resetPosition: function(){
 			
+			this.removeZoomPanRotate();
+			
 			this.parentElWidth = Util.DOM.width(this.parentEl);
 			this.parentElHeight = Util.DOM.height(this.parentEl);
 			
@@ -153,6 +159,105 @@
 		},
 		
 		
+		
+		/*
+		 * Function: zoomStart
+		 */
+		zoomStart: function(){
+			
+			if (Util.isNothing(this.zoomPanRotateItem)){
+				
+				this.zoomPanRotateItem = new ZoomPanRotateItemClass({}, this.currentItem.el, this.el);
+				
+				Util.DOM.hide(this.currentItem.imageContainerEl);
+			
+			}
+			
+		},
+		
+		
+		
+		/*
+		 * Function: zoom
+		 */
+		zoom: function(scaleValue, rotationValue){
+			
+			if (Util.isNothing(this.zoomPanRotateItem)){
+				return;
+			}
+			
+			this.zoomPanRotateItem.zoom(scaleValue, rotationValue);
+		
+		},
+		
+		
+		
+		/*
+		 * Function: zoomEnd
+		 */
+		zoomEnd: function(scaleValue, rotationValue){
+			
+			if (Util.isNothing(this.zoomPanRotateItem)){
+				return;
+			}
+			
+			// Store last scale
+			this.zoomPanRotateItem.setStartingScale(scaleValue);
+			this.zoomPanRotateItem.setStatingRotation(rotationValue);
+			
+		},
+		
+		
+		
+		/*
+		 * Function: panStart
+		 */
+		panStart: function(point){
+			
+			if (Util.isNothing(this.zoomPanRotateItem)){
+				return;
+			}
+			
+			this.zoomPanRotateItem.panStart(point);
+	
+		},
+		
+		
+		
+		/*
+		 * Function: pan
+		 */
+		pan: function(point){
+		
+			if (Util.isNothing(this.zoomPanRotateItem)){
+				return;
+			}
+			
+			this.zoomPanRotateItem.pan(point);
+			
+		},
+		
+		
+		
+		/*
+		 * Function: removeZoomPanRotate
+		 */
+		removeZoomPanRotate: function(){
+			
+			if (Util.isNothing(this.zoomPanRotateItem)){
+				return;
+			}
+			
+			this.zoomPanRotateItem.removeFromDOM();
+			this.zoomPanRotateItem = null;
+			
+			// This needs reviewing. Not sure why but leaving this
+			// causes a major delay in the swipe event triggering (iOS)
+			Util.DOM.show(this.currentItem.el);
+			
+		},
+		
+		
 		/*
 		 * Function: setCurrentFullSizeImage
 		 */
@@ -181,6 +286,8 @@
 		 */
 		showNext: function(){
 			
+			this.removeZoomPanRotate();
+			
 			this.lastShowAction = Code.PhotoSwipe.SliderClass.ShowActionTypes.next;
 			this.hasBounced = false;
 			
@@ -201,6 +308,8 @@
 		 * Function: 
 		 */
 		showPrevious: function(){
+			
+			this.removeZoomPanRotate();
 			
 			this.lastShowAction = Code.PhotoSwipe.SliderClass.ShowActionTypes.previous;
 			this.hasBounced = false;
@@ -270,6 +379,11 @@
 		 */
 		onShowNextEnd: function(){
 			
+			Util.DOM.show(this.currentItem.imageContainerEl);
+			
+			// Ensure currentItem is visible, may not be if zooming / panning
+			Util.DOM.show(this.currentItem.el);
+			
 			// Swap the next and current around, then re-center the slider
 			Util.swapArrayElements(this.items, 1, 2);
 			
@@ -291,7 +405,12 @@
 		 * Function: onShowPreviousEnd
 		 */
 		onShowPreviousEnd: function(){
-		
+			
+			Util.DOM.show(this.currentItem.imageContainerEl);
+			
+			// Ensure currentItem is visible, may not be if zooming / panning
+			Util.DOM.show(this.currentItem.el);
+			
 			// Swap the previous and current around, then re-center the slider
 			Util.swapArrayElements(this.items, 1, 0);
 			
@@ -378,4 +497,4 @@
 	};
 	
 	
-})(Code.PhotoSwipe.Util, Code.PhotoSwipe.SliderItemClass);
+})(Code.PhotoSwipe.Util, Code.PhotoSwipe.SliderItemClass, Code.PhotoSwipe.ZoomPanRotateItemClass);
