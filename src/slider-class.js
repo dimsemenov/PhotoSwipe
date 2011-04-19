@@ -125,6 +125,7 @@
 		resetPosition: function(){
 			
 			this.removeZoomPanRotate();
+			Util.DOM.show(this.currentItem.imageContainerEl);
 			
 			this.parentElWidth = Util.DOM.width(this.parentEl);
 			this.parentElHeight = Util.DOM.height(this.parentEl);
@@ -331,6 +332,8 @@
 		 * Function: bounce
 		 */
 		bounce: function () {
+			
+			Util.DOM.show(this.currentItem.imageContainerEl);
 			
 			this.hasBounced = true;
 			
