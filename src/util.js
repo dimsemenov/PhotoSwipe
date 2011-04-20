@@ -42,7 +42,9 @@
     	opera: /opera/.test(navigator.userAgent), // untested
     	msie: /msie/.test(navigator.userAgent) && !/opera/.test(navigator.userAgent), 
     	mozilla: /mozilla/.test(navigator.userAgent) && !/(compatible|webkit)/.test(navigator.userAgent),
-      mobileSafari: /Mac OS X.*Mobile.*Safari/.test(navigator.userAgent)
+			mobileSafariIOS: /Mac OS X.*Mobile.*Safari/.test(navigator.userAgent),
+			mobileSafari: /Mobile.*Safari/.test(navigator.userAgent),
+			mobileSafari3dSupported: false
     },
 	
 	
@@ -226,5 +228,10 @@
 		
 	};
 	
+	
+	if (Code.PhotoSwipe.Util.browser.mobileSafari){
+		var test3DEl = document.createElement('div');
+		Code.PhotoSwipe.Util.browser.mobileSafari3dSupported = !Code.PhotoSwipe.Util.isNothing(test3DEl.style.WebkitPerspective);
+	}
 	
 })();

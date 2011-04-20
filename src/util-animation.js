@@ -237,7 +237,7 @@
 					Util.removeElementData(el, 'slideByYPos');
 				
 					Util.DOM.setStyle(el, {
-						webkitTransform: (Util.isMobileSafari) ? 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)' : 'translate(' + xPos + 'px, ' + yPos + 'px)',
+						webkitTransform: (Util.browser.mobileSafari3dSupported) ? 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)' : 'translate(' + xPos + 'px, ' + yPos + 'px)',
 						MozTransform: 'translate(' + xPos + 'px, ' + yPos + 'px)',
 						transform: 'translate(' + xPos + 'px, ' + yPos + 'px)'
 					});

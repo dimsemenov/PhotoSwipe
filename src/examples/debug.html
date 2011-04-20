@@ -17,20 +17,32 @@
 	<script type="text/javascript" src="../document-overlay-class.js"></script>
 	<script type="text/javascript" src="../viewport-class.js"></script>
 	<script type="text/javascript" src="../slider-item-class.js"></script>
-	<script type="text/javascript" src="../zoom-pan-rotate-item-class.js"></script>
 	<script type="text/javascript" src="../slider-class.js"></script>
 	<script type="text/javascript" src="../caption-class.js"></script>
 	<script type="text/javascript" src="../toolbar-class.js"></script>
 	<script type="text/javascript" src="../caption-toolbar-class.js"></script>
+	<script type="text/javascript" src="../zoom-pan-rotate-class.js"></script>
 	<script type="text/javascript" src="../photoswipe.js"></script>
 	
 	
 	<script type="text/javascript">
+	
+		/* 
+			Overview: 
+			---------
+			
+			This is a debug version loading all int individual class files. 
+			It will not run from the released "examples" folder. It needs to be run from
+			"/src/examples/debug.html"
 		
+		*/
+
+	
 		// Set up PhotoSwipe with all anchor tags in the Gallery container 
 		document.addEventListener('DOMContentLoaded', function(){
 			
 			// Add event listeners
+			
 			
 			// onShow
 			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShow, function(e){
@@ -102,7 +114,6 @@
 				
 			});
 			
-			
 			var thumbEls = Code.photoSwipe('a', '#Gallery', {
 			
 				getImageSource: Code.PhotoSwipe.GetImageSource,
@@ -135,34 +146,6 @@
 		
 		}, false);
 		
-		
-		/* 
-			Overview: 
-			---------
-			
-			Code.photoSwipe(thumbnail-elements, container-element, options);
-				
-			When you specify a container-element, the helper uses event delegation
-			to handle the click event, i.e. rather than having 50 click event listeners
-			for each thumbnail, we have one for the container then try and deduce which
-			thumbnail was clicked. If you omit a container, an event listener will be placed 
-			on each individual thumbnail found.
-			
-			
-			With options:
-			-------------
-			Code.photoSwipe('a', '#Gallery', { loop: false, hideCaption: true } );
-			
-			
-			Using preselected elements:
-			---------------------------
-			var galleryEl = document.getElementById('Gallery');
-			var thumbEls = galleryEl.querySelectorAll('a');
-			
-			Code.photoSwipe(thumbEls, galleryEl);
-		
-		*/
-					
 		
 	</script>
 	

@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util, ElementClass, DocumentOverlayClass, FullSizeImageClass, ViewportClass, SliderClass, CaptionClass, ToolbarClass, CaptionToolbarClass){
+(function(Util, ElementClass, DocumentOverlayClass, FullSizeImageClass, ViewportClass, SliderClass, CaptionClass, ToolbarClass, CaptionToolbarClass, ZoomPanRotateClass){
 
 	var photoSwipe = Code.PhotoSwipe.EventClass.extend({
 		
@@ -13,6 +13,7 @@
 		viewport: null,
 		slider: null,
 		captionAndToolbar: null,
+		zoomPanRotate: null,
 		
 		settings: null,
 		currentIndex: null,	
@@ -228,7 +229,7 @@
 				flipPosition: this.settings.captionAndToolbarFlipPosition,
 				showEmptyCaptions: this.settings.captionAndToolbarShowEmptyCaptions,
 				hideClose: this.settings.preventHide,
-				zIndex: this.settings.zIndex+2
+				zIndex: this.settings.zIndex+3
 			
 			});
 			
@@ -435,7 +436,9 @@
 		 * Function: resetPosition
 		 */
 		resetPosition: function(){
-		
+			
+			this.removeZoomPanRotate();
+			
 			this.viewport.resetPosition();
 			this.slider.resetPosition();
 			this.documentOverlay.resetPosition();
@@ -443,6 +446,28 @@
 			
 			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onResetPosition);
 			
+		},
+		
+		
+		
+		/*
+		 * Function: canUserZoom
+		 */
+		canUserZoom: function(){
+			
+			return (this.settings.allowUserZoom && !this.isBusy);
+			
+		},
+		
+		
+		
+		/*
+		 * Function: isZoomActive
+		 */
+		isZoomActive: function(){
+			
+			return (!Util.isNothing(this.zoomPanRotate));
+		
 		},
 		
 		
@@ -457,33 +482,35 @@
 			switch(e.action){
 				
 				case ViewportClass.Actions.gestureStart:
-					if (this.settings.allowUserZoom && !this.isBusy){
+					if (this.canUserZoom()){
+						if (!this.isZoomActive()){
+							this.zoomPanRotate = new ZoomPanRotateClass({}, this.viewport.el, this.slider.currentItem.imageEl);
+						}
 						this.fadeOutCaptionAndToolbar();
-						this.slider.zoomStart();
 					}
 					break;
 					
 				case ViewportClass.Actions.gestureChange:
-					if (this.settings.allowUserZoom && !this.isBusy){
-						this.slider.zoom(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
+					if (this.isZoomActive()){
+						this.zoomPanRotate.zoomRotate(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
 					}
 					break;
 					
 				case ViewportClass.Actions.gestureEnd:
-					if (this.settings.allowUserZoom && !this.isBusy){
-						this.slider.zoomEnd(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
+					if (this.isZoomActive()){
+						this.zoomPanRotate.setStartingScaleAndRotation(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
 					}
 					break;
 					
 				case ViewportClass.Actions.touchStart:
-					if (this.settings.allowUserZoom && !this.isBusy){
-						this.slider.panStart(e.point);
+					if (this.isZoomActive()){
+						this.zoomPanRotate.panStart(e.point);
 					}
 					break;
 					
 				case ViewportClass.Actions.touchMove:
-					if (this.settings.allowUserZoom && !this.isBusy){
-						this.slider.pan(e.point);
+					if (this.isZoomActive()){
+						this.zoomPanRotate.pan(e.point);
 					}
 					break;
 					
@@ -538,6 +565,8 @@
 			
 			this.isBusy = true;
 			
+			this.removeZoomPanRotate();
+			
 			this.removeEventListeners();
 			
 			this.documentOverlay.hide();
@@ -565,6 +594,8 @@
 			
 			this.isBusy = true;
 			
+			this.cleanUpZoomPanRotateForNextPrevious();
+			
 			this.setCaptionAndToolbarOnShowPreviousNext();
 			
 			this.slider.showNext();
@@ -586,11 +617,39 @@
 			
 			this.isBusy = true;
 			
+			this.cleanUpZoomPanRotateForNextPrevious();
+			
 			this.setCaptionAndToolbarOnShowPreviousNext();
+			
+			if (this.wasUserZoomActive){
+				Util.DOM.hide(this.slider.currentItem.imageEl);
+			}
 			
 			this.slider.showPrevious();
 			
 			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onShowPrevious);
+			
+		},
+		
+		
+		
+		/*
+		 * Function: cleanUpZoomPanRotateForNextPrevious
+		 */
+		cleanUpZoomPanRotateForNextPrevious: function(){
+		
+			if (!Util.isNothing(this.zoomPanRotate)){
+				if (this.settings.loop){
+					Util.DOM.hide(this.slider.currentItem.imageEl);
+				}
+				else{
+					if (this.currentIndex > 0 && this.currentIndex < this.fullSizeImages.length - 2){
+						Util.DOM.hide(this.slider.currentItem.imageEl);
+					}
+				}
+			}
+			
+			this.removeZoomPanRotate();
 			
 		},
 		
@@ -755,7 +814,7 @@
 		 */
 		fadeOutCaptionAndToolbar: function(){
 			
-			if (!this.settings.captionAndToolbarHide){
+			if (!this.settings.captionAndToolbarHide && !this.captionAndToolbar.isHidden){
 				this.captionAndToolbar.fadeOut();
 			}
 		
@@ -805,7 +864,11 @@
 				return;
 			}
 			
-			window.clearTimeout(this.slideshowTimeout);
+			if (!Util.isNothing(this.slideshowTimeout)){
+				window.clearTimeout(this.slideshowTimeout);
+			}
+				
+			this.removeZoomPanRotate();
 			
 			this.isSlideshowActive = true;
 			
@@ -824,8 +887,10 @@
 		 */
 		stopSlideshow: function(){
 			
-			window.clearTimeout(this.slideshowTimeout);
-			
+			if (!Util.isNothing(this.slideshowTimeout)){
+				window.clearTimeout(this.slideshowTimeout);
+			}
+						
 			this.isSlideshowActive = false;
 			
 			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onSlideshowStop);
@@ -863,6 +928,23 @@
 			
 			}
 			
+		},
+		
+		
+		
+		/*
+		 * Function: removeZoomPanRotate
+		 */
+		removeZoomPanRotate: function(){
+			
+			if (Util.isNothing(this.zoomPanRotate)){
+				return;
+			}
+			
+			this.zoomPanRotate.removeFromDOM();
+			
+			this.zoomPanRotate = null;
+		
 		}
 		
 		
@@ -1092,5 +1174,6 @@
 	Code.PhotoSwipe.SliderClass,
 	Code.PhotoSwipe.CaptionClass,
 	Code.PhotoSwipe.ToolbarClass,
-	Code.PhotoSwipe.CaptionToolbarClass
+	Code.PhotoSwipe.CaptionToolbarClass,
+	Code.PhotoSwipe.ZoomPanRotateClass
 );

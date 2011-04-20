@@ -16,10 +16,11 @@
 		playEl: null,
 		
 		clickHandler: null,
-		touchStartHandler: null,
+		/*touchStartHandler: null,*/
 		
 		isNextActive: null,
 		isPreviousActive: null,
+		isTouchSupported: null,
 		
 		
 		/*
@@ -41,7 +42,7 @@
 			this.isPreviousActive = true;
 			
 			this.clickHandler = this.onClick.bind(this);
-			this.touchStartHandler = this.onTouchStart.bind(this);
+			/*this.touchStartHandler = this.onTouchStart.bind(this);*/
 			
 			// Create element and append to body
 			var cssClass = Code.PhotoSwipe.ToolbarClass.CssClasses.caption;
@@ -90,12 +91,21 @@
 		 */
 		addEventListeners: function(){
 			
-			try{
+			// Reverted back to "click" as having issues with BB6
+			Util.DOM.addEventListener(this.el, 'click', this.clickHandler);
+			
+			/*
+			if (Util.isNothing(this.isTouchSupported)){
+				this.isTouchSupported = Util.DOM.isEventSupported('touchstart');
+			}
+			
+			if (this.isTouchSupported){
 				Util.DOM.addEventListener(this.el, 'touchstart', this.touchStartHandler);
 			}
-			catch (err){ }
-			
-			Util.DOM.addEventListener(this.el, 'click', this.clickHandler);
+			else{
+				Util.DOM.addEventListener(this.el, 'click', this.clickHandler);
+			}
+			*/
 			
 		},
 		
@@ -105,11 +115,17 @@
 		 */
 		removeEventListeners: function(){
 			
-			try{
+			// Reverted back to "click" as having issues with BB6
+			Util.DOM.removeEventListener(this.el, 'click', this.clickHandler);
+			
+			/*
+			if (this.isTouchSupported){
 				Util.DOM.removeEventListener(this.el, 'touchstart', this.touchStartHandler);
 			}
-			catch (err){ }
-			Util.DOM.removeEventListener(this.el, 'click', this.clickHandler);
+			else{
+				Util.DOM.removeEventListener(this.el, 'click', this.clickHandler);
+			}
+			*/
 			
 		},
 		
@@ -117,13 +133,13 @@
 		/*
 		 * Function: onTouch
 		 */
-		onTouchStart: function(e){
+		/*onTouchStart: function(e){
 			
 			e.preventDefault();
 			
 			this.onClick(e);
 			
-		},
+		},*/
 		
 		
 		/*

@@ -39,6 +39,12 @@ div.ps-viewport
 }
 
 
+/* Zoom/pan/rotate layer */
+div.ps-zoom-pan-rotate{
+	background: #000;
+}
+
+
 /* Slider */
 div.ps-slider-item-loading 
 { 

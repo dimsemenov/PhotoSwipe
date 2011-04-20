@@ -6,10 +6,12 @@
 (function(Util){
 	
 	/*
-	 * Class: Code.PhotoSwipe.ZoomPanRotateItemClass
+	 * Class: Code.PhotoSwipe.ZoomPanRotateClass
 	 */
-	Code.PhotoSwipe.ZoomPanRotateItemClass = Code.PhotoSwipe.ElementClass.extend({
+	Code.PhotoSwipe.ZoomPanRotateClass = Code.PhotoSwipe.ElementClass.extend({
 		
+		containerEl: null,
+		imageEl: null,
 		parentEl: null,
 		transformSettings: null,
 		panStartingPoint: null,
@@ -18,18 +20,16 @@
 		/*
 		 * Function: init
 		 */
-		init: function(options, elToClone, parentEl){
+		init: function(options, parentEl, imageEl){
 			
-			/*
-			this.settings = {
-			};
+			this.settings = {};
 			
 			Util.extend(this.settings, options);
-			*/
-			
+		
 			this._super(options);
 			
 			this.parentEl = parentEl;
+			this.imageEl = imageEl.cloneNode(false);
 			
 			this.transformSettings = {
 				
@@ -44,11 +44,30 @@
 			
 			};
 			
-			this.el = elToClone.cloneNode(true);
+			// Create element and append to body
+			this.el = Util.DOM.createElement('div', { 'class': Code.PhotoSwipe.ZoomPanRotateClass.CssClasses.documentOverlay }, '');
+			Util.DOM.setStyle(this.el, {
+				left: 0,
+				top: 0,
+				position: 'absolute'
+			});
+			Util.DOM.width(this.el, Util.DOM.bodyWidth());
+			Util.DOM.height(this.el, Util.DOM.windowHeight());
 			
+			this.containerEl = Util.DOM.createElement('div');
+			Util.DOM.setStyle(this.containerEl, {
+				left: 0,
+				top: 0,
+				position: 'absolute'
+			});
+			Util.DOM.width(this.containerEl, Util.DOM.bodyWidth());
+			Util.DOM.height(this.containerEl, Util.DOM.windowHeight());
+			
+			Util.DOM.appendChild(this.imageEl, this.containerEl);
+			Util.DOM.appendChild(this.containerEl, this.el);
 			Util.DOM.appendChild(this.el, this.parentEl);
+			
 		},
-		
 		
 		
 		/*
@@ -56,7 +75,7 @@
 		 */
 		setStartingTranslateFromCurrentTranform: function(){
 			
-			var transformExploded = this.el.style.webkitTransform.match( /translate\((.*?)\)/ );
+			var transformExploded = this.containerEl.style.webkitTransform.match( /translate\((.*?)\)/ );
 			
 			if (!Util.isNothing(transformExploded)){
 				
@@ -71,32 +90,23 @@
 		
 		
 		/*
-		 * Function: setStartingScale
+		 * Function: setStartingScaleAndRotation
 		 */
-		setStartingScale: function(scaleValue){
+		setStartingScaleAndRotation: function(scaleValue, rotationValue){
 			
 			this.transformSettings.startingScale *= scaleValue;
 			
-		},
-		
-		
-		
-		/*
-		 * Function: setStatingRotation
-		 */
-		setStatingRotation: function(rotationValue){
-		
 			this.transformSettings.startingRotation = 
 				(this.transformSettings.startingRotation + rotationValue) % 360;
-		
+				
 		},
 		
 		
 		
 		/*
-		 * Function: zoom
+		 * Function: zoomRotate
 		 */
-		zoom: function(scaleValue, rotationValue){
+		zoomRotate: function(scaleValue, rotationValue){
 			
 			this.transformSettings.scale = 
 				this.transformSettings.startingScale * scaleValue;
@@ -116,12 +126,12 @@
 		panStart: function(point){
 			
 			this.setStartingTranslateFromCurrentTranform();
-			
+						
 			this.panStartingPoint = {
 				x: point.x,
 				y: point.y
 			}
-		
+			
 		},
 		
 		
@@ -129,7 +139,7 @@
 		/*
 		 * Function: pan
 		 */
-		pan: function(point){
+		pan: function(point){ 
 			
 			var 
 				dx = point.x - this.panStartingPoint.x,
@@ -152,22 +162,26 @@
 		 */
 		applyTransform: function(){
 			 
-			this.el.style.webkitTransform = 'scale(' + this.transformSettings.scale + ') rotate(' + (this.transformSettings.rotation % 360) + 'deg) translate(' + this.transformSettings.translateX + 'px, ' + this.transformSettings.translateY + 'px)';
+			this.containerEl.style.webkitTransform = 'scale(' + this.transformSettings.scale + ') rotate(' + (this.transformSettings.rotation % 360) + 'deg) translate(' + this.transformSettings.translateX + 'px, ' + this.transformSettings.translateY + 'px)';
 			
 		},
-		
+			
 		
 		
 		/*
-		 * Function: remove
+		 * Function: removeFromDOM
 		 */
 		removeFromDOM: function(){
 		
 			Util.DOM.removeChild(this.el, this.parentEl);
-			
+		
 		}
 	
 	});
 	
+	
+	Code.PhotoSwipe.ZoomPanRotateClass.CssClasses = {
+		documentOverlay: 'ps-zoom-pan-rotate'
+	};
 
 })(Code.PhotoSwipe.Util);

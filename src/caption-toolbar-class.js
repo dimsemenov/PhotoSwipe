@@ -300,8 +300,10 @@
 		 */
 		stopAutoHideTimeout: function(){
 			
-			window.clearTimeout(this.autoHideTimeout);
-			
+			if (!Util.isNothing(this.autoHideTimeout)){
+				window.clearTimeout(this.autoHideTimeout);
+			}
+						
 		},
 		
 		

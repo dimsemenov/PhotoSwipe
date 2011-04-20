@@ -43,7 +43,7 @@
 			 */
 			resetTranslate: function(el){
 				
-				if (Util.browser.mobileSafari){
+				if (Util.browser.mobileSafari3dSupported){
 					Util.DOM.setStyle(el, '-webkit-transform', 'translate3d(0px,0px,0px)');
 				}
 				
