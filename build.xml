@@ -58,6 +58,7 @@
 			<fileset dir="." includes="${project.src.dir}/caption-class.js" />
 			<fileset dir="." includes="${project.src.dir}/toolbar-class.js" />
 			<fileset dir="." includes="${project.src.dir}/caption-toolbar-class.js" />
+			<fileset dir="." includes="${project.src.dir}/zoom-pan-rotate-class.js" />
 			<fileset dir="." includes="${project.src.dir}/photoswipe.js" />
 			
 		</concat>

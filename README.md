@@ -24,6 +24,8 @@ Features
 
 - Automatically scales images to maximise screen size and orientation.
 
+- Zoom / pan and rotate images (as of v1.0.4 - experimental iOS devices only)
+
 - Works with your markup and semantic structure. Does not enforce any specific markup.
 
 - Supports image captions.
@@ -106,8 +108,6 @@ This example assumes you want to use jQuery for the gallery's engine as well as 
 Options
 -------
 
-- **zIndex**: The intial zIndex for PhotoSwipe. Default "1000"
-
 - **fadeInSpeed**: The speed of any fading-in elements in milliseconds. Default "250"
 
 - **fadeOutSpeed**: The speed of any fading-out elements in milliseconds. Default "500"
@@ -115,7 +115,9 @@ Options
 - **slideSpeed**: How fast images slide into view in milliseconds. Default "250"
 	
 - **swipeThreshold**: How many pixels your finger has to move across the screen to register a swipe gesture. Default "50"
-	
+
+- **swipeTimeThreshold**: A swipe must take no longer than this value in milli-seconds to be registered as a swipe gesture. Default "250"
+
 - **loop**: Whether the gallery auto-loops back to the beginning when you reach the end. Default "true"
 
 - **slideshowDelay**: The delay between showing the next image when in slideshow mode. Default "3000"
@@ -123,6 +125,12 @@ Options
 - **imageScaleMethod**: How images will fit onto the screen. Either "fit" or "zoom". "fit" ensures the image always fits the screen. "zoom" the image will always fill the full screen, this may cause the image to be "zoomed" in and cropped. Default "fit"
 
 - **preventHide**: Once PhotoSwipe is active, prevents the user closing it. Useful for "exclusive mode" (see examples/exclusive-mode.html). Default: "false"
+
+- **zIndex**: The intial zIndex for PhotoSwipe. Default "1000"
+
+- **allowUserZoom**: EXPERIMENTAL iOS only - Allow the user to zoom / pan around images. Default "true" 
+
+- **allowRotationOnUserZoom**: EXPERIMENTAL iOS only - Allow the user to rotate images whilst zooming / panning. Default "true" 
 
 - **captionAndToolbarHide**: Hide the caption and toolbar. Default "false"
 

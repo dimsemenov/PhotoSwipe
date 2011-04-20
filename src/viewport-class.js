@@ -145,7 +145,7 @@
 			return {
 				x: touches[0].pageX,
 				y: touches[0].pageY
-			}
+			};
 			
 		},
 		

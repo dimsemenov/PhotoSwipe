@@ -60,7 +60,7 @@
 				preventHide: false,
 				zIndex: 1000,
 				
-				/* Experimental! */
+				/* Experimental - iOS only at the moment */
 				allowUserZoom: true, 
 				allowRotationOnUserZoom: true,
 				
@@ -455,7 +455,23 @@
 		 */
 		canUserZoom: function(){
 			
-			return (this.settings.allowUserZoom && !this.isBusy);
+			if (!this.settings.allowUserZoom){
+				return false;
+			}
+			
+			if (this.isBusy){
+				return false;
+			}
+			
+			if (Util.isNothing(this.slider.currentItem.fullSizeImage)){
+				return false;
+			}
+			
+			if (!this.slider.currentItem.fullSizeImage.hasLoaded){
+				return false;
+			}
+			
+			return true;
 			
 		},
 		
@@ -477,12 +493,12 @@
 		 */
 		onViewportTouch: function(e){
 			
-			this.stopSlideshow();
-			
 			switch(e.action){
 				
 				case ViewportClass.Actions.gestureStart:
+					
 					if (this.canUserZoom()){
+						this.stopSlideshow();
 						if (!this.isZoomActive()){
 							this.zoomPanRotate = new ZoomPanRotateClass({}, this.viewport.el, this.slider.currentItem.imageEl);
 						}
@@ -491,30 +507,37 @@
 					break;
 					
 				case ViewportClass.Actions.gestureChange:
+				
 					if (this.isZoomActive()){
 						this.zoomPanRotate.zoomRotate(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
 					}
 					break;
 					
 				case ViewportClass.Actions.gestureEnd:
+				
 					if (this.isZoomActive()){
 						this.zoomPanRotate.setStartingScaleAndRotation(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
 					}
 					break;
 					
 				case ViewportClass.Actions.touchStart:
+				
+					this.stopSlideshow();
 					if (this.isZoomActive()){
 						this.zoomPanRotate.panStart(e.point);
 					}
 					break;
 					
 				case ViewportClass.Actions.touchMove:
+					
 					if (this.isZoomActive()){
 						this.zoomPanRotate.pan(e.point);
 					}
 					break;
 					
 				case ViewportClass.Actions.click:
+					
+					this.stopSlideshow();
 					if (!this.settings.hideToolbar){
 						this.toggleCaptionAndToolbar();
 					}
@@ -524,11 +547,15 @@
 					break;
 				
 				case ViewportClass.Actions.swipeLeft:
+					
+					this.stopSlideshow();
 					this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.swipe;
 					this.showNext();
 					break;
 					
 				case ViewportClass.Actions.swipeRight:
+					
+					this.stopSlideshow();
 					this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.swipe;
 					this.showPrevious();
 					break;

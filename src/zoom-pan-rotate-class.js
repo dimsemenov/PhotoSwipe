@@ -130,7 +130,7 @@
 			this.panStartingPoint = {
 				x: point.x,
 				y: point.y
-			}
+			};
 			
 		},
 		
@@ -149,7 +149,7 @@
 				this.transformSettings.startingTranslateX + dx;
 				
 			this.transformSettings.translateY = 
-				this.transformSettings.startingTranslateY + dy;;
+				this.transformSettings.startingTranslateY + dy;
 			
 			this.applyTransform();
 			

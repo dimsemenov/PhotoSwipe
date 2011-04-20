@@ -51,3 +51,17 @@ Major update:
 
 - Now compliled with Google Closure. Overall smaller file size
 
+
+
+1.0.4 20.04.11 - Ste Brennan
+----------------------------
+
+- Experimental "zoom/pan/rotate" for iOS devices
+
+- Fixed issue2. Can now click on "clickable" elements added to a caption on touch screen devices
+
+- Speed improvements for Android and Blackberry devices.
+
+- "Flicker" when using toolbar buttons to show next and previous on Android devices fixed.
+
+

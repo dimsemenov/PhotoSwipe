@@ -160,7 +160,7 @@
 				var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
 				
 				if ( ! re.test(currentClassValue) ){
-					if (currentClassValue != ''){
+					if (currentClassValue !== ''){
 						currentClassValue = currentClassValue + ' ';
 					}
 					currentClassValue = currentClassValue + className;
@@ -332,7 +332,7 @@
 					var styleBackup = { 
 						display: el.style.display,
 						left: el.style.left
-					}
+					};
 					
 					el.style.display = 'block';
 					el.style.left = '-1000000px';
@@ -472,7 +472,7 @@
 				var retval = {
 					x: 0,
 					y: 0
-				}
+				};
 				
 				if (event.pageX) {
 					retval.x = event.pageX;
