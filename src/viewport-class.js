@@ -21,8 +21,6 @@
 		gestureChangeHandler: null,
 		gestureEndHandler: null,
 		
-		isTouchSupported: null,
-		isGestureSupported: null,
 		isGesture: null,
 		
 		mouseDownHandler: null,
@@ -46,13 +44,17 @@
 			
 			this.touchStartPoint = { x: 0, y: 0 };
 			
-			this.touchStartHandler = this.onTouchStart.bind(this);
-			this.touchMoveHandler = this.onTouchMove.bind(this);
-			this.touchEndHandler = this.onTouchEnd.bind(this);
+			if (Util.browser.touchSupported){
+				this.touchStartHandler = this.onTouchStart.bind(this);
+				this.touchMoveHandler = this.onTouchMove.bind(this);
+				this.touchEndHandler = this.onTouchEnd.bind(this);
+			}
 			
-			this.gestureStartHandler = this.onGestureStart.bind(this);
-			this.gestureChangeHandler = this.onGestureChange.bind(this);
-			this.gestureEndHandler = this.onGestureEnd.bind(this);
+			if (Util.browser.gestureSupported){
+				this.gestureStartHandler = this.onGestureStart.bind(this);
+				this.gestureChangeHandler = this.onGestureChange.bind(this);
+				this.gestureEndHandler = this.onGestureEnd.bind(this);
+			}
 			
 			this.mouseDownHandler = this.onMouseDown.bind(this);
 			this.mouseUpHandler = this.onMouseUp.bind(this);
@@ -91,22 +93,14 @@
 		 * Function: addEventListeners
 		 */
 		addEventListeners: function(){
-			
-			if (Util.isNothing(this.isTouchSupported)){
-				this.isTouchSupported = Util.DOM.isEventSupported('touchstart');
-			}
-			
-			if (Util.isNothing(this.isGestureSupported)){
-				this.isGestureSupported = Util.DOM.isEventSupported('gesturestart');
-			}
-			
-			if (this.isTouchSupported){
+						
+			if (Util.browser.touchSupported){
 				Util.DOM.addEventListener(this.el, 'touchstart', this.touchStartHandler);
 				Util.DOM.addEventListener(this.el, 'touchmove', this.touchMoveHandler);
 				Util.DOM.addEventListener(this.el, 'touchend', this.touchEndHandler);
 			}
 			
-			if (this.isGestureSupported){
+			if (Util.browser.gestureSupported){
 				Util.DOM.addEventListener(this.el, 'gesturestart', this.gestureStartHandler);
 				Util.DOM.addEventListener(this.el, 'gesturechange', this.gestureChangeHandler);
 				Util.DOM.addEventListener(this.el, 'gestureend', this.gestureEndHandler);
@@ -124,13 +118,13 @@
 		 */
 		removeEventListeners: function(){
 			
-			if (this.isTouchSupported){
+			if (Util.browser.touchSupported){
 				Util.DOM.removeEventListener(this.el, 'touchstart', this.touchStartHandler);
 				Util.DOM.removeEventListener(this.el, 'touchmove', this.touchMoveHandler);
 				Util.DOM.removeEventListener(this.el, 'touchend', this.touchEndHandler);
 			}
 			
-			if (this.isGestureSupported){
+			if (Util.browser.gestureSupported){
 				Util.DOM.removeEventListener(this.el, 'gesturestart', this.gestureStartHandler);
 				Util.DOM.removeEventListener(this.el, 'gesturechange', this.gestureChangeHandler);
 				Util.DOM.removeEventListener(this.el, 'gestureend', this.gestureEndHandler);

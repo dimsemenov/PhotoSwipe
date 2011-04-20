@@ -12,7 +12,7 @@
 		
 		contentEl: null,
 		
-		touchStartHandler: null,
+		touchMoveHandler: null,
 		
 		captionValue: null,
 		
@@ -33,7 +33,7 @@
 			
 			this.captionValue = '';
 			
-			this.touchStartHandler = this.onTouchStart.bind(this);
+			this.touchMoveHandler = this.onTouchMove.bind(this);
 			
 			// Create element and append to body
 			var cssClass = Code.PhotoSwipe.CaptionClass.CssClasses.caption;
@@ -64,10 +64,9 @@
 		 */
 		addEventListeners: function(){
 			
-			try{
-				Util.DOM.addEventListener(this.el, 'touchstart', this.touchStartHandler);
+			if (Util.browser.touchSupported){
+				Util.DOM.addEventListener(this.el, 'touchmove', this.touchMoveHandler);
 			}
-			catch (err){ }
 			
 		},
 		
@@ -78,11 +77,10 @@
 		 */
 		removeEventListeners: function(){
 			
-			try{
-				Util.DOM.removeEventListener(this.el, 'touchstart', this.touchStartHandler);
+			if (Util.browser.touchSupported){
+				Util.DOM.removeEventListener(this.el, 'touchmove', this.touchMoveHandler);
 			}
-			catch (err){ }
-			
+						
 		},
 		
 		
@@ -90,7 +88,7 @@
 		/*
 		 * Function: onTouch
 		 */
-		onTouchStart: function(e){
+		onTouchMove: function(e){
 			
 			e.preventDefault();
 			

@@ -16,11 +16,10 @@
 		playEl: null,
 		
 		clickHandler: null,
-		/*touchStartHandler: null,*/
+		touchMoveHandler: null,
 		
 		isNextActive: null,
 		isPreviousActive: null,
-		isTouchSupported: null,
 		
 		
 		/*
@@ -42,7 +41,10 @@
 			this.isPreviousActive = true;
 			
 			this.clickHandler = this.onClick.bind(this);
-			/*this.touchStartHandler = this.onTouchStart.bind(this);*/
+			
+			if (Util.browser.touchSupported){
+				this.touchMoveHandler = this.onTouchMove.bind(this);
+			}
 			
 			// Create element and append to body
 			var cssClass = Code.PhotoSwipe.ToolbarClass.CssClasses.caption;
@@ -90,22 +92,12 @@
 		 * Function: addEventListeners
 		 */
 		addEventListeners: function(){
+					
+			if (Util.browser.touchSupported){
+				Util.DOM.addEventListener(this.el, 'touchmove', this.touchMoveHandler);
+			}
 			
-			// Reverted back to "click" as having issues with BB6
 			Util.DOM.addEventListener(this.el, 'click', this.clickHandler);
-			
-			/*
-			if (Util.isNothing(this.isTouchSupported)){
-				this.isTouchSupported = Util.DOM.isEventSupported('touchstart');
-			}
-			
-			if (this.isTouchSupported){
-				Util.DOM.addEventListener(this.el, 'touchstart', this.touchStartHandler);
-			}
-			else{
-				Util.DOM.addEventListener(this.el, 'click', this.clickHandler);
-			}
-			*/
 			
 		},
 		
@@ -115,31 +107,22 @@
 		 */
 		removeEventListeners: function(){
 			
-			// Reverted back to "click" as having issues with BB6
+			if (Util.browser.touchSupported){
+				Util.DOM.removeEventListener(this.el, 'touchmove', this.touchMoveHandler);
+			}
 			Util.DOM.removeEventListener(this.el, 'click', this.clickHandler);
-			
-			/*
-			if (this.isTouchSupported){
-				Util.DOM.removeEventListener(this.el, 'touchstart', this.touchStartHandler);
-			}
-			else{
-				Util.DOM.removeEventListener(this.el, 'click', this.clickHandler);
-			}
-			*/
 			
 		},
 		
 		
 		/*
-		 * Function: onTouch
+		 * Function: onTouchMove
 		 */
-		/*onTouchStart: function(e){
+		onTouchMove: function(e){
 			
 			e.preventDefault();
-			
-			this.onClick(e);
-			
-		},*/
+						
+		},
 		
 		
 		/*

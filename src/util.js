@@ -44,7 +44,37 @@
     	mozilla: /mozilla/.test(navigator.userAgent) && !/(compatible|webkit)/.test(navigator.userAgent),
 			mobileSafariIOS: /Mac OS X.*Mobile.*Safari/.test(navigator.userAgent),
 			mobileSafari: /Mobile.*Safari/.test(navigator.userAgent),
-			mobileSafari3dSupported: false
+			mobileSafari3dSupported: false,
+			touchSupported: false,
+			gestureSupported: false,
+			
+			
+			_eventTagNames: {
+				'select':'input',
+				'change':'input',
+				'submit':'form',
+				'reset':'form',
+				'error':'img',
+				'load':'img',
+				'abort':'img'
+			},
+				
+				
+			/*
+			 * Function: isEventSupported
+			 * http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
+			 */
+			isEventSupported: function(eventName) {
+				var el = document.createElement(this._eventTagNames[eventName] || 'div');
+				eventName = 'on' + eventName;
+				var isSupported = (eventName in el);
+				if (!isSupported) {
+					el.setAttribute(eventName, 'return;');
+					isSupported = typeof el[eventName] == 'function';
+				}
+				el = null;
+				return isSupported;
+			}
     },
 	
 	
@@ -226,6 +256,7 @@
 			return val.replace(re, '');
     }
 		
+		
 	};
 	
 	
@@ -233,5 +264,8 @@
 		var test3DEl = document.createElement('div');
 		Code.PhotoSwipe.Util.browser.mobileSafari3dSupported = !Code.PhotoSwipe.Util.isNothing(test3DEl.style.WebkitPerspective);
 	}
+	
+	Code.PhotoSwipe.Util.browser.touchSupported = Code.PhotoSwipe.Util.browser.isEventSupported('touchstart');
+	Code.PhotoSwipe.Util.browser.gestureSupported = Code.PhotoSwipe.Util.browser.isEventSupported('gesturestart');
 	
 })();
