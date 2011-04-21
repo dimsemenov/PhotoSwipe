@@ -49,6 +49,7 @@
 			this.settings = { 
 				getImageSource: Code.PhotoSwipe.GetImageSource,
 				getImageCaption: Code.PhotoSwipe.GetImageCaption,
+				getImageMetaData: Code.PhotoSwipe.GetImageMetaData,
 				fadeInSpeed: 250,
 				fadeOutSpeed: 500,
 				slideSpeed: 250,
@@ -124,7 +125,8 @@
 					i, 
 					this.settings.imageScaleMethod,
 					this.settings.getImageSource(thumbEl), 
-					this.settings.getImageCaption(thumbEl)
+					this.settings.getImageCaption(thumbEl),
+					this.settings.getImageMetaData(thumbEl)
 				);
 				
 				// Add it to our internal array
@@ -492,7 +494,7 @@
 		 * Function: onViewportTouch
 		 */
 		onViewportTouch: function(e){
-			
+						
 			switch(e.action){
 				
 				case ViewportClass.Actions.gestureStart:
@@ -501,6 +503,8 @@
 						this.stopSlideshow();
 						if (!this.isZoomActive()){
 							this.zoomPanRotate = new ZoomPanRotateClass({}, this.viewport.el, this.slider.currentItem.imageEl);
+							Util.DOM.resetTranslate(this.zoomPanRotate.containerEl);
+							Util.DOM.resetTranslate(this.zoomPanRotate.imageEl);
 						}
 						this.fadeOutCaptionAndToolbar();
 					}
@@ -1036,6 +1040,19 @@
 				return Util.DOM.getAttribute(childEl, 'alt'); 
 			}
 		}
+	};
+	
+	
+	
+	/*
+	 * Function: Code.PhotoSwip.GetImageMetaData
+	 * Can be used if you wish to store additional meta
+	 * data against the full size image
+	 */
+	Code.PhotoSwipe.GetImageMetaData = function(el){
+		
+		return  {};
+		
 	};
 	
 	

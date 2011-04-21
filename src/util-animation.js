@@ -235,13 +235,24 @@
 					
 					Util.removeElementData(el, 'slideByXPos');
 					Util.removeElementData(el, 'slideByYPos');
-				
-					Util.DOM.setStyle(el, {
-						webkitTransform: (Util.browser.mobileSafari3dSupported) ? 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)' : 'translate(' + xPos + 'px, ' + yPos + 'px)',
-						MozTransform: 'translate(' + xPos + 'px, ' + yPos + 'px)',
-						transform: 'translate(' + xPos + 'px, ' + yPos + 'px)'
-					});
-										
+					
+					
+					if (Util.browser.webkit){
+						if (Util.browser.is3dSupported){
+							Util.DOM.setStyle(el, { webkitTransform: 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)'});
+						}
+						else{
+							Util.DOM.setStyle(el, { webkitTransform: 'translate(' + xPos + 'px, ' + yPos + 'px)'});
+						}
+					}
+					else {
+						Util.DOM.setStyle(el, {
+							webkitTransform: 'translate(' + xPos + 'px, ' + yPos + 'px)',
+							MozTransform: 'translate(' + xPos + 'px, ' + yPos + 'px)',
+							transform: 'translate(' + xPos + 'px, ' + yPos + 'px)'
+						});
+					}
+					
 				});
 				
 			},
@@ -249,7 +260,7 @@
 			
 			
 			_onSlideByEnd: function(e){
-				
+					
 				// Reset the real css top and left after the transformation
 				var 
 					el = e.target,

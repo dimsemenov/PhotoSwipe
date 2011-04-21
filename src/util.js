@@ -38,13 +38,12 @@
 		
 		browser: {
     	version: (navigator.userAgent.match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ) || [])[1],
-    	webkit: /webkit/.test(navigator.userAgent),
-    	opera: /opera/.test(navigator.userAgent), // untested
-    	msie: /msie/.test(navigator.userAgent) && !/opera/.test(navigator.userAgent), 
-    	mozilla: /mozilla/.test(navigator.userAgent) && !/(compatible|webkit)/.test(navigator.userAgent),
-			mobileSafariIOS: /Mac OS X.*Mobile.*Safari/.test(navigator.userAgent),
-			mobileSafari: /Mobile.*Safari/.test(navigator.userAgent),
-			mobileSafari3dSupported: false,
+    	webkit: /webkit/i.test(navigator.userAgent),
+    	opera: /opera/i.test(navigator.userAgent), // untested
+    	msie: /msie/i.test(navigator.userAgent) && !/opera/.test(navigator.userAgent), 
+    	mozilla: /mozilla/i.test(navigator.userAgent) && !/(compatible|webkit)/.test(navigator.userAgent),
+			mobileSafari: /mobile.*safari/i.test(navigator.userAgent),
+			is3dSupported: false,
 			touchSupported: false,
 			gestureSupported: false,
 			
@@ -259,13 +258,12 @@
 		
 	};
 	
-	
-	if (Code.PhotoSwipe.Util.browser.mobileSafari){
+	if (Code.PhotoSwipe.Util.browser.webkit){
 		var test3DEl = document.createElement('div');
-		Code.PhotoSwipe.Util.browser.mobileSafari3dSupported = !Code.PhotoSwipe.Util.isNothing(test3DEl.style.WebkitPerspective);
+		Code.PhotoSwipe.Util.browser.is3dSupported = !Code.PhotoSwipe.Util.isNothing(test3DEl.style.WebkitPerspective);
 	}
 	
 	Code.PhotoSwipe.Util.browser.touchSupported = Code.PhotoSwipe.Util.browser.isEventSupported('touchstart');
 	Code.PhotoSwipe.Util.browser.gestureSupported = Code.PhotoSwipe.Util.browser.isEventSupported('gesturestart');
-	
+		
 })();

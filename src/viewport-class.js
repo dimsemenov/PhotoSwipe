@@ -157,12 +157,14 @@
 		
 			e.preventDefault();
 			
+			var touchEvent = Util.DOM.getTouchEvent(e);
+			
 			this.dispatchEvent({ 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.gestureStart,
-				scale: e.scale,
-				rotation: e.rotation
+				scale: touchEvent.scale,
+				rotation: touchEvent.rotation
 			});
 			
 		},
@@ -175,12 +177,14 @@
 			
 			e.preventDefault();
 			
+			var touchEvent = Util.DOM.getTouchEvent(e);
+			
 			this.dispatchEvent({ 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.gestureChange,
-				scale: e.scale,
-				rotation: e.rotation
+				scale: touchEvent.scale,
+				rotation: touchEvent.rotation
 			});
 						
 		},
@@ -193,12 +197,14 @@
 			
 			e.preventDefault();
 			
+			var touchEvent = Util.DOM.getTouchEvent(e);
+			
 			this.dispatchEvent({ 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.gestureEnd,
-				scale: e.scale,
-				rotation: e.rotation
+				scale: touchEvent.scale,
+				rotation: touchEvent.rotation
 			});
 			
 		},
@@ -210,8 +216,10 @@
 		onTouchStart: function(e){
 			
 			e.preventDefault();
-						
-			var touches = Util.DOM.getTouchEvent(e).touches;
+			
+			var 
+				touchEvent = Util.DOM.getTouchEvent(e),
+				touches = touchEvent.touches;
 			
 			if (touches.length > 1){
 				this.isGesture = true;
@@ -222,7 +230,7 @@
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.touchStart,
-				point: this.getTouchPoint(e.touches)
+				point: this.getTouchPoint(touches)
 			});
 			
 			
@@ -248,11 +256,15 @@
 				return;
 			}
 			
+			var 
+				touchEvent = Util.DOM.getTouchEvent(e),
+				touches = touchEvent.touches;
+			
 			this.dispatchEvent({ 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.touchMove,
-				point: this.getTouchPoint(e.touches)
+				point: this.getTouchPoint(touches)
 			});
 			
 		},
@@ -273,11 +285,11 @@
 			// http://backtothecode.blogspot.com/2009/10/javascript-touch-and-gesture-events.html
 			// iOS removed the current touch from e.touches on "touchend"
 			// Need to look into e.changedTouches
-				
-			var touchEvent = Util.DOM.getTouchEvent(e);
-			var touches = (!Util.isNothing(touchEvent.changedTouches)) ? touchEvent.changedTouches : touchEvent.touches;
 			
-			var touchEndPoint = this.getTouchPoint(touches);
+			var 
+				touchEvent = Util.DOM.getTouchEvent(e),
+				touches = (!Util.isNothing(touchEvent.changedTouches)) ? touchEvent.changedTouches : touchEvent.touches,
+				touchEndPoint = this.getTouchPoint(touches);
 			
 			this.dispatchEvent({ 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 

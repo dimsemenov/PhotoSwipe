@@ -21,6 +21,7 @@
 		naturalHeight: null,
 		src: null,
 		caption: null,
+		metaData: null,
 		scaleMethod: null,
 		isLandscape: null,
 		isLoading: null,
@@ -32,7 +33,7 @@
 		/*
 		 * Function: init
 		 */
-		init: function(index, scaleMethod, src, caption){
+		init: function(index, scaleMethod, src, caption, metaData){
 			
 			this._super();
 			
@@ -41,6 +42,7 @@
 			this.naturalHeight = 0;
 			this.src = src;
 			this.caption = caption;
+			this.metaData = Util.coalesce(metaData, {});
 			this.isLandscape = false;
 			this.isLoading = false;
 			this.hasLoaded = false;

@@ -16,10 +16,22 @@
 			 */
 			resetTranslate: function(el){
 				
-				if (Util.browser.mobileSafari3dSupported){
-					$(el).css('-webkit-transform', 'translate3d(0px,0px,0px)');
+				if (Util.browser.webkit){
+					if (Util.browser.is3dSupported){
+						$(el).css({ webkitTransform: 'translate3d(0px, 0px, 0px)'});
+					}
+					else{
+						$(el).css({ webkitTransform: 'translate(0px, 0px)'});
+					}
 				}
-				
+				else {
+					$(el).css({
+						webkitTransform: 'translate(0px, 0px)',
+						MozTransform: 'translate(0px, 0px)',
+						transform: 'translate(0px, 0px)'
+					});
+				}
+								
 			},
 		
 		
