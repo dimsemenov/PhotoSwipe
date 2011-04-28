@@ -64,12 +64,24 @@
 					duration = 500;
 				}
 				
-				
-				$(el).animate(
-					{
+				var animateProps;
+				if (jQuery.fn.translation){
+					animateProps = {
+						left: '+=' + xPos + 'px',
+						top: '+=' + yPos + 'px',
+						// Added for animate enhanced plugin
+						useTranslate3d: Util.browser.is3dSupported
+					};
+				}
+				else{
+					animateProps = {
 						left: '+=' + xPos + 'px',
 						top: '+=' + yPos + 'px'
-					}, 
+					};
+				}
+				
+				$(el).animate(
+					animateProps, 
 					duration, 
 					callback
 				);

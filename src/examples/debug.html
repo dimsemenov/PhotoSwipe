@@ -9,8 +9,17 @@
 	
 	<script type="text/javascript" src="../lib/simple-inheritance.js"></script>
 	<script type="text/javascript" src="../util.js"></script>
+	
 	<script type="text/javascript" src="../util-dom.js"></script>
 	<script type="text/javascript" src="../util-animation.js"></script>
+	
+	<!--
+	<script type="text/javascript" src="../lib/jquery-1.5.1.min.js"></script>
+	<script type="text/javascript" src="../util-dom-jQuery.js"></script>
+	<script type="text/javascript" src="../lib/jquery.animate-enhanced.min.js"></script>
+	<script type="text/javascript" src="../util-animation-jQuery.js"></script>
+	-->
+	
 	<script type="text/javascript" src="../event-class.js"></script>
 	<script type="text/javascript" src="../element-class.js"></script>
 	<script type="text/javascript" src="../full-size-image-class.js"></script>
@@ -44,10 +53,24 @@
 			// Add event listeners
 			
 			
+			// onBeforeShow
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeShow, function(e){
+				
+				console.log('onBeforeShow');
+				
+			});
+			
 			// onShow
 			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShow, function(e){
 				
 				console.log('onShow');
+				
+			});
+			
+			// onBeforeHide
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeHide, function(e){
+				
+				console.log('onBeforeHide');
 				
 			});
 			
@@ -100,10 +123,17 @@
 				
 			});
 			
-			// onCaptionAndToolbarShow
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarShow, function(e){
+			// onBeforeCaptionAndToolbarShow
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow, function(e){
 				
-				console.log('onCaptionAndToolbarShow');
+				console.log('onBeforeCaptionAndToolbarShow');
+				
+			});
+			
+			// onBeforeCaptionAndToolbarHide
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide, function(e){
+				
+				console.log('onBeforeCaptionAndToolbarHide');
 				
 			});
 			

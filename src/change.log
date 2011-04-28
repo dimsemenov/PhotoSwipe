@@ -47,7 +47,7 @@ Major update:
 
 - Reduced the number of times the internal function "resetPosition" was being fired
 
-- Fixed issue with show and hide of toolbar / caption. Has occasionally locking up.
+- Fixed issue with show and hide of toolbar / caption. Has occasionally locking up
 
 - Now compliled with Google Closure. Overall smaller file size
 
@@ -60,8 +60,30 @@ Major update:
 
 - Fixed issue2. Can now click on "clickable" elements added to a caption on touch screen devices
 
-- Speed improvements for Android and Blackberry devices.
+- Speed improvements for Android and Blackberry devices
 
-- "Flicker" when using toolbar buttons to show next and previous on Android devices fixed.
+- "Flicker" when using toolbar buttons to show next and previous on Android devices fixed
+
+
+
+1.0.5 28.04.11 - Ste Brennan
+----------------------------
+
+- Fixed lack of hardware acceleration when running via UIWebView or running as a full screen web app in iOS devices
+
+- Fixed device orientation issue with Android
+
+- Added custom "meta data" that can be attached to each full size image
+
+- Now runs with jquery.animate-enhanced [https://github.com/benbarnett/jQuery-Animate-Enhanced]. This addes hardware acceleration if using the jQuery DOM engine and jQuery animate functions
+
+- Fixed issues with touch events and the jQuery engine. These issues where introduced in v1.0.4.
+
+- Added the following new events:
+
+	- onBeforeShow
+	- onBeforeHide
+	- onBeforeCaptionAndToolbarShow
+	- onBeforeCaptionAndToolbarHide
 
 

@@ -62,7 +62,7 @@ There are two distributions of the library:
 
 It is recommended for WebKit based mobile devices to use the default distribution. This distribution will run faster. It does not require jQuery (so one less library to download to your mobile device). It also uses CSS3 to achieve animation effects. This is extremely noticable when running on an iOS device as animation will use hardware acceleration and will feel more "native" to the device. The default distribution will also work on desktop WebKit browsers (such as Chrome and Safari) as well as Firefox.
 
-Use the jQuery distibution if you need to support a wider range of browsers such as Internet Explorer etc. By default, this distributionn will not use hardware acceleration for animation on iOS devices so is noticably slower. You can however override the default animation functionality in jQuery by including the excellent [Animate Enhanced](https://github.com/benbarnett/jQuery-Animate-Enhanced) library.
+Use the jQuery distibution if you need to support a wider range of browsers such as Internet Explorer etc. By default, this distribution will not use hardware acceleration for animation on iOS devices so is noticably slower. You can however override the default animation functionality in jQuery by including the excellent [Animate Enhanced](https://github.com/benbarnett/jQuery-Animate-Enhanced) library (example included).
 
 Both default and jQuery distribution come with a jQuery plugin wrapper to bind elements to the gallery. So for the default distribution, if you really need to, you can still use jQuery to find your images in your HTML document, hook into the jQuery DOM ready event and use the jQuery PhotoSwipe plugin to display the library. The gallery will still be running on the default optimised engine, but you have the convience of jQuery to set things up should you need to.
 
@@ -156,6 +156,16 @@ Options
 	
 - **getImageCaption**: Like "getImageSource", function to specify how the gallery obatins image captions. By default, the gallery looks for an image's "alt" tag.
 
+
+-- **getImageMetaData**: Function to associated additional meta data against an image in the gallery. This meta data can then be used in your own code if you listen to the "onDisplayImage" event.
+
+		getImageMetaData: function(el){
+				
+			return {
+				longDescription: el.getAttribute(el, 'data-long-description')
+			}
+			
+		}
 	
 	
 Keyboard controls for desktop browsers

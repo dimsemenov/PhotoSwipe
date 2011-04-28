@@ -107,6 +107,9 @@
 			<param name="filePath" value="${project.build.workdir}/examples/jquery-engine.html"/>
 		</antcall>
 		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/jquery-engine-animate-enhanced.html"/>
+		</antcall>
+		<antcall target="versionStamp">
 			<param name="filePath" value="${project.build.workdir}/examples/advanced-setup.html"/>
 		</antcall>
 		<antcall target="versionStamp">

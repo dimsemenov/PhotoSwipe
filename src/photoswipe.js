@@ -185,6 +185,8 @@
 				this.viewportFadeInEventHandler
 			);
 			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeShow);
+			
 			this.viewport.fadeIn();
 			
 		},
@@ -247,8 +249,15 @@
 		addEventListeners: function(){
 			
 			// Set window handlers
-			var supportsOrientationChange = "onorientationchange" in window;
-			this.orientationEventName = supportsOrientationChange ? "orientationchange" : "resize";
+			if (navigator.userAgent.indexOf('Android') > -1){
+				// For some reason, resize was more stable than orientationchange in Android
+				// This fix was added in v1.0.5 - needs reviewing
+				this.orientationEventName = 'resize';
+			}
+			else{
+				var supportsOrientationChange = 'onorientationchange' in window;
+				this.orientationEventName = supportsOrientationChange ? 'orientationchange' : 'resize';
+			}
 			
 			Util.DOM.addEventListener(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
 			
@@ -608,6 +617,8 @@
 			
 			this.viewport.addEventListener(ElementClass.EventTypes.onFadeOut, this.viewportFadeOutEventHandler);
 			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeHide);
+			
 			this.viewport.fadeOut();
 			
 		},
@@ -787,6 +798,7 @@
 				
 				if (fadeIn){
 					
+					this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow);
 					this.captionAndToolbar.fadeIn();
 					
 				}
@@ -826,11 +838,13 @@
 			
 			if (this.captionAndToolbar.isHidden){
 				
+				this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow);
 				this.captionAndToolbar.fadeIn();
 
 			}
 			else{
 				
+				this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide);
 				this.captionAndToolbar.fadeOut();
 				
 			}
@@ -846,6 +860,7 @@
 		fadeOutCaptionAndToolbar: function(){
 			
 			if (!this.settings.captionAndToolbarHide && !this.captionAndToolbar.isHidden){
+				this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide);
 				this.captionAndToolbar.fadeOut();
 			}
 		
@@ -1000,14 +1015,18 @@
 	
 	Code.PhotoSwipe.EventTypes = {
 		
+		onBeforeShow: 'onBeforeShow',
 		onShow: 'onShow',
+		onBeforeHide: 'onBeforeHide',
 		onHide: 'onHide',
 		onShowNext: 'onShowNext',
 		onShowPrevious: 'onShowPrevious',
 		onDisplayImage: 'onDisplayImage',
 		onResetPosition: 'onResetPosition',
 		onSlideshowStart: 'onSlideshowStart',
-		onSlideshowStop: 'onSlideshowStop'
+		onSlideshowStop: 'onSlideshowStop',
+		onBeforeCaptionAndToolbarShow: 'onBeforeCaptionAndToolbarShow',
+		onBeforeCaptionAndToolbarHide: 'onBeforeCaptionAndToolbarHide'
 		
 	};
 	
