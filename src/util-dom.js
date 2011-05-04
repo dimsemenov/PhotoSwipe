@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function (Util) {
+(function (window, Util) {
 	
 	Util.extend(Util, {
 		
@@ -519,4 +519,8 @@
 	});
 	
 	
-})(Code.PhotoSwipe.Util);
+})
+(
+	window,
+	Code.PhotoSwipe.Util
+);

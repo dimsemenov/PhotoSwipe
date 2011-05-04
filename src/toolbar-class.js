@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util){
+(function(window, Util){
 	
 	/*
 	 * Class: Code.PhotoSwipe.ToolbarClass
@@ -16,7 +16,9 @@
 		playEl: null,
 		
 		clickHandler: null,
+		touchStartHandler: null,
 		touchMoveHandler: null,
+		touched: null,
 		
 		isNextActive: null,
 		isPreviousActive: null,
@@ -39,11 +41,13 @@
 			
 			this.isNextActive = true;
 			this.isPreviousActive = true;
+			this.touched = false;
 			
 			this.clickHandler = this.onClick.bind(this);
 			
 			if (Util.browser.touchSupported){
 				this.touchMoveHandler = this.onTouchMove.bind(this);
+				this.touchStartHandler = this.onTouchStart.bind(this);
 			}
 			
 			// Create element and append to body
@@ -94,6 +98,10 @@
 		addEventListeners: function(){
 					
 			if (Util.browser.touchSupported){
+				// Had an issue with touchstart, animation and Blackberry. BB will default to click
+				if (!Util.browser.isBlackberry){
+					Util.DOM.addEventListener(this.el, 'touchstart', this.touchStartHandler);
+				}
 				Util.DOM.addEventListener(this.el, 'touchmove', this.touchMoveHandler);
 			}
 			
@@ -108,9 +116,25 @@
 		removeEventListeners: function(){
 			
 			if (Util.browser.touchSupported){
+				if (!Util.browser.isBlackberry){
+					Util.DOM.removeEventListener(this.el, 'touchstart', this.touchStartHandler);
+				}
 				Util.DOM.removeEventListener(this.el, 'touchmove', this.touchMoveHandler);
 			}
 			Util.DOM.removeEventListener(this.el, 'click', this.clickHandler);
+			
+		},
+		
+		
+		/*
+		 * Function: onTouchStart
+		 */
+		onTouchStart: function(e){
+			
+			e.preventDefault();
+			
+			this.touched = true;
+			this.handleClick(e);
 			
 		},
 		
@@ -130,8 +154,23 @@
 		 */
 		onClick: function(e){
 			
-			var action;
+			if (this.touched){
+				return;
+			}
+			
+			this.handleClick(e);
+			
+		},
 		
+		
+		
+		/*
+		 * Function: handleClick
+		 */
+		handleClick: function(e){
+			
+			var action;
+			
 			switch(e.target.parentNode){
 				
 				case this.previousEl:
@@ -253,5 +292,9 @@
 		onClick: 'onClick'
 	};
 
-})(Code.PhotoSwipe.Util);
+})
+(
+	window,
+	Code.PhotoSwipe.Util
+);
 	

@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util, FullSizeImageClass){
+(function(window, Util, FullSizeImageClass){
 
 	/*
 	 * Class: Code.PhotoSwipe.SliderItemClass
@@ -271,4 +271,9 @@
 	};
 	
 	
-})(Code.PhotoSwipe.Util, Code.PhotoSwipe.FullSizeImageClass);
+})
+(
+	window,
+	Code.PhotoSwipe.Util, 
+	Code.PhotoSwipe.FullSizeImageClass
+);

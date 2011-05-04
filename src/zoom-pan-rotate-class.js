@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util){
+(function(window, Util){
 	
 	/*
 	 * Class: Code.PhotoSwipe.ZoomPanRotateClass
@@ -184,4 +184,8 @@
 		documentOverlay: 'ps-zoom-pan-rotate'
 	};
 
-})(Code.PhotoSwipe.Util);
+})
+(
+	window,
+	Code.PhotoSwipe.Util
+);

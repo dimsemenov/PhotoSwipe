@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util){
+(function(window, Util){
 	
 	/*
 	 * Class: Code.PhotoSwipe.CaptionClass
@@ -156,4 +156,8 @@
 		content: 'ps-caption-content'
 	};
 
-})(Code.PhotoSwipe.Util);
+})
+(
+	window,
+	Code.PhotoSwipe.Util
+);

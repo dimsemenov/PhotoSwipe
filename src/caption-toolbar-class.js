@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util, CaptionClass, ToolbarClass){
+(function(window, Util, CaptionClass, ToolbarClass){
 
 	/*
 	 * Class: Code.PhotoSwipe.CaptionToolbarClass
@@ -347,4 +347,10 @@
 	});
 
 
-})(Code.PhotoSwipe.Util, Code.PhotoSwipe.CaptionClass, Code.PhotoSwipe.ToolbarClass);
+})
+(
+	window,
+	Code.PhotoSwipe.Util, 
+	Code.PhotoSwipe.CaptionClass, 
+	Code.PhotoSwipe.ToolbarClass
+);

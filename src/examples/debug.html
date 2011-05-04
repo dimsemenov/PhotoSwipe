@@ -8,13 +8,14 @@
 	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
 	
 	<script type="text/javascript" src="../lib/simple-inheritance.js"></script>
+	<script type="text/javascript" src="../lib/bean.min.js"></script>
 	<script type="text/javascript" src="../util.js"></script>
 	
 	<script type="text/javascript" src="../util-dom.js"></script>
 	<script type="text/javascript" src="../util-animation.js"></script>
 	
 	<!--
-	<script type="text/javascript" src="../lib/jquery-1.5.1.min.js"></script>
+	<script type="text/javascript" src="../lib/jquery-1.5.2.min.js"></script>
 	<script type="text/javascript" src="../util-dom-jQuery.js"></script>
 	<script type="text/javascript" src="../lib/jquery.animate-enhanced.min.js"></script>
 	<script type="text/javascript" src="../util-animation-jQuery.js"></script>
@@ -137,10 +138,10 @@
 				
 			});
 			
-			// onCaptionAndToolbarHide
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarHide, function(e){
+			// onViewportClick
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onViewportClick, function(e){
 				
-				console.log('onCaptionAndToolbarHide');
+				console.log('onViewportClick');
 				
 			});
 			

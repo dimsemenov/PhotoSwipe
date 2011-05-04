@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util, SliderItemClass){
+(function(window, Util, SliderItemClass){
 
 	/*
 	 * Class: Code.PhotoSwipe.SliderClass
@@ -390,4 +390,9 @@
 	};
 	
 	
-})(Code.PhotoSwipe.Util, Code.PhotoSwipe.SliderItemClass);
+})
+(
+	window,
+	Code.PhotoSwipe.Util, 
+	Code.PhotoSwipe.SliderItemClass
+);

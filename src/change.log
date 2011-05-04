@@ -87,3 +87,13 @@ Major update:
 	- onBeforeCaptionAndToolbarHide
 
 
+1.0.6 04.05.11 - Ste Brennan
+----------------------------
+
+- Fixed issue with toolbar on Android 2.1-update1
+
+- Toolbar buttons now more responsive (uses touchstart event rather than click, Android and iOS only)
+
+- Added new event "onViewportClick"
+
+- Added new setting "backButtonHideEnabled" (default true). This will hide the gallery when the user hits the back button. Useful for Android  and Blackberry. Works in BB6, Android v2.1 and above and iOS 4 and above

@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util, ElementClass, DocumentOverlayClass, FullSizeImageClass, ViewportClass, SliderClass, CaptionClass, ToolbarClass, CaptionToolbarClass, ZoomPanRotateClass){
+(function(window, Util, ElementClass, DocumentOverlayClass, FullSizeImageClass, ViewportClass, SliderClass, CaptionClass, ToolbarClass, CaptionToolbarClass, ZoomPanRotateClass){
 
 	var photoSwipe = Code.PhotoSwipe.EventClass.extend({
 		
@@ -18,6 +18,9 @@
 		settings: null,
 		currentIndex: null,	
 		isBusy: null,
+		originalHashValue: null,
+		currentHistoryHashValue: null,
+		isBackEventSupported: null,
 		
 		slideshowTimeout: null,
 		isSlideshowActive: null,
@@ -27,6 +30,7 @@
 		viewportFadeInEventHandler: null,
 		windowOrientationChangeEventHandler: null,
 		windowScrollEventHandler: null,
+		windowStateChangeHandler: null,
 		keyDownEventHandler: null,
 		viewportTouchEventHandler: null,
 		viewportFadeOutEventHandler: null,
@@ -60,6 +64,7 @@
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
 				preventHide: false,
 				zIndex: 1000,
+				backButtonHideEnabled: true,
 				
 				/* Experimental - iOS only at the moment */
 				allowUserZoom: true, 
@@ -73,10 +78,21 @@
 				captionAndToolbarShowEmptyCaptions: true				
 			};
 			
+			if (Util.browser.isAndroid){
+				if (navigator.userAgent.indexOf('2.1')){
+					this.isBackEventSupported = true;
+				}
+			}
+			if (!this.isBackEventSupported){
+				this.isBackEventSupported = 'onhashchange' in window;
+			}
+			
+			
 			// Set pointers to event handlers
 			this.viewportFadeInEventHandler = this.onViewportFadeIn.bind(this);
 			this.windowOrientationChangeEventHandler = this.onWindowOrientationChange.bind(this);
 			this.windowScrollEventHandler = this.onWindowScroll.bind(this);
+			this.windowStateChangeHandler = this.onWindowStateChange.bind(this);
 			this.keyDownEventHandler = this.onKeyDown.bind(this);
 			this.viewportTouchEventHandler = this.onViewportTouch.bind(this);
 			this.viewportFadeOutEventHandler = this.onViewportFadeOut.bind(this);
@@ -156,6 +172,10 @@
 			}
 			
 			this.isBusy = true;
+			
+			if (this.isBackEventSupported){
+				this.originalHashValue = window.location.hash;
+			}
 			
 			this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.show;
 			
@@ -249,7 +269,7 @@
 		addEventListeners: function(){
 			
 			// Set window handlers
-			if (navigator.userAgent.indexOf('Android') > -1){
+			if (Util.browser.isAndroid){
 				// For some reason, resize was more stable than orientationchange in Android
 				// This fix was added in v1.0.5 - needs reviewing
 				this.orientationEventName = 'resize';
@@ -262,6 +282,12 @@
 			Util.DOM.addEventListener(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
 			
 			Util.DOM.addEventListener(window, 'scroll', this.windowScrollEventHandler);
+					
+			if (this.isBackEventSupported){
+				this.currentHistoryHashValue = 'PhotoSwipe' + new Date().getTime().toString();
+				window.location.hash = this.currentHistoryHashValue;
+				Util.DOM.addEventListener(window, 'hashchange', this.windowStateChangeHandler);
+			}
 			
 			// Set keydown event handlers for desktop browsers
 			Util.DOM.addEventListener(document, 'keydown', this.keyDownEventHandler);
@@ -288,6 +314,10 @@
 			Util.DOM.removeEventListener(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
 			
 			Util.DOM.removeEventListener(window, 'scroll', this.windowScrollEventHandler);
+			
+			if (this.isBackEventSupported){
+				Util.DOM.removeEventListener(window, 'hashchange', this.windowStateChangeHandler);
+			}
 			
 			// Remove keydown event handlers for desktop browsers
 			Util.DOM.removeEventListener(document, 'keydown', this.keyDownEventHandler);
@@ -442,6 +472,18 @@
 		},
 		
 		
+		/*
+		 * Function: onWindowStateChange
+		 */
+		onWindowStateChange: function(e){
+			
+			if (window.location.hash !== '#' + this.currentHistoryHashValue){
+				this.hide();
+			}
+			
+		},
+		
+		
 		
 		/*
 		 * Function: resetPosition
@@ -557,6 +599,7 @@
 					else{
 						this.hide();
 					}
+					this.dispatchEvent(Code.PhotoSwipe.EventTypes.onViewportClick);
 					break;
 				
 				case ViewportClass.Actions.swipeLeft:
@@ -608,6 +651,10 @@
 			this.removeZoomPanRotate();
 			
 			this.removeEventListeners();
+			
+			if (this.isBackEventSupported){
+				window.location.hash = this.originalHashValue;
+			}
 			
 			this.documentOverlay.hide();
 			this.captionAndToolbar.hide();
@@ -725,7 +772,7 @@
 			
 			
 			if (resetAutoTimeout) {
-		
+				
 				// Reset the caption and toolbar's fadeOut timeout
 				this.captionAndToolbar.resetAutoHideTimeout();
 					
@@ -1026,7 +1073,8 @@
 		onSlideshowStart: 'onSlideshowStart',
 		onSlideshowStop: 'onSlideshowStop',
 		onBeforeCaptionAndToolbarShow: 'onBeforeCaptionAndToolbarShow',
-		onBeforeCaptionAndToolbarHide: 'onBeforeCaptionAndToolbarHide'
+		onBeforeCaptionAndToolbarHide: 'onBeforeCaptionAndToolbarHide',
+		onViewportClick: 'onViewportClick'
 		
 	};
 	
@@ -1229,6 +1277,7 @@
 	
 })
 (
+	window,
 	Code.PhotoSwipe.Util, 
 	Code.PhotoSwipe.ElementClass,
 	Code.PhotoSwipe.DocumentOverlayClass,

@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(Util){
+(function(window, Util){
 	
 	
 	/*
@@ -93,4 +93,8 @@
 	};
 	
 
-})(Code.PhotoSwipe.Util);
+})
+(
+	window,
+	Code.PhotoSwipe.Util
+);

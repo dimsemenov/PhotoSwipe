@@ -3,7 +3,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function () {
+(function (window) {
 	
 	// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
 	if (!Function.prototype.bind ) {
@@ -44,6 +44,9 @@
     	mozilla: /mozilla/i.test(navigator.userAgent) && !/(compatible|webkit)/.test(navigator.userAgent),
 			mobileSafari: /mobile.*safari/i.test(navigator.userAgent),
 			is3dSupported: false,
+			isAndroid: /android/i.test(navigator.userAgent),
+			isBlackberry: /blackberry/i.test(navigator.userAgent),
+			isApple: /apple/i.test(navigator.userAgent),
 			touchSupported: false,
 			gestureSupported: false,
 			
@@ -266,4 +269,4 @@
 	Code.PhotoSwipe.Util.browser.touchSupported = Code.PhotoSwipe.Util.browser.isEventSupported('touchstart');
 	Code.PhotoSwipe.Util.browser.gestureSupported = Code.PhotoSwipe.Util.browser.isEventSupported('gesturestart');
 		
-})();
+})(window);
