@@ -124,9 +124,11 @@ Options
 	
 - **imageScaleMethod**: How images will fit onto the screen. Either "fit" or "zoom". "fit" ensures the image always fits the screen. "zoom" the image will always fill the full screen, this may cause the image to be "zoomed" in and cropped. Default "fit"
 
-- **preventHide**: Once PhotoSwipe is active, prevents the user closing it. Useful for "exclusive mode" (see examples/exclusive-mode.html). Default: "false"
+- **preventHide**: Once PhotoSwipe is active, prevents the user closing it. Useful for "exclusive mode" (see examples/exclusive-mode.html). Default "false"
 
 - **zIndex**: The intial zIndex for PhotoSwipe. Default "1000"
+
+- **backButtonHideEnabled**: This will hide the gallery when the user hits the back button. Useful for Android  and Blackberry. Works in BB6, Android v2.1 and above and iOS 4 and above. Default "true"
 
 - **allowUserZoom**: EXPERIMENTAL iOS only - Allow the user to zoom / pan around images. Default "true" 
 
