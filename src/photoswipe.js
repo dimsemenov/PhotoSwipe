@@ -18,6 +18,7 @@
 		settings: null,
 		currentIndex: null,	
 		isBusy: null,
+		isActive: null,
 		originalHashValue: null,
 		currentHistoryHashValue: null,
 		isBackEventSupported: null,
@@ -48,6 +49,7 @@
 						
 			this.currentIndex = 0;
 			this.isBusy = false;
+			this.isActive = false;
 			this.isSlideshowActive = false;
 			
 			this.settings = { 
@@ -87,6 +89,10 @@
 				this.isBackEventSupported = 'onhashchange' in window;
 			}
 			
+			if (this.settings.preventHide){
+				this.settings.backButtonHideEnabled = false;
+			}
+			
 			
 			// Set pointers to event handlers
 			this.viewportFadeInEventHandler = this.onViewportFadeIn.bind(this);
@@ -109,6 +115,10 @@
 		setOptions: function(options){
 			
 			Util.extend(this.settings, options);
+			
+			if (this.settings.preventHide){
+				this.settings.backButtonHideEnabled = false;
+			}
 			
 		},
 		
@@ -159,7 +169,7 @@
 		 */
 		show: function(startingIndex){
 			
-			if (this.isBusy){
+			if (this.isBusy || this.isActive){
 				return;
 			}
 			
@@ -171,9 +181,10 @@
 				throw "need to set images before showing the gallery";
 			}
 			
+			this.isActive = true;
 			this.isBusy = true;
 			
-			if (this.isBackEventSupported){
+			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
 				this.originalHashValue = window.location.hash;
 			}
 			
@@ -283,7 +294,7 @@
 			
 			Util.DOM.addEventListener(window, 'scroll', this.windowScrollEventHandler);
 					
-			if (this.isBackEventSupported){
+			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
 				this.currentHistoryHashValue = 'PhotoSwipe' + new Date().getTime().toString();
 				window.location.hash = this.currentHistoryHashValue;
 				Util.DOM.addEventListener(window, 'hashchange', this.windowStateChangeHandler);
@@ -315,7 +326,7 @@
 			
 			Util.DOM.removeEventListener(window, 'scroll', this.windowScrollEventHandler);
 			
-			if (this.isBackEventSupported){
+			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
 				Util.DOM.removeEventListener(window, 'hashchange', this.windowStateChangeHandler);
 			}
 			
@@ -630,6 +641,7 @@
 			this.viewport.removeEventListener(ElementClass.EventTypes.onFadeOut, this.viewportFadeOutEventHandler);
 			
 			this.isBusy = false;
+			this.isActive = false;
 			
 			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onHide);
 			
@@ -646,15 +658,15 @@
 				return;
 			}
 			
+			if (!this.isActive){
+				return;
+			}
+			
 			this.isBusy = true;
 			
 			this.removeZoomPanRotate();
 			
 			this.removeEventListeners();
-			
-			if (this.isBackEventSupported){
-				window.location.hash = this.originalHashValue;
-			}
 			
 			this.documentOverlay.hide();
 			this.captionAndToolbar.hide();
@@ -668,7 +680,40 @@
 			
 			this.viewport.fadeOut();
 			
+			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
+				window.location.hash = this.originalHashValue;
+			}
+			
 		},
+		
+		
+		/*
+		 * Function: hideImmediately
+		 */
+		hideImmediately: function(){
+			
+			if (!this.isActive){
+				return;
+			}
+			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeHide);
+			
+			this.removeZoomPanRotate();
+			this.removeEventListeners();
+			this.documentOverlay.hide();
+			this.captionAndToolbar.hide();
+			this.slider.hide();
+			this.viewport.hide();
+			
+			Util.DOM.removeClass(document.body, Code.PhotoSwipe.CssClasses.activeBody);
+			
+			this.isBusy = false;
+			this.isActive = false;
+			
+			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onHide);
+	
+		},
+		
 		
 		
 		
@@ -1035,7 +1080,7 @@
 			}
 			
 			this.zoomPanRotate.removeFromDOM();
-			
+						
 			this.zoomPanRotate = null;
 		
 		}

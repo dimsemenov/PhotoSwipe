@@ -83,8 +83,8 @@
 			 * Function: removeChild
 			 */
 			removeChild: function(childEl, parentEl){
-			
-				$(parentEl).remove(childEl);
+				
+				$(childEl).empty().remove();
 				
 			},
 			
@@ -310,9 +310,12 @@
 			 * Function: windowWidth
 			 */
 			windowWidth: function(){
-				
-				return $(window).width();
-			
+				//IE
+				if(!window.innerWidth) {
+					return $(window).width();
+				}
+				//w3c
+				return window.innerWidth;
 			},
 			
 			
@@ -320,9 +323,12 @@
 			 * Function: windowHeight
 			 */
 			windowHeight: function(){
-			
-				return $(window).height();
-			
+				//IE
+				if(!window.innerHeight) {
+					return $(window).height();
+				}
+				//w3c
+				return window.innerHeight;
 			},
 			
 			
@@ -330,9 +336,12 @@
 			 * Function: windowScrollLeft
 			 */
 			windowScrollLeft: function(){
-			
-				return $(window).scrollLeft();
-			
+				//IE
+				if(!window.pageXOffset) {
+					return $(window).scrollLeft();
+				}
+				//w3c
+				return window.pageXOffset;
 			},
 			
 			
@@ -340,10 +349,14 @@
 			 * Function: windowScrollTop
 			 */
 			windowScrollTop: function(){
-				
-				return $(window).scrollTop();
-			
+				//IE
+				if(!window.pageYOffset) {
+					return $(window).scrollTop();
+				}
+				//w3c
+				return window.pageYOffset;
 			},
+			
 			
 			
 			/*

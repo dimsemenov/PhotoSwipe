@@ -97,3 +97,18 @@ Major update:
 - Added new event "onViewportClick"
 
 - Added new setting "backButtonHideEnabled" (default true). This will hide the gallery when the user hits the back button. Useful for Android  and Blackberry. Works in BB6, Android v2.1 and above and iOS 4 and above
+
+
+1.0.7 16.05.11 - Ste Brennan
+----------------------------
+
+- Update util-dom-jQuery.js. Wrong window dimensions returned.
+
+- Added new "isActive" flag. You can check the active status of PhotoSwipe by "Code.PhotoSwipe.Current.isActive"
+
+- Added jQuery Mobile example. There is still an issue with this however. You have to set "backButtonHideEnabled = false" as it interferes with jQuery Mobile's history handling. This needs reviewing.
+
+- Better "Exclusive Mode" example.
+
+- Fixed issue where the toolbar was causing an error on zoom and rotate in iOS.
+

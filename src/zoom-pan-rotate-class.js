@@ -172,7 +172,7 @@
 		 * Function: removeFromDOM
 		 */
 		removeFromDOM: function(){
-		
+			
 			Util.DOM.removeChild(this.el, this.parentEl);
 		
 		}

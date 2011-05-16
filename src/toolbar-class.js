@@ -168,7 +168,7 @@
 		 * Function: handleClick
 		 */
 		handleClick: function(e){
-			
+						
 			var action;
 			
 			switch(e.target.parentNode){

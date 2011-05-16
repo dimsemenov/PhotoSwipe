@@ -8,16 +8,15 @@
 	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
 	
 	<script type="text/javascript" src="../lib/simple-inheritance.js"></script>
-	<script type="text/javascript" src="../lib/bean.min.js"></script>
 	<script type="text/javascript" src="../util.js"></script>
 	
 	<script type="text/javascript" src="../util-dom.js"></script>
 	<script type="text/javascript" src="../util-animation.js"></script>
 	
 	<!--
-	<script type="text/javascript" src="../lib/jquery-1.5.2.min.js"></script>
-	<script type="text/javascript" src="../util-dom-jQuery.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
 	<script type="text/javascript" src="../lib/jquery.animate-enhanced.min.js"></script>
+	<script type="text/javascript" src="../util-dom-jQuery.js"></script>
 	<script type="text/javascript" src="../util-animation-jQuery.js"></script>
 	-->
 	
@@ -52,7 +51,6 @@
 		document.addEventListener('DOMContentLoaded', function(){
 			
 			// Add event listeners
-			
 			
 			// onBeforeShow
 			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeShow, function(e){
@@ -144,6 +142,7 @@
 				console.log('onViewportClick');
 				
 			});
+			
 			
 			var thumbEls = Code.photoSwipe('a', '#Gallery', {
 			
