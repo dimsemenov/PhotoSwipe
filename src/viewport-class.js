@@ -60,7 +60,7 @@
 			this.mouseUpHandler = this.onMouseUp.bind(this);
 			
 			// Create element and append to body
-			this.el = Util.DOM.createElement('div', { 'class': Code.PhotoSwipe.ViewportClass.CssClasses.viewport }, '');
+			this.el = Util.DOM.createElement('div', { 'class': Code.PhotoSwipe.ViewportClass.CssClasses.viewport, 'data-role': 'dialog' }, '');
 			Util.DOM.setStyle(this.el, {
 				position: 'absolute',
 				left: 0,

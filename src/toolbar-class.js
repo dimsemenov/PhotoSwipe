@@ -93,6 +93,22 @@
 		
 		
 		/*
+		 * Function: postFadeIn
+		 */
+		postFadeIn: function(e){
+			
+			if (this.isHidden){
+				return;
+			}
+			
+			Util.DOM.setStyle(this.el, { display: 'table' });
+			
+			this._super(this.settings);
+						
+		},
+		
+		
+		/*
 		 * Function: addEventListeners
 		 */
 		addEventListeners: function(){

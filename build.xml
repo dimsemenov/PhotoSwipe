@@ -174,6 +174,7 @@
 			<fileset file="${project.src.dir}/change-log.html"/>
 			<fileset file="${project.src.dir}/photoswipe.css"/>
 			<fileset file="${project.src.dir}/photoswipe-icons.png"/>
+			<fileset file="${project.src.dir}/photoswipe-icons@2x.png"/>
 			<fileset file="${project.src.dir}/photoswipe-loader.gif"/>
 		</copy>
 		

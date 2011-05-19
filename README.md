@@ -34,6 +34,8 @@ Features
 
 - Uses hardware acceleration where possible for smoother transitions and effects.
 
+- Can be integrated into jQuery Mobile.
+
 - Comprehensive customisation options:
 
     - Presentation controlled via CSS
@@ -130,9 +132,9 @@ Options
 
 - **backButtonHideEnabled**: This will hide the gallery when the user hits the back button. Useful for Android  and Blackberry. Works in BB6, Android v2.1 and above and iOS 4 and above. Default "true"
 
-- **allowUserZoom**: EXPERIMENTAL iOS only - Allow the user to zoom / pan around images. Default "true" 
+- **allowUserZoom**: iOS only - Allow the user to zoom / pan around images. Default "true" 
 
-- **allowRotationOnUserZoom**: EXPERIMENTAL iOS only - Allow the user to rotate images whilst zooming / panning. Default "true" 
+- **allowRotationOnUserZoom**: iOS only - Allow the user to rotate images whilst zooming / panning. Default "true" 
 
 - **captionAndToolbarHide**: Hide the caption and toolbar. Default "false"
 
@@ -145,6 +147,10 @@ Options
 - **captionAndToolbarOpacity**: The opacity of the caption and toolbar. Default "0.8"
 
 - **captionAndToolbarShowEmptyCaptions**: Shows a blank caption area even if a caption cannot be found for the current image. Default "false" 
+
+- **jQueryMobile**: Whether PhotoSwipe is integrated into a jQuery Mobile project or not. By default, PhotoSwipe will try and work this out for you.
+
+- **jQueryMobileDialogHash**: The window hash tag used by jQuery Mobile and dialog pages. Default "&ui-state=dialog".
 
 - **getImageSource**: Function to specify how the gallery obatins image sources. By default, the gallery assumes you send it a list of images with each image wrapped in an anchor tag. The anchor tag will contain the URL to the full size image. You can change this e.g. if you supply a list of images without an anchor tag, and supply the full size URL on the image's "rel" attribute:
 

@@ -110,34 +110,46 @@ div.ps-toolbar div div.ps-toolbar-content
 	width: 44px;
 	height: 44px;
 	margin: 0 auto 0;
+	background-image: url(photoswipe-icons.png);
+	background-repeat: no-repeat;
 }
 
 div.ps-toolbar-close div.ps-toolbar-content
 {
-	background: url(photoswipe-icons.png) no-repeat -44px 0;
+	background-position: 0 0;
 }
 
 div.ps-toolbar-previous div.ps-toolbar-content
 {
-	background: url(photoswipe-icons.png) no-repeat -132px 0;
+	background-position: -44px 0;
 }
 
 div.ps-toolbar-previous-disabled div.ps-toolbar-content
 {
-	background: url(photoswipe-icons.png) no-repeat -132px -44px;
+	background-position: -44px -44px;
 }
 
 div.ps-toolbar-next div.ps-toolbar-content
 {
-	background: url(photoswipe-icons.png) no-repeat -176px 0;
+	background-position: -132px 0;
 }
 
 div.ps-toolbar-next-disabled div.ps-toolbar-content
 {
-	background: url(photoswipe-icons.png) no-repeat -176px -44px;
+	background-position: -132px -44px;
 }
 
 div.ps-toolbar-play div.ps-toolbar-content
 {
-	background: url(photoswipe-icons.png) no-repeat -88px 0;
+	background-position: -88px 0;
+}
+
+/* Hi-res retina display */
+@media only screen and (-webkit-min-device-pixel-ratio: 2)
+{
+	div.ps-toolbar div div.ps-toolbar-content
+	{
+		-webkit-background-size: 176px 88px;
+		background-image: url(photoswipe-icons@2x.png);
+	}
 }

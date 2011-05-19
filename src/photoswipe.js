@@ -19,7 +19,6 @@
 		currentIndex: null,	
 		isBusy: null,
 		isActive: null,
-		originalHashValue: null,
 		currentHistoryHashValue: null,
 		isBackEventSupported: null,
 		
@@ -28,10 +27,12 @@
 		
 		lastShowPrevTrigger: null,
 		
+		backButtonClicked: null,
+		
 		viewportFadeInEventHandler: null,
 		windowOrientationChangeEventHandler: null,
 		windowScrollEventHandler: null,
-		windowStateChangeHandler: null,
+		windowHashChangeHandler: null,
 		keyDownEventHandler: null,
 		viewportTouchEventHandler: null,
 		viewportFadeOutEventHandler: null,
@@ -51,6 +52,7 @@
 			this.isBusy = false;
 			this.isActive = false;
 			this.isSlideshowActive = false;
+			this.backButtonClicked = false;
 			
 			this.settings = { 
 				getImageSource: Code.PhotoSwipe.GetImageSource,
@@ -67,6 +69,8 @@
 				preventHide: false,
 				zIndex: 1000,
 				backButtonHideEnabled: true,
+				jQueryMobile: ( !Util.isNothing(window.jQuery) && !Util.isNothing(window.jQuery.mobile) ),
+				jQueryMobileDialogHash: '&ui-state=dialog',
 				
 				/* Experimental - iOS only at the moment */
 				allowUserZoom: true, 
@@ -79,7 +83,7 @@
 				captionAndToolbarOpacity: 0.8,
 				captionAndToolbarShowEmptyCaptions: true				
 			};
-			
+						
 			if (Util.browser.isAndroid){
 				if (navigator.userAgent.indexOf('2.1')){
 					this.isBackEventSupported = true;
@@ -98,7 +102,7 @@
 			this.viewportFadeInEventHandler = this.onViewportFadeIn.bind(this);
 			this.windowOrientationChangeEventHandler = this.onWindowOrientationChange.bind(this);
 			this.windowScrollEventHandler = this.onWindowScroll.bind(this);
-			this.windowStateChangeHandler = this.onWindowStateChange.bind(this);
+			this.windowHashChangeHandler = this.onWindowHashChange.bind(this);
 			this.keyDownEventHandler = this.onKeyDown.bind(this);
 			this.viewportTouchEventHandler = this.onViewportTouch.bind(this);
 			this.viewportFadeOutEventHandler = this.onViewportFadeOut.bind(this);
@@ -181,13 +185,10 @@
 				throw "need to set images before showing the gallery";
 			}
 			
+			this.backButtonClicked = false;
 			this.isActive = true;
 			this.isBusy = true;
-			
-			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
-				this.originalHashValue = window.location.hash;
-			}
-			
+						
 			this.lastShowPrevTrigger = Code.PhotoSwipe.ShowPrevTriggers.show;
 			
 			Util.DOM.addClass(document.body, Code.PhotoSwipe.CssClasses.activeBody);
@@ -295,9 +296,17 @@
 			Util.DOM.addEventListener(window, 'scroll', this.windowScrollEventHandler);
 					
 			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
-				this.currentHistoryHashValue = 'PhotoSwipe' + new Date().getTime().toString();
-				window.location.hash = this.currentHistoryHashValue;
-				Util.DOM.addEventListener(window, 'hashchange', this.windowStateChangeHandler);
+				
+				if (this.settings.jQueryMobile){
+					window.location.hash = this.settings.jQueryMobileDialogHash;
+				}
+				else{
+					this.currentHistoryHashValue = 'PhotoSwipe' + new Date().getTime().toString();
+					window.location.hash = this.currentHistoryHashValue;
+				}
+				
+				Util.DOM.addEventListener(window, 'hashchange', this.windowHashChangeHandler);
+				
 			}
 			
 			// Set keydown event handlers for desktop browsers
@@ -327,7 +336,7 @@
 			Util.DOM.removeEventListener(window, 'scroll', this.windowScrollEventHandler);
 			
 			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
-				Util.DOM.removeEventListener(window, 'hashchange', this.windowStateChangeHandler);
+				Util.DOM.removeEventListener(window, 'hashchange', this.windowHashChangeHandler);
 			}
 			
 			// Remove keydown event handlers for desktop browsers
@@ -484,11 +493,15 @@
 		
 		
 		/*
-		 * Function: onWindowStateChange
+		 * Function: onWindowHashChange
 		 */
-		onWindowStateChange: function(e){
+		onWindowHashChange: function(e){
 			
-			if (window.location.hash !== '#' + this.currentHistoryHashValue){
+			var compareHash = '#' + 
+				((this.settings.jQueryMobile) ? this.settings.jQueryMobileDialogHash : this.currentHistoryHashValue);
+			
+			if (window.location.hash !== compareHash){
+				this.backButtonClicked = true;
 				this.hide();
 			}
 			
@@ -645,6 +658,8 @@
 			
 			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onHide);
 			
+			this.goBackInHistory();
+			
 		},
 		
 		
@@ -680,10 +695,6 @@
 			
 			this.viewport.fadeOut();
 			
-			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
-				window.location.hash = this.originalHashValue;
-			}
-			
 		},
 		
 		
@@ -711,10 +722,23 @@
 			this.isActive = false;
 			
 			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onHide);
-	
+			
+			this.goBackInHistory();
 		},
 		
 		
+		/*
+		 * Function: goBackInHistory
+		 */
+		goBackInHistory: function(){
+			
+			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){	
+				if ( !this.backButtonClicked ){
+					window.history.back();
+				}
+			}
+			
+		},
 		
 		
 		/*

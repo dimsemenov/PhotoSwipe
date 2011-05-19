@@ -112,3 +112,14 @@ Major update:
 
 - Fixed issue where the toolbar was causing an error on zoom and rotate in iOS.
 
+
+1.0.8 19.05.11 - Ste Brennan
+----------------------------
+
+- Tighter integration with jQuery Mobile. Back button now working fine.
+
+- Updated jQuery Mobile example.
+
+- Updated example images in-line with new branding.
+
+- Updated toolbar icons and added hi-res icons for retina display.

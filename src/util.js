@@ -46,7 +46,7 @@
 			is3dSupported: false,
 			isAndroid: /android/i.test(navigator.userAgent),
 			isBlackberry: /blackberry/i.test(navigator.userAgent),
-			isApple: /apple/i.test(navigator.userAgent),
+			isiOS: /like Mac OS/i.test(navigator.userAgent),
 			touchSupported: false,
 			gestureSupported: false,
 			

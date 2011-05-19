@@ -3,7 +3,7 @@
 	<head> 
 	<title>PhotoSwipe</title> 
 	
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css" />
+	<link rel="stylesheet" href="../lib/jquery.mobile-1.0a4.1/jquery.mobile-1.0a4.1.min.css" />
 	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
 	<style type="text/css">
 		div.gallery-row:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
@@ -12,13 +12,14 @@
 		div.gallery-item img { display: block; width: 100%; height: auto; }
 	</style>
 	
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
+	<script type="text/javascript" src="../lib/jquery-1.5.2.min.js"></script>
+	<script type="text/javascript" src="../lib/jquery.mobile-1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
 	
 	<script type="text/javascript" src="../lib/simple-inheritance.min.js"></script>
 	<script type="text/javascript" src="../lib/jquery.animate-enhanced.min.js"></script>
 	
 	<script type="text/javascript" src="../code-photoswipe-jQuery-%%version%%.min.js"></script>
+	
 	
 	<script type="text/javascript">
 		
@@ -28,26 +29,13 @@
 		
 		$(document).ready(function(){
 			
-			$('div.gallery-page')			
-			
-				.live('pageshow', function(e){
+			$('div.gallery-page').live('pageshow', function(e){
 					
-					// Re-initialize with the photos for the current page
-					$("div.gallery a", e.target).photoSwipe({
-						backButtonHideEnabled: false
-					});
-					
-					return true;
-					
-				})
+				// Re-initialize with the photos for the current page
+				$("div.gallery a", e.target).photoSwipe();
+				return true;
 				
-				.live('pagebeforehide', function(e){
-						
-					// Hide PhotoSwipe immediately
-					Code.PhotoSwipe.Current.hideImmediately();
-					return true;
-				
-				});
+			})
 				
 		});
 	
@@ -56,6 +44,7 @@
 </head> 
 <body> 
 
+
 <div data-role="page" id="Home">
 
 	<div data-role="header">
@@ -63,13 +52,19 @@
 	</div>
 	
 	
-	<div data-role="content">	
+	<div data-role="content" >	
 		
-		<p>This demo is to test integrating PhotoSwipe with jQuery Mobile</p>		
+		<p>These examples show PhotoSwipe integrated with jQuery Mobile:</p>		
 		
-		<ul data-role="listview" data-inset="true" > 
-			<li><a href="#Gallery1">Gallery 1</a></li> 
-			<li><a href="#Gallery2">Gallery 2</a></li> 
+		<ul data-role="listview" data-inset="true">
+			<li><a href="#Gallery1">First Gallery</a></li> 
+			<li><a href="#Gallery2">Second Gallery</a></li> 
+		</ul> 
+		
+		<p>PhotoSwipe has also been designed to run stand-alone and can be easily integrated into your non jQuery / jQuery mobile websites:</p>
+		
+		<ul data-role="listview" data-inset="true">
+			<li><a href="http://m.codecomputerlove.com/flickr-uploads/default.aspx" target="_blank">Code Computerlove</a></li> 
 		</ul> 
 		
 	</div>
@@ -84,7 +79,7 @@
 <div data-role="page" id="Gallery1" class="gallery-page">
 
 	<div data-role="header">
-		<h1>Gallery 1</h1>
+		<h1>First Gallery</h1>
 	</div>
 
 	<div data-role="content">	
@@ -136,7 +131,7 @@
 <div data-role="page" id="Gallery2" class="gallery-page">
 
 	<div data-role="header">
-		<h1>Gallery 2</h1>
+		<h1>Second Gallery</h1>
 	</div>
 
 	<div data-role="content">	
@@ -161,6 +156,16 @@
 				<div class="gallery-item"><a href="images/full/014.jpg" rel="external"><img src="images/thumb/014.jpg" alt="Image 014" /></a></div>
 				
 				<div class="gallery-item"><a href="images/full/015.jpg" rel="external"><img src="images/thumb/015.jpg" alt="Image 015" /></a></div>
+		
+			</div>
+			
+			<div class="gallery-row">
+	
+				<div class="gallery-item"><a href="images/full/016.jpg" rel="external"><img src="images/thumb/016.jpg" alt="Image 016" /></a></div>
+				
+				<div class="gallery-item"><a href="images/full/017.jpg" rel="external"><img src="images/thumb/017.jpg" alt="Image 017" /></a></div>
+				
+				<div class="gallery-item"><a href="images/full/018.jpg" rel="external"><img src="images/thumb/018.jpg" alt="Image 018" /></a></div>
 		
 			</div>
 		
