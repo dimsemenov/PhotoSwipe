@@ -119,6 +119,9 @@
 			<param name="filePath" value="${project.build.workdir}/examples/exclusive-mode.html"/>
 		</antcall>
 		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/exclusive-mode-with-array.html"/>
+		</antcall>
+		<antcall target="versionStamp">
 			<param name="filePath" value="${project.build.workdir}/examples/jquery-mobile.html"/>
 		</antcall>
 		

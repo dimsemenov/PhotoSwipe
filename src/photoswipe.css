@@ -13,6 +13,7 @@
 body.ps-active 
 {
 	-webkit-text-size-adjust: none;
+	overflow: hidden;
 }
 body.ps-active * 
 { 
