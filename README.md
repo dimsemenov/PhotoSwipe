@@ -9,6 +9,15 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
+Latest release v1.0.9
+---------------------
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.9.zip)
+
+Minor release:
+
+- Hides window scrollbar when active in desktop browsers
+
+- New exclusive mode demo showing how to initialize PhotoSwipe without HTML elements by using an array of custom objects 
 
 
 Features
