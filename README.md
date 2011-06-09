@@ -9,11 +9,15 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
-Latest Release v1.0.10
+Latest Release v1.0.11
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.10.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.11.zip)
 
-- Upgraded jQuery version of PhotoSwipe to jQuery 1.6.1 and jQuery-Animate-Enhanced 0.74 (thanks [Ben Barnett](https://github.com/benbarnett))
+- Panning speed with zoomed images now runs at correct speed thanks to [heardfrom](https://github.com/heardfrom) and [cilogi](https://github.com/cilogi)
+
+- Added maximum and minimum user zoom settings
+
+- Should now play nicely if including MooTools thanks to [chameron](https://github.com/chameron)
 
 
 Features
@@ -140,6 +144,12 @@ Options
 - **allowUserZoom**: iOS only - Allow the user to zoom / pan around images. Default "true" 
 
 - **allowRotationOnUserZoom**: iOS only - Allow the user to rotate images whilst zooming / panning. Default "true" 
+
+- **maxUserZoom**: iOS only - The maximum a user can zoom into an image. Default 5.0 (set to zero for this to be ignored)
+
+- **minUserZoom**: iOS only - The minimum a user can zoom out of an image. Default 0.5 (set to zero for this to be ignored)
+
+- **adjustUserPanToZoom**: iOS only - Adjusts the speed of panning to match the current zoom value. Default "true"
 
 - **captionAndToolbarHide**: Hide the caption and toolbar. Default "false"
 

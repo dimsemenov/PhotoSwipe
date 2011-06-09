@@ -6,7 +6,7 @@
 (function () {
 	
 	// Based on http://www.javascriptbank.com/how-build-custom-events-javascript.html
-	Code.PhotoSwipe.EventClass = Class.extend({
+	Code.PhotoSwipe.EventClass = SimpleClass.extend({
 		
 		_listeners: null,
 		

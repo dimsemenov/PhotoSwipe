@@ -6,11 +6,11 @@
 (function () {
 	var initializing = false, fnTest = /xyz/.test(function () { xyz; }) ? /\b_super\b/ : /.*/;
 
-	// The base Class implementation (does nothing)
-	this.Class = function () { };
+	// The base SimpleClass implementation (does nothing)
+	this.SimpleClass = function () { };
 
-	// Create a new Class that inherits from this class
-	Class.extend = function (prop) {
+	// Create a new SimpleClass that inherits from this class
+	SimpleClass.extend = function (prop) {
 		var _super = this.prototype;
 
 		// Instantiate a base class (but only create the instance,
@@ -44,21 +44,21 @@
 		}
 
 		// The dummy class constructor
-		function Class() {
+		function SimpleClass() {
 			// All construction is actually done in the init method
 			if (!initializing && this.init)
 				this.init.apply(this, arguments);
 		}
 
 		// Populate our constructed prototype object
-		Class.prototype = prototype;
+		SimpleClass.prototype = prototype;
 
 		// Enforce the constructor to be what we expect
-		Class.constructor = Class;
+		SimpleClass.constructor = SimpleClass;
 
 		// And make this class extendable
-		Class.extend = arguments.callee;
+		SimpleClass.extend = arguments.callee;
 
-		return Class;
+		return SimpleClass;
 	};
 })();

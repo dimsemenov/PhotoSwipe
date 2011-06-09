@@ -123,3 +123,19 @@ Major update:
 - Updated example images in-line with new branding.
 
 - Updated toolbar icons and added hi-res icons for retina display.
+
+
+1.0.10 30.05.11 - Ste Brennan
+-----------------------------
+
+- Now works with jQuery 1.6.1
+
+
+1.0.11 09.06.11 - Ste Brennan
+-----------------------------
+
+- Panning speed with zoomed images now runs at correct speed thanks to heardfrom [https://github.com/heardfrom] and cilogi[https://github.com/cilogi]
+
+- Added maximum and minimum user zoom settings
+
+- Should now play nicely if including MooTools thanks to chameron [https://github.com/chameron]

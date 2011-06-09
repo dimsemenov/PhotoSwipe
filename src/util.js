@@ -268,5 +268,5 @@
 	
 	Code.PhotoSwipe.Util.browser.touchSupported = Code.PhotoSwipe.Util.browser.isEventSupported('touchstart');
 	Code.PhotoSwipe.Util.browser.gestureSupported = Code.PhotoSwipe.Util.browser.isEventSupported('gesturestart');
-		
+	
 })(window);

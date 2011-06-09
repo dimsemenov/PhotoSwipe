@@ -22,12 +22,16 @@
 		 */
 		init: function(options, parentEl, imageEl){
 			
-			this.settings = {};
+			this.settings = {
+				maxZoom: 5.0,
+				minZoom: 0.5,
+				adjustPanToZoom: true
+			};
 			
 			Util.extend(this.settings, options);
 		
 			this._super(options);
-			
+						
 			this.parentEl = parentEl;
 			this.imageEl = imageEl.cloneNode(false);
 			
@@ -94,7 +98,16 @@
 		 */
 		setStartingScaleAndRotation: function(scaleValue, rotationValue){
 			
-			this.transformSettings.startingScale *= scaleValue;
+			var scale = this.transformSettings.startingScale * scaleValue;
+			
+			if (this.settings.minZoom !== 0 && scale < this.settings.minZoom){
+				scale = this.settings.minZoom;
+			}
+			else if (this.settings.maxZoom !== 0 && scale > this.settings.maxZoom){
+				scale = this.settings.maxZoom;
+			}
+			
+			this.transformSettings.startingScale = scale;
 			
 			this.transformSettings.startingRotation = 
 				(this.transformSettings.startingRotation + rotationValue) % 360;
@@ -108,9 +121,17 @@
 		 */
 		zoomRotate: function(scaleValue, rotationValue){
 			
-			this.transformSettings.scale = 
-				this.transformSettings.startingScale * scaleValue;
+			var scale = this.transformSettings.startingScale * scaleValue;
 			
+			if (this.settings.minZoom !== 0 && scale < this.settings.minZoom){
+				scale = this.settings.minZoom;
+			}
+			else if (this.settings.maxZoom !== 0 && scale > this.settings.maxZoom){
+				scale = this.settings.maxZoom;
+			}
+						
+			this.transformSettings.scale = scale;
+									
 			this.transformSettings.rotation = 
 				this.transformSettings.startingRotation + rotationValue;
 			
@@ -143,14 +164,17 @@
 			
 			var 
 				dx = point.x - this.panStartingPoint.x,
-				dy = point.y - this.panStartingPoint.y;
+				dy = point.y - this.panStartingPoint.y,
+				dxScaleAdjust = (this.settings.adjustPanToZoom) ? dx / this.transformSettings.scale : dx,
+        dyScaleAdjust = dy / this.transformSettings.scale ? dy / this.transformSettings.scale : dy ;
+			
 			
 			this.transformSettings.translateX = 
-				this.transformSettings.startingTranslateX + dx;
-				
+				this.transformSettings.startingTranslateX + dxScaleAdjust;
+
 			this.transformSettings.translateY = 
-				this.transformSettings.startingTranslateY + dy;
-			
+				this.transformSettings.startingTranslateY + dyScaleAdjust;
+
 			this.applyTransform();
 			
 		},

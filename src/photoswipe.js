@@ -75,6 +75,9 @@
 				/* Experimental - iOS only at the moment */
 				allowUserZoom: true, 
 				allowRotationOnUserZoom: true,
+				maxUserZoom: 5.0,
+				minUserZoom: 0.5,
+				adjustUserPanToZoom: true,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
@@ -577,7 +580,15 @@
 					if (this.canUserZoom()){
 						this.stopSlideshow();
 						if (!this.isZoomActive()){
-							this.zoomPanRotate = new ZoomPanRotateClass({}, this.viewport.el, this.slider.currentItem.imageEl);
+							this.zoomPanRotate = new ZoomPanRotateClass(
+								{
+									maxZoom: this.settings.maxUserZoom,
+									minZoom: this.settings.minUserZoom,
+									adjustPanToZoom: this.settings.adjustUserPanToZoom
+								}, 
+								this.viewport.el, 
+								this.slider.currentItem.imageEl
+							);
 							Util.DOM.resetTranslate(this.zoomPanRotate.containerEl);
 							Util.DOM.resetTranslate(this.zoomPanRotate.imageEl);
 						}
