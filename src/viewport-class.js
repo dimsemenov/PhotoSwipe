@@ -56,6 +56,9 @@
 				this.gestureEndHandler = this.onGestureEnd.bind(this);
 			}
 			
+			if (Code.PhotoSwipe.Util.browser.isEventSupported('mousewheel'))
+				this.swipeHandler = this.onMouseWheel.bind(this);
+
 			this.mouseDownHandler = this.onMouseDown.bind(this);
 			this.mouseUpHandler = this.onMouseUp.bind(this);
 			
@@ -106,6 +109,9 @@
 				Util.DOM.addEventListener(this.el, 'gestureend', this.gestureEndHandler);
 			}
 			
+			if (this.swipeHandler)
+				Util.DOM.addEventListener(this.el, 'mousewheel', this.swipeHandler);
+
 			Util.DOM.addEventListener(this.el, 'mousedown', this.mouseDownHandler);
 			Util.DOM.addEventListener(this.el, 'mouseup', this.mouseUpHandler);
 			
@@ -130,6 +136,9 @@
 				Util.DOM.removeEventListener(this.el, 'gestureend', this.gestureEndHandler);
 			}
 			
+			if (this.swipeHandler)
+				Util.DOM.removeEventListener(this.el, 'mousewheel', this.swipeHandler);
+
 			Util.DOM.removeEventListener(this.el, 'mousedown', this.mouseDownHandler);
 			Util.DOM.removeEventListener(this.el, 'mouseup', this.mouseUpHandler);
 			
@@ -304,6 +313,33 @@
 		
 		
 		
+ 		/*
+		 * Function: onMouseWheel
+		 */
+		onMouseWheel: function(e){
+
+			var dx = e.wheelDeltaX
+			  , dy = e.wheelDeltaY
+			  , dt = e.timeStamp - (this.swipeStartTime || 0)
+			  , action = 'swipe';
+			if (Math.abs(dx) < Math.abs(dy)) return; // (not a swipe, but a scroll)
+			if (dt < 900) return; // de-bounce rapid-fire 2nd events
+			this.swipeStartTime = e.timeStamp;
+
+			action += dx < 0 ? 'Right' : 'Left';
+			action = Code.PhotoSwipe.ViewportClass.Actions[action];
+			e.preventDefault();
+
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.ViewportClass.EventTypes.onSwipe,
+				target: this,
+				action: action
+			});
+
+		},
+
+
+
 		/*
 		 * Function: onMouseDown
 		 */
@@ -405,6 +441,7 @@
 	
 	
 	Code.PhotoSwipe.ViewportClass.EventTypes = {
+		onSwipe: 'onTouch', // quick hack to just get this demoable
 		onTouch: 'onTouch'
 	};
 	
