@@ -20,6 +20,11 @@ Latest Release v1.0.11
 - Should now play nicely if including MooTools thanks to [chameron](https://github.com/chameron)
 
 
+Issue with Chrome 12
+--------------------
+Presently we are aware of an issue with PhotoSwipe and the latest version of Chrome. This seems to be related to hardware acceleration which is now enabled by default. To get around this, simple use the standard jQuery version of PhotoSwipe.
+
+
 Features
 --------
 
