@@ -41,6 +41,7 @@
     	webkit: /webkit/i.test(navigator.userAgent),
     	opera: /opera/i.test(navigator.userAgent), // untested
     	msie: /msie/i.test(navigator.userAgent) && !/opera/.test(navigator.userAgent), 
+			chrome: /Chrome/i.test(navigator.userAgent),
     	mozilla: /mozilla/i.test(navigator.userAgent) && !/(compatible|webkit)/.test(navigator.userAgent),
 			mobileSafari: /mobile.*safari/i.test(navigator.userAgent),
 			is3dSupported: false,
@@ -261,7 +262,7 @@
 		
 	};
 	
-	if (Code.PhotoSwipe.Util.browser.webkit){
+	if (Code.PhotoSwipe.Util.browser.webkit && !Code.PhotoSwipe.Util.browser.chrome){
 		var test3DEl = document.createElement('div');
 		Code.PhotoSwipe.Util.browser.is3dSupported = !Code.PhotoSwipe.Util.isNothing(test3DEl.style.WebkitPerspective);
 	}

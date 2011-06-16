@@ -228,10 +228,15 @@
 		 * Function: bounce
 		 */
 		bounce: function () {
-			
+						
 			Util.DOM.show(this.currentItem.imageContainerEl);
 			
 			this.hasBounced = true;
+			
+			if (Util.browser.chrome){
+				this.dispatchDisplayCurrentFullSizeImage();
+				return;
+			}
 			
 			this.bounceSlideBy = this.parentElWidth / 2;
 			
@@ -250,14 +255,17 @@
 		 * Function: onBounceStepOne
 		 */
 		onBounceStepOne: function(e){
-		
-			Util.Animation.slideBy(
-				this.el, 
-				(this.lastShowAction === Code.PhotoSwipe.SliderClass.ShowActionTypes.previous) ? this.bounceSlideBy * -1 : this.bounceSlideBy, 
-				0, 
-				this.settings.slideSpeed, 
-				this.bounceStepTwoEventHandler
-			);
+			
+			var self = this;
+			window.setTimeout(function(){
+				Util.Animation.slideBy(
+					self.el, 
+					(self.lastShowAction === Code.PhotoSwipe.SliderClass.ShowActionTypes.previous) ? self.bounceSlideBy * -1 : self.bounceSlideBy, 
+					0, 
+					self.settings.slideSpeed, 
+					self.bounceStepTwoEventHandler
+				);
+			}, 25);
 			
 		},
 		

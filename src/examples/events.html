@@ -125,6 +125,21 @@
 			});
 			
 			
+			// onCaptionAndToolbarShow
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarShow, function(e){
+				
+				console.log('onCaptionAndToolbarShow');
+				
+			});
+			
+			
+			// onCaptionAndToolbarHide
+			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarHide, function(e){
+				
+				console.log('onCaptionAndToolbarHide');
+				
+			});
+			
 			Code.photoSwipe('a', '#Gallery');
 			
 		}, false);

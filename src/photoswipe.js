@@ -38,6 +38,8 @@
 		viewportFadeOutEventHandler: null,
 		sliderDisplayCurrentFullSizeImageEventHandler: null,
 		toolbarClickEventHandler: null,
+		captionAndToolbarShowEventHandler: null,
+		captionAndToolbarHideEventHandler: null,
 		orientationEventName: null,
 		
 		
@@ -111,7 +113,9 @@
 			this.viewportFadeOutEventHandler = this.onViewportFadeOut.bind(this);
 			this.sliderDisplayCurrentFullSizeImageEventHandler = this.onSliderDisplayCurrentFullSizeImage.bind(this);
 			this.toolbarClickEventHandler = this.onToolbarClick.bind(this);
-			
+			this.captionAndToolbarShowEventHandler = this.onCaptionAndToolbarShow.bind(this);
+			this.captionAndToolbarHideEventHandler = this.onCaptionAndToolbarHide.bind(this);
+						
 		},
 		
 		
@@ -220,7 +224,10 @@
 				this.viewportFadeInEventHandler
 			);
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeShow);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onBeforeShow,
+				target: this
+			});
 			
 			this.viewport.fadeIn();
 			
@@ -323,7 +330,9 @@
 			
 			// Set captionAndToolbar handlers
 			this.captionAndToolbar.addEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
-			
+			this.captionAndToolbar.addEventListener(CaptionToolbarClass.EventTypes.onShow, this.captionAndToolbarShowEventHandler);
+			this.captionAndToolbar.addEventListener(CaptionToolbarClass.EventTypes.onHide, this.captionAndToolbarHideEventHandler);
+						
 		},
 		
 		
@@ -353,6 +362,8 @@
 			
 			// Remove captionAndToolbar handlers
 			this.captionAndToolbar.removeEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
+			this.captionAndToolbar.removeEventListener(CaptionToolbarClass.EventTypes.onShow, this.captionAndToolbarShowEventHandler);
+			this.captionAndToolbar.removeEventListener(CaptionToolbarClass.EventTypes.onHide, this.captionAndToolbarHideEventHandler);
 			
 		},
 		
@@ -380,7 +391,10 @@
 			
 			this.isBusy = false;
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onShow);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onShow,
+				target: this
+			});
 			
 		},
 		
@@ -524,7 +538,10 @@
 			this.documentOverlay.resetPosition();
 			this.captionAndToolbar.resetPosition();
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onResetPosition);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onResetPosition,
+				target: this
+			});
 			
 		},
 		
@@ -634,7 +651,10 @@
 					else{
 						this.hide();
 					}
-					this.dispatchEvent(Code.PhotoSwipe.EventTypes.onViewportClick);
+					this.dispatchEvent({
+						type: Code.PhotoSwipe.EventTypes.onViewportClick,
+						target: this
+					});
 					break;
 				
 				case ViewportClass.Actions.swipeLeft:
@@ -667,7 +687,10 @@
 			this.isBusy = false;
 			this.isActive = false;
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onHide);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onHide,
+				target: this
+			});
 			
 			this.goBackInHistory();
 			
@@ -702,7 +725,10 @@
 			
 			this.viewport.addEventListener(ElementClass.EventTypes.onFadeOut, this.viewportFadeOutEventHandler);
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeHide);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onBeforeHide,
+				target: this
+			});
 			
 			this.viewport.fadeOut();
 			
@@ -718,7 +744,10 @@
 				return;
 			}
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeHide);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onBeforeHide,
+				target: this
+			});
 			
 			this.removeZoomPanRotate();
 			this.removeEventListeners();
@@ -732,7 +761,10 @@
 			this.isBusy = false;
 			this.isActive = false;
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onHide);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onHide,
+				target: this
+			});
 			
 			this.goBackInHistory();
 		},
@@ -769,7 +801,10 @@
 			
 			this.slider.showNext();
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onShowNext);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onShowNext,
+				target: this
+			});
 			
 		},
 		
@@ -796,7 +831,10 @@
 			
 			this.slider.showPrevious();
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onShowPrevious);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onShowPrevious,
+				target: this
+			});
 			
 		},
 		
@@ -925,12 +963,20 @@
 				
 				if (fadeIn){
 					
-					this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow);
+					this.dispatchEvent({
+						type: Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow,
+						target: this
+					});
+					
 					this.captionAndToolbar.fadeIn();
 					
 				}
 				
-				this.dispatchEvent(Code.PhotoSwipe.EventTypes.onDisplayImage);
+				this.dispatchEvent({ 
+					type: Code.PhotoSwipe.EventTypes.onDisplayImage, 
+					target: this, 
+					image: this.fullSizeImages[this.currentIndex] 
+				});
 				
 			}
 			
@@ -965,13 +1011,19 @@
 			
 			if (this.captionAndToolbar.isHidden){
 				
-				this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow);
+				this.dispatchEvent({
+					type: Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow,
+					target: this
+				});
 				this.captionAndToolbar.fadeIn();
 
 			}
 			else{
 				
-				this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide);
+				this.dispatchEvent({
+					type: Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide,
+					target: this
+				});
 				this.captionAndToolbar.fadeOut();
 				
 			}
@@ -987,7 +1039,10 @@
 		fadeOutCaptionAndToolbar: function(){
 			
 			if (!this.settings.captionAndToolbarHide && !this.captionAndToolbar.isHidden){
-				this.dispatchEvent(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide);
+				this.dispatchEvent({
+					type: Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide,
+					target: this
+				});
 				this.captionAndToolbar.fadeOut();
 			}
 		
@@ -1049,7 +1104,10 @@
 			
 			this.fireSlideshowTimeout();
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onSlideshowStart);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onSlideshowStart,
+				target: this
+			});
 			
 		},
 		
@@ -1066,7 +1124,10 @@
 						
 			this.isSlideshowActive = false;
 			
-			this.dispatchEvent(Code.PhotoSwipe.EventTypes.onSlideshowStop);
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onSlideshowStop,
+				target: this
+			});
 			
 		},
 		
@@ -1118,8 +1179,29 @@
 						
 			this.zoomPanRotate = null;
 		
-		}
+		},
 		
+		
+		/*
+		 * Function: onCaptionAndToolbarShow
+		 */
+		onCaptionAndToolbarShow: function(){
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onCaptionAndToolbarShow,
+					target: this
+			});
+		},
+		
+		
+		/*
+		 * Function: onCaptionAndToolbarHide
+		 */
+		onCaptionAndToolbarHide: function(){
+			this.dispatchEvent({
+				type: Code.PhotoSwipe.EventTypes.onCaptionAndToolbarHide,
+					target: this
+			});
+		}
 		
 	});
 	
@@ -1153,7 +1235,9 @@
 		onSlideshowStart: 'onSlideshowStart',
 		onSlideshowStop: 'onSlideshowStop',
 		onBeforeCaptionAndToolbarShow: 'onBeforeCaptionAndToolbarShow',
+		onCaptionAndToolbarShow: 'onCaptionAndToolbarShow',
 		onBeforeCaptionAndToolbarHide: 'onBeforeCaptionAndToolbarHide',
+		onCaptionAndToolbarHide: 'onCaptionAndToolbarHide',
 		onViewportClick: 'onViewportClick'
 		
 	};

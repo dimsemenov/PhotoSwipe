@@ -192,6 +192,11 @@
 			this.addEventListeners();
 			this.resetAutoHideTimeout();
 			
+			this.dispatchEvent({ 
+				type: Code.PhotoSwipe.CaptionToolbarClass.EventTypes.onShow, 
+				target: this
+			});
+			
 		},
 		
 		
@@ -221,6 +226,12 @@
 		 * Function: onFadeOut
 		 */
 		onFadeOut: function(){
+			
+			this.dispatchEvent({ 
+				type: Code.PhotoSwipe.CaptionToolbarClass.EventTypes.onHide, 
+				target: this
+			});
+			
 		},
 		
 		
@@ -249,7 +260,12 @@
 			
 			this.caption.hide();
 			this.toolbar.hide();
-		
+			
+			this.dispatchEvent({ 
+				type: Code.PhotoSwipe.CaptionToolbarClass.EventTypes.onHide, 
+				target: this
+			});
+			
 		},
 		
 		
@@ -345,7 +361,11 @@
 		
 		
 	});
-
+	
+	Code.PhotoSwipe.CaptionToolbarClass.EventTypes = {
+		onShow: 'onShow',
+		onHide: 'onHide'
+	};
 
 })
 (

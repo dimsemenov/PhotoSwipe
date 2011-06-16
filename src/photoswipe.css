@@ -70,6 +70,7 @@ div.ps-caption-bottom
 { 
 	border-top: 1px solid #42403f;
 	border-bottom: none;
+	min-height: 44px;
 }
 
 div.ps-caption-content

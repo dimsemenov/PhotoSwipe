@@ -139,3 +139,22 @@ Major update:
 - Added maximum and minimum user zoom settings
 
 - Should now play nicely if including MooTools thanks to chameron [https://github.com/chameron]
+
+
+1.0.11 09.06.12 - Ste Brennan
+-----------------------------
+
+- Fixed issues with Chrome 12
+
+- Added the following new events "onCaptionEndToolbarShow" and "onCaptionEndToolbarHide"
+
+- Fixed issue with position of caption when placed at the bottom
+
+- Events now pass target value (should always equal the current instance of PhotoSwipe)
+
+- Added new "using-meta-data.html" example
+
+- Updated to jQuery Animate Enhanced v0.75
+
+
+

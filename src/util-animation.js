@@ -287,21 +287,25 @@
 					top: (domY + transformedY) + 'px'
 				});
 				
-				
 				Util.removeElementData(el, 'slideByCallback');
 				Util.removeElementData(el, 'slideByXPos');
 				Util.removeElementData(el, 'slideByYPos');
 				
 				if (Util.isFunction(callback)){
+					callback(e);
+				};
+				
+				/*
+				if (Util.isFunction(callback)){
 					window.setTimeout(
 						function(){
 							callback(e);
 						},
-						Util.Animation._applyTransitionDelay
+						0
 					);
 					//window.setTimeout(callback, Util.Animation._applyTransitionDelay, e);
 				}
-				
+				*/
 			}
 			
 			

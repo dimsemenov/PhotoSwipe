@@ -8,11 +8,8 @@
 	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
 	
 	<script type="text/javascript" src="../lib/simple-inheritance.js"></script>
-	
-	<script type="text/javascript" src="../lib/mootools-core-1.3.2-full-compat-yc.js"></script>
-	
+		
 	<script type="text/javascript" src="../util.js"></script>
-	
 	<script type="text/javascript" src="../util-dom.js"></script>
 	<script type="text/javascript" src="../util-animation.js"></script>
 	
@@ -51,126 +48,148 @@
 		// Set up PhotoSwipe with all anchor tags in the Gallery container 
 		document.addEventListener('DOMContentLoaded', function(){
 			
-			/*
-			// Add event listeners
+			var addEventListeners = false;
 			
-			// onBeforeShow
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeShow, function(e){
-				
-				console.log('onBeforeShow');
-				
-			});
+			if (addEventListeners){
+				// Add event listeners
 			
-			// onShow
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShow, function(e){
+				// onBeforeShow
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeShow, function(e){
+					
+					console.log('onBeforeShow');
+					
+				});
 				
-				console.log('onShow');
+				// onShow
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShow, function(e){
+					
+					console.log('onShow');
+					
+				});
 				
-			});
+				// onBeforeHide
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeHide, function(e){
+					
+					console.log('onBeforeHide');
+					
+				});
+				
+				// onHide
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onHide, function(e){
+					
+					console.log('onHide');
+					
+				});
+				
+				// onShowNext
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowNext, function(e){
+					
+					console.log('onShowNext');
+					
+				});
+		
+				// onShowPrevious
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowPrevious, function(e){
+					
+					console.log('onShowPrevious');
+					
+				});
+				
+				// onDisplayImage
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onDisplayImage, function(e){
+					
+					console.log('onDisplayImage');
+					
+				});
+				
+				// onResetPosition
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onResetPosition, function(e){
+					
+					console.log('onResetPosition');
+					
+				});
+				
+				// onSlideshowStart
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStart, function(e){
+					
+					console.log('onSlideshowStart');
+					
+				});
+				
+				// onSlideshowStop
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStop, function(e){
+					
+					console.log('onSlideshowStop');
+					
+				});
+				
+				// onBeforeCaptionAndToolbarShow
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow, function(e){
+					
+					console.log('onBeforeCaptionAndToolbarShow');
+					
+				});
+				
+				// onBeforeCaptionAndToolbarHide
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide, function(e){
+					
+					console.log('onBeforeCaptionAndToolbarHide');
+					
+				});
+				
+				// onViewportClick
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onViewportClick, function(e){
+					
+					console.log('onViewportClick');
+					
+				});
+				
+				// onCaptionAndToolbarShow
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarShow, function(e){
+					
+					console.log('onCaptionAndToolbarShow');
+					
+				});
+				
+				// onCaptionAndToolbarHide
+				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarHide, function(e){
+					
+					console.log('onCaptionAndToolbarHide');
+					
+				});
+			}
 			
-			// onBeforeHide
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeHide, function(e){
-				
-				console.log('onBeforeHide');
-				
-			});
-			
-			// onHide
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onHide, function(e){
-				
-				console.log('onHide');
-				
-			});
-			
-			// onShowNext
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowNext, function(e){
-				
-				console.log('onShowNext');
-				
-			});
-	
-			// onShowPrevious
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowPrevious, function(e){
-				
-				console.log('onShowPrevious');
-				
-			});
-			
-			// onDisplayImage
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onDisplayImage, function(e){
-				
-				console.log('onDisplayImage');
-				
-			});
-			
-			// onResetPosition
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onResetPosition, function(e){
-				
-				console.log('onResetPosition');
-				
-			});
-			
-			// onSlideshowStart
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStart, function(e){
-				
-				console.log('onSlideshowStart');
-				
-			});
-			
-			// onSlideshowStop
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStop, function(e){
-				
-				console.log('onSlideshowStop');
-				
-			});
-			
-			// onBeforeCaptionAndToolbarShow
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow, function(e){
-				
-				console.log('onBeforeCaptionAndToolbarShow');
-				
-			});
-			
-			// onBeforeCaptionAndToolbarHide
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide, function(e){
-				
-				console.log('onBeforeCaptionAndToolbarHide');
-				
-			});
-			
-			// onViewportClick
-			Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onViewportClick, function(e){
-				
-				console.log('onViewportClick');
-				
-			});
-			*/
 			
 			var thumbEls = Code.photoSwipe('a', '#Gallery', {
 			
 				getImageSource: Code.PhotoSwipe.GetImageSource,
 				getImageCaption: Code.PhotoSwipe.GetImageCaption,
+				getImageMetaData: Code.PhotoSwipe.GetImageMetaData,
 				fadeInSpeed: 250,
 				fadeOutSpeed: 500,
 				slideSpeed: 250,
 				swipeThreshold: 50,
 				swipeTimeThreshold: 250,
-				loop: true,
+				loop: false,
 				slideshowDelay: 3000,
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
 				preventHide: false,
 				zIndex: 1000,
-				
+				backButtonHideEnabled: true,
+								
 				/* Experimental - iOS only at the moment */
 				allowUserZoom: true, 
 				allowRotationOnUserZoom: true,
+				maxUserZoom: 5.0,
+				minUserZoom: 0.5,
+				adjustUserPanToZoom: true,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
 				captionAndToolbarFlipPosition: false,
 				captionAndToolbarAutoHideDelay: 5000,
 				captionAndToolbarOpacity: 0.8,
-				captionAndToolbarShowEmptyCaptions: true	
+				captionAndToolbarShowEmptyCaptions: true			
 				
 			});
 			

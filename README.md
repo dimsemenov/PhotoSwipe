@@ -9,20 +9,22 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
-Latest Release v1.0.11
+Latest Release v1.0.12
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.11.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.12.zip)
 
-- Panning speed with zoomed images now runs at correct speed thanks to [heardfrom](https://github.com/heardfrom) and [cilogi](https://github.com/cilogi)
+- Fixed issues with Chrome 12
 
-- Added maximum and minimum user zoom settings
+- Added the following new events "onCaptionEndToolbarShow" and "onCaptionEndToolbarHide"
 
-- Should now play nicely if including MooTools thanks to [chameron](https://github.com/chameron)
+- Fixed issue with position of caption when placed at the bottom
 
+- Events now pass target value (should always equal the current instance of PhotoSwipe)
 
-Issue with Chrome 12
---------------------
-Presently we are aware of an issue with PhotoSwipe and the latest version of Chrome. This seems to be related to hardware acceleration which is now enabled by default. To get around this, simple use the standard jQuery version of PhotoSwipe.
+- Added new "using-meta-data.html" example
+
+- Updated to jQuery Animate Enhanced v0.75
+
 
 
 Features

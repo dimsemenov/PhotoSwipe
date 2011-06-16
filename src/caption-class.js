@@ -102,7 +102,7 @@
 		resetPosition: function(){
 			
 			var top;
-			
+						
 			if (this.settings.position === 'bottom') {
 				top = Util.DOM.windowHeight() - Util.DOM.outerHeight(this.el) + Util.DOM.windowScrollTop();
 			}
