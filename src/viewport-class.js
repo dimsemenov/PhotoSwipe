@@ -24,7 +24,10 @@
 		isGesture: null,
 		
 		mouseDownHandler: null,
+		mouseMoveHandler: null,
 		mouseUpHandler: null,
+		
+		doubleClickTimeout: null,
 		
 		
 		/*
@@ -35,7 +38,8 @@
 			this.settings = {
 				swipeThreshold: 500,
 				swipeTimeThreshold: 250,
-				zIndex: 1000
+				zIndex: 1000,
+				doubleClickSpeed: 300
 			};
 			
 			Util.extend(this.settings, options);
@@ -57,6 +61,7 @@
 			}
 			
 			this.mouseDownHandler = this.onMouseDown.bind(this);
+			this.mouseMoveHandler = this.onMouseMove.bind(this);
 			this.mouseUpHandler = this.onMouseUp.bind(this);
 			
 			// Create element and append to body
@@ -85,7 +90,7 @@
 			
 			Util.DOM.width(this.el, Util.DOM.bodyWidth());
 			Util.DOM.height(this.el, Util.DOM.windowHeight());
-
+	
 		},
 		
 		
@@ -308,8 +313,17 @@
 		 * Function: onMouseDown
 		 */
 		onMouseDown: function(e){
-			
+						
 			e.preventDefault();
+			
+			Util.DOM.addEventListener(this.el, 'mousemove', this.mouseMoveHandler);
+			
+			this.dispatchEvent({ 
+				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
+				target: this, 
+				action: Code.PhotoSwipe.ViewportClass.Actions.touchStart,
+				point: Util.DOM.getMousePosition(e)
+			});
 			
 			this.touchStartTime = new Date();
 			this.isGesture = false;
@@ -320,35 +334,56 @@
 		
 		
 		/*
+		 * Function: onMouseMove
+		 */
+		onMouseMove: function(e){
+			
+			e.preventDefault();
+			
+			this.dispatchEvent({ 
+				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
+				target: this, 
+				action: Code.PhotoSwipe.ViewportClass.Actions.touchMove,
+				point: Util.DOM.getMousePosition(e)
+			});
+					
+		},
+		
+		
+		/*
 		 * Function: onMouseUp
 		 */
 		onMouseUp: function(e){
 		
 			e.preventDefault();
+			
+			Util.DOM.removeEventListener(this.el, 'mousemove', this.mouseMoveHandler);
+			
 			this.fireTouchEvent(this.touchStartPoint, Util.DOM.getMousePosition(e));
 			
 		},
 		
+			
 		
 		
 		/*
 		 * Function: fireTouchEvent
 		 */
-		fireTouchEvent: function(touchStartPoint, touchEndPoint){
-			
-			var action;
+		fireTouchEvent: function(touchStartPoint, touchEndPoint, waitingForDoubleClick){
 			
 			var 
-				endTime = new Date(),
-				diffTime = endTime - this.touchStartTime;
-			
-			if (diffTime > this.settings.swipeTimeThreshold){
-				return;
-			}
-			
-			var distance = touchEndPoint.x - touchStartPoint.x;
+				action,
+				distance = touchEndPoint.x - touchStartPoint.x;
 				
 			if (Math.abs(distance) >= this.settings.swipeThreshold){
+				
+				var 
+					endTime = new Date(),
+					diffTime = endTime - this.touchStartTime;
+			
+				if (diffTime > this.settings.swipeTimeThreshold){
+					return;
+				}
 			
 				if (distance < 0){
 					
@@ -366,9 +401,34 @@
 			}
 			else{
 				
-				// Click
-				action = Code.PhotoSwipe.ViewportClass.Actions.click;
-			
+				if (Util.isNothing(this.doubleClickTimeout)){
+					
+					var self = this;
+					this.doubleClickTimeout = window.setTimeout(function(){
+						
+						self.doubleClickTimeout = null;
+						
+						self.dispatchEvent({ 
+							type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
+							target: self, 
+							action: Code.PhotoSwipe.ViewportClass.Actions.click,
+							point: touchEndPoint				
+						});
+						
+					}, this.settings.doubleClickSpeed);
+					
+					return;
+					
+				}
+				else{
+					
+					window.clearTimeout(this.doubleClickTimeout);
+					this.doubleClickTimeout = null;
+					action = Code.PhotoSwipe.ViewportClass.Actions.doubleClick;
+					
+				}
+				
+				
 			}
 			
 			if (Util.isNothing(action)){
@@ -378,7 +438,8 @@
 			this.dispatchEvent({ 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
-				action: action 
+				action: action,
+				point: touchEndPoint						
 			});
 			
 		}
@@ -393,6 +454,7 @@
 	
 	Code.PhotoSwipe.ViewportClass.Actions = {
 		click: 'click',
+		doubleClick: 'doubleClick',
 		swipeLeft: 'swipeLeft',
 		swipeRight: 'swipeRight',
 		touchStart: 'touchStart',

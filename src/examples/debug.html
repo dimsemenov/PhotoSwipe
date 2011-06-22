@@ -3,13 +3,15 @@
 	<title>PhotoSwipe</title>
 	<meta name="author" content="Code Computerlove - http://www.codecomputerlove.com/" />
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+	
 	<link href="styles.css" type="text/css" rel="stylesheet" />
 	
 	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
 	
 	<script type="text/javascript" src="../lib/simple-inheritance.js"></script>
-		
+	
 	<script type="text/javascript" src="../util.js"></script>
+	
 	<script type="text/javascript" src="../util-dom.js"></script>
 	<script type="text/javascript" src="../util-animation.js"></script>
 	
@@ -170,26 +172,32 @@
 				slideSpeed: 250,
 				swipeThreshold: 50,
 				swipeTimeThreshold: 250,
-				loop: false,
+				loop: true,
 				slideshowDelay: 3000,
 				imageScaleMethod: 'fit', // Either "fit" or "zoom"
 				preventHide: false,
 				zIndex: 1000,
 				backButtonHideEnabled: true,
-								
-				/* Experimental - iOS only at the moment */
+				
+				
+				/* 
+					iOS users can use two digit gestures to zoom in and out.
+					Other's can only zoom in and pan around by double tapping / clicking
+				*/ 
 				allowUserZoom: true, 
 				allowRotationOnUserZoom: true,
 				maxUserZoom: 5.0,
 				minUserZoom: 0.5,
 				adjustUserPanToZoom: true,
+				doubleClickSpeed: 300,
+				doubleClickZoom: 2.5,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
 				captionAndToolbarFlipPosition: false,
 				captionAndToolbarAutoHideDelay: 5000,
 				captionAndToolbarOpacity: 0.8,
-				captionAndToolbarShowEmptyCaptions: true			
+				captionAndToolbarShowEmptyCaptions: true		
 				
 			});
 			

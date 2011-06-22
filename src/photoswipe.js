@@ -74,12 +74,18 @@
 				jQueryMobile: ( !Util.isNothing(window.jQuery) && !Util.isNothing(window.jQuery.mobile) ),
 				jQueryMobileDialogHash: '&ui-state=dialog',
 				
-				/* Experimental - iOS only at the moment */
+				
+				/* 
+					iOS users can use two digit gestures to zoom in and out.
+					Other's can only zoom in and pan around by double tapping / clicking
+				*/ 
 				allowUserZoom: true, 
 				allowRotationOnUserZoom: true,
 				maxUserZoom: 5.0,
 				minUserZoom: 0.5,
 				adjustUserPanToZoom: true,
+				doubleClickSpeed: 300,
+				doubleClickZoom: 2.5,
 				
 				captionAndToolbarHide: false,
 				captionAndToolbarHideOnSwipe: true,
@@ -253,7 +259,8 @@
 				fadeOutSpeed: this.settings.fadeOutSpeed, 
 				swipeThreshold: this.settings.swipeThreshold,
 				swipeTimeThreshold: this.settings.swipeTimeThreshold,
-				zIndex: this.settings.zIndex+1 
+				zIndex: this.settings.zIndex+1,
+				doubleClickSpeed: this.settings.doubleClickSpeed
 			});
 			
 			// Create the slider
@@ -594,23 +601,7 @@
 				
 				case ViewportClass.Actions.gestureStart:
 					
-					if (this.canUserZoom()){
-						this.stopSlideshow();
-						if (!this.isZoomActive()){
-							this.zoomPanRotate = new ZoomPanRotateClass(
-								{
-									maxZoom: this.settings.maxUserZoom,
-									minZoom: this.settings.minUserZoom,
-									adjustPanToZoom: this.settings.adjustUserPanToZoom
-								}, 
-								this.viewport.el, 
-								this.slider.currentItem.imageEl
-							);
-							Util.DOM.resetTranslate(this.zoomPanRotate.containerEl);
-							Util.DOM.resetTranslate(this.zoomPanRotate.imageEl);
-						}
-						this.fadeOutCaptionAndToolbar();
-					}
+					this.createZoomPanRotate();
 					break;
 					
 				case ViewportClass.Actions.gestureChange:
@@ -655,6 +646,48 @@
 						type: Code.PhotoSwipe.EventTypes.onViewportClick,
 						target: this
 					});
+					break;
+				
+				case ViewportClass.Actions.doubleClick:
+					
+					if (!this.isZoomActive()){
+						
+						// Take into consideration the window scroll
+						e.point.x -= Util.DOM.windowScrollLeft();
+						e.point.y -= Util.DOM.windowScrollTop();
+						
+						// Just make sure that if the user clicks out of the image
+						// that the image does not pan out of view!
+						var 
+							imageTop = window.parseInt(Util.DOM.getStyle(this.slider.currentItem.imageEl, 'top'), 10),
+							imageLeft = window.parseInt(Util.DOM.getStyle(this.slider.currentItem.imageEl, 'left'), 10),
+							imageRight = imageLeft + Util.DOM.width(this.slider.currentItem.imageEl),
+							imageBottom = imageTop + Util.DOM.height(this.slider.currentItem.imageEl);
+						
+						if (e.point.x < imageLeft){
+							e.point.x = imageLeft;
+						}
+						else if (e.point.x > imageRight){
+							e.point.x = imageRight;
+						}
+						
+						if (e.point.y < imageTop){
+							e.point.y = imageTop;
+						}
+						else if (e.point.y > imageBottom){
+							e.point.y = imageBottom;
+						}
+						this.createZoomPanRotate();
+						this.zoomPanRotate.zoomAndPanToPoint(this.settings.doubleClickZoom, e.point);
+					}
+					else{
+						// This is timeout is a hack. For some reason on iOS the double click
+						// to remove the ZoomPan layer was massively delayed. This fixed it!?
+						var self = this;
+						window.setTimeout(function(){
+							self.removeZoomPanRotate();
+						});
+					}
 					break;
 				
 				case ViewportClass.Actions.swipeLeft:
@@ -1164,6 +1197,29 @@
 			
 		},
 		
+		
+		/*
+		 * Function: createZoomPanRotate
+		 */
+		createZoomPanRotate: function(){
+			
+			if (this.canUserZoom()){
+				this.stopSlideshow();
+				if (!this.isZoomActive()){
+					this.zoomPanRotate = new ZoomPanRotateClass(
+						{
+							maxZoom: this.settings.maxUserZoom,
+							minZoom: this.settings.minUserZoom,
+							adjustPanToZoom: this.settings.adjustUserPanToZoom
+						}, 
+						this.viewport.el, 
+						this.slider.currentItem.imageEl
+					);
+				}
+				this.fadeOutCaptionAndToolbar();
+			}
+				
+		},
 		
 		
 		/*

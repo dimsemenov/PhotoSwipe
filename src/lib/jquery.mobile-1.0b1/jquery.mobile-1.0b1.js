@@ -1,5 +1,5 @@
 /*!
- * jQuery Mobile v1.0a4.1
+ * jQuery Mobile v1.0b1
  * http://jquerymobile.com/
  *
  * Copyright 2010, jQuery Project
@@ -396,7 +396,8 @@ $.mobile.addResolutionBreakpoints = function( newbps ){
 $(document).bind("mobileinit.htmlclass", function(){
 	/* bind to orientationchange and resize
 	to add classes to HTML element for min/max breakpoints and orientation */
-	$window.bind("orientationchange.htmlclass resize.htmlclass", function(event){
+	var ev = $.support.orientation;
+	$window.bind("orientationchange.htmlclass throttledResize.htmlclass", function(event){
 		//add orientation class to HTML element on flip/resize.
 		if(event.orientation){
 			$html.removeClass( "portrait landscape" ).addClass( event.orientation );
@@ -422,77 +423,78 @@ $(function(){
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change 
 */
-(function($, undefined ) {
+( function( $, undefined  ) {
 
-
-
-var fakeBody = $( "<body>" ).prependTo( "html" ),
-	fbCSS = fakeBody[0].style,
-	vendors = ['webkit','moz','o'],
-	webos = window.palmGetResource || window.PalmServiceBridge, //only used to rule out scrollTop 
+var fakeBody = $( "<body>"  ).prependTo( "html" ),
+	fbCSS = fakeBody[ 0 ].style,
+	vendors = [ "webkit", "moz", "o" ],
+	webos = "palmGetResource" in window, //only used to rule out scrollTop 
 	bb = window.blackberry; //only used to rule out box shadow, as it's filled opaque on BB
 
-//thx Modernizr
-function propExists( prop ){
-	var uc_prop = prop.charAt(0).toUpperCase() + prop.substr(1),
-		props   = (prop + ' ' + vendors.join(uc_prop + ' ') + uc_prop).split(' ');
-	for(var v in props){
-		if( fbCSS[ v ] !== undefined ){
+// thx Modernizr
+function propExists( prop  ){
+	var uc_prop = prop.charAt( 0 ).toUpperCase() + prop.substr( 1 ),
+		props   = ( prop + " " + vendors.join( uc_prop + " " ) + uc_prop ).split( " " );
+	for( var v in props ){
+		if( fbCSS[ v ] !== undefined  ){
 			return true;
 		}
 	}
-};
+}
 
-//test for dynamic-updating base tag support (allows us to avoid href,src attr rewriting)
+// test for dynamic-updating base tag support ( allows us to avoid href,src attr rewriting )
 function baseTagTest(){
-	var fauxBase = location.protocol + '//' + location.host + location.pathname + "ui-dir/",
-		base = $("head base"),
+	var fauxBase = location.protocol + "//" + location.host + location.pathname + "ui-dir/",
+		base = $( "head base" ),
 		fauxEle = null,
-		href = '';
-	if (!base.length) {
-		base = fauxEle = $("<base>", {"href": fauxBase}).appendTo("head");
+		href = "";
+	if ( !base.length ) {
+		base = fauxEle = $( "<base>", { "href": fauxBase} ).appendTo( "head" );
 	}
 	else {
-		href = base.attr("href");
+		href = base.attr( "href" );
 	}
-	var link = $( "<a href='testurl'></a>" ).prependTo( fakeBody ),
-		rebase = link[0].href;
-	base[0].href = href ? href : location.pathname;
-	if (fauxEle) {
+	var link = $( "<a href='testurl'></a>"  ).prependTo( fakeBody  ),
+		rebase = link[ 0 ].href;
+	base[ 0 ].href = href ? href : location.pathname;
+	if ( fauxEle ) {
 		fauxEle.remove();
 	}
-	return rebase.indexOf(fauxBase) === 0;
-};
+	return rebase.indexOf( fauxBase ) === 0;
+}
 
 
-//non-UA-based IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
-//allows for inclusion of IE 6+, including Windows Mobile 7
+// non-UA-based IE version check by James Padolsey, modified by jdalton - from http://gist.github.com/527683
+// allows for inclusion of IE 6+, including Windows Mobile 7
 $.mobile.browser = {};
-$.mobile.browser.ie = (function() {
-    var v = 3, div = document.createElement('div'), a = div.all || [];
-    while (div.innerHTML = '<!--[if gt IE '+(++v)+']><br><![endif]-->', a[0]); 
+$.mobile.browser.ie = ( function() {
+    var v = 3, 
+	div = document.createElement( "div" ), 
+	a = div.all || [];
+    while ( div.innerHTML = "<!--[if gt IE " + ( ++v ) + "]><br><![endif]-->", a[ 0 ] ); 
     return v > 4 ? v : !v;
-}());
+}() );
+
 
 $.extend( $.support, {
 	orientation: "orientation" in window,
 	touch: "ontouchend" in document,
 	cssTransitions: "WebKitTransitionEvent" in window,
 	pushState: !!history.pushState,
-	mediaquery: $.mobile.media('only all'),
-	cssPseudoElement: !!propExists('content'),
-	boxShadow: !!propExists('boxShadow') && !bb,
-	scrollTop: ("pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[0]) && !webos,
+	mediaquery: $.mobile.media( "only all" ),
+	cssPseudoElement: !!propExists( "content" ),
+	boxShadow: !!propExists( "boxShadow" ) && !bb,
+	scrollTop: ( "pageXOffset" in window || "scrollTop" in document.documentElement || "scrollTop" in fakeBody[ 0 ] ) && !webos,
 	dynamicBaseTag: baseTagTest(),
-	eventCapture: ("addEventListener" in document) // This is a weak test. We may want to beef this up later.
-});
+	eventCapture: ( "addEventListener" in document ) // This is a weak test. We may want to beef this up later.
+} );
 
 fakeBody.remove();
 
-//for ruling out shadows via css
-if( !$.support.boxShadow ){ $('html').addClass('ui-mobile-nosupport-boxshadow'); }
+// for ruling out shadows via css
+if( !$.support.boxShadow  ){ $( "html" ).addClass( "ui-mobile-nosupport-boxshadow" ); }
 
-})( jQuery );/*
+} )( jQuery  );/*
 * jQuery Mobile Framework : "mouse" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -524,12 +526,10 @@ var dataPropertyName = "virtualMouseBindings",
 	resetTimerID = 0,
 	startX = 0,
 	startY = 0,
-	startScrollX = 0,
-	startScrollY = 0,
 	didScroll = false,
 	clickBlockList = [],
 	blockMouseTriggers = false,
-	scrollTopSupported = $.support.scrollTop,
+	blockTouchTriggers = false,
 	eventCaptureSupported = $.support.eventCapture,
 	$document = $(document),
 	nextTouchID = 1,
@@ -587,62 +587,38 @@ function createVirtualEvent(event, eventType)
 function getVirtualBindingFlags(element)
 {
 	var flags = {};
-	var $ele = $(element);
-	while ($ele && $ele.length){
-		var b = $ele.data(dataPropertyName);
+	while (element){
+		var b = $.data(element, dataPropertyName);
 		for (var k in b) {
 			if (b[k]){
 				flags[k] = flags.hasVirtualBinding = true;
 			}
 		}
-		$ele = $ele.parent();
+		element = element.parentNode;
 	}
 	return flags;
 }
 
 function getClosestElementWithVirtualBinding(element, eventType)
 {
-	var $ele = $(element);
-	while ($ele && $ele.length){
-		var b = $ele.data(dataPropertyName);
+	while (element){
+		var b = $.data(element, dataPropertyName);
 		if (b && (!eventType || b[eventType])) {
-			return $ele;
+			return element;
 		}
-		$ele = $ele.parent();
+		element = element.parentNode;
 	}
 	return null;
 }
 
 function enableTouchBindings()
 {
-	if (!activeDocHandlers["touchbindings"]){
-		$document.bind("touchend", handleTouchEnd)
-		
-			// On touch platforms, touching the screen and then dragging your finger
-			// causes the window content to scroll after some distance threshold is
-			// exceeded. On these platforms, a scroll prevents a click event from being
-			// dispatched, and on some platforms, even the touchend is suppressed. To
-			// mimic the suppression of the click event, we need to watch for a scroll
-			// event. Unfortunately, some platforms like iOS don't dispatch scroll
-			// events until *AFTER* the user lifts their finger (touchend). This means
-			// we need to watch both scroll and touchmove events to figure out whether
-			// or not a scroll happenens before the touchend event is fired.
-		
-			.bind("touchmove", handleTouchMove)
-			.bind("scroll", handleScroll);
-
-		activeDocHandlers["touchbindings"] = 1;
-	}
+	blockTouchTriggers = false;
 }
 
 function disableTouchBindings()
 {
-	if (activeDocHandlers["touchbindings"]){
-		$document.unbind("touchmove", handleTouchMove)
-			.unbind("touchend", handleTouchEnd)
-			.unbind("scroll", handleScroll);
-		activeDocHandlers["touchbindings"] = 0;
-	}
+	blockTouchTriggers = true;
 }
 
 function enableMouseBindings()
@@ -695,7 +671,7 @@ function triggerVirtualEvent(eventType, event, flags)
 
 function mouseEventCallback(event)
 {
-	var touchID = $(event.target).data(touchTargetPropertyName);
+	var touchID = $.data(event.target, touchTargetPropertyName);
 	if (!blockMouseTriggers && (!lastTouchID || lastTouchID !== touchID)){
 		triggerVirtualEvent("v" + event.type, event);
 	}
@@ -710,7 +686,7 @@ function handleTouchStart(event)
 	
 		if (flags.hasVirtualBinding){
 			lastTouchID = nextTouchID++;
-			$(target).data(touchTargetPropertyName, lastTouchID);
+			$.data(target, touchTargetPropertyName, lastTouchID);
 	
 			clearResetTimer();
 			
@@ -721,11 +697,6 @@ function handleTouchStart(event)
 			startX = t.pageX;
 			startY = t.pageY;
 		
-			if (scrollTopSupported){
-				startScrollX = window.pageXOffset;
-				startScrollY = window.pageYOffset;
-			}
-		
 			triggerVirtualEvent("vmouseover", event, flags);
 			triggerVirtualEvent("vmousedown", event, flags);
 		}
@@ -734,6 +705,10 @@ function handleTouchStart(event)
 
 function handleScroll(event)
 {
+	if (blockTouchTriggers){
+		return;
+	}
+
 	if (!didScroll){
 		triggerVirtualEvent("vmousecancel", event, getVirtualBindingFlags(event.target));
 	}
@@ -744,12 +719,15 @@ function handleScroll(event)
 
 function handleTouchMove(event)
 {
+	if (blockTouchTriggers){
+		return;
+	}
+
 	var t = getNativeEvent(event).touches[0];
 
 	var didCancel = didScroll,
 		moveThreshold = $.vmouse.moveDistanceThreshold;
 	didScroll = didScroll
-		|| (scrollTopSupported && (startScrollX !== window.pageXOffset || startScrollY !== window.pageYOffset))
 		|| (Math.abs(t.pageX - startX) > moveThreshold || Math.abs(t.pageY - startY) > moveThreshold);
 
 	var flags = getVirtualBindingFlags(event.target);
@@ -762,6 +740,10 @@ function handleTouchMove(event)
 
 function handleTouchEnd(event)
 {
+	if (blockTouchTriggers){
+		return;
+	}
+
 	disableTouchBindings();
 
 	var flags = getVirtualBindingFlags(event.target);
@@ -786,9 +768,9 @@ function handleTouchEnd(event)
 	startResetTimer();
 }
 
-function hasVirtualBindings($ele)
+function hasVirtualBindings(ele)
 {
-	var bindings = $ele.data(dataPropertyName), k;
+	var bindings = $.data(ele, dataPropertyName), k;
 	if (bindings){
 		for (k in bindings){
 			if (bindings[k]){
@@ -809,16 +791,14 @@ function getSpecialEventObject(eventType)
 			// If this is the first virtual mouse binding for this element,
 			// add a bindings object to its data.
 
-			var $this = $(this);
-
-			if (!hasVirtualBindings($this)){
-				$this.data(dataPropertyName, {});
+			if (!hasVirtualBindings(this)){
+				$.data(this, dataPropertyName, {});
 			}
 
 			// If setup is called, we know it is the first binding for this
 			// eventType, so initialize the count for the eventType to zero.
 
-			var bindings = $this.data(dataPropertyName);
+			var bindings = $.data(this, dataPropertyName);
 			bindings[eventType] = true;
 
 			// If this is the first virtual mouse event for this type,
@@ -833,7 +813,7 @@ function getSpecialEventObject(eventType)
 			// for elements unless they actually have handlers registered on them.
 			// To get around this, we register dummy handlers on the elements.
 
-			$this.bind(realType, dummyMouseHandler);
+			$(this).bind(realType, dummyMouseHandler);
 
 			// For now, if event capture is not supported, we rely on mouse handlers.
 			if (eventCaptureSupported){
@@ -842,7 +822,22 @@ function getSpecialEventObject(eventType)
 	
 				activeDocHandlers["touchstart"] = (activeDocHandlers["touchstart"] || 0) + 1;
 				if (activeDocHandlers["touchstart"] === 1) {
-					$document.bind("touchstart", handleTouchStart);
+					$document.bind("touchstart", handleTouchStart)
+
+						.bind("touchend", handleTouchEnd)
+					
+						// On touch platforms, touching the screen and then dragging your finger
+						// causes the window content to scroll after some distance threshold is
+						// exceeded. On these platforms, a scroll prevents a click event from being
+						// dispatched, and on some platforms, even the touchend is suppressed. To
+						// mimic the suppression of the click event, we need to watch for a scroll
+						// event. Unfortunately, some platforms like iOS don't dispatch scroll
+						// events until *AFTER* the user lifts their finger (touchend). This means
+						// we need to watch both scroll and touchmove events to figure out whether
+						// or not a scroll happenens before the touchend event is fired.
+					
+						.bind("touchmove", handleTouchMove)
+						.bind("scroll", handleScroll);			
 				}
 			}
 		},
@@ -862,13 +857,24 @@ function getSpecialEventObject(eventType)
 	
 				--activeDocHandlers["touchstart"];
 				if (!activeDocHandlers["touchstart"]) {
-					$document.unbind("touchstart", handleTouchStart);
+					$document.unbind("touchstart", handleTouchStart)
+						.unbind("touchmove", handleTouchMove)
+						.unbind("touchend", handleTouchEnd)
+						.unbind("scroll", handleScroll);
 				}
 			}
 
 			var $this = $(this),
-				bindings = $this.data(dataPropertyName);
-			bindings[eventType] = false;
+				bindings = $.data(this, dataPropertyName);
+
+			// teardown may be called when an element was
+			// removed from the DOM. If this is the case,
+			// jQuery core may have already stripped the element
+			// of any data bindings so we need to check it before
+			// using it.
+			if (bindings){
+				bindings[eventType] = false;
+			}
 
 			// Unregister the dummy event handler.
 
@@ -877,7 +883,7 @@ function getSpecialEventObject(eventType)
 			// If this is the last virtual mouse binding on the
 			// element, remove the binding data from the element.
 
-			if (!hasVirtualBindings($this)){
+			if (!hasVirtualBindings(this)){
 				$this.removeData(dataPropertyName);
 			}
 		}
@@ -934,7 +940,7 @@ if (eventCaptureSupported){
 				for (var i = 0; i < cnt; i++) {
 					var o = clickBlockList[i],
 						touchID = 0;
-					if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $(ele).data(touchTargetPropertyName) === o.touchID){
+					if ((ele === target && Math.abs(o.x - x) < threshold && Math.abs(o.y - y) < threshold) || $.data(ele, touchTargetPropertyName) === o.touchID){
 						// XXX: We may want to consider removing matches from the block list
 						//      instead of waiting for the reset timer to fire.
 						e.preventDefault();
@@ -947,7 +953,8 @@ if (eventCaptureSupported){
 		}
 	}, true);
 }
-})(jQuery, window, document);/*
+})(jQuery, window, document);
+/*
 * jQuery Mobile Framework : events
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -956,7 +963,7 @@ if (eventCaptureSupported){
 (function($, undefined ) {
 
 // add new event shortcuts
-$.each( "touchstart touchmove touchend orientationchange tap taphold swipe swipeleft swiperight scrollstart scrollstop".split( " " ), function( i, name ) {
+$.each( "touchstart touchmove touchend orientationchange throttledresize tap taphold swipe swipeleft swiperight scrollstart scrollstop".split( " " ), function( i, name ) {
 	$.fn[ name ] = function( fn ) {
 		return fn ? this.bind( name, fn ) : this.trigger( name );
 	};
@@ -1131,7 +1138,7 @@ $.event.special.swipe = {
 			
 			// Because the orientationchange event doesn't exist, simulate the
 			// event by testing window dimensions on resize.
-			win.bind( "resize", handler );
+			win.bind( "throttledresize", handler );
 		},
 		teardown: function(){
 			// If the event is not supported natively, return false so that
@@ -1140,7 +1147,7 @@ $.event.special.swipe = {
 			
 			// Because the orientationchange event doesn't exist, unbind the
 			// resize event handler.
-			win.unbind( "resize", handler );
+			win.unbind( "throttledresize", handler );
 		},
 		add: function( handleObj ) {
 			// Save a reference to the bound event handler.
@@ -1171,12 +1178,47 @@ $.event.special.swipe = {
 	
 	// Get the current page orientation. This method is exposed publicly, should it
 	// be needed, as jQuery.event.special.orientationchange.orientation()
-	special_event.orientation = get_orientation = function() {
+	$.event.special.orientationchange.orientation = get_orientation = function() {
 		var elem = document.documentElement;
 		return elem && elem.clientWidth / elem.clientHeight < 1.1 ? "portrait" : "landscape";
 	};
 	
 })(jQuery);
+
+
+// throttled resize event
+(function(){
+	$.event.special.throttledresize = {
+		setup: function() {
+			$( this ).bind( "resize", handler );	
+		},
+		teardown: function(){
+			$( this ).unbind( "resize", handler );
+		}
+	};
+
+	var throttle = 250,
+		handler = function(){
+			curr = ( new Date() ).getTime();
+			diff = curr - lastCall;
+			if( diff >= throttle ){
+				lastCall = curr;
+				$( this ).trigger( "throttledresize" );
+			}
+			else{
+				if( heldCall ){
+					clearTimeout( heldCall );
+				}
+				//promise a held call will still execute
+				heldCall = setTimeout( handler, throttle - diff );
+			}
+		},
+		lastCall = 0,
+		heldCall,
+		curr,
+		diff;
+})();
+
 
 $.each({
 	scrollstop: "scrollstart",
@@ -1593,7 +1635,7 @@ $.each({
 $.widget( "mobile.page", $.mobile.widget, {
 	options: {
 		backBtnText: "Back",
-		addBackBtn: true,
+		addBackBtn: false,
 		backBtnTheme: null,
 		degradeInputs: {
 			color: false,
@@ -1816,7 +1858,7 @@ $.widget( "mobile.page", $.mobile.widget, {
 		//hash segment before &ui-page= is used to make Ajax request
 		subPageUrlKey: "ui-page",
 
-		//anchor links with a data-rel, or pages with a  data-role, that match these selectors will be untrackable in history
+		//anchor links with a data-rel, or pages with a	 data-role, that match these selectors will be untrackable in history
 		//(no change in URL, not bookmarkable)
 		nonHistorySelectors: "dialog",
 
@@ -1828,20 +1870,23 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		//automatically handle clicks and form submissions through Ajax, when same-domain
 		ajaxEnabled: true,
+		
+		//When enabled, clicks and taps that result in Ajax page changes will happen slightly sooner on touch devices.
+		//Also, it will prevent the address bar from appearing on platforms like iOS during page transitions.
+		//This option has no effect on non-touch devices, but enabling it may interfere with jQuery plugins that bind to click events
+		useFastClick: true,
 
 		//automatically load and show pages based on location.hash
 		hashListeningEnabled: true,
 
-		// TODO: deprecated - remove at 1.0
-		//automatically handle link clicks through Ajax, when possible
-		ajaxLinksEnabled: true,
+		//set default page transition - 'none' for no transitions
+		defaultPageTransition: "slide",
+		
+		//minimum scroll distance that will be remembered when returning to a page
+		minScrollBack: screen.height / 2,
 
-		// TODO: deprecated - remove at 1.0
-		//automatically handle form submissions through Ajax, when possible
-		ajaxFormsEnabled: true,
-
-		//set default transition - 'none' for no transitions
-		defaultTransition: "slide",
+		//set default dialog transition - 'none' for no transitions
+		defaultDialogTransition: "pop",
 
 		//show loading message during Ajax requests
 		//if false, message will not appear, but loading classes will still be toggled on html el
@@ -1849,11 +1894,6 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		//error response message - appears when an Ajax page request fails
 		pageLoadErrorMessage: "Error Loading Page",
-
-		//configure meta viewport tag's content attr:
-		//note: this feature is deprecated in A4 in favor of adding
-		//the meta viewport element directly in the markup
-		metaViewportContent: "width=device-width, minimum-scale=1, maximum-scale=1",
 
 		//support conditions that must be met in order to proceed
 		//default enhanced qualifications are media query support OR IE 7+
@@ -1899,7 +1939,10 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 		//scroll page vertically: scroll to 0 to hide iOS address bar, or pass a Y value
 		silentScroll: function( ypos ) {
-			ypos = ypos || 0;
+			if( $.type( ypos ) !== "number" ){
+				ypos = $.mobile.defaultHomeScroll;
+			}
+
 			// prevent scrollstart and scrollstop events
 			$.event.special.scrollstart.enabled = false;
 
@@ -1911,31 +1954,41 @@ $.widget( "mobile.page", $.mobile.widget, {
 			setTimeout(function() {
 				$.event.special.scrollstart.enabled = true;
 			}, 150 );
+		},
+
+		// compile the namespace normalization regex once
+		normalizeRegex: /-([a-z])/g,
+
+		// take a data attribute property, prepend the namespace
+		// and then camel case the attribute string
+		nsNormalize: function(prop){
+			if(!prop) return;
+
+			return $.camelCase( $.mobile.ns + prop );
 		}
 	});
 
 	//mobile version of data and removeData and hasData methods
 	//ensures all data is set and retrieved using jQuery Mobile's data namespace
-  $.fn.jqmData = function( prop, value ){
-    return this.data( prop ? $.mobile.ns + prop : prop, value );
-  };
+	$.fn.jqmData = function( prop, value ){
+		return this.data( prop ? $.mobile.nsNormalize(prop) : prop, value );
+	};
 
-  $.jqmData = function( elem, prop, value ){
-    return $.data( elem, prop && $.mobile.ns + prop, value );
-  };
+	$.jqmData = function( elem, prop, value ){
+		return $.data( elem, $.mobile.nsNormalize(prop), value );
+	};
 
-  $.fn.jqmRemoveData = function( prop ){
-    return this.removeData( $.mobile.ns + prop );
-  };
+	$.fn.jqmRemoveData = function( prop ){
+		return this.removeData( $.mobile.nsNormalize(prop) );
+	};
 
-  $.jqmRemoveData = function( elem, prop ){
-    return $.removeData( elem, prop && $.mobile.ns + prop );
-  };
+	$.jqmRemoveData = function( elem, prop ){
+		return $.removeData( elem, $.mobile.nsNormalize(prop) );
+	};
 
-  $.jqmHasData = function( elem, prop ){
-    return $.hasData( elem, prop && $.mobile.ns + prop );
-  };
-
+	$.jqmHasData = function( elem, prop ){
+		return $.hasData( elem, $.mobile.nsNormalize(prop) );
+	};
 
 	// Monkey-patching Sizzle to filter the :jqmData selector
 	var oldFind = $.find;
@@ -1962,86 +2015,228 @@ $.widget( "mobile.page", $.mobile.widget, {
 * Dual licensed under the MIT or GPL Version 2 licenses.
 * http://jquery.org/license
 */
-(function($, undefined ) {
+( function( $, undefined ) {
 
 	//define vars for interal use
-	var $window = $(window),
-		$html = $('html'),
-		$head = $('head'),
+	var $window = $( window ),
+		$html = $( 'html' ),
+		$head = $( 'head' ),
 
 		//url path helpers for use in relative url management
 		path = {
 
+			// This scary looking regular expression parses an absolute URL or its relative
+			// variants (protocol, site, document, query, and hash), into the various
+			// components (protocol, host, path, query, fragment, etc that make up the
+			// URL as well as some other commonly used sub-parts. When used with RegExp.exec()
+			// or String.match, it parses the URL into a results array that looks like this:
+			//
+			//     [0]: http://jblas:password@mycompany.com:8080/mail/inbox?msg=1234&type=unread#msg-content
+			//     [1]: http://jblas:password@mycompany.com:8080/mail/inbox?msg=1234&type=unread
+			//     [2]: http://jblas:password@mycompany.com:8080/mail/inbox
+			//     [3]: http://jblas:password@mycompany.com:8080
+			//     [4]: http:
+			//     [5]: jblas:password@mycompany.com:8080
+			//     [6]: jblas:password
+			//     [7]: jblas
+			//     [8]: password
+			//     [9]: mycompany.com:8080
+			//    [10]: mycompany.com
+			//    [11]: 8080
+			//    [12]: /mail/inbox
+			//    [13]: /mail/
+			//    [14]: inbox
+			//    [15]: ?msg=1234&type=unread
+			//    [16]: #msg-content
+			//
+			urlParseRE: /^(((([^:\/#\?]+:)?(?:\/\/((?:(([^:@\/#\?]+)(?:\:([^:@\/#\?]+))?)@)?(([^:\/#\?]+)(?:\:([0-9]+))?))?)?)?((\/?(?:[^\/\?#]+\/+)*)([^\?#]*)))?(\?[^#]+)?)(#.*)?/,
+
+			//Parse a URL into a structure that allows easy access to
+			//all of the URL components by name.
+			parseUrl: function( url ) {
+				// If we're passed an object, we'll assume that it is
+				// a parsed url object and just return it back to the caller.
+				if ( typeof url === "object" ) {
+					return url;
+				}
+
+				var u = url || "",
+					matches = path.urlParseRE.exec( url ),
+					results;
+				if ( matches ) {
+					// Create an object that allows the caller to access the sub-matches
+					// by name. Note that IE returns an empty string instead of undefined,
+					// like all other browsers do, so we normalize everything so its consistent
+					// no matter what browser we're running on.
+					results = {
+						href:         matches[0] || "",
+						hrefNoHash:   matches[1] || "",
+						hrefNoSearch: matches[2] || "",
+						domain:       matches[3] || "",
+						protocol:     matches[4] || "",
+						authority:    matches[5] || "",
+						username:     matches[7] || "",
+						password:     matches[8] || "",
+						host:         matches[9] || "",
+						hostname:     matches[10] || "",
+						port:         matches[11] || "",
+						pathname:     matches[12] || "",
+						directory:    matches[13] || "",
+						filename:     matches[14] || "",
+						search:       matches[15] || "",
+						hash:         matches[16] || ""
+					};
+				}
+				return results || {};
+			},
+
+			//Turn relPath into an asbolute path. absPath is
+			//an optional absolute path which describes what
+			//relPath is relative to.
+			makePathAbsolute: function( relPath, absPath ) {
+				if ( relPath && relPath.charAt( 0 ) === "/" ) {
+					return relPath;
+				}
+		
+				relPath = relPath || "";
+				absPath = absPath ? absPath.replace( /^\/|\/?[^\/]*$/g, "" ) : "";
+		
+				var absStack = absPath ? absPath.split( "/" ) : [],
+					relStack = relPath.split( "/" );
+				for ( var i = 0; i < relStack.length; i++ ) {
+					var d = relStack[ i ];
+					switch ( d ) {
+						case ".":
+							break;
+						case "..":
+							if ( absStack.length ) {
+								absStack.pop();
+							}
+							break;
+						default:
+							absStack.push( d );
+							break;
+					}
+				}
+				return "/" + absStack.join( "/" );
+			},
+
+			//Returns true if both urls have the same domain.
+			isSameDomain: function( absUrl1, absUrl2 ) {
+				return path.parseUrl( absUrl1 ).domain === path.parseUrl( absUrl2 ).domain;
+			},
+
+			//Returns true for any relative variant.
+			isRelativeUrl: function( url ) {
+				// All relative Url variants have one thing in common, no protocol.
+				return path.parseUrl( url ).protocol === "";
+			},
+
+			//Returns true for an absolute url.
+			isAbsoluteUrl: function( url ) {
+				return path.parseUrl( url ).protocol !== "";
+			},
+
+			//Turn the specified realtive URL into an absolute one. This function
+			//can handle all relative variants (protocol, site, document, query, fragment).
+			makeUrlAbsolute: function( relUrl, absUrl ) {
+				if ( !path.isRelativeUrl( relUrl ) ) {
+					return relUrl;
+				}
+		
+				var relObj = path.parseUrl( relUrl ),
+					absObj = path.parseUrl( absUrl ),
+					protocol = relObj.protocol || absObj.protocol,
+					authority = relObj.authority || absObj.authority,
+					hasPath = relObj.pathname !== "",
+					pathname = path.makePathAbsolute( relObj.pathname || absObj.filename, absObj.pathname ),
+					search = relObj.search || ( !hasPath && absObj.search ) || "",
+					hash = relObj.hash;
+		
+				return protocol + "//" + authority + pathname + search + hash;
+			},
+
+			//Add search (aka query) params to the specified url.
+			addSearchParams: function( url, params ) {
+				var u = path.parseUrl( url ),
+					p = ( typeof params === "object" ) ? $.param( params ) : params,
+					s = u.search || "?";
+				return u.hrefNoSearch + s + ( s.charAt( s.length - 1 ) !== "?" ? "&" : "" ) + p + ( u.hash || "" );
+			},
+
+			convertUrlToDataUrl: function( absUrl ) {
+				var u = path.parseUrl( absUrl );
+				if ( path.isEmbeddedPage( u ) ) {
+					return u.hash.replace( /^#/, "" );
+				} else if ( path.isSameDomain( u, documentBase ) ) {
+					return u.hrefNoHash.replace( documentBase.domain, "" );
+				}
+				return absUrl;
+			},
+
 			//get path from current hash, or from a file path
-			get: function( newPath ){
-				if( newPath === undefined ){
+			get: function( newPath ) {
+				if( newPath === undefined ) {
 					newPath = location.hash;
 				}
-				return path.stripHash( newPath ).replace(/[^\/]*\.[^\/*]+$/, '');
+				return path.stripHash( newPath ).replace( /[^\/]*\.[^\/*]+$/, '' );
 			},
 
 			//return the substring of a filepath before the sub-page key, for making a server request
-			getFilePath: function( path ){
+			getFilePath: function( path ) {
 				var splitkey = '&' + $.mobile.subPageUrlKey;
 				return path && path.split( splitkey )[0].split( dialogHashKey )[0];
 			},
 
 			//set location hash to path
-			set: function( path ){
+			set: function( path ) {
 				location.hash = path;
 			},
 
-			//location pathname from intial directory request
-			origin: '',
-
-			setOrigin: function(){
-				path.origin = path.get( location.protocol + '//' + location.host + location.pathname );
-			},
-
-			//prefix a relative url with the current path
-			// TODO rename to reflect conditional functionality
-			makeAbsolute: function( url ){
-				// only create an absolute path when the hash can be used as one
-				return path.isPath(window.location.hash) ? path.get() + url : url;
-			},
-
-			// test if a given url (string) is a path
-			// NOTE might be exceptionally naive
-			isPath: function( url ){
-				return /\//.test(url);
+			//test if a given url (string) is a path
+			//NOTE might be exceptionally naive
+			isPath: function( url ) {
+				return ( /\// ).test( url );
 			},
 
 			//return a url path with the window's location protocol/hostname/pathname removed
-			clean: function( url ){
-				// Replace the protocol, host, and pathname only once at the beginning of the url to avoid
-				// problems when it's included as a part of a param
-				// Also, since all urls are absolute in IE, we need to remove the pathname as well.
-				var leadingUrlRootRegex = new RegExp("^" + location.protocol + "//" + location.host + location.pathname);
-				return url.replace(leadingUrlRootRegex, "");
+			clean: function( url ) {
+				return url.replace( documentBase.domain, "" );
 			},
 
 			//just return the url without an initial #
-			stripHash: function( url ){
+			stripHash: function( url ) {
 				return url.replace( /^#/, "" );
+			},
+
+			//remove the preceding hash, any query params, and dialog notations
+			cleanHash: function( hash ) {
+				return path.stripHash( hash.replace( /\?.*$/, "" ).replace( dialogHashKey, "" ) );
 			},
 
 			//check whether a url is referencing the same domain, or an external domain or different protocol
 			//could be mailto, etc
-			isExternal: function( url ){
-				return path.hasProtocol( path.clean( url ) );
+			isExternal: function( url ) {
+				var u = path.parseUrl( url );
+				return u.protocol && u.domain !== documentUrl.domain ? true : false;
 			},
 
-			hasProtocol: function( url ){
-				return (/^(:?\w+:)/).test( url );
+			hasProtocol: function( url ) {
+				return ( /^(:?\w+:)/ ).test( url );
 			},
 
-			//check if the url is relative
-			isRelative: function( url ){
-				return  (/^[^\/|#]/).test( url ) && !path.hasProtocol( url );
-			},
+			isEmbeddedPage: function( url ) {
+				var u = path.parseUrl( url );
 
-			isEmbeddedPage: function( url ){
-				return (/^#/).test( url );
+				//if the path is absolute, then we need to compare the url against
+				//both the documentUrl and the documentBase. The main reason for this
+				//is that links embedded within external documents will refer to the
+				//application document, whereas links embedded within the application
+				//document will be resolved against the document base.
+				if ( u.protocol !== "" ) {
+					return ( u.hash && ( u.hrefNoHash === documentUrl.hrefNoHash || ( documentBaseDiffers && u.hrefNoHash === documentBase.hrefNoHash ) ) );
+				}
+				return (/^#/).test( u.href );
 			}
 		},
 
@@ -2058,22 +2253,22 @@ $.widget( "mobile.page", $.mobile.widget, {
 			activeIndex: 0,
 
 			//get active
-			getActive: function(){
+			getActive: function() {
 				return urlHistory.stack[ urlHistory.activeIndex ];
 			},
 
-			getPrev: function(){
+			getPrev: function() {
 				return urlHistory.stack[ urlHistory.activeIndex - 1 ];
 			},
 
-			getNext: function(){
+			getNext: function() {
 				return urlHistory.stack[ urlHistory.activeIndex + 1 ];
 			},
 
 			// addNew is used whenever a new page is added
-			addNew: function( url, transition, title, storedTo ){
+			addNew: function( url, transition, title, storedTo ) {
 				//if there's forward history, wipe it
-				if( urlHistory.getNext() ){
+				if( urlHistory.getNext() ) {
 					urlHistory.clearForward();
 				}
 
@@ -2083,18 +2278,18 @@ $.widget( "mobile.page", $.mobile.widget, {
 			},
 
 			//wipe urls ahead of active index
-			clearForward: function(){
+			clearForward: function() {
 				urlHistory.stack = urlHistory.stack.slice( 0, urlHistory.activeIndex + 1 );
 			},
 
-			directHashChange: function(opts){
+			directHashChange: function( opts ) {
 				var back , forward, newActiveIndex;
 
 				// check if url isp in history and if it's ahead or behind current page
-				$.each( urlHistory.stack, function( i, historyEntry ){
+				$.each( urlHistory.stack, function( i, historyEntry ) {
 
 					//if the url is in the stack, it's a forward or a back
-					if( opts.currentUrl === historyEntry.url ){
+					if( opts.currentUrl === historyEntry.url ) {
 						//define back and forward by whether url is older or newer than current page
 						back = i < urlHistory.activeIndex;
 						forward = !back;
@@ -2105,88 +2300,60 @@ $.widget( "mobile.page", $.mobile.widget, {
 				// save new page index, null check to prevent falsey 0 result
 				this.activeIndex = newActiveIndex !== undefined ? newActiveIndex : this.activeIndex;
 
-				if( back ){
+				if( back ) {
 					opts.isBack();
-				} else if( forward ){
+				} else if( forward ) {
 					opts.isForward();
 				}
 			},
 
 			//disable hashchange event listener internally to ignore one change
 			//toggled internally when location.hash is updated to match the url of a successful page load
-			ignoreNextHashChange: true
+			ignoreNextHashChange: false
 		},
 
 		//define first selector to receive focus when a page is shown
 		focusable = "[tabindex],a,button:visible,select:visible,input",
 
-		//contains role for next page, if defined on clicked link via data-rel
-		nextPageRole = null,
-
 		//queue to hold simultanious page transitions
 		pageTransitionQueue = [],
 
-		// indicates whether or not page is in process of transitioning
+		//indicates whether or not page is in process of transitioning
 		isPageTransitioning = false,
 
 		//nonsense hash change key for dialogs, so they create a history entry
 		dialogHashKey = "&ui-state=dialog",
 
 		//existing base tag?
-		$base = $head.children("base"),
-		hostURL = location.protocol + '//' + location.host,
-		docLocation = path.get( hostURL + location.pathname ),
-		docBase = docLocation;
+		$base = $head.children( "base" ),
 
-		if ($base.length){
-			var href = $base.attr("href");
-			if (href){
-				if (href.search(/^[^:\/]+:\/\/[^\/]+\/?/) === -1){
-					//the href is not absolute, we need to turn it into one
-					//so that we can turn paths stored in our location hash into
-					//relative paths.
-					if (href.charAt(0) === '/'){
-						//site relative url
-						docBase = hostURL + href;
-					}
-					else {
-						//the href is a document relative url
-						docBase = docLocation + href;
-						//XXX: we need some code here to calculate the final path
-						// just in case the docBase contains up-level (../) references.
-					}
-				}
-				else {
-					//the href is an absolute url
-					docBase = href;
-				}
-			}
-			//make sure docBase ends with a slash
-			docBase = docBase  + (docBase.charAt(docBase.length - 1) === '/' ? ' ' : '/');
-		}
+		//tuck away the original document URL minus any fragment.
+		documentUrl = path.parseUrl( location.href ),
+
+		//if the document has an embedded base tag, documentBase is set to its
+		//initial value. If a base tag does not exist, then we default to the documentUrl.
+		documentBase = $base.length ? path.parseUrl( path.makeUrlAbsolute( $base.attr( "href" ), documentUrl.href ) ) : documentUrl,
+
+		//cache the comparison once.
+		documentBaseDiffers = ( documentUrl.hrefNoHash !== documentBase.hrefNoHash );
 
 		//base element management, defined depending on dynamic base tag support
 		var base = $.support.dynamicBaseTag ? {
 
 			//define base element, for use in routing asset urls that are referenced in Ajax-requested markup
-			element: ($base.length ? $base : $("<base>", { href: docBase }).prependTo( $head )),
+			element: ( $base.length ? $base : $( "<base>", { href: documentBase.hrefNoHash } ).prependTo( $head ) ),
 
 			//set the generated BASE element's href attribute to a new page's base path
-			set: function( href ){
-				base.element.attr('href', docBase + path.get( href ));
+			set: function( href ) {
+				base.element.attr( "href", path.makeUrlAbsolute( href, documentBase ) );
 			},
 
 			//set the generated BASE element's href attribute to a new page's base path
-			reset: function(){
-				base.element.attr('href', docBase );
+			reset: function() {
+				base.element.attr( "href", documentBase.hrefNoHash );
 			}
 
 		} : undefined;
-
-
-
-		//set location pathname from intial directory request
-		path.setOrigin();
 
 /*
 	internal utility functions
@@ -2194,47 +2361,147 @@ $.widget( "mobile.page", $.mobile.widget, {
 
 
 	//direct focus to the page title, or otherwise first focusable element
-	function reFocus( page ){
+	function reFocus( page ) {
 		var lastClicked = page.jqmData( "lastClicked" );
-			
-		if( lastClicked && lastClicked.length ){
+
+		if( lastClicked && lastClicked.length ) {
 			lastClicked.focus();
 		}
 		else {
 			var pageTitle = page.find( ".ui-title:eq(0)" );
-			
-			if( pageTitle.length ){
+
+			if( pageTitle.length ) {
 				pageTitle.focus();
 			}
 			else{
-				page.find( focusable ).eq(0).focus();
+				page.find( focusable ).eq( 0 ).focus();
 			}
 		}
 	}
 
 	//remove active classes after page transition or error
-	function removeActiveLinkClass( forceRemoval ){
-		if( !!$activeClickedLink && (!$activeClickedLink.closest( '.ui-page-active' ).length || forceRemoval )){
+	function removeActiveLinkClass( forceRemoval ) {
+		if( !!$activeClickedLink && ( !$activeClickedLink.closest( '.ui-page-active' ).length || forceRemoval ) ) {
 			$activeClickedLink.removeClass( $.mobile.activeBtnClass );
 		}
 		$activeClickedLink = null;
 	}
 
+	function releasePageTransitionLock() {
+		isPageTransitioning = false;
+		if( pageTransitionQueue.length > 0 ) {
+			$.mobile.changePage.apply( null, pageTransitionQueue.pop() );
+		}
+	}
+
+	//function for transitioning between two existing pages
+	function transitionPages( toPage, fromPage, transition, reverse ) {
+		
+		//get current scroll distance
+		var currScroll = $.support.scrollTop ? $window.scrollTop() : true,
+			toScroll	= toPage.data( "lastScroll" ) || $.mobile.defaultHomeScroll,
+			screenHeight = getScreenHeight();
+		
+		//if scrolled down, scroll to top
+		if( currScroll ){
+			window.scrollTo( 0, $.mobile.defaultHomeScroll );
+		}
+		
+		//if the Y location we're scrolling to is less than 10px, let it go for sake of smoothness
+		if( toScroll < $.mobile.minScrollBack ){
+			toScroll = 0;
+		}
+		
+		if( fromPage ) {
+			//set as data for returning to that spot
+			fromPage
+				.height( screenHeight + currScroll )
+				.jqmData( "lastScroll", currScroll )
+				.jqmData( "lastClicked", $activeClickedLink );
+				
+			//trigger before show/hide events
+			fromPage.data( "page" )._trigger( "beforehide", null, { nextPage: toPage } );
+		}
+		toPage
+			.height( screenHeight + toScroll )
+			.data( "page" )._trigger( "beforeshow", null, { prevPage: fromPage || $( "" ) } );
+
+		//clear page loader
+		$.mobile.hidePageLoadingMsg();
+
+		//find the transition handler for the specified transition. If there
+		//isn't one in our transitionHandlers dictionary, use the default one.
+		//call the handler immediately to kick-off the transition.
+		var th = $.mobile.transitionHandlers[transition || "none"] || $.mobile.defaultTransitionHandler,
+			promise = th( transition, reverse, toPage, fromPage );
+
+		promise.done(function() {
+			//reset toPage height bac
+			toPage.height( "" );
+			
+			//jump to top or prev scroll, sometimes on iOS the page has not rendered yet.
+			if( toScroll ){
+				$.mobile.silentScroll( toScroll );
+				$( document ).one( "silentscroll", function() { reFocus( toPage ); } );
+			}
+			else{
+				reFocus( toPage ); 
+			}
+
+			//trigger show/hide events
+			if( fromPage ) {
+				fromPage.height("").data( "page" )._trigger( "hide", null, { nextPage: toPage } );
+			}
+			
+			//trigger pageshow, define prevPage as either fromPage or empty jQuery obj
+			toPage.data( "page" )._trigger( "show", null, { prevPage: fromPage || $( "" ) } );
+		});
+
+		return promise;
+	}
+	
+	//simply set the active page's minimum height to screen height, depending on orientation
+	function getScreenHeight(){
+		var orientation 	= jQuery.event.special.orientationchange.orientation(),
+			port			= orientation === "portrait",
+			winMin			= port ? 480 : 320,
+			screenHeight	= port ? screen.availHeight : screen.availWidth,
+			winHeight		= Math.max( winMin, $( window ).height() ),
+			pageMin			= Math.min( screenHeight, winHeight );
+
+		return pageMin;
+	}
+	
+	//simply set the active page's minimum height to screen height, depending on orientation
+	function resetActivePageHeight(){
+		$( "." + $.mobile.activePageClass ).css( "min-height", getScreenHeight() );
+	}
+
+	//shared page enhancements
+	function enhancePage( $page, role ) {
+		// If a role was specified, make sure the data-role attribute
+		// on the page element is in sync.
+		if( role ) {
+			$page.attr( "data-" + $.mobile.ns + "role", role );
+		}
+
+		//run page plugin
+		$page.page();
+	}
+
+/* exposed $.mobile methods	 */
+
 	//animation complete callback
-	$.fn.animationComplete = function( callback ){
-		if($.support.cssTransitions){
-			return $(this).one('webkitAnimationEnd', callback);
+	$.fn.animationComplete = function( callback ) {
+		if( $.support.cssTransitions ) {
+			return $( this ).one( 'webkitAnimationEnd', callback );
 		}
 		else{
 			// defer execution for consistency between webkit/non webkit
-			setTimeout(callback, 0);
-			return $(this);
+			setTimeout( callback, 0 );
+			return $( this );
 		}
 	};
-
-
-
-/* exposed $.mobile methods	 */
 
 	//update location.hash, with or without triggering hashchange event
 	//TODO - deprecate this one at 1.0
@@ -2253,435 +2520,553 @@ $.widget( "mobile.page", $.mobile.widget, {
 	//history stack
 	$.mobile.urlHistory = urlHistory;
 
+	//default non-animation transition handler
+	$.mobile.noneTransitionHandler = function( name, reverse, $toPage, $fromPage ) {
+		if ( $fromPage ) {
+			$fromPage.removeClass( $.mobile.activePageClass );
+		}
+		$toPage.addClass( $.mobile.activePageClass );
+
+		return $.Deferred().resolve( name, reverse, $toPage, $fromPage ).promise();
+	};
+
+	//default handler for unknown transitions
+	$.mobile.defaultTransitionHandler = $.mobile.noneTransitionHandler;
+
+	//transition handler dictionary for 3rd party transitions
+	$.mobile.transitionHandlers = {
+		none: $.mobile.defaultTransitionHandler
+	};
+
 	//enable cross-domain page support
 	$.mobile.allowCrossDomainPages = false;
 
-	// changepage function
-	$.mobile.changePage = function( to, transition, reverse, changeHash, fromHashChange ){
-		//from is always the currently viewed page
-		var toIsArray = $.type(to) === "array",
-			toIsObject = $.type(to) === "object",
-			from = toIsArray ? to[0] : $.mobile.activePage;
+	//return the original document url
+	$.mobile.getDocumentUrl = function(asParsedObject) {
+		return asParsedObject ? $.extend( {}, documentUrl ) : documentUrl.href;
+	};
 
-			to = toIsArray ? to[1] : to;
+	//return the original document base url
+	$.mobile.getDocumentBase = function(asParsedObject) {
+		return asParsedObject ? $.extend( {}, documentBase ) : documentBase.href;
+	};
 
-		var url = $.type(to) === "string" ? path.stripHash( to ) : "",
-			fileUrl = url,
-			data,
-			type = 'get',
-			isFormRequest = false,
-			duplicateCachedPage = null,
-			currPage = urlHistory.getActive(),
-			back = false,
-			forward = false,
-			pageTitle = document.title;
+	// Load a page into the DOM.
+	$.mobile.loadPage = function( url, options ) {
+		// This function uses deferred notifications to let callers
+		// know when the page is done loading, or if an error has occurred.
+		var deferred = $.Deferred(),
+
+			// The default loadPage options with overrides specified by
+			// the caller.
+			settings = $.extend( {}, $.mobile.loadPage.defaults, options ),
+
+			// The DOM element for the page after it has been loaded.
+			page = null,
+
+			// If the reloadPage option is true, and the page is already
+			// in the DOM, dupCachedPage will be set to the page element
+			// so that it can be removed after the new version of the
+			// page is loaded off the network.
+			dupCachedPage = null,
+
+			// The absolute version of the URL passed into the function. This
+			// version of the URL may contain dialog/subpage params in it.
+			absUrl = path.makeUrlAbsolute( url, documentBase.hrefNoHash );
 
 
-		// If we are trying to transition to the same page that we are currently on ignore the request.
-		// an illegal same page request is defined by the current page being the same as the url, as long as there's history
-		// and to is not an array or object (those are allowed to be "same")
-		if( currPage && urlHistory.stack.length > 1 && currPage.url === url && !toIsArray && !toIsObject ) {
+		// If the caller provided data, and we're using "get" request,
+		// append the data to the URL.
+		if ( settings.data && settings.type === "get" ) {
+			absUrl = path.addSearchParams( absUrl, settings.data );
+			settings.data = undefined;
+		}
+
+			// The absolute version of the URL minus any dialog/subpage params.
+			// In otherwords the real URL of the page to be loaded.
+		var fileUrl = path.getFilePath( absUrl ),
+
+			// The version of the Url actually stored in the data-url attribute of
+			// the page. For embedded pages, it is just the id of the page. For pages
+			// within the same domain as the document base, it is the site relative
+			// path. For cross-domain pages (Phone Gap only) the entire absolute Url
+			// used to load the page.
+			dataUrl = path.convertUrlToDataUrl( absUrl );
+
+		// Make sure we have a pageContainer to work with.
+		settings.pageContainer = settings.pageContainer || $.mobile.pageContainer;
+
+		// Check to see if the page already exists in the DOM.
+		page = settings.pageContainer.children( ":jqmData(url='" + dataUrl + "')" );
+
+		// Reset base to the default document base.
+		if ( base ) {
+			base.reset();
+		}
+
+		// If the page we are interested in is already in the DOM,
+		// and the caller did not indicate that we should force a
+		// reload of the file, we are done. Otherwise, track the
+		// existing page as a duplicated.
+		if ( page.length ) {
+			if ( !settings.reloadPage ) {
+				enhancePage( page, settings.role );
+				deferred.resolve( absUrl, options, page );
+				return deferred.promise();
+			}
+			dupCachedPage = page;
+		}
+
+		if ( settings.showLoadMsg ) {
+			$.mobile.showPageLoadingMsg();
+		}
+
+		// Load the new page.
+		$.ajax({
+			url: fileUrl,
+			type: settings.type,
+			data: settings.data,
+			dataType: "html",
+			success: function( html ) {
+				//pre-parse html to check for a data-url,
+				//use it as the new fileUrl, base path, etc
+				var all = $( "<div></div>" ),
+
+						//page title regexp
+						newPageTitle = html.match( /<title[^>]*>([^<]*)/ ) && RegExp.$1,
+
+						// TODO handle dialogs again
+						pageElemRegex = new RegExp( ".*(<[^>]+\\bdata-" + $.mobile.ns + "role=[\"']?page[\"']?[^>]*>).*" ),
+						dataUrlRegex = new RegExp( "\\bdata-" + $.mobile.ns + "url=[\"']?([^\"'>]*)[\"']?" );
+
+
+				// data-url must be provided for the base tag so resource requests can be directed to the
+				// correct url. loading into a temprorary element makes these requests immediately
+				if( pageElemRegex.test( html )
+						&& RegExp.$1
+						&& dataUrlRegex.test( RegExp.$1 )
+						&& RegExp.$1 ) {
+					url = fileUrl = path.getFilePath( RegExp.$1 );
+				}
+
+				if ( base ) {
+					base.set( fileUrl );
+				}
+
+				//workaround to allow scripts to execute when included in page divs
+				all.get( 0 ).innerHTML = html;
+				page = all.find( ":jqmData(role='page'), :jqmData(role='dialog')" ).first();
+
+				if ( newPageTitle && !page.jqmData( "title" ) ) {
+					page.jqmData( "title", newPageTitle );
+				}
+
+				//rewrite src and href attrs to use a base url
+				if( !$.support.dynamicBaseTag ) {
+					var newPath = path.get( fileUrl );
+					page.find( "[src], link[href], a[rel='external'], :jqmData(ajax='false'), a[target]" ).each(function() {
+						var thisAttr = $( this ).is( '[href]' ) ? 'href' :
+								$(this).is('[src]') ? 'src' : 'action',
+							thisUrl = $( this ).attr( thisAttr );
+
+						// XXX_jblas: We need to fix this so that it removes the document
+						//            base URL, and then prepends with the new page URL.
+						//if full path exists and is same, chop it - helps IE out
+						thisUrl = thisUrl.replace( location.protocol + '//' + location.host + location.pathname, '' );
+
+						if( !/^(\w+:|#|\/)/.test( thisUrl ) ) {
+							$( this ).attr( thisAttr, newPath + thisUrl );
+						}
+					});
+				}
+
+				//append to page and enhance
+				page
+					.attr( "data-" + $.mobile.ns + "url", path.convertUrlToDataUrl( fileUrl ) )
+					.appendTo( settings.pageContainer );
+
+				enhancePage( page, settings.role );
+
+				// Enhancing the page may result in new dialogs/sub pages being inserted
+				// into the DOM. If the original absUrl refers to a sub-page, that is the
+				// real page we are interested in.
+				if ( absUrl.indexOf( "&" + $.mobile.subPageUrlKey ) > -1 ) {
+					page = settings.pageContainer.children( ":jqmData(url='" + dataUrl + "')" );
+				}
+
+				// Remove loading message.
+				if ( settings.showLoadMsg ) {
+					$.mobile.hidePageLoadingMsg();
+				}
+
+				deferred.resolve( absUrl, options, page, dupCachedPage );
+			},
+			error: function() {
+				//set base back to current path
+				if( base ) {
+					base.set( path.get() );
+				}
+
+				// Remove loading message.
+				if ( settings.showLoadMsg ) {
+					$.mobile.hidePageLoadingMsg();
+
+					//show error message
+					$( "<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>"+ $.mobile.pageLoadErrorMessage +"</h1></div>" )
+						.css({ "display": "block", "opacity": 0.96, "top": $window.scrollTop() + 100 })
+						.appendTo( settings.pageContainer )
+						.delay( 800 )
+						.fadeOut( 400, function() {
+							$( this ).remove();
+						});
+				}
+
+				deferred.reject( absUrl, options );
+			}
+		});
+
+		return deferred.promise();
+	};
+
+	$.mobile.loadPage.defaults = {
+		type: "get",
+		data: undefined,
+		reloadPage: false,
+		role: undefined, // By default we rely on the role defined by the @data-role attribute.
+		showLoadMsg: true,
+		pageContainer: undefined
+	};
+
+	// Show a specific page in the page container.
+	$.mobile.changePage = function( toPage, options ) {
+		// XXX: REMOVE_BEFORE_SHIPPING_1.0
+		// This is temporary code that makes changePage() compatible with previous alpha versions.
+		if ( typeof options !== "object" ) {
+			var opts = null;
+
+			// Map old-style call signature for form submit to the new options object format.
+			if ( typeof toPage === "object" && toPage.url && toPage.type ) {
+				opts = {
+					type: toPage.type,
+					data: toPage.data,
+					forcePageLoad: true
+				};
+				toPage = toPage.url;
+			}
+
+			// The arguments passed into the function need to be re-mapped
+			// to the new options object format.
+			var len = arguments.length;
+			if ( len > 1 ) {
+				var argNames = [ "transition", "reverse", "changeHash", "fromHashChange" ], i;
+				for ( i = 1; i < len; i++ ) {
+					var a = arguments[ i ];
+					if ( typeof a !== "undefined" ) {
+						opts = opts || {};
+						opts[ argNames[ i - 1 ] ] = a;
+					}
+				}
+			}
+
+			// If an options object was created, then we know changePage() was called
+			// with an old signature.
+			if ( opts ) {
+				return $.mobile.changePage( toPage, opts );
+			}
+		}
+		// XXX: REMOVE_BEFORE_SHIPPING_1.0
+
+		// If we are in the midst of a transition, queue the current request.
+		// We'll call changePage() once we're done with the current transition to
+		// service the request.
+		if( isPageTransitioning ) {
+			pageTransitionQueue.unshift( arguments );
 			return;
 		}
-		else if(isPageTransitioning) {
-			pageTransitionQueue.unshift(arguments);
-			return;
-		}
+
+		// Set the isPageTransitioning flag to prevent any requests from
+		// entering this method while we are in the midst of loading a page
+		// or transitioning.
 
 		isPageTransitioning = true;
 
-		// if the changePage was sent from a hashChange event guess if it came from the history menu
-		// and match the transition accordingly
-		if( fromHashChange ){
-			urlHistory.directHashChange({
-				currentUrl: url,
-				isBack: function(){
-					forward = !(back = true);
-					reverse = true;
-					transition = transition || currPage.transition;
-				},
-				isForward: function(){
-					forward = !(back = false);
-					transition = transition || urlHistory.getActive().transition;
-				}
-			});
+		var settings = $.extend( {}, $.mobile.changePage.defaults, options );
 
-			//TODO forward = !back was breaking for some reason
-		}
+		// Make sure we have a pageContainer to work with.
+		settings.pageContainer = settings.pageContainer || $.mobile.pageContainer;
 
-		if( toIsObject && to.url ){
-			url = to.url;
-			data = to.data;
-			type = to.type;
-			isFormRequest = true;
-			//make get requests bookmarkable
-			if( data && type === 'get' ){
-				if($.type( data ) === "object" ){
-					data = $.param(data);
-				}
-
-				url += "?" + data;
-				data = undefined;
-			}
-		}
-
-		//reset base to pathname for new request
-		if(base){ base.reset(); }
-
-		//kill the keyboard
-		if( window.document.activeElement ){
-			$( window.document.activeElement || "" ).add( "input:focus, textarea:focus, select:focus" ).blur();
-		}
-
-		function defaultTransition(){
-			if(transition === undefined){
-				transition = ( nextPageRole && nextPageRole === 'dialog' ) ? 'pop' : $.mobile.defaultTransition;
-			}
-		}
-
-		function releasePageTransitionLock(){
-			isPageTransitioning = false;
-			if(pageTransitionQueue.length>0) {
-				$.mobile.changePage.apply($.mobile, pageTransitionQueue.pop());
-			}
-		}
-
-		//function for transitioning between two existing pages
-		function transitionPages() {
-		    $.mobile.silentScroll();
-
-			//get current scroll distance
-			var currScroll = $window.scrollTop(),
-					perspectiveTransitions = [ "flip" ],
-					pageContainerClasses = [];
-
-			//support deep-links to generated sub-pages
-			if( url.indexOf( "&" + $.mobile.subPageUrlKey ) > -1 ){
-				to = $( ":jqmData(url='" + url + "')" );
-			}
-
-			if( from ){
-				//set as data for returning to that spot
-				from
-					.jqmData( "lastScroll", currScroll)
-					.jqmData( "lastClicked", $activeClickedLink);
-				//trigger before show/hide events
-				from.data( "page" )._trigger( "beforehide", null, { nextPage: to } );
-			}
-			to.data( "page" )._trigger( "beforeshow", null, { prevPage: from || $("") } );
-
-			function pageChangeComplete(){
-
-				if( changeHash !== false && url ){
-					//disable hash listening temporarily
-					urlHistory.ignoreNextHashChange = false;
-					//update hash and history
-					path.set( url );
-				}
-
-				//if title element wasn't found, try the page div data attr too
-				var newPageTitle = to.jqmData("title") || to.find(".ui-header .ui-title" ).text();
-				if( !!newPageTitle && pageTitle == document.title ){
-					pageTitle = newPageTitle;
-				}
-
-				//add page to history stack if it's not back or forward
-				if( !back && !forward ){
-					urlHistory.addNew( url, transition, pageTitle, to );
-				}
-
-				//set page title
-				document.title = urlHistory.getActive().title;
-
-				removeActiveLinkClass();
-
-				//jump to top or prev scroll, sometimes on iOS the page has not rendered yet.  I could only get by this with a setTimeout, but would like to avoid that.
-				$.mobile.silentScroll( to.jqmData( "lastScroll" ) );
-
-				reFocus( to );
-
-				//trigger show/hide events
-				if( from ){
-					from.data( "page" )._trigger( "hide", null, { nextPage: to } );
-				}
-				//trigger pageshow, define prevPage as either from or empty jQuery obj
-				to.data( "page" )._trigger( "show", null, { prevPage: from || $("") } );
-
-				//set "to" as activePage
-				$.mobile.activePage = to;
-
-				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
-				if (duplicateCachedPage !== null) {
-				    duplicateCachedPage.remove();
-				}
-
-				//remove initial build class (only present on first pageshow)
-				$html.removeClass( "ui-mobile-rendering" );
-
-				releasePageTransitionLock();
-			}
-
-			function addContainerClass(className){
-				$.mobile.pageContainer.addClass(className);
-				pageContainerClasses.push(className);
-			}
-
-			function removeContainerClasses(){
-				$.mobile
-					.pageContainer
-					.removeClass(pageContainerClasses.join(" "));
-
-				pageContainerClasses = [];
-			}
-
-			if(transition && (transition !== 'none')){
-			    $.mobile.pageLoading( true );
-				if( $.inArray(transition, perspectiveTransitions) >= 0 ){
-					addContainerClass('ui-mobile-viewport-perspective');
-				}
-
-				addContainerClass('ui-mobile-viewport-transitioning');
-
-				if( from ){
-					from.addClass( transition + " out " + ( reverse ? "reverse" : "" ) );
-				}
-				to.addClass( $.mobile.activePageClass + " " + transition +
-					" in " + ( reverse ? "reverse" : "" ) );
-
-				// callback - remove classes, etc
-				to.animationComplete(function() {
-					to.add(from).removeClass("out in reverse " + transition );
-					if( from ){
-						from.removeClass( $.mobile.activePageClass );
-					}
-					pageChangeComplete();
-					removeContainerClasses();
-				});
-			}
-			else{
-			    $.mobile.pageLoading( true );
-			    if( from ){
-					from.removeClass( $.mobile.activePageClass );
-				}
-				to.addClass( $.mobile.activePageClass );
-				pageChangeComplete();
-			}
-		}
-
-		//shared page enhancements
-		function enhancePage(){
-
-			//set next page role, if defined
-			if ( nextPageRole || to.jqmData('role') === 'dialog' ) {
-				url = urlHistory.getActive().url + dialogHashKey;
-				if(nextPageRole){
-					to.attr( "data-" + $.mobile.ns + "role", nextPageRole );
-					nextPageRole = null;
-				}
-			}
-
-			//run page plugin
-			to.page();
-		}
-
-		//if url is a string
-		if( url ){
-			to = $( ":jqmData(url='" + url + "')" );
-			fileUrl = path.getFilePath(url);
-		}
-		else{ //find base url of element, if avail
-			var toID = to.attr( "data-" + $.mobile.ns + "url" ),
-				toIDfileurl = path.getFilePath(toID);
-
-			if(toID !== toIDfileurl){
-				fileUrl = toIDfileurl;
-			}
-		}
-
-		// ensure a transition has been set where pop is undefined
-		defaultTransition();
-
-		// find the "to" page, either locally existing in the dom or by creating it through ajax
-		if ( to.length && !isFormRequest ) {
-			if( fileUrl && base ){
-				base.set( fileUrl );
-			}
-			enhancePage();
-			transitionPages();
-		} else {
-
-			//if to exists in DOM, save a reference to it in duplicateCachedPage for removal after page change
-			if( to.length ){
-				duplicateCachedPage = to;
-			}
-
-			$.mobile.pageLoading();
-
-			$.ajax({
-				url: fileUrl,
-				type: type,
-				data: data,
-				dataType: "html",
-				success: function( html ) {
-					//pre-parse html to check for a data-url,
-					//use it as the new fileUrl, base path, etc
-					var all = $("<div></div>"),
-							redirectLoc,
-
-							//page title regexp
-							newPageTitle = html.match( /<title[^>]*>([^<]*)/ ) && RegExp.$1,
-
-							// TODO handle dialogs again
-							pageElemRegex = new RegExp(".*(<[^>]+\\bdata-" + $.mobile.ns + "role=[\"']?page[\"']?[^>]*>).*"),
-							dataUrlRegex = new RegExp("\\bdata-" + $.mobile.ns + "url=[\"']?([^\"'>]*)[\"']?");
-
-
-					// data-url must be provided for the base tag so resource requests can be directed to the
-					// correct url. loading into a temprorary element makes these requests immediately
-					if(pageElemRegex.test(html) && RegExp.$1 && dataUrlRegex.test(RegExp.$1) && RegExp.$1) {
-						redirectLoc = RegExp.$1;
-					}
-
-					if( redirectLoc ){
-						if(base){
-							base.set( redirectLoc );
-						}
-						url = fileUrl = path.getFilePath( redirectLoc );
-					}
-					else {
-						if(base){
-							base.set(fileUrl);
-						}
-					}
-
-					//workaround to allow scripts to execute when included in page divs
-					all.get(0).innerHTML = html;
-					to = all.find( ":jqmData(role='page'), :jqmData(role='dialog')" ).first();
-
-					//finally, if it's defined now, set the page title for storage in urlHistory
-					if( newPageTitle ){
-						pageTitle = newPageTitle;
-					}
-
-					//rewrite src and href attrs to use a base url
-					if( !$.support.dynamicBaseTag ){
-						var newPath = path.get( fileUrl );
-						to.find( "[src], link[href], a[rel='external'], :jqmData(ajax='false'), a[target]" ).each(function(){
-							var thisAttr = $(this).is('[href]') ? 'href' : 'src',
-								thisUrl = $(this).attr(thisAttr);
-
-
-							//if full path exists and is same, chop it - helps IE out
-							thisUrl = thisUrl.replace( location.protocol + '//' + location.host + location.pathname, '' );
-
-							if( !/^(\w+:|#|\/)/.test(thisUrl) ){
-								$(this).attr(thisAttr, newPath + thisUrl);
-							}
-						});
-					}
-
-					//append to page and enhance
-					to
-						.attr( "data-" + $.mobile.ns + "url", fileUrl )
-						.appendTo( $.mobile.pageContainer );
-
-					enhancePage();
-					setTimeout(function() { transitionPages(); }, 0);
-				},
-				error: function() {
-
-					//remove loading message
-					$.mobile.pageLoading( true );
+		// If the caller passed us a url, call loadPage()
+		// to make sure it is loaded into the DOM. We'll listen
+		// to the promise object it returns so we know when
+		// it is done loading or if an error ocurred.
+		if ( typeof toPage == "string" ) {
+			$.mobile.loadPage( toPage, settings )
+				.done(function( url, options, newPage, dupCachedPage ) {
+					isPageTransitioning = false;
+					options.duplicateCachedPage = dupCachedPage;
+					$.mobile.changePage( newPage, options );
+				})
+				.fail(function( url, options ) {
+					// XXX_jblas: Fire off changepagefailed notificaiton.
+					isPageTransitioning = false;
 
 					//clear out the active button state
-					removeActiveLinkClass(true);
-
-					//set base back to current path
-					if( base ){
-						base.set( path.get() );
-					}
+					removeActiveLinkClass( true );
 
 					//release transition lock so navigation is free again
 					releasePageTransitionLock();
+					settings.pageContainer.trigger("changepagefailed");
+				});
+			return;
+		}
 
-					//show error message
-					$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h1>"+ $.mobile.pageLoadErrorMessage +"</h1></div>")
-						.css({ "display": "block", "opacity": 0.96, "top": $(window).scrollTop() + 100 })
-						.appendTo( $.mobile.pageContainer )
-						.delay( 800 )
-						.fadeOut( 400, function(){
-							$(this).remove();
-						});
-				}
+		// The caller passed us a real page DOM element. Update our
+		// internal state and then trigger a transition to the page.
+		var mpc = settings.pageContainer,
+			fromPage = $.mobile.activePage,
+			url = toPage.jqmData( "url" ),
+			fileUrl = path.getFilePath( url ),
+			active = urlHistory.getActive(),
+			activeIsInitialPage = urlHistory.activeIndex === 0,
+			historyDir = 0,
+			pageTitle = document.title,
+			isDialog = settings.role === "dialog" || toPage.jqmData( "role" ) === "dialog";
+
+		// Let listeners know we're about to change the current page.
+		mpc.trigger( "beforechangepage" );
+
+		// If we are trying to transition to the same page that we are currently on ignore the request.
+		// an illegal same page request is defined by the current page being the same as the url, as long as there's history
+		// and toPage is not an array or object (those are allowed to be "same")
+		//
+		// XXX_jblas: We need to remove this at some point when we allow for transitions
+		//            to the same page.
+		if( fromPage && fromPage[0] === toPage[0] ) {
+			isPageTransitioning = false;
+			mpc.trigger( "changepage" );
+			return;
+		}
+
+		// We need to make sure the page we are given has already been enhanced.
+		enhancePage( toPage, settings.role );
+
+		// If the changePage request was sent from a hashChange event, check to see if the
+		// page is already within the urlHistory stack. If so, we'll assume the user hit
+		// the forward/back button and will try to match the transition accordingly.
+		if( settings.fromHashChange ) {
+			urlHistory.directHashChange({
+				currentUrl:	url,
+				isBack:		function() { historyDir = -1; },
+				isForward:	function() { historyDir = 1; }
 			});
 		}
 
+		// Kill the keyboard.
+		// XXX_jblas: We need to stop crawling the entire document to kill focus. Instead,
+		//            we should be tracking focus with a live() handler so we already have
+		//            the element in hand at this point.
+		$( document.activeElement || "" ).add( "input:focus, textarea:focus, select:focus" ).blur();
+
+		// If we're displaying the page as a dialog, we don't want the url
+		// for the dialog content to be used in the hash. Instead, we want
+		// to append the dialogHashKey to the url of the current page.
+		if ( isDialog && active ) {
+			url = active.url + dialogHashKey;
+		}
+
+		// Set the location hash.
+		if( settings.changeHash !== false && url ) {
+			//disable hash listening temporarily
+			urlHistory.ignoreNextHashChange = true;
+			//update hash and history
+			path.set( url );
+		}
+
+		//if title element wasn't found, try the page div data attr too
+		var newPageTitle = toPage.jqmData( "title" ) || toPage.children(":jqmData(role='header')").find(".ui-title" ).text();
+		if( !!newPageTitle && pageTitle == document.title ) {
+			pageTitle = newPageTitle;
+		}
+
+		//add page to history stack if it's not back or forward
+		if( !historyDir ) {
+			urlHistory.addNew( url, settings.transition, pageTitle, toPage );
+		}
+
+		//set page title
+		document.title = urlHistory.getActive().title;
+
+		//set "toPage" as activePage
+		$.mobile.activePage = toPage;
+
+		// Make sure we have a transition defined.
+		settings.transition = settings.transition
+			|| ( ( historyDir && !activeIsInitialPage ) ? active.transition : undefined )
+			|| ( settings.role === "dialog" ? $.mobile.defaultDialogTransition : $.mobile.defaultPageTransition );
+
+		// If we're navigating back in the URL history, set reverse accordingly.
+		settings.reverse = settings.reverse || historyDir < 0;
+
+		transitionPages( toPage, fromPage, settings.transition, settings.reverse )
+			.done(function() {
+				removeActiveLinkClass();
+	
+				//if there's a duplicateCachedPage, remove it from the DOM now that it's hidden
+				if ( settings.duplicateCachedPage ) {
+					settings.duplicateCachedPage.remove();
+				}
+	
+				//remove initial build class (only present on first pageshow)
+				$html.removeClass( "ui-mobile-rendering" );
+	
+				releasePageTransitionLock();
+	
+				// Let listeners know we're all done changing the current page.
+				mpc.trigger( "changepage" );
+			});
 	};
 
+	$.mobile.changePage.defaults = {
+		transition: undefined,
+		reverse: false,
+		changeHash: true,
+		fromHashChange: false,
+		role: undefined, // By default we rely on the role defined by the @data-role attribute.
+		duplicateCachedPage: undefined,
+		pageContainer: undefined
+	};
 
 /* Event Bindings - hashchange, submit, and click */
 
 	//bind to form submit events, handle with Ajax
-	$( "form" ).live('submit', function(event){
+	$( "form" ).live('submit', function( event ) {
+		var $this = $( this );
 		if( !$.mobile.ajaxEnabled ||
-			//TODO: deprecated - remove at 1.0
-			!$.mobile.ajaxFormsEnabled ||
-			$(this).is( ":jqmData(ajax='false')" ) ){ return; }
+			$this.is( ":jqmData(ajax='false')" ) ) {
+				return;
+			}
 
-		var type = $(this).attr("method"),
-			url = path.clean( $(this).attr( "action" ) ),
-			target = $(this).attr("target");
+		var type = $this.attr( "method" ),
+			url = path.makeUrlAbsolute( $this.attr( "action" ), getClosestBaseUrl($this) ),
+			target = $this.attr( "target" );
 
 		//external submits use regular HTTP
-		if( path.isExternal( url ) || target ){
+		if( path.isExternal( url ) || target ) {
 			return;
 		}
 
-		//if it's a relative href, prefix href with base url
-		if( path.isRelative( url ) ){
-			url = path.makeAbsolute( url );
-		}
-
-		$.mobile.changePage({
-				url: url.length && url || path.get(),
-				type: type.length && type.toLowerCase() || "get",
-				data: $(this).serialize()
-			},
-			$(this).jqmData("transition"),
-			$(this).jqmData("direction"),
-			true
+		$.mobile.changePage(
+			url,
+			{
+				type:		type.length && type.toLowerCase() || "get",
+				data:		$this.serialize(),
+				transition:	$this.jqmData( "transition" ),
+				direction:	$this.jqmData( "direction" ),
+				reloadPage:	true
+			}
 		);
 		event.preventDefault();
 	});
-	
+
+	function findClosestLink( ele )
+	{
+		while ( ele ) {
+			if ( ele.nodeName.toLowerCase() == "a" ) {
+				break;
+			}
+			ele = ele.parentNode;
+		}
+		return ele;
+	}
+
+	// The base URL for any given element depends on the page it resides in.
+	function getClosestBaseUrl( ele )
+	{
+		// Find the closest page and extract out its url.
+		var url = $( ele ).closest( ".ui-page" ).jqmData( "url" ),
+			base = documentBase.hrefNoHash;
+
+		if ( !url || !path.isPath( url ) ) {
+			url = base;
+		}
+
+		return path.makeUrlAbsolute( url, base);
+	}
+
 	//add active state on vclick
-	$( "a" ).live( "vclick", function(){
-		$(this).closest( ".ui-btn" ).not( ".ui-disabled" ).addClass( $.mobile.activeBtnClass );
+	$( document ).bind( "vclick", function( event ) {
+		var link = findClosestLink( event.target );
+		if ( link ) {
+			if ( path.parseUrl( link.getAttribute( "href" ) || "#" ).hash !== "#" ) {
+				$( link ).closest( ".ui-btn" ).not( ".ui-disabled" ).addClass( $.mobile.activeBtnClass );
+				$( "." + $.mobile.activePageClass + " .ui-btn" ).not( link ).blur();
+			}
+		}
 	});
 
+	// click routing - direct to HTTP or Ajax, accordingly
+	// TODO: most of the time, vclick will be all we need for fastClick bulletproofing.
+	// However, it seems that in Android 2.1, a click event
+	// will occasionally arrive independently of the bound vclick
+	// binding to click as well seems to help in this edge case
+	// we'll dig into this further in the next release cycle
+	$( document ).bind( $.mobile.useFastClick ? "vclick click" : "click", function( event ) {
+		var link = findClosestLink( event.target );
+		if ( !link ) {
+			return;
+		}
 
-	//click routing - direct to HTTP or Ajax, accordingly
-	$( "a" ).live( "click", function(event) {
+		var $link = $( link ),
+			//remove active link class if external (then it won't be there if you come back)
+			httpCleanup = function(){
+				window.setTimeout( function() { removeActiveLinkClass( true ); }, 200 );
+			};
 
-		var $this = $(this),
+		//if there's a data-rel=back attr, go back in history
+		if( $link.is( ":jqmData(rel='back')" ) ) {
+			window.history.back();
+			return false;
+		}
+		
+		//if ajax is disabled, exit early
+		if( !$.mobile.ajaxEnabled ){
+			httpCleanup();
+			//use default click handling
+			return;
+		}
+		
+		var baseUrl = getClosestBaseUrl( $link ),
 
-			//get href, if defined, otherwise fall to null #
-			href = $this.attr( "href" ) || "#",
+			//get href, if defined, otherwise default to empty hash
+			href = path.makeUrlAbsolute( $link.attr( "href" ) || "#", baseUrl );
 
-			//cache a check for whether the link had a protocol
-			//if this is true and the link was same domain, we won't want
-			//to prefix the url with a base (esp helpful in IE, where every
-			//url is absolute
-			hadProtocol = path.hasProtocol( href ),
+		// XXX_jblas: Ideally links to application pages should be specified as
+		//            an url to the application document with a hash that is either
+		//            the site relative path or id to the page. But some of the
+		//            internal code that dynamically generates sub-pages for nested
+		//            lists and select dialogs, just write a hash in the link they
+		//            create. This means the actual URL path is based on whatever
+		//            the current value of the base tag is at the time this code
+		//            is called. For now we are just assuming that any url with a
+		//            hash in it is an application page reference.
+		if ( href.search( "#" ) != -1 ) {
+			href = href.replace( /[^#]*#/, "" );
+			if ( !href ) {
+				//link was an empty hash meant purely
+				//for interaction, so we ignore it.
+				event.preventDefault();
+				return;
+			} else if ( path.isPath( href ) ) {
+				//we have apath so make it the href we want to load.
+				href = path.makeUrlAbsolute( href, baseUrl );
+			} else {
+				//we have a simple id so use the documentUrl as its base.
+				href = path.makeUrlAbsolute( "#" + href, documentUrl.hrefNoHash );
+			}
+		}
 
-			//get href, remove same-domain protocol and host
-			url = path.clean( href ),
-
-			//rel set to external
-			isRelExternal = $this.is( "[rel='external']" ),
-
-			//rel set to external
-			isEmbeddedPage = path.isEmbeddedPage( url ),
+			// Should we handle this link, or let the browser deal with it?
+		var useDefaultUrlHandling = $link.is( "[rel='external']" ) || $link.is( ":jqmData(ajax='false')" ) || $link.is( "[target]" ),
 
 			// Some embedded browsers, like the web view in Phone Gap, allow cross-domain XHR
 			// requests if the document doing the request was loaded via the file:// protocol.
@@ -2689,67 +3074,32 @@ $.widget( "mobile.page", $.mobile.widget, {
 			// data. We normally let the browser handle external/cross-domain urls, but if the
 			// allowCrossDomainPages option is true, we will allow cross-domain http/https
 			// requests to go through our page loading logic.
-			isCrossDomainPageLoad = ($.mobile.allowCrossDomainPages && location.protocol === "file:" && url.search(/^https?:/) != -1),
+			isCrossDomainPageLoad = ( $.mobile.allowCrossDomainPages && documentUrl.protocol === "file:" && href.search( /^https?:/ ) != -1 ),
 
 			//check for protocol or rel and its not an embedded page
 			//TODO overlap in logic from isExternal, rel=external check should be
 			//     moved into more comprehensive isExternalLink
-			isExternal = (path.isExternal(url) && !isCrossDomainPageLoad) || (isRelExternal && !isEmbeddedPage),
+			isExternal = useDefaultUrlHandling || ( path.isExternal( href ) && !isCrossDomainPageLoad );
 
-			//if target attr is specified we mimic _blank... for now
-			hasTarget = $this.is( "[target]" ),
+		$activeClickedLink = $link.closest( ".ui-btn" );
 
-			//if data-ajax attr is set to false, use the default behavior of a link
-			hasAjaxDisabled = $this.is( ":jqmData(ajax='false')" ),
-
-			//if the url matches the active page's url
-			isCurrentPage = path.stripHash(url) == $.mobile.activePage.jqmData("url");
-
-		//if there's a data-rel=back attr, go back in history
-		if( $this.is( ":jqmData(rel='back')" ) ){
-			window.history.back();
-			return false;
-		}
-
-		//prevent # urls from bubbling
-		//path.get() is replaced to combat abs url prefixing in IE
-		//or if the link is to the current page
-		if( url.replace(path.get(), "") == "#" || isCurrentPage ){
-			//for links created purely for interaction - ignore
-			event.preventDefault();
-			return;
-		}
-
-		$activeClickedLink = $this.closest( ".ui-btn" );
-
-		if( isExternal || hasAjaxDisabled || hasTarget || !$.mobile.ajaxEnabled ||
-			// TODO: deprecated - remove at 1.0
-			!$.mobile.ajaxLinksEnabled ){
-			//remove active link class if external (then it won't be there if you come back)
-			window.setTimeout(function() {removeActiveLinkClass(true);}, 200);
-
+		if( isExternal ) {
+			httpCleanup();
 			//use default click handling
 			return;
 		}
 
 		//use ajax
-		var transition = $this.jqmData( "transition" ),
-			direction = $this.jqmData("direction"),
-			reverse = (direction && direction === "reverse") ||
-			// deprecated - remove by 1.0
-			$this.jqmData( "back" );
+		var transition = $link.jqmData( "transition" ),
+			direction = $link.jqmData( "direction" ),
+			reverse = ( direction && direction === "reverse" ) ||
+						// deprecated - remove by 1.0
+						$link.jqmData( "back" ),
 
-		//this may need to be more specific as we use data-rel more
-		nextPageRole = $this.attr( "data-" + $.mobile.ns + "rel" );
+			//this may need to be more specific as we use data-rel more
+			role = $link.attr( "data-" + $.mobile.ns + "rel" ) || undefined;
 
-		//if it's a relative href, prefix href with base url
-		if( path.isRelative( url ) && !hadProtocol ){
-			url = path.makeAbsolute( url );
-		}
-
-		url = path.stripHash( url );
-
-		$.mobile.changePage( url, transition, reverse);
+		$.mobile.changePage( href, { transition: transition, reverse: reverse, role: role } );
 		event.preventDefault();
 	});
 
@@ -2758,20 +3108,17 @@ $.widget( "mobile.page", $.mobile.widget, {
 		//find first page via hash
 		var to = path.stripHash( location.hash ),
 			//transition is false if it's the first page, undefined otherwise (and may be overridden by default)
-			transition = $.mobile.urlHistory.stack.length === 0 ? false : undefined;
+			transition = $.mobile.urlHistory.stack.length === 0 ? "none" : undefined;
 
 		//if listening is disabled (either globally or temporarily), or it's a dialog hash
-		if( !$.mobile.hashListeningEnabled || !urlHistory.ignoreNextHashChange ){
-			if( !urlHistory.ignoreNextHashChange ){
-				urlHistory.ignoreNextHashChange = true;
-			}
-
+		if( !$.mobile.hashListeningEnabled || urlHistory.ignoreNextHashChange ) {
+			urlHistory.ignoreNextHashChange = false;
 			return;
 		}
 
 		// special case for dialogs
 		if( urlHistory.stack.length > 1 &&
-				to.indexOf( dialogHashKey ) > -1 ){
+				to.indexOf( dialogHashKey ) > -1 ) {
 
 			// If current active page is not a dialog skip the dialog and continue
 			// in the same direction
@@ -2780,14 +3127,14 @@ $.widget( "mobile.page", $.mobile.widget, {
 				//the current dialog
 				urlHistory.directHashChange({
 					currentUrl: to,
-					isBack: function(){ window.history.back(); },
-					isForward: function(){ window.history.forward(); }
+					isBack: function() { window.history.back(); },
+					isForward: function() { window.history.forward(); }
 				});
 
 				// prevent changepage
 				return;
 			} else {
-				var setTo = function(){ to = $.mobile.urlHistory.getActive().page; };
+				var setTo = function() { to = $.mobile.urlHistory.getActive().page; };
 				// if the current active page is a dialog and we're navigating
 				// to a dialog use the dialog objected saved in the stack
 				urlHistory.directHashChange({	currentUrl: to, isBack: setTo, isForward: setTo	});
@@ -2795,16 +3142,67 @@ $.widget( "mobile.page", $.mobile.widget, {
 		}
 
 		//if to is defined, load it
-		if ( to ){
-			$.mobile.changePage( to, transition, undefined, false, true );
+		if ( to ) {
+			to = ( typeof to === "string" && !path.isPath( to ) ) ? ( '#' + to ) : to;
+			$.mobile.changePage( to, { transition: transition, changeHash: false, fromHashChange: true } );
 		}
 		//there's no hash, go to the first page in the dom
 		else {
-			$.mobile.changePage( $.mobile.firstPage, transition, true, false, true );
+			$.mobile.changePage( $.mobile.firstPage, { transition: transition, changeHash: false, fromHashChange: true } );
 		}
-		});
+	});
+	
+	//set page min-heights to be device specific
+	$( document ).bind( "pageshow", resetActivePageHeight );
+	$( window ).bind( "throttledresize", resetActivePageHeight );
 
 })( jQuery );
+/*!
+ * jQuery Mobile v@VERSION
+ * http://jquerymobile.com/
+ *
+ * Copyright 2010, jQuery Project
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ */
+
+( function( $, window, undefined ) {
+
+function css3TransitionHandler( name, reverse, $to, $from )
+{
+	var deferred = new $.Deferred(),
+		reverseClass = reverse ? " reverse" : "",
+		viewportClass = "ui-mobile-viewport-transitioning viewport-" + name,
+		doneFunc = function() {
+			$to.add( $from ).removeClass( "out in reverse " + name );
+			if ( $from ) {
+				$from.removeClass( $.mobile.activePageClass );
+			}
+			$to.parent().removeClass( viewportClass );
+	
+			deferred.resolve( name, reverse, $to, $from );
+		};
+	
+	$to.animationComplete( doneFunc );
+	
+	$to.parent().addClass( viewportClass );
+	if ( $from ) {
+		$from.addClass( name + " out" + reverseClass );
+	}
+	$to.addClass( $.mobile.activePageClass + " " + name + " in" + reverseClass );
+
+	return deferred.promise();
+}
+
+// Make our transition handler public.
+$.mobile.css3TransitionHandler = css3TransitionHandler;
+
+// If the default transition handler is the 'none' handler, replace it with our handler.
+if ( $.mobile.defaultTransitionHandler === $.mobile.noneTransitionHandler ) {
+	$.mobile.defaultTransitionHandler = css3TransitionHandler;
+}
+
+})( jQuery, this );
 /*
 * jQuery Mobile Framework : "fixHeaderFooter" plugin - on-demand positioning for headers,footers
 * Copyright (c) jQuery Project
@@ -2875,6 +3273,19 @@ $.fixedToolbars = (function(){
 					}
 				}
 			})
+			.bind('silentscroll', showEventCallback);
+
+/*		
+		The below checks first for a $(document).scrollTop() value, and if zero, binds scroll events to $(window) instead. If the scrollTop value is actually zero, both will return zero anyway.
+
+		Works with $(document), not $(window) : Opera Mobile (WinMO phone; kinda broken anyway)
+		Works with $(window), not $(document) : IE 7/8
+		Works with either $(window) or $(document) : Chrome, FF 3.6/4, Android 1.6/2.1, iOS
+		Needs work either way : BB5, Opera Mobile (iOS)
+
+*/
+
+		(( $(document).scrollTop() == 0 ) ? $(window) : $(document))
 			.bind('scrollstart',function(event){
 				scrollTriggered = true;
 				if(stateBefore == null){ stateBefore = currentstate; }
@@ -2900,8 +3311,7 @@ $.fixedToolbars = (function(){
 					$.fixedToolbars.startShowTimer();
 				}
 				stateBefore = null;
-			})
-			.bind('silentscroll', showEventCallback);
+			});
 
 			$(window).bind('resize', showEventCallback);
 	});
@@ -2911,10 +3321,9 @@ $.fixedToolbars = (function(){
 		var page = $(event.target),
 			footer = page.find( ":jqmData(role='footer')" ),
 			id = footer.data('id'),
-			prevPage = ui.prevPage;
-		
-		prevFooter = prevPage && prevPage.find( ":jqmData(role='footer')" );
-		var prevFooterMatches = prevFooter.jqmData( "id" ) === id;
+			prevPage = ui.prevPage,
+			prevFooter = prevPage && prevPage.find( ":jqmData(role='footer')" ),
+			prevFooterMatches = prevFooter.length && prevFooter.jqmData( "id" ) === id;
 		
 		if( id && prevFooterMatches ){
 			stickyFooter = footer;
@@ -2936,8 +3345,10 @@ $.fixedToolbars = (function(){
 		
 		$.fixedToolbars.show(true, this);	
 	});
+    
+    //When a collapsiable is hidden or shown we need to trigger the fixed toolbar to reposition itself (#1635)
+	$( ".ui-collapsible-contain" ).live( "collapse expand", showEventCallback );
 
-	
 	// element.getBoundingClientRect() is broken in iOS 3.2.1 on the iPad. The
 	// coordinates inside of the rect it returns don't have the page scroll position
 	// factored out of it like the other platforms do. To get around this,
@@ -3082,7 +3493,7 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 			input = this.element,
 			//NOTE: Windows Phone could not find the label through a selector
 			//filter works though.
-			label = input.closest("form,fieldset,:jqmData(role='page')").find("label").filter("[for=" + input[0].id + "]"),
+			label = input.closest("form,fieldset,:jqmData(role='page')").find("label").filter('[for="' + input[0].id + '"]'),
 			inputtype = input.attr( "type" ),
 			checkedicon = "ui-icon-" + inputtype + "-on",
 			uncheckedicon = "ui-icon-" + inputtype + "-off";
@@ -3126,7 +3537,14 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 				}
 
 				self._cacheVals();
-				input.attr( "checked", inputtype === "radio" && true || !input.is( ":checked" ) );
+        
+				input.prop( "checked", inputtype === "radio" && true || !(input.prop("checked")) );
+
+				// input set for common radio buttons will contain all the radio
+				// buttons, but will not for checkboxes. clearing the checked status
+				// of other radios ensures the active button state is applied properly
+				self._getInputSet().not(input).prop('checked', false);
+
 				self._updateAll();
 				return false;
 			}
@@ -3140,6 +3558,13 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 				},
 
 				vclick: function(){
+          // adds checked attribute to checked input when keyboard is used
+          if ($(this).is(":checked")) { 
+             $(this).prop( "checked", true);   
+             self._getInputSet().not($(this)).prop('checked', false);
+          } else {
+             $(this).prop("checked", false);
+          }
 					self._updateAll();
 				},
 
@@ -3184,7 +3609,9 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 			label = this.label,
 			icon = label.find( ".ui-icon" );
 
-		if ( input[0].checked ) {
+		// input[0].checked expando doesn't always report the proper value
+		// for checked='checked'
+		if ( $(input[0]).prop('checked') ) {
 			label.addClass( $.mobile.activeBtnClass );
 			icon.addClass( this.checkedicon ).removeClass( this.uncheckedicon );
 
@@ -3202,11 +3629,11 @@ $.widget( "mobile.checkboxradio", $.mobile.widget, {
 	},
 
 	disable: function(){
-		this.element.attr("disabled",true).parent().addClass("ui-disabled");
+		this.element.prop("disabled",true).parent().addClass("ui-disabled");
 	},
 
 	enable: function(){
-		this.element.attr("disabled",false).parent().removeClass("ui-disabled");
+		this.element.prop("disabled",false).parent().removeClass("ui-disabled");
 	}
 });
 })( jQuery );
@@ -3228,15 +3655,14 @@ $.widget( "mobile.textinput", $.mobile.widget, {
 			themeclass;
 			
 		if ( !theme ) {
-			var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']"); 
-				theme = themedParent.length ?
-					/ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") )[2] :
-					"c";
+			var themedParent = this.element.closest("[class*='ui-bar-'],[class*='ui-body-']"),
+				themeLetter = themedParent.length && /ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") ),
+				theme = themeLetter && themeLetter[2] || "c";
 		}	
 		
 		themeclass = " ui-body-" + theme;
 		
-		$('label[for='+input.attr('id')+']').addClass('ui-input-text');
+		$('label[for="'+input.attr('id')+'"]').addClass('ui-input-text');
 		
 		input.addClass('ui-input-text ui-body-'+ o.theme);
 		
@@ -3265,7 +3691,8 @@ $.widget( "mobile.textinput", $.mobile.widget, {
 			}
 			
 			toggleClear();
-			input.keyup(toggleClear);	
+			input.keyup(toggleClear);
+	                input.focus(toggleClear);   
 		}
 		else{
 			input.addClass('ui-corner-all ui-shadow-inset' + themeclass);
@@ -3331,7 +3758,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		nativeMenu: true
 	},
 	_create: function(){
-		
+
 		var self = this,
 
 			o = this.options,
@@ -3341,13 +3768,13 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 			selectID = select.attr( "id" ),
 
-			label = $( "label[for="+ selectID +"]" ).addClass( "ui-select" ),
-			
+			label = $( 'label[for="'+ selectID +'"]' ).addClass( "ui-select" ),
+
 			//IE throws an exception at options.item() function when
 			//there is no selected item
-			//select first in this case 
+			//select first in this case
 			selectedIndex = select[0].selectedIndex == -1 ? 0 : select[0].selectedIndex,
-			
+
 			button = ( self.options.nativeMenu ? $( "<div/>" ) : $( "<a>", {
 					"href": "#",
 					"role": "button",
@@ -3514,12 +3941,12 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 				.focus(function(){
 					$(this).blur();
 					button.focus();
-				});	
+				});
 
 			//button events
 			button
 				.bind( "vclick keydown" , function( event ){
-					if( event.type == "vclick" || 
+					if( event.type == "vclick" ||
 						event.keyCode && ( event.keyCode === $.mobile.keyCode.ENTER || event.keyCode === $.mobile.keyCode.SPACE ) ){
 						self.open();
 						event.preventDefault();
@@ -3554,7 +3981,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 				}
 
 				// trigger change if value changed
-				if( oldIndex !== newIndex ){
+				if( isMultiple || oldIndex !== newIndex ){
 					select.trigger( "change" );
 				}
 
@@ -3569,56 +3996,56 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 			.keydown(function( e ) {
 				var target = $( e.target ),
 					li = target.closest( "li" );
-	
+
 				// switch logic based on which key was pressed
 				switch ( e.keyCode ) {
 					// up or left arrow keys
 					case 38:
 						var prev = li.prev();
-	
+
 						// if there's a previous option, focus it
 						if ( prev.length ) {
 							target
 								.blur()
 								.attr( "tabindex", "-1" );
-	
+
 							prev.find( "a" ).first().focus();
-						}	
-	
+						}
+
 						return false;
 					break;
-	
+
 					// down or right arrow keys
 					case 40:
 						var next = li.next();
-					
+
 						// if there's a next option, focus it
 						if ( next.length ) {
 							target
 								.blur()
 								.attr( "tabindex", "-1" );
-							
+
 							next.find( "a" ).first().focus();
-						}	
-	
+						}
+
 						return false;
 					break;
-	
+
 					// if enter or space is pressed, trigger click
 					case 13:
 					case 32:
 						 target.trigger( "vclick" );
-	
+
 						 return false;
-					break;	
+					break;
 				}
-			});	
+			});
 
 			//events on "screen" overlay
 			screen.bind("vclick", function( event ){
 				self.close();
 			});
-			
+
 			//close button on small overlays
 			self.headerClose.click(function(){
 				if( self.menuType == "overlay" ){
@@ -3677,7 +4104,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		});
 
 		self.list.html( lis.join(" ") );
-		
+
 		self.list.find( "li" )
 			.attr({ "role": "option", "tabindex": "-1" })
 			.first().attr( "tabindex", "0" );
@@ -3795,7 +4222,7 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 
 			self.menuType = "page";
 			self.menuPageContent.append( self.list );
-			$.mobile.changePage(self.menuPage, 'pop', false, true);
+			$.mobile.changePage( self.menuPage, { transition: 'pop' } );
 		}
 		else {
 			self.menuType = "overlay";
@@ -3863,8 +4290,14 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 		}
 
 		if(self.menuType == "page"){
-			$.mobile.changePage([self.menuPage,self.thisPage], 'pop', true, false);
+			// button refocus ensures proper height calculation
+			// by removing the inline style and ensuring page inclusion
 			self.menuPage.one("pagehide", focusButton);
+
+			// doesn't solve the possible issue with calling change page
+			// where the objects don't define data urls which prevents dialog key
+			// stripping - changePage has incoming refactor
+			window.history.back();
 		}
 		else{
 			self.screen.addClass( "ui-screen-hidden" );
@@ -3896,12 +4329,12 @@ $.widget( "mobile.selectmenu", $.mobile.widget, {
 * Dual licensed under the MIT or GPL Version 2 licenses.
 * http://jquery.org/license
 */
-(function($, undefined ) {
+( function( $, undefined ) {
 
-$.fn.buttonMarkup = function( options ){
+$.fn.buttonMarkup = function( options ) {
 	return this.each( function() {
 		var el = $( this ),
-		    o = $.extend( {}, $.fn.buttonMarkup.defaults, el.jqmData(), options),
+		    o = $.extend( {}, $.fn.buttonMarkup.defaults, el.jqmData(), options ),
 
 			// Classes Defined
 			buttonClass,
@@ -3914,9 +4347,9 @@ $.fn.buttonMarkup = function( options ){
 
 		// if not, try to find closest theme container
 		if ( !o.theme ) {
-			var themedParent = el.closest("[class*='ui-bar-'],[class*='ui-body-']");
+			var themedParent = el.closest( "[class*='ui-bar-'],[class*='ui-body-']" );
 			o.theme = themedParent.length ?
-				/ui-(bar|body)-([a-z])/.exec( themedParent.attr("class") )[2] :
+				/ui-(bar|body)-([a-z])/.exec( themedParent.attr( "class" ) )[2] :
 				"c";
 		}
 
@@ -3940,7 +4373,7 @@ $.fn.buttonMarkup = function( options ){
 		if ( o.iconpos ) {
 			buttonClass += " ui-btn-icon-" + o.iconpos;
 
-			if ( o.iconpos == "notext" && !el.attr("title") ) {
+			if ( o.iconpos == "notext" && !el.attr( "title" ) ) {
 				el.attr( "title", el.text() );
 			}
 		}
@@ -3958,9 +4391,9 @@ $.fn.buttonMarkup = function( options ){
 			.attr( "data-" + $.mobile.ns + "theme", o.theme )
 			.addClass( buttonClass );
 
-		var wrap = ("<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
+		var wrap = ( "<D class='" + innerClass + "'><D class='ui-btn-text'></D>" +
 			( o.icon ? "<span class='" + iconClass + "'></span>" : "" ) +
-			"</D>").replace(/D/g, o.wrapperEls);
+			"</D>" ).replace( /D/g, o.wrapperEls );
 
 		el.wrapInner( wrap );
 	});
@@ -3973,30 +4406,58 @@ $.fn.buttonMarkup.defaults = {
 	wrapperEls: "span"
 };
 
+function closestEnabledButton( element )
+{
+	while ( element ) {
+		var $ele = $( element );
+		if ( $ele.hasClass( "ui-btn" ) && !$ele.hasClass( "ui-disabled" ) ) {
+			break;
+		}
+		element = element.parentNode;
+	}
+	return element;
+}
+
 var attachEvents = function() {
-	$(".ui-btn:not(.ui-disabled)").live({
-		"vmousedown": function() {
-			var theme = $(this).attr( "data-" + $.mobile.ns + "theme" );
-			$(this).removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-down-" + theme );
+	$( document ).bind( {
+		"vmousedown": function( event ) {
+			var btn = closestEnabledButton( event.target );
+			if ( btn ) {
+				var $btn = $( btn ),
+					theme = $btn.attr( "data-" + $.mobile.ns + "theme" );
+				$btn.removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-down-" + theme );
+			}
 		},
-		"vmousecancel vmouseup": function() {
-			var theme = $(this).attr( "data-" + $.mobile.ns + "theme" );
-			$(this).removeClass( "ui-btn-down-" + theme ).addClass( "ui-btn-up-" + theme );
+		"vmousecancel vmouseup": function( event ) {
+			var btn = closestEnabledButton( event.target );
+			if ( btn ) {
+				var $btn = $( btn ),
+					theme = $btn.attr( "data-" + $.mobile.ns + "theme" );
+				$btn.removeClass( "ui-btn-down-" + theme ).addClass( "ui-btn-up-" + theme );
+			}
 		},
-		"vmouseover focus": function() {
-			var theme = $(this).attr( "data-" + $.mobile.ns + "theme" );
-			$(this).removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-hover-" + theme );
+		"vmouseover focus": function( event ) {
+			var btn = closestEnabledButton( event.target );
+			if ( btn ) {
+				var $btn = $( btn ),
+					theme = $btn.attr( "data-" + $.mobile.ns + "theme" );
+				$btn.removeClass( "ui-btn-up-" + theme ).addClass( "ui-btn-hover-" + theme );
+			}
 		},
-		"vmouseout blur": function() {
-			var theme = $(this).attr( "data-" + $.mobile.ns + "theme" );
-			$(this).removeClass( "ui-btn-hover-" + theme ).addClass( "ui-btn-up-" + theme );
+		"vmouseout blur": function( event ) {
+			var btn = closestEnabledButton( event.target );
+			if ( btn ) {
+				var $btn = $( btn ),
+					theme = $btn.attr( "data-" + $.mobile.ns + "theme" );
+				$btn.removeClass( "ui-btn-hover-" + theme ).addClass( "ui-btn-up-" + theme );
+			}
 		}
 	});
 
 	attachEvents = null;
 };
 
-})(jQuery);
+})( jQuery );
 /*
 * jQuery Mobile Framework : "button" plugin - links that proxy to native input/buttons
 * Copyright (c) jQuery Project
@@ -4102,7 +4563,7 @@ $.widget( "mobile.slider", $.mobile.widget, {
 			selectClass = (cType == 'select') ? 'ui-slider-switch' : '',
 			controlID = control.attr('id'),
 			labelID = controlID + '-label',
-			label = $('[for='+ controlID +']').attr('id',labelID),
+			label = $('[for="'+ controlID +'"]').attr('id',labelID),
 			val = function(){
 				return (cType == 'input') ? parseFloat(control.val()) : control[0].selectedIndex;
 			},
@@ -4352,149 +4813,154 @@ $.widget( "mobile.slider", $.mobile.widget, {
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
 * http://jquery.org/license
-*/ 
-(function($, undefined ) {
+*/
+( function( $, undefined ) {
 $.widget( "mobile.collapsible", $.mobile.widget, {
 	options: {
-		expandCueText: ' click to expand contents',
-		collapseCueText: ' click to collapse contents',
+		expandCueText: " click to expand contents",
+		collapseCueText: " click to collapse contents",
 		collapsed: false,
-		heading: '>:header,>legend',
+		heading: ">:header,>legend",
 		theme: null,
-		iconTheme: 'd'
+		iconTheme: "d"
 	},
-	_create: function(){
+	_create: function() {
 
 		var $el = this.element,
 			o = this.options,
-			collapsibleContain = $el.addClass('ui-collapsible-contain'),
-			collapsibleHeading = $el.find(o.heading).eq(0),
-			collapsibleContent = collapsibleContain.wrapInner('<div class="ui-collapsible-content"></div>').find('.ui-collapsible-content'),
-			collapsibleParent = $el.closest( ":jqmData(role='collapsible-set')" ).addClass('ui-collapsible-set');				
-		
-		//replace collapsibleHeading if it's a legend	
-		if(collapsibleHeading.is('legend')){
-			collapsibleHeading = $('<div role="heading">'+ collapsibleHeading.html() +'</div>').insertBefore(collapsibleHeading);
+			collapsibleContain = $el.addClass( "ui-collapsible-contain" ),
+			collapsibleHeading = $el.find( o.heading ).eq( 0 ),
+			collapsibleContent = collapsibleContain.wrapInner( '<div class="ui-collapsible-content"></div>' ).find( ".ui-collapsible-content" ),
+			collapsibleParent = $el.closest( ":jqmData(role='collapsible-set')" ).addClass( "ui-collapsible-set" );
+
+		//replace collapsibleHeading if it's a legend
+		if ( collapsibleHeading.is( "legend" ) ) {
+			collapsibleHeading = $( '<div role="heading">'+ collapsibleHeading.html() +"</div>" ).insertBefore( collapsibleHeading );
 			collapsibleHeading.next().remove();
-		}	
-		
-		//drop heading in before content
-		collapsibleHeading.insertBefore(collapsibleContent);
-		
-		//modify markup & attributes
-		collapsibleHeading.addClass('ui-collapsible-heading')
-			.append('<span class="ui-collapsible-heading-status"></span>')
-			.wrapInner('<a href="#" class="ui-collapsible-heading-toggle"></a>')
-			.find('a:eq(0)')
-			.buttonMarkup({
-				shadow: !!!collapsibleParent.length,
-				corners:false,
-				iconPos: 'left',
-				icon: 'plus',
-				theme: o.theme
-			})
-			.find('.ui-icon')
-			.removeAttr('class')
-			.buttonMarkup({
-				shadow: true,
-				corners:true,
-				iconPos: 'notext',
-				icon: 'plus',
-				theme: o.iconTheme
-			});
-			
-			if( !collapsibleParent.length ){
+		}
+
+		collapsibleHeading
+			//drop heading in before content
+			.insertBefore( collapsibleContent )
+			//modify markup & attributes
+			.addClass( "ui-collapsible-heading" )
+			.append( '<span class="ui-collapsible-heading-status"></span>' )
+			.wrapInner( '<a href="#" class="ui-collapsible-heading-toggle"></a>' )
+			.find( "a:eq(0)" )
+				.buttonMarkup( {
+					shadow: !collapsibleParent.length,
+					corners: false,
+					iconPos: "left",
+					icon: "plus",
+					theme: o.theme
+				} )
+				.find( ".ui-icon" )
+					.removeAttr( "class" )
+					.buttonMarkup( {
+						shadow: true,
+						corners: true,
+						iconPos: "notext",
+						icon: "plus",
+						theme: o.iconTheme
+					} );
+
+			if ( ! collapsibleParent.length ) {
 				collapsibleHeading
-					.find('a:eq(0)')	
-					.addClass('ui-corner-all')
-						.find('.ui-btn-inner')
-						.addClass('ui-corner-all');
+					.find( "a:eq(0)" )
+						.addClass( "ui-corner-all" )
+						.find( ".ui-btn-inner" )
+							.addClass( "ui-corner-all" );
 			}
 			else {
-				if( collapsibleContain.jqmData('collapsible-last') ){
+				if ( collapsibleContain.jqmData( "collapsible-last" ) ) {
 					collapsibleHeading
-						.find('a:eq(0), .ui-btn-inner')	
-							.addClass('ui-corner-bottom');
-				}					
-			}
-			
-		
-		//events
-		collapsibleContain	
-			.bind('collapse', function(event){
-				if( !event.isDefaultPrevented() ){
-					event.preventDefault();
-					collapsibleHeading
-						.addClass('ui-collapsible-heading-collapsed')
-						.find('.ui-collapsible-heading-status').text(o.expandCueText);
-					
-					collapsibleHeading.find('.ui-icon').removeClass('ui-icon-minus').addClass('ui-icon-plus');	
-					collapsibleContent.addClass('ui-collapsible-content-collapsed').attr('aria-hidden',true);
-					
-					if( collapsibleContain.jqmData('collapsible-last') ){
-						collapsibleHeading
-							.find('a:eq(0), .ui-btn-inner')
-							.addClass('ui-corner-bottom');
-					}
-				}						
-				
-			})
-			.bind('expand', function(event){
-				if( !event.isDefaultPrevented() ){
-					event.preventDefault();
-					collapsibleHeading
-						.removeClass('ui-collapsible-heading-collapsed')
-						.find('.ui-collapsible-heading-status').text(o.collapseCueText);
-					
-					collapsibleHeading.find('.ui-icon').removeClass('ui-icon-plus').addClass('ui-icon-minus');	
-					collapsibleContent.removeClass('ui-collapsible-content-collapsed').attr('aria-hidden',false);
-					
-					if( collapsibleContain.jqmData('collapsible-last') ){
-						collapsibleHeading
-							.find('a:eq(0), .ui-btn-inner')
-							.removeClass('ui-corner-bottom');
-					}
-					
+						.find( "a:eq(0), .ui-btn-inner" )
+							.addClass( "ui-corner-bottom" );
 				}
-			})
-			.trigger(o.collapsed ? 'collapse' : 'expand');
-			
-		
+			}
+
+		//events
+		collapsibleContain
+			.bind( "collapse", function( event ) {
+				if ( ! event.isDefaultPrevented() && $( event.target ).closest( ".ui-collapsible-contain" ).is( collapsibleContain ) ) {
+					event.preventDefault();
+					collapsibleHeading
+						.addClass( "ui-collapsible-heading-collapsed" )
+						.find( ".ui-collapsible-heading-status" )
+							.text( o.expandCueText )
+						.end()
+						.find( ".ui-icon" )
+							.removeClass( "ui-icon-minus" )
+							.addClass( "ui-icon-plus" );
+					collapsibleContent.addClass( "ui-collapsible-content-collapsed" ).attr( "aria-hidden", true );
+
+					if ( collapsibleContain.jqmData( "collapsible-last" ) ) {
+						collapsibleHeading
+							.find( "a:eq(0), .ui-btn-inner" )
+							.addClass( "ui-corner-bottom" );
+					}
+				}
+
+			} )
+			.bind( "expand", function( event ) {	
+				if ( ! event.isDefaultPrevented() ) {
+					event.preventDefault();
+					collapsibleHeading
+						.removeClass( "ui-collapsible-heading-collapsed" )
+						.find( ".ui-collapsible-heading-status" ).text( o.collapseCueText );
+
+					collapsibleHeading.find( ".ui-icon" ).removeClass( "ui-icon-plus" ).addClass( "ui-icon-minus" );
+					collapsibleContent.removeClass( "ui-collapsible-content-collapsed" ).attr( "aria-hidden", false );
+
+					if ( collapsibleContain.jqmData( "collapsible-last" ) ) {
+						collapsibleHeading
+							.find( "a:eq(0), .ui-btn-inner" )
+							.removeClass( "ui-corner-bottom" );
+					}
+				}
+			} )
+			.trigger( o.collapsed ? "collapse" : "expand" );
+
+
 		//close others in a set
-		if( collapsibleParent.length && !collapsibleParent.jqmData("collapsiblebound") ){
+		if ( collapsibleParent.length && !collapsibleParent.jqmData( "collapsiblebound" ) ) {
 			collapsibleParent
-				.jqmData("collapsiblebound", true)
-				.bind("expand", function( event ){
-					$(this).find( ".ui-collapsible-contain" )
-						.not( $(event.target).closest( ".ui-collapsible-contain" ) )
-						.not( "> .ui-collapsible-contain .ui-collapsible-contain" )
+				.jqmData( "collapsiblebound", true )
+				.bind( "expand", function( event ){
+					
+					$( event.target )
+						.closest( ".ui-collapsible-contain" )
+						.siblings( ".ui-collapsible-contain" )
 						.trigger( "collapse" );
-				});
-			var set = collapsibleParent.find( ":jqmData(role=collapsible)" )
 					
+				} );
+
+
+			var set = collapsibleParent.find( ":jqmData(role='collapsible'):first" );
+
 			set.first()
-				.find('a:eq(0)')	
-				.addClass('ui-corner-top')
-					.find('.ui-btn-inner')
-					.addClass('ui-corner-top');
-					
-			set.last().jqmData('collapsible-last', true)	
+				.find( "a:eq(0)" )
+					.addClass( "ui-corner-top" )
+						.find( ".ui-btn-inner" )
+							.addClass( "ui-corner-top" );
+
+			set.last().jqmData( "collapsible-last", true );
 		}
-					
+
 		collapsibleHeading
-			.bind("vmouseup", function(e){ 
-				if( collapsibleHeading.is('.ui-collapsible-heading-collapsed') ){
-					collapsibleContain.trigger('expand'); 
-				}	
+			.bind( "vclick", function( e ) {
+				if ( collapsibleHeading.is( ".ui-collapsible-heading-collapsed" ) ) {
+					collapsibleContain.trigger( "expand" );
+				}
 				else {
-					collapsibleContain.trigger('collapse'); 
+					collapsibleContain.trigger( "collapse" );
 				}
 				e.preventDefault();
-			})
-			.bind("vclick",false );
+			} );
 	}
-});
-})( jQuery );/*
+} );
+} )( jQuery );
+/*
 * jQuery Mobile Framework: "controlgroup" plugin - corner-rounding for groups of buttons, checks, radios, etc
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -4552,6 +5018,10 @@ $.fn.fieldcontain = function(options){
 * http://jquery.org/license
 */
 (function($, undefined ) {
+//Keeps track of the number of lists per page UID
+//This allows support for multiple nested list in the same page
+//https://github.com/jquery/jquery-mobile/issues/1617
+var listCountPerPage = {};
 
 $.widget( "mobile.listview", $.mobile.widget, {
 	options: {
@@ -4565,50 +5035,32 @@ $.widget( "mobile.listview", $.mobile.widget, {
 	},
 	
 	_create: function() {
-		var $list = this.element,
-			o = this.options;
+		var t = this;
 
 		// create listview markup 
-		$list
-			.addClass( "ui-listview" );
-		
-		if ( o.inset ) {
-			$list.addClass( "ui-listview-inset ui-corner-all ui-shadow" );
-		}
+		t.element.addClass(function( i, orig ) {
+			return orig + " ui-listview " + ( t.options.inset ? " ui-listview-inset ui-corner-all ui-shadow " : "" );
+		});
 
-		this._itemApply( $list, $list );
-		
-		this.refresh( true );
-
+		t.refresh();
 	},
 
 	_itemApply: function( $list, item ) {
 		// TODO class has to be defined in markup
 		item.find( ".ui-li-count" )
-			.addClass( "ui-btn-up-" + ($list.jqmData( "counttheme" ) || this.options.countTheme) + " ui-btn-corner-all" );
-
-		item.find( "h1, h2, h3, h4, h5, h6" ).addClass( "ui-li-heading" );
-
-		item.find( "p, dl" ).addClass( "ui-li-desc" );
-
-		$list.find( "li" ).find( ">img:eq(0), >:first>img:eq(0)" ).addClass( "ui-li-thumb" ).each(function() {
-			$( this ).closest( "li" ).addClass( $(this).is( ".ui-li-icon" ) ? "ui-li-has-icon" : "ui-li-has-thumb" );
+			.addClass( "ui-btn-up-" + ($list.jqmData( "counttheme" ) || this.options.countTheme) + " ui-btn-corner-all" ).end()
+		.find( "h1, h2, h3, h4, h5, h6" ).addClass( "ui-li-heading" ).end()
+		.find( "p, dl" ).addClass( "ui-li-desc" ).end()
+		.find( ">img:eq(0), .ui-link-inherit>img:eq(0)" ).addClass( "ui-li-thumb" ).each(function() {
+			item.addClass( $(this).is( ".ui-li-icon" ) ? "ui-li-has-icon" : "ui-li-has-thumb" );
+		}).end()
+		.find( ".ui-li-aside" ).each(function() {
+			var $this = $(this);
+			$this.prependTo( $this.parent() ); //shift aside to front for css float
 		});
-
-		var aside = item.find( ".ui-li-aside" );
-
-		if ( aside.length ) {
-            aside.each(function(i, el) {
-			    $(el).prependTo( $(el).parent() ); //shift aside to front for css float
-            });
-		}
-
-		if ( $.support.cssPseudoElement || !$.nodeName( item[0], "ol" ) ) {
-			return;
-		}
 	},
 	
-	_removeCorners: function(li){
+	_removeCorners: function( li ) {
 		li
 			.add( li.find(".ui-btn-inner, .ui-li-link-alt, .ui-li-thumb") )
 			.removeClass( "ui-corner-top ui-corner-bottom ui-corner-br ui-corner-bl ui-corner-tr ui-corner-tl" );
@@ -4621,6 +5073,8 @@ $.widget( "mobile.listview", $.mobile.widget, {
 			$list = this.element,
 			self = this,
 			dividertheme = $list.jqmData( "dividertheme" ) || o.dividerTheme,
+			listsplittheme = $list.jqmData( "splittheme" ),
+			listspliticon = $list.jqmData( "spliticon" ),
 			li = $list.children( "li" ),
 			counter = $.support.cssPseudoElement || !$.nodeName( $list[0], "ol" ) ? 0 : 1;
 
@@ -4628,74 +5082,71 @@ $.widget( "mobile.listview", $.mobile.widget, {
 			$list.find( ".ui-li-dec" ).remove();
 		}
 
-		li.each(function( pos ) {
-			var item = $( this ),
+		for (var pos = 0, numli = li.length; pos < numli; pos++) {
+			var item = li.eq(pos),
 				itemClass = "ui-li";
 
 			// If we're creating the element, we update it regardless
-			if ( !create && item.hasClass( "ui-li" ) ) {
-				return;
-			}
+			if ( create || !item.hasClass( "ui-li" ) ) {
+                var itemTheme = item.jqmData("theme") || o.theme,
+                    a = item.children( "a" );
 
-			var itemTheme = item.jqmData("theme") || o.theme;
+                if ( a.length ) {
+                    var icon = item.jqmData("icon");
 
-			var a = item.find( ">a" );
-				
-			if ( a.length ) {	
-				var icon = item.jqmData("icon");
-				
-				item
-					.buttonMarkup({
-						wrapperEls: "div",
-						shadow: false,
-						corners: false,
-						iconpos: "right",
-						icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
-						theme: itemTheme
-					});
+                    item
+                        .buttonMarkup({
+                            wrapperEls: "div",
+                            shadow: false,
+                            corners: false,
+                            iconpos: "right",
+                            icon: a.length > 1 || icon === false ? false : icon || "arrow-r",
+                            theme: itemTheme
+                        });
 
-				a.first().addClass( "ui-link-inherit" );
+                    a.first().addClass( "ui-link-inherit" );
 
-				if ( a.length > 1 ) {
-					itemClass += " ui-li-has-alt";
+                    if ( a.length > 1 ) {
+                        itemClass += " ui-li-has-alt";
 
-					var last = a.last(),
-						splittheme = $list.jqmData( "splittheme" ) || last.jqmData( "theme" ) || o.splitTheme;
-					
-					last
-						.appendTo(item)
-						.attr( "title", last.text() )
-						.addClass( "ui-li-link-alt" )
-						.empty()
-						.buttonMarkup({
-							shadow: false,
-							corners: false,
-							theme: itemTheme,
-							icon: false,
-							iconpos: false
-						})
-						.find( ".ui-btn-inner" )
-							.append( $( "<span>" ).buttonMarkup({
-								shadow: true,
-								corners: true,
-								theme: splittheme,
-								iconpos: "notext",
-								icon: $list.jqmData( "spliticon" ) || last.jqmData( "icon" ) ||  o.splitIcon
-							} ) );
-				}
+                        var last = a.last(),
+                            splittheme = listsplittheme || last.jqmData( "theme" ) || o.splitTheme;
 
-			} else if ( item.jqmData( "role" ) === "list-divider" ) {
-				itemClass += " ui-li-divider ui-btn ui-bar-" + dividertheme;
-				item.attr( "role", "heading" );
+                        last
+                            .appendTo(item)
+                            .attr( "title", last.text() )
+                            .addClass( "ui-li-link-alt" )
+                            .empty()
+                            .buttonMarkup({
+                                shadow: false,
+                                corners: false,
+                                theme: itemTheme,
+                                icon: false,
+                                iconpos: false
+                            })
+                            .find( ".ui-btn-inner" )
+                                .append( $( "<span />" ).buttonMarkup({
+                                    shadow: true,
+                                    corners: true,
+                                    theme: splittheme,
+                                    iconpos: "notext",
+                                    icon: listspliticon || last.jqmData( "icon" ) ||  o.splitIcon
+                                } ) );
+                    }
 
-				//reset counter when a divider heading is encountered
-				if ( counter ) {
-					counter = 1;
-				}
+                } else if ( item.jqmData( "role" ) === "list-divider" ) {
+                    itemClass += " ui-li-divider ui-btn ui-bar-" + dividertheme;
+                    item.attr( "role", "heading" );
 
-			} else {
-				itemClass += " ui-li-static ui-body-" + itemTheme;
-			}
+                    //reset counter when a divider heading is encountered
+                    if ( counter ) {
+                        counter = 1;
+                    }
+
+                } else {
+                    itemClass += " ui-li-static ui-body-" + itemTheme;
+                }
+            }
 			
 			
 			if( o.inset ){	
@@ -4741,50 +5192,57 @@ $.widget( "mobile.listview", $.mobile.widget, {
 					.prepend( "<span class='ui-li-dec'>" + (counter++) + ". </span>" );
 			}
 
-			item.add( item.find( ".ui-btn-inner" ) ).addClass( itemClass );
+			item.add( item.children( ".ui-btn-inner" ) ).addClass( itemClass );
 
 			if ( !create ) {
 				self._itemApply( $list, item );
 			}
-		});
+		}
 	},
 	
 	//create a string for ID/subpage url creation
 	_idStringEscape: function( str ){
 		return str.replace(/[^a-zA-Z0-9]/g, '-');
 	},
-	
+
 	_createSubPages: function() {
 		var parentList = this.element,
 			parentPage = parentList.closest( ".ui-page" ),
-			parentId = parentPage.jqmData( "url" ),
+			parentUrl = parentPage.jqmData( "url" ),
+			parentId  = parentUrl || parentPage[ 0 ][ $.expando ],
+			parentListId = parentList.attr( "id" ),
 			o = this.options,
+			dns = "data-" + $.mobile.ns,
 			self = this,
 			persistentFooterID = parentPage.find( ":jqmData(role='footer')" ).jqmData( "id" );
 
+		if ( typeof( listCountPerPage[ parentId ] ) === 'undefined' ) {
+			listCountPerPage[ parentId ] = -1;
+		}
+		parentListId = parentListId || ++listCountPerPage[ parentId ];
+
 		$( parentList.find( "li>ul, li>ol" ).toArray().reverse() ).each(function( i ) {
 			var list = $( this ),
+				listId = list.attr( "id" ) || parentListId + "-" + i,
 				parent = list.parent(),
 				nodeEls = $( list.prevAll().toArray().reverse() ),
 				nodeEls = nodeEls.length ? nodeEls : $( "<span>" + $.trim(parent.contents()[ 0 ].nodeValue) + "</span>" ),
 				title = nodeEls.first().text(),//url limits to first 30 chars of text
-				id = parentId + "&" + $.mobile.subPageUrlKey + "=" + self._idStringEscape(title + " " + i),
+				id = ( parentUrl || "" ) + "&" + $.mobile.subPageUrlKey + "=" + listId;
 				theme = list.jqmData( "theme" ) || o.theme,
 				countTheme = list.jqmData( "counttheme" ) || parentList.jqmData( "counttheme" ) || o.countTheme,
-				newPage = list.wrap( "<div data-" + $.mobile.ns + "role='page'><div data-" + $.mobile.ns + "role='content'></div></div>" )
+				newPage = list.detach()
+							.wrap( "<div " + dns + "role='page' " +  dns + "url='" + id + "' " + dns + "theme='" + theme + "' " + dns + "count-theme='" + countTheme + "'><div " + dns + "role='content'></div></div>" )
 							.parent()
-								.before( "<div data-" + $.mobile.ns + "role='header' data-" + $.mobile.ns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>" )
-								.after( persistentFooterID ? $( "<div data-" + $.mobile.ns + "role='footer'  data-" + $.mobile.ns + "id='"+ persistentFooterID +"'>") : "" )
+								.before( "<div " + dns + "role='header' " + dns + "theme='" + o.headerTheme + "'><div class='ui-title'>" + title + "</div></div>" )
+								.after( persistentFooterID ? $( "<div " + dns + "role='footer' " + dns + "id='"+ persistentFooterID +"'>") : "" )
 								.parent()
-									.attr( "data-" + $.mobile.ns + "url", id )
-									.attr( "data-" + $.mobile.ns + "theme", theme )
-									.attr( "data-" + $.mobile.ns + "count-theme", countTheme )
 									.appendTo( $.mobile.pageContainer );
 
 				newPage.page();		
 			var anchor = parent.find('a:first');
-			if (!anchor.length) {
-				anchor = $("<a></a>").html( nodeEls || title ).prependTo(parent.empty());
+			if ( !anchor.length ) {
+				anchor = $("<a />").html( nodeEls || title ).prependTo( parent.empty() );
 			}
 			anchor.attr('href','#' + id);
 		}).listview();
@@ -4802,6 +5260,7 @@ $.widget( "mobile.listview", $.mobile.widget, {
 
 $.mobile.listview.prototype.options.filter = false;
 $.mobile.listview.prototype.options.filterPlaceholder = "Filter items...";
+$.mobile.listview.prototype.options.filterTheme = "c";
 
 $( ":jqmData(role='listview')" ).live( "listviewcreate", function() {
 	var list = $( this ),
@@ -4811,37 +5270,79 @@ $( ":jqmData(role='listview')" ).live( "listviewcreate", function() {
 		return;
 	}
 
-	var wrapper = $( "<form>", { "class": "ui-listview-filter ui-bar-c", "role": "search" } ),
+	var wrapper = $( "<form>", { "class": "ui-listview-filter ui-bar-" + listview.options.filterTheme, "role": "search" } ),
 
 		search = $( "<input>", {
 				placeholder: listview.options.filterPlaceholder
 			})
 			.attr( "data-" + $.mobile.ns + "type", "search" )
+			.jqmData( 'lastval', "" )
 			.bind( "keyup change", function() {
+
 				var val = this.value.toLowerCase(),
-						listItems = list.children();
-				listItems.show();
+					listItems=null,
+					lastval = $( this ).jqmData('lastval')+"";
+
+				//change val as lastval for next execution  
+				$(this).jqmData( 'lastval' , val );
+
+				change = val.replace( new RegExp( "^" + lastval ) , "" );
+
+				if( val.length < lastval.length || change.length != ( val.length - lastval.length ) ){
+
+					//removed chars or pasted something totaly different, check all items
+					listItems = list.children();
+				} else {
+
+					//only chars added, not removed, only use visible subset
+					listItems = list.children( ':not(.ui-screen-hidden)' );
+				}
+
 				if ( val ) {
+
 					// This handles hiding regular rows without the text we search for
 					// and any list dividers without regular rows shown under it
-					var childItems = false,
-							item;
+					var item, 
+						childItems = false,                        
+						itemtext="";
 
-					for (var i = listItems.length; i >= 0; i--) {
-						item = $(listItems[i]);
-						if (item.is("li:jqmData(role=list-divider)")) {
-							if (!childItems) {
-								item.hide();
-							}
+					for ( var i = listItems.length - 1; i >= 0; i-- ) {
+						item = $( listItems[i] );
+						itemtext = item.jqmData( 'filtertext' ) || item.text();
+
+						if ( item.is( "li:jqmData(role=list-divider)" ) ) {
+
+							item.toggleClass( 'ui-filter-hidequeue' , !childItems );
+
 							// New bucket!
 							childItems = false;
-						} else if (item.text().toLowerCase().indexOf( val ) === -1) {
-							item.hide();
+
+						} else if ( itemtext.toLowerCase().indexOf( val ) === -1) {
+
+							//mark to be hidden
+							item.toggleClass( 'ui-filter-hidequeue' , true );
 						} else {
+
 							// There's a shown item in the bucket
 							childItems = true;
 						}
 					}
+
+					// show items, not marked to be hidden
+					listItems
+						.filter( ':not(.ui-filter-hidequeue)' )
+						.toggleClass('ui-screen-hidden',false);
+
+					// hide items, marked to be hidden
+					listItems
+						.filter( '.ui-filter-hidequeue' )
+						.toggleClass('ui-screen-hidden',true)
+						.toggleClass( 'ui-filter-hidequeue' , false );
+
+				}else{
+
+					//filtervalue is empty => show all
+					listItems.toggleClass('ui-screen-hidden',false);
 				}
 			})
 			.appendTo( wrapper )
@@ -4854,68 +5355,64 @@ $( ":jqmData(role='listview')" ).live( "listviewcreate", function() {
 	wrapper.insertBefore( list );
 });
 
-})( jQuery );
-/*
+})( jQuery );/*
 * jQuery Mobile Framework : "dialog" plugin.
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT (MIT-LICENSE.txt) and GPL (GPL-LICENSE.txt) licenses.
 * Note: Code is in draft form and is subject to change
 */
-(function($, undefined ) {
+( function( $, undefined ) {
 $.widget( "mobile.dialog", $.mobile.widget, {
 	options: {
 		closeBtnText: "Close"
 	},
-	_create: function(){
-		var self = this,
-			$el = self.element;
+	_create: function() {
+		var $el = this.element;
 		
 		/* class the markup for dialog styling */	
-		this.element			
+		$el
 			//add ARIA role
-			.attr("role","dialog")
-			.addClass('ui-page ui-dialog ui-body-a')
+			.attr( "role", "dialog" )
+			.addClass( "ui-page ui-dialog ui-body-a" )
 			.find( ":jqmData(role=header)" )
-			.addClass('ui-corner-top ui-overlay-shadow')
+			.addClass( "ui-corner-top ui-overlay-shadow" )
 				.prepend( "<a href='#' data-" + $.mobile.ns + "icon='delete' data-" + $.mobile.ns + "rel='back' data-" + $.mobile.ns + "iconpos='notext'>"+ this.options.closeBtnText +"</a>" )
 			.end()
-			.find('.ui-content:not([class*="ui-body-"])')
-				.addClass('ui-body-c')
+			.find( '.ui-content:not([class*="ui-body-"])' )
+				.addClass( 'ui-body-c' )
 			.end()
 			.find( ".ui-content,:jqmData(role='footer')" )
 				.last()
-				.addClass('ui-corner-bottom ui-overlay-shadow');
+				.addClass( "ui-corner-bottom ui-overlay-shadow" );
 		
 		/* bind events 
 			- clicks and submits should use the closing transition that the dialog opened with
 			  unless a data-transition is specified on the link/form
 			- if the click was on the close button, or the link has a data-rel="back" it'll go back in history naturally
 		*/
-		this.element		
-			.bind( "vclick submit", function(e){
-				var $targetel;
-				if( e.type == "vclick" ){
-					$targetel = $(e.target).closest("a");
-				}
-				else{
-					$targetel = $(e.target).closest("form");
-				}
+		$el
+			.bind( "vclick submit", function( e ) {
+				var $target = $( e.target ).closest( e.type === "vclick" ? "a" : "form" );
 				
-				if( $targetel.length && !$targetel.jqmData("transition") ){
-					$targetel
-						.attr("data-" + $.mobile.ns + "transition", $.mobile.urlHistory.getActive().transition )
-						.attr("data-" + $.mobile.ns + "direction", "reverse");
+				if( $target.length && ! $target.jqmData( "transition" ) ) {
+					var active = $.mobile.urlHistory.getActive() || {};
+					$target
+						.attr( "data-" + $.mobile.ns + "transition", ( active.transition || $.mobile.defaultDialogTransition ) )
+						.attr( "data-" + $.mobile.ns + "direction", "reverse" );
 				}
+			})
+			.bind( "pagehide", function() {
+				$( this ).find( "." + $.mobile.activeBtnClass ).removeClass( $.mobile.activeBtnClass );
 			});
-
 	},
 	
 	//close method goes back in history
-	close: function(){
+	close: function() {
 		window.history.back();
 	}
 });
-})( jQuery );/*
+})( jQuery );
+/*
 * jQuery Mobile Framework : "navbar" plugin
 * Copyright (c) jQuery Project
 * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -5028,47 +5525,48 @@ $.fn.grid = function(options){
 	if ( !$.mobile.gradeA() ) {
 		return;
 	}
+	
+	// override ajaxEnabled on platforms that have known conflicts with hash history updates 
+	// or generally work better browsing in regular http for full page refreshes (BB5, Opera Mini)
+	if( window.blackberry && !window.WebKitPoint || window.operamini && Object.prototype.toString.call( window.operamini ) === "[object OperaMini]" ){
+		$.mobile.ajaxEnabled = false;
+	}
 
 	//add mobile, initial load "rendering" classes to docEl
 	$html.addClass( "ui-mobile ui-mobile-rendering" );
-
-	//define & prepend meta viewport tag, if content is defined
-	//NOTE: this is now deprecated. We recommend placing the meta viewport element in
-	//the markup from the start.
-	$.mobile.metaViewportContent && !$head.find( "meta[name='viewport']" ).length ? $( "<meta>", { name: "viewport", content: $.mobile.metaViewportContent}).prependTo( $head ) : undefined;
 
 	//loading div which appears during Ajax requests
 	//will not appear if $.mobile.loadingMessage is false
 	var $loader = $.mobile.loadingMessage ?		$( "<div class='ui-loader ui-body-a ui-corner-all'>" + "<span class='ui-icon ui-icon-loading spin'></span>" + "<h1>" + $.mobile.loadingMessage + "</h1>" + "</div>" )	: undefined;
 
-	if(typeof $loader === "undefined"){
-		alert($.mobile.loadingMessage);
-	}
-
 	$.extend($.mobile, {
 		// turn on/off page loading message.
+		showPageLoadingMsg: function() {
+			if( $.mobile.loadingMessage ){
+				var activeBtn = $( "." + $.mobile.activeBtnClass ).first();
+			
+				$loader
+					.appendTo( $.mobile.pageContainer )
+					//position at y center (if scrollTop supported), above the activeBtn (if defined), or just 100px from top
+					.css( {
+						top: $.support.scrollTop && $(window).scrollTop() + $(window).height() / 2 ||
+						activeBtn.length && activeBtn.offset().top || 100
+					} );
+			}
+			
+			$html.addClass( "ui-loading" );
+		},
+
+		hidePageLoadingMsg: function() {
+			$html.removeClass( "ui-loading" );
+		},
+
+		// XXX: deprecate for 1.0
 		pageLoading: function ( done ) {
 			if ( done ) {
-				$html.removeClass( "ui-loading" );
+				$.mobile.hidePageLoadingMsg();
 			} else {
-				if( $.mobile.loadingMessage ){
-					var activeBtn = $( "." + $.mobile.activeBtnClass ).first();
-
-
-					if(typeof $loader === "undefined"){
-						 alert($.mobile.loadingMessage);
-					}
-
-					$loader
-						.appendTo( $.mobile.pageContainer )
-						//position at y center (if scrollTop supported), above the activeBtn (if defined), or just 100px from top
-						.css( {
-							top: $.support.scrollTop && $(window).scrollTop() + $(window).height() / 2 ||
-							activeBtn.length && activeBtn.offset().top || 100
-						} );
-				}
-
-				$html.addClass( "ui-loading" );
+				$.mobile.showPageLoadingMsg();
 			}
 		},
 
@@ -5094,11 +5592,11 @@ $.fn.grid = function(options){
 			$.mobile.pageContainer = $pages.first().parent().addClass( "ui-mobile-viewport" );
 
 			//cue page loading message
-			$.mobile.pageLoading();
+			$.mobile.showPageLoadingMsg();
 
 			// if hashchange listening is disabled or there's no hash deeplink, change to the first page in the DOM
 			if( !$.mobile.hashListeningEnabled || !$.mobile.path.stripHash( location.hash ) ){
-				$.mobile.changePage( $.mobile.firstPage, false, true, false, true );
+				$.mobile.changePage( $.mobile.firstPage, { transition: "none", reverse: true, changeHash: false, fromHashChange: true } );
 			}
 			// otherwise, trigger a hashchange to load a deeplink
 			else {
@@ -5106,11 +5604,23 @@ $.fn.grid = function(options){
 			}
 		}
 	});
-
-	//dom-ready inits
-	$( $.mobile.initializePage );
-
-	//window load event
-	//hide iOS browser chrome on load
-	$window.load( $.mobile.silentScroll );
+	
+	//check which scrollTop value should be used by scrolling to 1 immediately at domready
+	//then check what the scroll top is. Android will report 0... others 1
+	//note that this initial scroll won't hide the address bar. It's just for the check.
+	$(function(){
+		window.scrollTo( 0, 1 );
+	
+		//if defaultHomeScroll hasn't been set yet, see if scrollTop is 1
+		//it should be 1 in most browsers, but android treats 1 as 0 (for hiding addr bar)
+		//so if it's 1, use 0 from now on
+		$.mobile.defaultHomeScroll = ( !$.support.scrollTop || $(window).scrollTop() === 1 ) ? 0 : 1;
+	
+		//dom-ready inits
+		$( $.mobile.initializePage );
+	
+		//window load event
+		//hide iOS browser chrome on load
+		$window.load( $.mobile.silentScroll );
+	});
 })( jQuery, this );

@@ -53,7 +53,9 @@
 			Util.DOM.setStyle(this.el, {
 				left: 0,
 				top: 0,
-				position: 'absolute'
+				position: 'absolute',
+				// Odd, for Android 2.2 & above, if you don't specify a zIndex, scaling does not work!
+				zIndex: 1 
 			});
 			Util.DOM.width(this.el, Util.DOM.bodyWidth());
 			Util.DOM.height(this.el, Util.DOM.windowHeight());
@@ -71,7 +73,13 @@
 			Util.DOM.appendChild(this.containerEl, this.el);
 			Util.DOM.appendChild(this.el, this.parentEl);
 			
+			if (Util.browser.isiOS){
+				Util.DOM.resetTranslate(this.containerEl);
+				Util.DOM.resetTranslate(this.imageEl);
+			}
+			
 		},
+		
 		
 		
 		/*
@@ -79,13 +87,16 @@
 		 */
 		setStartingTranslateFromCurrentTranform: function(){
 			
-			var transformExploded = this.containerEl.style.webkitTransform.match( /translate\((.*?)\)/ );
+			var 
+				transformValue = Util.coalesce(this.containerEl.style.webkitTransform, this.containerEl.style.MozTransform, this.containerEl.style.transform),
+				
+				transformExploded = transformValue.match( /translate\((.*?)\)/ );
 			
 			if (!Util.isNothing(transformExploded)){
 				
 				transformExploded = transformExploded[1].split(', ');
-				this.transformSettings.startingTranslateX = window.parseInt(transformExploded[0]);
-				this.transformSettings.startingTranslateY = window.parseInt(transformExploded[1]);
+				this.transformSettings.startingTranslateX = window.parseInt(transformExploded[0], 10);
+				this.transformSettings.startingTranslateY = window.parseInt(transformExploded[1], 10);
 			
 			}
 			
@@ -94,9 +105,9 @@
 		
 		
 		/*
-		 * Function: setStartingScaleAndRotation
+		 * Function: getScale
 		 */
-		setStartingScaleAndRotation: function(scaleValue, rotationValue){
+		getScale: function(scaleValue){
 			
 			var scale = this.transformSettings.startingScale * scaleValue;
 			
@@ -107,7 +118,18 @@
 				scale = this.settings.maxZoom;
 			}
 			
-			this.transformSettings.startingScale = scale;
+			return scale;
+			
+		},
+		
+		
+		
+		/*
+		 * Function: setStartingScaleAndRotation
+		 */
+		setStartingScaleAndRotation: function(scaleValue, rotationValue){
+						
+			this.transformSettings.startingScale = this.getScale(scaleValue);
 			
 			this.transformSettings.startingRotation = 
 				(this.transformSettings.startingRotation + rotationValue) % 360;
@@ -120,17 +142,8 @@
 		 * Function: zoomRotate
 		 */
 		zoomRotate: function(scaleValue, rotationValue){
-			
-			var scale = this.transformSettings.startingScale * scaleValue;
-			
-			if (this.settings.minZoom !== 0 && scale < this.settings.minZoom){
-				scale = this.settings.minZoom;
-			}
-			else if (this.settings.maxZoom !== 0 && scale > this.settings.maxZoom){
-				scale = this.settings.maxZoom;
-			}
-						
-			this.transformSettings.scale = scale;
+									
+			this.transformSettings.scale = this.getScale(scaleValue);;
 									
 			this.transformSettings.rotation = 
 				this.transformSettings.startingRotation + rotationValue;
@@ -180,13 +193,64 @@
 		},
 		
 		
+		/*
+		 * Function: zoomAndPanToPoint
+		 */
+		zoomAndPanToPoint: function(scaleValue, point){
+			
+			/*
+			var self = this;
+			setTimeout(function(){
+				
+				Util.DOM.setStyle(self.containerEl, {
+					background: 'blue',
+					webkitTransform: 'scale(2.0)',
+					MozTransform: 'scale(2.0)'
+				});
+				
+			}, 500);
+			*/
+			
+			this.panStart({
+				x: Util.DOM.bodyWidth() / 2,
+				y: Util.DOM.windowHeight() / 2
+			});
+		
+			var 
+				dx = point.x - this.panStartingPoint.x,
+				dy = point.y - this.panStartingPoint.y,
+				dxScaleAdjust = (this.settings.adjustPanToZoom) ? dx / this.transformSettings.scale : dx,
+        dyScaleAdjust = dy / this.transformSettings.scale ? dy / this.transformSettings.scale : dy;
+			
+			this.transformSettings.translateX = 
+				(this.transformSettings.startingTranslateX + dxScaleAdjust) * -1;
+
+			this.transformSettings.translateY = 
+				(this.transformSettings.startingTranslateY + dyScaleAdjust) * -1;
+			
+			this.setStartingScaleAndRotation(scaleValue, 0);
+			this.transformSettings.scale = this.transformSettings.startingScale;
+			
+			this.transformSettings.rotation = 0;
+			
+			this.applyTransform();
+			
+		},
+				
+				
 		
 		/*
 		 * Function: applyTransform
 		 */
 		applyTransform: function(){
-			 
-			this.containerEl.style.webkitTransform = 'scale(' + this.transformSettings.scale + ') rotate(' + (this.transformSettings.rotation % 360) + 'deg) translate(' + this.transformSettings.translateX + 'px, ' + this.transformSettings.translateY + 'px)';
+			
+			var transform = 'scale(' + this.transformSettings.scale + ') rotate(' + (this.transformSettings.rotation % 360) + 'deg) translate(' + window.parseInt(this.transformSettings.translateX, 10) + 'px, ' + window.parseInt(this.transformSettings.translateY, 10) + 'px)';
+			
+			Util.DOM.setStyle(this.containerEl, {
+				webkitTransform: transform,
+				MozTransform: transform,
+				transform: transform
+			});
 			
 		},
 			

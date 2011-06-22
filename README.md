@@ -9,21 +9,13 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
-Latest Release v1.0.12
+Latest Release v1.0.13
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.12.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.13.zip)
 
-- Fixed issues with Chrome 12
+- Upgraded to jQuery Mobile 1.0 beta.
 
-- Added the following new events "onCaptionEndToolbarShow" and "onCaptionEndToolbarHide"
-
-- Fixed issue with position of caption when placed at the bottom
-
-- Events now pass target value (should always equal the current instance of PhotoSwipe)
-
-- Added new "using-meta-data.html" example
-
-- Updated to jQuery Animate Enhanced v0.75
+- Added new "double tap" feature. Double tapping an image will zoom the image in and allow the user to pan around. This is still experimental and works on iOS (pinch and zoom still works), Android, BlackBerry, Chrome and Firefox 4 and above.
 
 
 
@@ -40,7 +32,9 @@ Features
 
 - Automatically scales images to maximise screen size and orientation.
 
-- Zoom / pan and rotate images (as of v1.0.4 - experimental iOS devices only)
+- Zoom and pan around images
+
+- Rotate image (iOS only)
 
 - Works with your markup and semantic structure. Does not enforce any specific markup.
 
@@ -148,15 +142,19 @@ Options
 
 - **backButtonHideEnabled**: This will hide the gallery when the user hits the back button. Useful for Android  and Blackberry. Works in BB6, Android v2.1 and above and iOS 4 and above. Default "true"
 
-- **allowUserZoom**: iOS only - Allow the user to zoom / pan around images. Default "true" 
+- **allowUserZoom**: Allow the user to zoom / pan around images. Default "true" 
 
 - **allowRotationOnUserZoom**: iOS only - Allow the user to rotate images whilst zooming / panning. Default "true" 
 
-- **maxUserZoom**: iOS only - The maximum a user can zoom into an image. Default 5.0 (set to zero for this to be ignored)
+- **maxUserZoom**: The maximum a user can zoom into an image. Default 5.0 (set to zero for this to be ignored)
 
-- **minUserZoom**: iOS only - The minimum a user can zoom out of an image. Default 0.5 (set to zero for this to be ignored)
+- **minUserZoom**: The minimum a user can zoom out of an image. Default 0.5 (set to zero for this to be ignored)
 
-- **adjustUserPanToZoom**: iOS only - Adjusts the speed of panning to match the current zoom value. Default "true"
+- **adjustUserPanToZoom**: Adjusts the speed of panning to match the current zoom value. Default "true"
+
+- **doubleClickSpeed**: Double click speed. Default "300" (in milliseconds)
+
+- **doubleClickZoom**: When the user double clicks an image, the default "zoom-in" level. Default 2.5
 
 - **captionAndToolbarHide**: Hide the caption and toolbar. Default "false"
 
