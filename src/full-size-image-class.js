@@ -9,7 +9,7 @@
 	/*
 	 * Class: Code.PhotoSwipe.FullSizeImageClass
 	 */
-	Code.PhotoSwipe.FullSizeImageClass = Code.PhotoSwipe.EventClass.extend({
+	Code.PhotoSwipe.FullSizeImageClass = SimpleClass.extend({
 		
 		el: null,
 		index: null,
@@ -34,8 +34,6 @@
 		 * Function: init
 		 */
 		init: function(index, scaleMethod, src, caption, metaData){
-			
-			this._super();
 			
 			this.index = index;
 			this.naturalWidth = 0;
@@ -80,7 +78,7 @@
 			this.isLoading = false;
 			this.hasLoaded = true;
 			
-			this.dispatchEvent(Code.PhotoSwipe.FullSizeImageClass.EventTypes.onLoad);
+			Util.Events.fire(this, Code.PhotoSwipe.FullSizeImageClass.EventTypes.onLoad);
 			
 		}
 	
@@ -89,7 +87,7 @@
 	
 	
 	Code.PhotoSwipe.FullSizeImageClass.EventTypes = {
-		onLoad: 'onLoad'
+		onLoad: 'PhotoSwipeFullSizeImageClassOnLoader'
 	};
 	
 

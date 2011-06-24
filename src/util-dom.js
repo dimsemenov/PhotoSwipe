@@ -453,64 +453,6 @@
 			
 				return window.pageYOffset;
 			
-			},
-			
-			
-			/*
-			 * Function: addEventListener
-			 */
-			addEventListener: function(el, type, listener){
-				
-				el.addEventListener(type, listener, false);
-			
-			},
-			
-			
-			/*
-			 * Function: removeEventListener
-			 */
-			removeEventListener: function(el, type, listener){
-				
-				el.removeEventListener(type, listener, false);
-			
-			},
-			
-			
-			/*
-			 * Function: getMousePosition
-			 */
-			getMousePosition: function(event){
-				
-				var retval = {
-					x: 0,
-					y: 0
-				};
-				
-				if (event.pageX) {
-					retval.x = event.pageX;
-				}
-				else if (event.clientX) {
-					retval.x = event.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft);
-				}
-			
-				if (event.pageY) {
-					retval.y = event.pageY;
-				}
-				else if (event.clientY) {
-					retval.y = event.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
-				}
-				
-				return retval;
-			},
-			
-			
-			/*
-			 * Function: getTouchEvent
-			 */
-			getTouchEvent: function(event){
-				
-				return event;
-			
 			}
 			
 		}

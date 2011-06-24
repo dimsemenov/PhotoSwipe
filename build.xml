@@ -47,8 +47,8 @@
 			
 			<fileset dir="." includes="${project.src.dir}/util.js" />
 			<fileset dir="." includes="${project.src.dir}/util-dom${engine}.js" />
+			<fileset dir="." includes="${project.src.dir}/util-events${engine}.js" />
 			<fileset dir="." includes="${project.src.dir}/util-animation${engine}.js" />
-			<fileset dir="." includes="${project.src.dir}/event-class.js" />
 			<fileset dir="." includes="${project.src.dir}/element-class.js" />
 			<fileset dir="." includes="${project.src.dir}/full-size-image-class.js" />
 			<fileset dir="." includes="${project.src.dir}/document-overlay-class.js" />

@@ -48,6 +48,7 @@
 			isAndroid: /android/i.test(navigator.userAgent),
 			isBlackberry: /blackberry/i.test(navigator.userAgent),
 			isiOS: /like Mac OS/i.test(navigator.userAgent),
+			isCSSTransformSupported: false,
 			touchSupported: false,
 			gestureSupported: false,
 			
@@ -262,11 +263,13 @@
 		
 	};
 	
+	var testEl = document.createElement('div');
 	if (Code.PhotoSwipe.Util.browser.webkit && !Code.PhotoSwipe.Util.browser.chrome){
-		var test3DEl = document.createElement('div');
-		Code.PhotoSwipe.Util.browser.is3dSupported = !Code.PhotoSwipe.Util.isNothing(test3DEl.style.WebkitPerspective);
+		Code.PhotoSwipe.Util.browser.is3dSupported = !Code.PhotoSwipe.Util.isNothing(testEl.style.WebkitPerspective);	
 	}
 	
+	Code.PhotoSwipe.Util.browser.isCSSTransformSupported = ( !Code.PhotoSwipe.Util.isNothing(testEl.style.WebkitTransform) || !Code.PhotoSwipe.Util.isNothing(testEl.style.MozTransform) || !Code.PhotoSwipe.Util.isNothing(testEl.style.msTransform) || !Code.PhotoSwipe.Util.isNothing(testEl.style.transformProperty) );
+		
 	Code.PhotoSwipe.Util.browser.touchSupported = Code.PhotoSwipe.Util.browser.isEventSupported('touchstart');
 	Code.PhotoSwipe.Util.browser.gestureSupported = Code.PhotoSwipe.Util.browser.isEventSupported('gesturestart');
 	

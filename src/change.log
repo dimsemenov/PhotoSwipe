@@ -164,3 +164,11 @@ Major update:
 
 - Added new "double tap" feature. Double tapping an image will zoom the image in and allow the user to pan around. This is still experimental and works on iOS (pinch and zoom still works), Android, BlackBerry, Chrome and Firefox 4 and above
 
+
+1.0.14 24.06.22 - Ste Brennan
+-----------------------------
+
+- "Double tap" to zoom and pan around an image now working in IE9
+
+- Major rewrite of how events are handled internally. 
+

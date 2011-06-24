@@ -8,14 +8,14 @@
 	/*
 	 * Class: Code.PhotoSwipe.CaptionToolbarClass
 	 */
-	Code.PhotoSwipe.CaptionToolbarClass = Code.PhotoSwipe.EventClass.extend({
+	Code.PhotoSwipe.CaptionToolbarClass = SimpleClass.extend({
 		
 		toolbar: null,
 		caption: null,
 		
 		isHidden: null,
 		
-		hasAddedEventListeners: null,
+		hasAddedEventHandlers: null,
 		
 		toolbarClickEventHandler: null,
 	
@@ -24,8 +24,6 @@
 		 * Function: init
 		 */
 		init: function(options){
-			
-			this._super();
 			
 			this.settings = {
 				opacity: 0.8,
@@ -41,7 +39,7 @@
 			Util.extend(this.settings, options);
 			
 			this.isHidden = true;
-			this.hasAddedEventListeners = false;
+			this.hasAddedEventHandlers = false;
 			
 			this.toolbarClickEventHandler = this.onToolbarClick.bind(this);
 			
@@ -80,29 +78,29 @@
 		
 		
 		/*
-		 * Function: addEventListeners
+		 * Function: addEventHandlers
 		 */
-		addEventListeners: function(){
+		addEventHandlers: function(){
 			
-			if (this.hasAddedEventListeners){
+			if (this.hasAddedEventHandlers){
 				return;
 			}
 			
-			this.toolbar.addEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
+			Util.Events.add(this.toolbar, ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
 			
-			this.hasAddedEventListeners = true;
+			this.hasAddedEventHandlers = true;
 		
 		},
 		
 		
 		
 		/*
-		 * Function: removeEventListeners
+		 * Function: removeEventHandlers
 		 */
-		removeEventListeners: function(){
+		removeEventHandlers: function(){
 			
-			this.toolbar.removeEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
-			this.hasAddedEventListeners = false;
+			Util.Events.remove(this.toolbar, ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
+			this.hasAddedEventHandlers = false;
 		
 		},
 			
@@ -189,10 +187,10 @@
 		 */
 		onFadeIn: function(){
 			
-			this.addEventListeners();
+			this.addEventHandlers();
 			this.resetAutoHideTimeout();
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.CaptionToolbarClass.EventTypes.onShow, 
 				target: this
 			});
@@ -227,7 +225,7 @@
 		 */
 		onFadeOut: function(){
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.CaptionToolbarClass.EventTypes.onHide, 
 				target: this
 			});
@@ -256,12 +254,12 @@
 			this.stopFade();
 			
 			this.isHidden = true;
-			this.removeEventListeners();
+			this.removeEventHandlers();
 			
 			this.caption.hide();
 			this.toolbar.hide();
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.CaptionToolbarClass.EventTypes.onHide, 
 				target: this
 			});
@@ -329,7 +327,7 @@
 		 */
 		onToolbarClick: function(e){
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ToolbarClass.EventTypes.onClick, 
 				target: this, 
 				action: e.action 
@@ -363,8 +361,8 @@
 	});
 	
 	Code.PhotoSwipe.CaptionToolbarClass.EventTypes = {
-		onShow: 'onShow',
-		onHide: 'onHide'
+		onShow: 'PhotoSwipeCaptionToolbarClassOnShow',
+		onHide: 'PhotoSwipeCaptionToolbarClassOnHide'
 	};
 
 })

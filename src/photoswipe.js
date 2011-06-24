@@ -5,7 +5,7 @@
 
 (function(window, Util, ElementClass, DocumentOverlayClass, FullSizeImageClass, ViewportClass, SliderClass, CaptionClass, ToolbarClass, CaptionToolbarClass, ZoomPanRotateClass){
 
-	var photoSwipe = Code.PhotoSwipe.EventClass.extend({
+	var photoSwipe = SimpleClass.extend({
 		
 		fullSizeImages: null,
 		
@@ -47,9 +47,7 @@
 		 * Function: init
 		 */
 		init: function(){
-			
-			this._super();
-						
+									
 			this.currentIndex = 0;
 			this.isBusy = false;
 			this.isActive = false;
@@ -225,12 +223,9 @@
 			
 			// Fade in the viewport overlay,
 			// then show the viewport, slider and toolbar etc
-			this.viewport.addEventListener(
-				ElementClass.EventTypes.onFadeIn,
-				this.viewportFadeInEventHandler
-			);
+			Util.Events.add(this.viewport, ElementClass.EventTypes.onFadeIn, this.viewportFadeInEventHandler);
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onBeforeShow,
 				target: this
 			});
@@ -293,9 +288,9 @@
 		
 		
 		/*
-		 * Function: addEventListeners
+		 * Function: addEventHandlers
 		 */
-		addEventListeners: function(){
+		addEventHandlers: function(){
 			
 			// Set window handlers
 			if (Util.browser.isAndroid){
@@ -308,9 +303,9 @@
 				this.orientationEventName = supportsOrientationChange ? 'orientationchange' : 'resize';
 			}
 			
-			Util.DOM.addEventListener(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
+			Util.Events.add(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
 			
-			Util.DOM.addEventListener(window, 'scroll', this.windowScrollEventHandler);
+			Util.Events.add(window, 'scroll', this.windowScrollEventHandler);
 					
 			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
 				
@@ -322,55 +317,55 @@
 					window.location.hash = this.currentHistoryHashValue;
 				}
 				
-				Util.DOM.addEventListener(window, 'hashchange', this.windowHashChangeHandler);
+				Util.Events.add(window, 'hashchange', this.windowHashChangeHandler);
 				
 			}
 			
 			// Set keydown event handlers for desktop browsers
-			Util.DOM.addEventListener(document, 'keydown', this.keyDownEventHandler);
+			Util.Events.add(document, 'keydown', this.keyDownEventHandler);
 			
 			// Set viewport handlers
-			this.viewport.addEventListener(ViewportClass.EventTypes.onTouch, this.viewportTouchEventHandler);
+			Util.Events.add(this.viewport, ViewportClass.EventTypes.onTouch, this.viewportTouchEventHandler);
 			
 			// Set slider handlers
-			this.slider.addEventListener(SliderClass.EventTypes.onDisplayCurrentFullSizeImage, this.sliderDisplayCurrentFullSizeImageEventHandler);
+			Util.Events.add(this.slider, SliderClass.EventTypes.onDisplayCurrentFullSizeImage, this.sliderDisplayCurrentFullSizeImageEventHandler);
 			
 			// Set captionAndToolbar handlers
-			this.captionAndToolbar.addEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
-			this.captionAndToolbar.addEventListener(CaptionToolbarClass.EventTypes.onShow, this.captionAndToolbarShowEventHandler);
-			this.captionAndToolbar.addEventListener(CaptionToolbarClass.EventTypes.onHide, this.captionAndToolbarHideEventHandler);
+			Util.Events.add(this.captionAndToolbar, ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
+			Util.Events.add(this.captionAndToolbar, CaptionToolbarClass.EventTypes.onShow, this.captionAndToolbarShowEventHandler);
+			Util.Events.add(this.captionAndToolbar, CaptionToolbarClass.EventTypes.onHide, this.captionAndToolbarHideEventHandler);
 						
 		},
 		
 		
 		
 		/*
-		 * Function: removeEventListeners
+		 * Function: removeEventHandlers
 		 */
-		removeEventListeners: function(){
+		removeEventHandlers: function(){
 			
 			// Remove window handlers
-			Util.DOM.removeEventListener(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
+			Util.Events.remove(window, this.orientationEventName, this.windowOrientationChangeEventHandler);
 			
-			Util.DOM.removeEventListener(window, 'scroll', this.windowScrollEventHandler);
+			Util.Events.remove(window, 'scroll', this.windowScrollEventHandler);
 			
 			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
-				Util.DOM.removeEventListener(window, 'hashchange', this.windowHashChangeHandler);
+				Util.Events.remove(window, 'hashchange', this.windowHashChangeHandler);
 			}
 			
 			// Remove keydown event handlers for desktop browsers
-			Util.DOM.removeEventListener(document, 'keydown', this.keyDownEventHandler);
+			Util.Events.remove(document, 'keydown', this.keyDownEventHandler);
 			
 			// Remove viewport handlers
-			this.viewport.removeEventListener(ViewportClass.EventTypes.onTouch, this.viewportTouchEventHandler);
+			Util.Events.remove(this.viewport, ViewportClass.EventTypes.onTouch, this.viewportTouchEventHandler);
 			
 			// Remove slider handlers
-			this.slider.removeEventListener(SliderClass.EventTypes.onDisplayCurrentFullSizeImage, this.sliderDisplayCurrentFullSizeImageEventHandler);
+			Util.Events.remove(this.slider, SliderClass.EventTypes.onDisplayCurrentFullSizeImage, this.sliderDisplayCurrentFullSizeImageEventHandler);
 			
 			// Remove captionAndToolbar handlers
-			this.captionAndToolbar.removeEventListener(ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
-			this.captionAndToolbar.removeEventListener(CaptionToolbarClass.EventTypes.onShow, this.captionAndToolbarShowEventHandler);
-			this.captionAndToolbar.removeEventListener(CaptionToolbarClass.EventTypes.onHide, this.captionAndToolbarHideEventHandler);
+			Util.Events.remove(this.captionAndToolbar, ToolbarClass.EventTypes.onClick, this.toolbarClickEventHandler);
+			Util.Events.remove(this.captionAndToolbar, CaptionToolbarClass.EventTypes.onShow, this.captionAndToolbarShowEventHandler);
+			Util.Events.remove(this.captionAndToolbar, CaptionToolbarClass.EventTypes.onHide, this.captionAndToolbarHideEventHandler);
 			
 		},
 		
@@ -383,22 +378,19 @@
 			
 			// Remove the ElementClass.EventTypes.onFadeIn
 			// event handler
-			this.viewport.removeEventListener(
-				ElementClass.EventTypes.onFadeIn,
-				this.viewportFadeInEventHandler
-			);
+			Util.Events.remove(this.viewport, ElementClass.EventTypes.onFadeIn, this.viewportFadeInEventHandler);
 			
 			this.documentOverlay.show();
 			
 			this.slider.fadeIn();
 			
-			this.addEventListeners();
+			this.addEventHandlers();
 			
 			this.slider.setCurrentFullSizeImage(this.fullSizeImages[this.currentIndex]);
 			
 			this.isBusy = false;
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onShow,
 				target: this
 			});
@@ -545,7 +537,7 @@
 			this.documentOverlay.resetPosition();
 			this.captionAndToolbar.resetPosition();
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onResetPosition,
 				target: this
 			});
@@ -558,6 +550,10 @@
 		 * Function: canUserZoom
 		 */
 		canUserZoom: function(){
+			
+			if (!Util.browser.isCSSTransformSupported){
+				return false;
+			}
 			
 			if (!this.settings.allowUserZoom){
 				return false;
@@ -642,7 +638,7 @@
 					else{
 						this.hide();
 					}
-					this.dispatchEvent({
+					Util.Events.fire(this, {
 						type: Code.PhotoSwipe.EventTypes.onViewportClick,
 						target: this
 					});
@@ -715,12 +711,12 @@
 		 */
 		onViewportFadeOut: function(e){
 			
-			this.viewport.removeEventListener(ElementClass.EventTypes.onFadeOut, this.viewportFadeOutEventHandler);
+			Util.Events.remove(this.viewport, ElementClass.EventTypes.onFadeOut, this.viewportFadeOutEventHandler);
 			
 			this.isBusy = false;
 			this.isActive = false;
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onHide,
 				target: this
 			});
@@ -748,7 +744,7 @@
 			
 			this.removeZoomPanRotate();
 			
-			this.removeEventListeners();
+			this.removeEventHandlers();
 			
 			this.documentOverlay.hide();
 			this.captionAndToolbar.hide();
@@ -756,9 +752,9 @@
 			
 			Util.DOM.removeClass(document.body, Code.PhotoSwipe.CssClasses.activeBody);
 			
-			this.viewport.addEventListener(ElementClass.EventTypes.onFadeOut, this.viewportFadeOutEventHandler);
+			Util.Events.add(this.viewport, ElementClass.EventTypes.onFadeOut, this.viewportFadeOutEventHandler);
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onBeforeHide,
 				target: this
 			});
@@ -777,13 +773,13 @@
 				return;
 			}
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onBeforeHide,
 				target: this
 			});
 			
 			this.removeZoomPanRotate();
-			this.removeEventListeners();
+			this.removeEventHandlers();
 			this.documentOverlay.hide();
 			this.captionAndToolbar.hide();
 			this.slider.hide();
@@ -794,7 +790,7 @@
 			this.isBusy = false;
 			this.isActive = false;
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onHide,
 				target: this
 			});
@@ -834,7 +830,7 @@
 			
 			this.slider.showNext();
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onShowNext,
 				target: this
 			});
@@ -864,7 +860,7 @@
 			
 			this.slider.showPrevious();
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onShowPrevious,
 				target: this
 			});
@@ -996,7 +992,7 @@
 				
 				if (fadeIn){
 					
-					this.dispatchEvent({
+					Util.Events.fire(this, {
 						type: Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow,
 						target: this
 					});
@@ -1005,7 +1001,7 @@
 					
 				}
 				
-				this.dispatchEvent({ 
+				Util.Events.fire(this, { 
 					type: Code.PhotoSwipe.EventTypes.onDisplayImage, 
 					target: this, 
 					image: this.fullSizeImages[this.currentIndex] 
@@ -1044,7 +1040,7 @@
 			
 			if (this.captionAndToolbar.isHidden){
 				
-				this.dispatchEvent({
+				Util.Events.fire(this, {
 					type: Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow,
 					target: this
 				});
@@ -1053,7 +1049,7 @@
 			}
 			else{
 				
-				this.dispatchEvent({
+				Util.Events.fire(this, {
 					type: Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide,
 					target: this
 				});
@@ -1072,7 +1068,7 @@
 		fadeOutCaptionAndToolbar: function(){
 			
 			if (!this.settings.captionAndToolbarHide && !this.captionAndToolbar.isHidden){
-				this.dispatchEvent({
+				Util.Events.fire(this, {
 					type: Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide,
 					target: this
 				});
@@ -1137,7 +1133,7 @@
 			
 			this.fireSlideshowTimeout();
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onSlideshowStart,
 				target: this
 			});
@@ -1157,7 +1153,7 @@
 						
 			this.isSlideshowActive = false;
 			
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onSlideshowStop,
 				target: this
 			});
@@ -1242,7 +1238,7 @@
 		 * Function: onCaptionAndToolbarShow
 		 */
 		onCaptionAndToolbarShow: function(){
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onCaptionAndToolbarShow,
 					target: this
 			});
@@ -1253,7 +1249,7 @@
 		 * Function: onCaptionAndToolbarHide
 		 */
 		onCaptionAndToolbarHide: function(){
-			this.dispatchEvent({
+			Util.Events.fire(this, {
 				type: Code.PhotoSwipe.EventTypes.onCaptionAndToolbarHide,
 					target: this
 			});
@@ -1280,21 +1276,21 @@
 	
 	Code.PhotoSwipe.EventTypes = {
 		
-		onBeforeShow: 'onBeforeShow',
-		onShow: 'onShow',
-		onBeforeHide: 'onBeforeHide',
-		onHide: 'onHide',
-		onShowNext: 'onShowNext',
-		onShowPrevious: 'onShowPrevious',
-		onDisplayImage: 'onDisplayImage',
-		onResetPosition: 'onResetPosition',
-		onSlideshowStart: 'onSlideshowStart',
-		onSlideshowStop: 'onSlideshowStop',
-		onBeforeCaptionAndToolbarShow: 'onBeforeCaptionAndToolbarShow',
-		onCaptionAndToolbarShow: 'onCaptionAndToolbarShow',
-		onBeforeCaptionAndToolbarHide: 'onBeforeCaptionAndToolbarHide',
-		onCaptionAndToolbarHide: 'onCaptionAndToolbarHide',
-		onViewportClick: 'onViewportClick'
+		onBeforeShow: 'PhotoSwipeOnBeforeShow',
+		onShow: 'PhotoSwipeOnShow',
+		onBeforeHide: 'PhotoSwipeOnBeforeHide',
+		onHide: 'PhotoSwipeOnHide',
+		onShowNext: 'PhotoSwipeOnShowNext',
+		onShowPrevious: 'PhotoSwipeOnShowPrevious',
+		onDisplayImage: 'PhotoSwipeOnDisplayImage',
+		onResetPosition: 'PhotoSwipeOnResetPosition',
+		onSlideshowStart: 'PhotoSwipeOnSlideshowStart',
+		onSlideshowStop: 'PhotoSwipeOnSlideshowStop',
+		onBeforeCaptionAndToolbarShow: 'PhotoSwipeOnBeforeCaptionAndToolbarShow',
+		onCaptionAndToolbarShow: 'PhotoSwipeOnCaptionAndToolbarShow',
+		onBeforeCaptionAndToolbarHide: 'PhotoSwipeOnBeforeCaptionAndToolbarHide',
+		onCaptionAndToolbarHide: 'PhotoSwipeOnCaptionAndToolbarHide',
+		onViewportClick: 'PhotoSwipeOnViewportClick'
 		
 	};
 	

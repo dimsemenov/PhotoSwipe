@@ -109,35 +109,35 @@
 		
 		
 		/*
-		 * Function: addEventListeners
+		 * Function: addEventHandlers
 		 */
-		addEventListeners: function(){
+		addEventHandlers: function(){
 					
 			if (Util.browser.touchSupported){
 				// Had an issue with touchstart, animation and Blackberry. BB will default to click
 				if (!Util.browser.isBlackberry){
-					Util.DOM.addEventListener(this.el, 'touchstart', this.touchStartHandler);
+					Util.Events.add(this.el, 'touchstart', this.touchStartHandler);
 				}
-				Util.DOM.addEventListener(this.el, 'touchmove', this.touchMoveHandler);
+				Util.Events.add(this.el, 'touchmove', this.touchMoveHandler);
 			}
 			
-			Util.DOM.addEventListener(this.el, 'click', this.clickHandler);
+			Util.Events.add(this.el, 'click', this.clickHandler);
 			
 		},
 		
 				
 		/*
-		 * Function: removeEventListeners
+		 * Function: removeEventHandlers
 		 */
-		removeEventListeners: function(){
+		removeEventHandlers: function(){
 			
 			if (Util.browser.touchSupported){
 				if (!Util.browser.isBlackberry){
-					Util.DOM.removeEventListener(this.el, 'touchstart', this.touchStartHandler);
+					Util.Events.remove(this.el, 'touchstart', this.touchStartHandler);
 				}
-				Util.DOM.removeEventListener(this.el, 'touchmove', this.touchMoveHandler);
+				Util.Events.remove(this.el, 'touchmove', this.touchMoveHandler);
 			}
-			Util.DOM.removeEventListener(this.el, 'click', this.clickHandler);
+			Util.Events.remove(this.el, 'click', this.clickHandler);
 			
 		},
 		
@@ -214,7 +214,7 @@
 				return;
 			}
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ToolbarClass.EventTypes.onClick, 
 				target: this, 
 				action: action 
@@ -305,7 +305,7 @@
 	
 	
 	Code.PhotoSwipe.ToolbarClass.EventTypes = {
-		onClick: 'onClick'
+		onClick: 'PhotoSwipeToolbarClassOnClick'
 	};
 
 })

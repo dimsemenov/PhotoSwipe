@@ -81,15 +81,16 @@
 		
 		
 		/*
-		 * Function: addEventListeners
+		 * Function: addEventHandlers
 		 */
-		addEventListeners: function(){
+		addEventHandlers: function(){
 			
 			for (var i = 0; i<this.items.length; i++){
 				
 				var item = this.items[i];
 				
-				item.addEventListener(
+				Util.Events.add(
+					item,
 					SliderItemClass.EventTypes.onFullSizeImageLoadAnomaly,
 					this.sliderFullSizeImageLoadAnomalyEventHandler
 				);
@@ -100,15 +101,16 @@
 		
 		
 		/*
-		 * Function: removeEventListeners
+		 * Function: removeEventHandlers
 		 */
-		removeEventListeners: function(){
+		removeEventHandlers: function(){
 			
 			for (var i = 0; i<this.items.length; i++){
 				
 				var item = this.items[i];
 				
-				item.removeEventListener(
+				Util.Events.remove(
+					item, 
 					SliderItemClass.EventTypes.onFullSizeImageLoadAnomaly,
 					this.sliderFullSizeImageLoadAnomalyEventHandler
 				);
@@ -369,7 +371,7 @@
 		 */
 		dispatchDisplayCurrentFullSizeImage: function(){
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.SliderClass.EventTypes.onDisplayCurrentFullSizeImage, 
 				target: this, 
 				fullSizeImage: this.currentItem.fullSizeImage 
@@ -393,7 +395,7 @@
 	
 	Code.PhotoSwipe.SliderClass.EventTypes = {
 		
-		onDisplayCurrentFullSizeImage: 'onDisplayCurrentFullSizeImage'
+		onDisplayCurrentFullSizeImage: 'PhotoSwipeSliderClassOnDisplayCurrentFullSizeImage'
 	
 	};
 	

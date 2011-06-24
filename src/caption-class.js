@@ -60,12 +60,12 @@
 		
 		
 		/*
-		 * Function: addEventListeners
+		 * Function: addEventHandlers
 		 */
-		addEventListeners: function(){
+		addEventHandlers: function(){
 			
 			if (Util.browser.touchSupported){
-				Util.DOM.addEventListener(this.el, 'touchmove', this.touchMoveHandler);
+				Util.Events.add(this.el, 'touchmove', this.touchMoveHandler);
 			}
 			
 		},
@@ -73,12 +73,12 @@
 		
 		
 		/*
-		 * Function: removeEventListeners
+		 * Function: removeEventHandlers
 		 */
-		removeEventListeners: function(){
+		removeEventHandlers: function(){
 			
 			if (Util.browser.touchSupported){
-				Util.DOM.removeEventListener(this.el, 'touchmove', this.touchMoveHandler);
+				Util.Events.remove(this.el, 'touchmove', this.touchMoveHandler);
 			}
 						
 		},

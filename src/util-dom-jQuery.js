@@ -355,51 +355,6 @@
 				}
 				//w3c
 				return window.pageYOffset;
-			},
-			
-			
-			
-			/*
-			 * Function: addEventListener
-			 */
-			addEventListener: function(el, type, listener){
-				
-				$(el).bind( type,  listener );
-			
-			},
-			
-			
-			/*
-			 * Function: removeEventListener
-			 */
-			removeEventListener: function(el, type, listener){
-				
-				$(el).unbind( type,  listener );
-			
-			},
-			
-			
-			/*
-			 * Function: getMousePosition
-			 */
-			getMousePosition: function(event){
-				
-				var retval = {
-					x: event.pageX,
-					y: event.pageY
-				};
-				
-				return retval;
-			},
-			
-			
-			/*
-			 * Function: getTouchEvent
-			 */
-			getTouchEvent: function(event){
-				
-				return event.originalEvent;
-			
 			}
 			
 		}

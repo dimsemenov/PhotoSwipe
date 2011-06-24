@@ -10,7 +10,7 @@
 	 * Most PhotoSwipe classes inherit from this class
 	 * Provides hooks for fading in and out
 	 */
-	Code.PhotoSwipe.ElementClass = Code.PhotoSwipe.EventClass.extend({
+	Code.PhotoSwipe.ElementClass = SimpleClass.extend({
 		
 		el: null,
 		settings: null,
@@ -24,8 +24,6 @@
 		 * Function: init
 		 */
 		init: function(options){
-			
-			this._super();
 			
 			this.settings = {
 				opacity: 1,
@@ -75,8 +73,8 @@
 		postShow: function(){
 			
 			this.isHidden = false;
-			this.addEventListeners();		
-			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onShow);
+			this.addEventHandlers();		
+			Util.Events.fire(this, Code.PhotoSwipe.ElementClass.EventTypes.onShow);
 		
 		},
 		
@@ -126,8 +124,8 @@
 				return;
 			}
 			
-			this.addEventListeners();			
-			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onFadeIn);
+			this.addEventHandlers();			
+			Util.Events.fire(this, Code.PhotoSwipe.ElementClass.EventTypes.onFadeIn);
 			
 		},
 		
@@ -154,8 +152,8 @@
 		postHide: function(){
 			
 			this.isHidden = true;
-			this.removeEventListeners();	
-			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onHide);
+			this.removeEventHandlers();	
+			Util.Events.fire(this, Code.PhotoSwipe.ElementClass.EventTypes.onHide);
 			
 		},
 		
@@ -186,9 +184,9 @@
 			}
 			
 			Util.DOM.hide(this.el);
-			this.removeEventListeners();
+			this.removeEventHandlers();
 			
-			this.dispatchEvent(Code.PhotoSwipe.ElementClass.EventTypes.onFadeOut);
+			Util.Events.fire(this, Code.PhotoSwipe.ElementClass.EventTypes.onFadeOut);
 			
 		},
 		
@@ -205,17 +203,17 @@
 		
 		
 		/*
-		 * Function: addEventListeners
+		 * Function: addEventHandlers
 		 */
-		addEventListeners: function(){
+		addEventHandlers: function(){
 					
 		},
 		
 		
 		/*
-		 * Function: removeEventListeners
+		 * Function: removeEventHandlers
 		 */
-		removeEventListeners: function(){
+		removeEventHandlers: function(){
 						
 		}
 		
@@ -225,11 +223,11 @@
 	
 	
 	Code.PhotoSwipe.ElementClass.EventTypes = {
-		onShow: 'onShow',
-		onHide: 'onHide',
-		onClick: 'onClick',
-		onFadeIn: 'onFadeIn',
-		onFadeOut: 'onFadeOut'
+		onShow: 'PhotoSwipeElementClassOnShow',
+		onHide: 'PhotoSwipeElementClassOnHide',
+		onClick: 'PhotoSwipeElementClassOnClick',
+		onFadeIn: 'PhotoSwipeElementClassOnFadeIn',
+		onFadeOut: 'PhotoSwipeElementClassOnFadeOut'
 	};
 	
 

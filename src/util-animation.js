@@ -57,23 +57,23 @@
 			
 			
 			/*
-			 * Function: _setTransitionEndEventListener
-			 * Sets an event listener on transition end. This will:
+			 * Function: _setTransitionEndEventHandler
+			 * Sets an event handler on transition end. This will:
 			 * - Remove the transitionEnd event hander
 			 * - Fire any animation end callback you specified
 			 *
 			 * The function stores a pointer to the event handler functions
 			 * on the element object itself (using Util.setElementData)
 			 *
-			 * This gives us a reference when removing the event listener
+			 * This gives us a reference when removing the event handler
 			 */
-			_setTransitionEndEventListener: function(el){
+			_setTransitionEndEventHandler: function(el){
 			
 				Util.setElementData(el, 'transitionEndEvent', function(e){
 					
 					var el = e.target;
 					
-					Util.DOM.removeEventListener(el, Util.Animation._getTransitionEndEventLabel(), Util.getElementData(el, 'transitionEndEvent'));
+					Util.Events.remove(el, Util.Animation._getTransitionEndEventLabel(), Util.getElementData(el, 'transitionEndEvent'));
 					Util.removeElementData(el, 'transitionEndEvent');
 									
 					var callback = Util.getElementData(el, 'transitionEndCallback');
@@ -96,7 +96,7 @@
 				});
 				
 				
-				Util.DOM.addEventListener(el, Util.Animation._getTransitionEndEventLabel(), Util.getElementData(el, 'transitionEndEvent'));
+				Util.Events.add(el, Util.Animation._getTransitionEndEventLabel(), Util.getElementData(el, 'transitionEndEvent'));
 			
 			},
 			
@@ -146,7 +146,7 @@
 					return;
 				}
 				
-				Util.DOM.removeEventListener(
+				Util.Events.remove(
 					el, 
 					Util.Animation._getTransitionEndEventLabel(), 
 					Util.getElementData(el, 'transitionEndEvent')
@@ -175,7 +175,7 @@
 				
 				Util.Animation._setTransition(el, 'opacity', duration + 'ms', function(el){
 					
-					Util.Animation._setTransitionEndEventListener(el);
+					Util.Animation._setTransitionEndEventHandler(el);
 					Util.DOM.setStyle(el, 'opacity', opacity);
 					
 				});
@@ -199,7 +199,7 @@
 				
 				Util.Animation._setTransition(el, 'opacity', duration + 'ms', function(el){
 					
-					Util.Animation._setTransitionEndEventListener(el);
+					Util.Animation._setTransitionEndEventHandler(el);
 					Util.DOM.setStyle(el, 'opacity', 0);
 				
 				});
@@ -227,7 +227,7 @@
 				//ease-in-out
 				Util.Animation._setTransition(el, 'all', duration + 'ms', 'ease-in', 0, function(el){
 					
-					Util.Animation._setTransitionEndEventListener(el);
+					Util.Animation._setTransitionEndEventHandler(el);
 					
 					var 
 						xPos = Util.getElementData(el, 'slideByXPos'),

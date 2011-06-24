@@ -8,7 +8,7 @@
 	/*
 	 * Class: Code.PhotoSwipe.SliderItemClass
 	 */
-	Code.PhotoSwipe.SliderItemClass = Code.PhotoSwipe.EventClass.extend({
+	Code.PhotoSwipe.SliderItemClass = SimpleClass.extend({
 		
 		el: null,
 		imageContainerEl: null,
@@ -26,9 +26,7 @@
 		 * Function: init
 		 */
 		init: function(parentEl){
-			
-			this._super();
-			
+						
 			this.parentEl = parentEl;	
 						
 			this.fullSizeImageLoadEventHandler = this.onFullSizeImageLoad.bind(this);
@@ -193,7 +191,8 @@
 				if (!this.fullSizeImage.isLoading){
 				
 					// Trigger off the load
-					this.fullSizeImage.addEventListener(
+					Util.Events.add(
+						this.fullSizeImage,
 						FullSizeImageClass.EventTypes.onLoad, 
 						this.fullSizeImageLoadEventHandler
 					);
@@ -211,8 +210,8 @@
 			Util.DOM.setAttribute(this.imageEl, 'src', this.fullSizeImage.src);
 			
 			this.resetImagePosition();
-	
-			this.dispatchEvent(Code.PhotoSwipe.SliderItemClass.EventTypes.onFullSizeImageDisplay);
+			
+			Util.Events.fire(this, Code.PhotoSwipe.SliderItemClass.EventTypes.onFullSizeImageDisplay);
 			
 		},
 		
@@ -222,7 +221,7 @@
 		 */
 		onFullSizeImageLoad: function(e){
 			
-			e.target.removeEventListener(FullSizeImageClass.EventTypes.onLoad, this.fullSizeImageLoadEventHandler);
+			Util.Events.remove(e.target, FullSizeImageClass.EventTypes.onLoad, this.fullSizeImageLoadEventHandler);
 			
 			if (Util.isNothing(this.fullSizeImage) || e.target.index !== this.fullSizeImage.index){
 				// Chances are the user has moved the slider
@@ -266,8 +265,8 @@
 
 	
 	Code.PhotoSwipe.SliderItemClass.EventTypes = {
-		onFullSizeImageDisplay: 'onFullSizeImageDisplay',
-		onFullSizeImageLoadAnomaly: 'onFullSizeImageLoadAnomaly'
+		onFullSizeImageDisplay: 'PhotoSwipeSliderItemClassOnFullSizeImageDisplay',
+		onFullSizeImageLoadAnomaly: 'PhotoSwipeSliderItemClassOnFullSizeImageLoadAnomaly'
 	};
 	
 	

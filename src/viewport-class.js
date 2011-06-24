@@ -95,48 +95,48 @@
 		
 		
 		/*
-		 * Function: addEventListeners
+		 * Function: addEventHandler
 		 */
-		addEventListeners: function(){
-						
+		addEventHandlers: function(){
+			
 			if (Util.browser.touchSupported){
-				Util.DOM.addEventListener(this.el, 'touchstart', this.touchStartHandler);
-				Util.DOM.addEventListener(this.el, 'touchmove', this.touchMoveHandler);
-				Util.DOM.addEventListener(this.el, 'touchend', this.touchEndHandler);
+				Util.Events.add(this.el, 'touchstart', this.touchStartHandler);
+				Util.Events.add(this.el, 'touchmove', this.touchMoveHandler);
+				Util.Events.add(this.el, 'touchend', this.touchEndHandler);
 			}
 			
 			if (Util.browser.gestureSupported){
-				Util.DOM.addEventListener(this.el, 'gesturestart', this.gestureStartHandler);
-				Util.DOM.addEventListener(this.el, 'gesturechange', this.gestureChangeHandler);
-				Util.DOM.addEventListener(this.el, 'gestureend', this.gestureEndHandler);
+				Util.Events.add(this.el, 'gesturestart', this.gestureStartHandler);
+				Util.Events.add(this.el, 'gesturechange', this.gestureChangeHandler);
+				Util.Events.add(this.el, 'gestureend', this.gestureEndHandler);
 			}
 			
-			Util.DOM.addEventListener(this.el, 'mousedown', this.mouseDownHandler);
-			Util.DOM.addEventListener(this.el, 'mouseup', this.mouseUpHandler);
+			Util.Events.add(this.el, 'mousedown', this.mouseDownHandler);
+			Util.Events.add(this.el, 'mouseup', this.mouseUpHandler);
 			
 		},
 		
 		
 		
 		/*
-		 * Function: removeEventListeners
+		 * Function: removeEventHandler
 		 */
-		removeEventListeners: function(){
+		removeEventHandlers: function(){
 			
 			if (Util.browser.touchSupported){
-				Util.DOM.removeEventListener(this.el, 'touchstart', this.touchStartHandler);
-				Util.DOM.removeEventListener(this.el, 'touchmove', this.touchMoveHandler);
-				Util.DOM.removeEventListener(this.el, 'touchend', this.touchEndHandler);
+				Util.Events.remove(this.el, 'touchstart', this.touchStartHandler);
+				Util.Events.remove(this.el, 'touchmove', this.touchMoveHandler);
+				Util.Events.remove(this.el, 'touchend', this.touchEndHandler);
 			}
 			
 			if (Util.browser.gestureSupported){
-				Util.DOM.removeEventListener(this.el, 'gesturestart', this.gestureStartHandler);
-				Util.DOM.removeEventListener(this.el, 'gesturechange', this.gestureChangeHandler);
-				Util.DOM.removeEventListener(this.el, 'gestureend', this.gestureEndHandler);
+				Util.Events.remove(this.el, 'gesturestart', this.gestureStartHandler);
+				Util.Events.remove(this.el, 'gesturechange', this.gestureChangeHandler);
+				Util.Events.remove(this.el, 'gestureend', this.gestureEndHandler);
 			}
 			
-			Util.DOM.removeEventListener(this.el, 'mousedown', this.mouseDownHandler);
-			Util.DOM.removeEventListener(this.el, 'mouseup', this.mouseUpHandler);
+			Util.Events.remove(this.el, 'mousedown', this.mouseDownHandler);
+			Util.Events.remove(this.el, 'mouseup', this.mouseUpHandler);
 			
 		},
 		
@@ -162,9 +162,9 @@
 		
 			e.preventDefault();
 			
-			var touchEvent = Util.DOM.getTouchEvent(e);
+			var touchEvent = Util.Events.getTouchEvent(e);
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.gestureStart,
@@ -182,9 +182,9 @@
 			
 			e.preventDefault();
 			
-			var touchEvent = Util.DOM.getTouchEvent(e);
+			var touchEvent = Util.Events.getTouchEvent(e);
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.gestureChange,
@@ -202,9 +202,9 @@
 			
 			e.preventDefault();
 			
-			var touchEvent = Util.DOM.getTouchEvent(e);
+			var touchEvent = Util.Events.getTouchEvent(e);
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.gestureEnd,
@@ -223,7 +223,7 @@
 			e.preventDefault();
 			
 			var 
-				touchEvent = Util.DOM.getTouchEvent(e),
+				touchEvent = Util.Events.getTouchEvent(e),
 				touches = touchEvent.touches;
 			
 			if (touches.length > 1){
@@ -231,7 +231,7 @@
 				return;
 			}
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.touchStart,
@@ -262,10 +262,10 @@
 			}
 			
 			var 
-				touchEvent = Util.DOM.getTouchEvent(e),
+				touchEvent = Util.Events.getTouchEvent(e),
 				touches = touchEvent.touches;
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.touchMove,
@@ -292,11 +292,11 @@
 			// Need to look into e.changedTouches
 			
 			var 
-				touchEvent = Util.DOM.getTouchEvent(e),
+				touchEvent = Util.Events.getTouchEvent(e),
 				touches = (!Util.isNothing(touchEvent.changedTouches)) ? touchEvent.changedTouches : touchEvent.touches,
 				touchEndPoint = this.getTouchPoint(touches);
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.touchEnd,
@@ -313,21 +313,21 @@
 		 * Function: onMouseDown
 		 */
 		onMouseDown: function(e){
-						
+			
 			e.preventDefault();
 			
-			Util.DOM.addEventListener(this.el, 'mousemove', this.mouseMoveHandler);
+			Util.Events.add(this.el, 'mousemove', this.mouseMoveHandler);
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.touchStart,
-				point: Util.DOM.getMousePosition(e)
+				point: Util.Events.getMousePosition(e)
 			});
 			
 			this.touchStartTime = new Date();
 			this.isGesture = false;
-			this.touchStartPoint = Util.DOM.getMousePosition(e);
+			this.touchStartPoint = Util.Events.getMousePosition(e);
 			
 		},
 		
@@ -340,11 +340,11 @@
 			
 			e.preventDefault();
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: Code.PhotoSwipe.ViewportClass.Actions.touchMove,
-				point: Util.DOM.getMousePosition(e)
+				point: Util.Events.getMousePosition(e)
 			});
 					
 		},
@@ -357,9 +357,9 @@
 		
 			e.preventDefault();
 			
-			Util.DOM.removeEventListener(this.el, 'mousemove', this.mouseMoveHandler);
+			Util.Events.remove(this.el, 'mousemove', this.mouseMoveHandler);
 			
-			this.fireTouchEvent(this.touchStartPoint, Util.DOM.getMousePosition(e));
+			this.fireTouchEvent(this.touchStartPoint, Util.Events.getMousePosition(e));
 			
 		},
 		
@@ -408,7 +408,7 @@
 						
 						self.doubleClickTimeout = null;
 						
-						self.dispatchEvent({ 
+						Util.Events.fire(self, { 
 							type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 							target: self, 
 							action: Code.PhotoSwipe.ViewportClass.Actions.click,
@@ -435,7 +435,7 @@
 				return;
 			}
 			
-			this.dispatchEvent({ 
+			Util.Events.fire(this, { 
 				type: Code.PhotoSwipe.ViewportClass.EventTypes.onTouch, 
 				target: this, 
 				action: action,
@@ -467,7 +467,7 @@
 	
 	
 	Code.PhotoSwipe.ViewportClass.EventTypes = {
-		onTouch: 'onTouch'
+		onTouch: 'PhotoSwipeViewportClassOnTouch'
 	};
 	
 	

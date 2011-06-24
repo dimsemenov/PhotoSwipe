@@ -9,13 +9,13 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
-Latest Release v1.0.13
----------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.13.zip)
+Latest Release v1.0.14
+----------------------
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.14.zip)
 
-- Upgraded to jQuery Mobile 1.0 beta.
+- "Double tap" to zoom and pan around an image now working in IE9
 
-- Added new "double tap" feature. Double tapping an image will zoom the image in and allow the user to pan around. This is still experimental and works on iOS (pinch and zoom still works), Android, BlackBerry, Chrome and Firefox 4 and above.
+- Major rewrite of how events are handled internally. If you experience any event related issues / things not firing please revert back to v1.0.13 and report the issue. Thanks!
 
 
 

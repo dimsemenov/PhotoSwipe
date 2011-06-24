@@ -88,15 +88,19 @@
 		setStartingTranslateFromCurrentTranform: function(){
 			
 			var 
-				transformValue = Util.coalesce(this.containerEl.style.webkitTransform, this.containerEl.style.MozTransform, this.containerEl.style.transform),
-				
-				transformExploded = transformValue.match( /translate\((.*?)\)/ );
+				transformValue = Util.coalesce(this.containerEl.style.webkitTransform, this.containerEl.style.MozTransform, this.containerEl.style.transform);
 			
-			if (!Util.isNothing(transformExploded)){
+			if (!Util.isNothing(transformValue)){
 				
-				transformExploded = transformExploded[1].split(', ');
-				this.transformSettings.startingTranslateX = window.parseInt(transformExploded[0], 10);
-				this.transformSettings.startingTranslateY = window.parseInt(transformExploded[1], 10);
+				var transformExploded = transformValue.match( /translate\((.*?)\)/ );
+				
+				if (!Util.isNothing(transformExploded)){
+				
+					transformExploded = transformExploded[1].split(', ');
+					this.transformSettings.startingTranslateX = window.parseInt(transformExploded[0], 10);
+					this.transformSettings.startingTranslateY = window.parseInt(transformExploded[1], 10);
+				
+				}
 			
 			}
 			
@@ -249,6 +253,7 @@
 			Util.DOM.setStyle(this.containerEl, {
 				webkitTransform: transform,
 				MozTransform: transform,
+				msTransform: transform,
 				transform: transform
 			});
 			
