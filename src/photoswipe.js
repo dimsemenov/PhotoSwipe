@@ -453,7 +453,7 @@
 		 * Function: onKeyDown
 		 */
 		onKeyDown: function(e){
-			
+		
 			this.stopSlideshow();
 			
 			if (e.keyCode === 37) { // Left
@@ -1477,7 +1477,8 @@
 			Code.PhotoSwipe.Current.setOptions(opts);
 			Code.PhotoSwipe.Current.setImages(thumbEls);
 			
-			$(thumbEls).live('click', function(e){
+			$(thumbEls).die('click.photoswipe');
+			$(thumbEls).live('click.photoswipe', function(e){
 				
 				e.preventDefault();
 				

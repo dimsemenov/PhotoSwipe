@@ -24,7 +24,7 @@
 				obj.__eventHandlers[type].push(handler);
 				
 				// DOM element 
-				if (this._isElement(obj)){
+				if (this._isBrowserObject(obj)){
 					obj.addEventListener(type, handler, false);
 				}
 				
@@ -48,7 +48,7 @@
 					// Removing all handlers for a type
 					if (Util.isNothing(handler)){
 						
-						if (this._isElement(obj)){
+						if (this._isBrowserObject(obj)){
 							for (var i=0; i<handlers.length; i++){
 								obj.removeEventListener(type, handlers[i], false);
 							}
@@ -67,7 +67,7 @@
 					}
 					
 					// DOM element 
-					if (this._isElement(obj)){
+					if (this._isBrowserObject(obj)){
 						obj.removeEventListener(type, handler, false);
 						return;
 					}
@@ -90,7 +90,7 @@
 				
 				
 				// DOM element 
-				if (this._isElement(obj)){
+				if (this._isBrowserObject(obj)){
 				
 					if (typeof type !== "string"){
 						throw 'type must be a string for DOM elements';
@@ -181,6 +181,14 @@
 					});
 				}
 			
+			},
+			
+			
+			_isBrowserObject: function(obj){
+				if (obj === window || obj === window.document){
+					return true;
+				}
+				return this._isElement(obj) || this._isNode(obj);
 			},
 			
 			
