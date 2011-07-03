@@ -125,6 +125,9 @@
 			<param name="filePath" value="${project.build.workdir}/examples/jquery-mobile.html"/>
 		</antcall>
 		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/jquery-mobile-ajax.html"/>
+		</antcall>
+		<antcall target="versionStamp">
 			<param name="filePath" value="${project.build.workdir}/examples/using-meta-data.html"/>
 		</antcall>
 		

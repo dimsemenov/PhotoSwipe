@@ -1,0 +1,83 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 
+	<title>PhotoSwipe</title> 
+	<meta name="author" content="Code Computerlove - http://www.codecomputerlove.com/" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+	
+	<link rel="stylesheet" href="../lib/jquery.mobile-1.0b1/jquery.mobile-1.0b1.min.css" />
+	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
+	<style type="text/css">
+		div.gallery-row:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
+		div.gallery-item { float: left; width: 33.333333%; }
+		div.gallery-item a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
+		div.gallery-item img { display: block; width: 100%; height: auto; }
+		#Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
+	</style>
+	
+	<script type="text/javascript" src="../lib/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="../lib/jquery.mobile-1.0b1/jquery.mobile-1.0b1.min.js"></script>
+	
+	<script type="text/javascript" src="../lib/simple-inheritance.min.js"></script>
+	<script type="text/javascript" src="../lib/jquery.animate-enhanced.min.js"></script>
+	
+	<script type="text/javascript" src="../code-photoswipe-jQuery-%%version%%.min.js"></script>
+	
+	
+	<script type="text/javascript">
+		
+		/*
+			This example shows how to set up PhotoSwipe using jQuery Mobile.
+		*/
+		
+		$(document).ready(function(){
+			
+			$('div.gallery-page').live('pageshow', function(e){
+					
+				// Re-initialize with the photos for the current page
+				$("div.gallery a", e.target).photoSwipe();
+				return true;
+				
+			})
+				
+		});
+	
+	</script>
+	
+</head> 
+<body> 
+
+
+<div data-role="page" id="Home">
+
+	<div data-role="header">
+		<h1>PhotoSwipe</h1>
+	</div>
+	
+	
+	<div data-role="content" >	
+		
+		<p>These examples show PhotoSwipe integrated with jQuery Mobile:</p>		
+		
+		<ul data-role="listview" data-inset="true">
+			<li><a href="ajax-gallery1.html">First Gallery</a></li> 
+			<li><a href="ajax-gallery2.html">Second Gallery</a></li> 
+		</ul> 
+		
+		<p>PhotoSwipe has also been designed to run stand-alone and can be easily integrated into your non jQuery / jQuery mobile websites:</p>
+		
+		<ul data-role="listview" data-inset="true">
+			<li><a href="http://m.codecomputerlove.com/flickr-uploads/default.aspx" target="_blank">Code Computerlove</a></li> 
+		</ul> 
+		
+	</div>
+
+	<div data-role="footer">
+		<h4>&copy; %%year%% Code Computerlove</h4>
+	</div>
+
+</div>
+
+
+</body>
+</html>
