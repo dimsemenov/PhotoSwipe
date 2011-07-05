@@ -286,6 +286,15 @@
 		},
 		
 		
+		/*
+		 * Function: addEventListener
+		 */
+		addEventListener: function(type, handler){
+			
+			Util.Events.add(this, type, handler);
+		
+		},
+		
 		
 		/*
 		 * Function: addEventHandlers
