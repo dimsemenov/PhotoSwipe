@@ -10,13 +10,11 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
 
-Latest Release v1.0.16
+Latest Release v1.0.17
 ----------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.16.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.17.zip)
 
-- Added new option to the imageScaleMethod setting "fitNoUpscale". This will ensure the image fits into the viewport but it won't upscale the image
-
-- Added new example "jquery-mobile-ajax.html"
+- Fixed issues with "events.html" example
 
 
 Features

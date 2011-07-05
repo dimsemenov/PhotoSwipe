@@ -189,3 +189,7 @@ Major update:
 - Added new example "jquery-mobile-ajax.html"
 
 
+1.0.17 05.07.22 - Ste Brennan
+-----------------------------
+
+- Fixed issues with "events.html" example
