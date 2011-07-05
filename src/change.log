@@ -172,3 +172,20 @@ Major update:
 
 - Major rewrite of how events are handled internally. 
 
+
+1.0.15 02.07.22 - Ste Brennan
+-----------------------------
+
+- Fixed issues with new event handler. Keyboard control should work again in the non-jQuery version
+
+- Added change to a resuse issue reported with jQuery Mobile
+
+
+1.0.16 05.07.22 - Ste Brennan
+-----------------------------
+
+- Added new option to the imageScaleMethod setting "fitNoUpscale". This will ensure the image fits into the viewport but it won't upscale the image
+
+- Added new example "jquery-mobile-ajax.html"
+
+

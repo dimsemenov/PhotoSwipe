@@ -180,7 +180,7 @@
 			<fileset dir="${project.build.workdir}"/>
 			<fileset file="MIT-license.txt"/>
 			<fileset file="README.md"/>
-			<fileset file="${project.src.dir}/change-log.html"/>
+			<fileset file="${project.src.dir}/change.log"/>
 			<fileset file="${project.src.dir}/photoswipe.css"/>
 			<fileset file="${project.src.dir}/photoswipe-icons.png"/>
 			<fileset file="${project.src.dir}/photoswipe-icons@2x.png"/>

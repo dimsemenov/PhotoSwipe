@@ -9,16 +9,14 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
-Latest Release v1.0.15
+
+Latest Release v1.0.16
 ----------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.15.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.16.zip)
 
-- Fixed issues with new event handler. Keyboard control should work again in the non-jQuery version
+- Added new option to the imageScaleMethod setting "fitNoUpscale". This will ensure the image fits into the viewport but it won't upscale the image
 
-- Added change to a resuse issue reported with jQuery Mobile
-
-- Again, if you experience any event related issues / things not firing please revert back to v1.0.13 and report the issue. Thanks!
-
+- Added new example "jquery-mobile-ajax.html"
 
 
 Features
@@ -136,7 +134,7 @@ Options
 
 - **slideshowDelay**: The delay between showing the next image when in slideshow mode. Default "3000"
 	
-- **imageScaleMethod**: How images will fit onto the screen. Either "fit" or "zoom". "fit" ensures the image always fits the screen. "zoom" the image will always fill the full screen, this may cause the image to be "zoomed" in and cropped. Default "fit"
+- **imageScaleMethod**: How images will fit onto the screen. Either "fit", "fitNoUpscale" or "zoom". "fit" ensures the image always fits the screen. "fitNoUpscale" works like "fit" but will never upscale the image. "zoom" the image will always fill the full screen, this may cause the image to be "zoomed" in and cropped. Default "fit"
 
 - **preventHide**: Once PhotoSwipe is active, prevents the user closing it. Useful for "exclusive mode" (see examples/exclusive-mode.html). Default "false"
 
@@ -187,7 +185,7 @@ Options
 - **getImageCaption**: Like "getImageSource", function to specify how the gallery obatins image captions. By default, the gallery looks for an image's "alt" tag.
 
 
--- **getImageMetaData**: Function to associated additional meta data against an image in the gallery. This meta data can then be used in your own code if you listen to the "onDisplayImage" event.
+- **getImageMetaData**: Function to associated additional meta data against an image in the gallery. This meta data can then be used in your own code if you listen to the "onDisplayImage" event.
 
 		getImageMetaData: function(el){
 				
