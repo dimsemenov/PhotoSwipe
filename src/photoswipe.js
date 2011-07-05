@@ -65,7 +65,7 @@
 				swipeTimeThreshold: 250,
 				loop: true,
 				slideshowDelay: 3000,
-				imageScaleMethod: 'fit', // Either "fit" or "zoom"
+				imageScaleMethod: 'fit', // Either "fit", "fitNoUpscale" or "zoom"
 				preventHide: false,
 				zIndex: 1000,
 				backButtonHideEnabled: true,

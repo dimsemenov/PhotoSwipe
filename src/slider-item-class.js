@@ -103,47 +103,70 @@
 				maxWidth = Util.DOM.width(this.el),
 				maxHeight = Util.DOM.height(this.el);
 			
-			if (this.fullSizeImage.isLandscape) {
-				// Ensure the width fits the screen
-				scale = maxWidth / this.fullSizeImage.naturalWidth;
-			}
-			else {
-				// Ensure the height fits the screen
-				scale = maxHeight / this.fullSizeImage.naturalHeight;
-			}
 			
-			newWidth = Math.round(this.fullSizeImage.naturalWidth * scale);
-			newHeight = Math.round(this.fullSizeImage.naturalHeight * scale);
-			
-			if (this.fullSizeImage.scaleMethod === 'zoom'){
+			if (this.fullSizeImage.scaleMethod === 'fitNoUpscale'){
 				
-				scale = 1;
-				if (newHeight < maxHeight){
-					scale = maxHeight /newHeight;	
-				}
-				else if (newWidth < maxWidth){
-					scale = maxWidth /newWidth;	
-				}
+				newWidth = this.fullSizeImage.naturalWidth;
+				newHeight = this.fullSizeImage.naturalHeight;
 				
-				if (scale !== 1) {
-					newWidth = Math.round(newWidth * scale);
-					newHeight = Math.round(newHeight * scale);
-				}
-				
-			}
-			else if (this.fullSizeImage.scaleMethod === 'fit') {
-				// Rescale again to ensure full image fits into the viewport
-				scale = 1;
-				if (newWidth > maxWidth) {
+				if (newWidth > maxWidth){
 					scale = maxWidth / newWidth;
-				}
-				else if (newHeight > maxHeight) {
-					scale = maxHeight / newHeight;
-				}
-				if (scale !== 1) {
 					newWidth = Math.round(newWidth * scale);
 					newHeight = Math.round(newHeight * scale);
 				}
+				
+				if (newHeight > maxHeight){
+					scale = maxHeight / newHeight;
+					newHeight = Math.round(newHeight * scale);
+					newWidth = Math.round(newWidth * scale);
+				}
+				
+			}
+			else{
+				
+				if (this.fullSizeImage.isLandscape) {
+					// Ensure the width fits the screen
+					scale = maxWidth / this.fullSizeImage.naturalWidth;
+				}
+				else {
+					// Ensure the height fits the screen
+					scale = maxHeight / this.fullSizeImage.naturalHeight;
+				}
+				
+				newWidth = Math.round(this.fullSizeImage.naturalWidth * scale);
+				newHeight = Math.round(this.fullSizeImage.naturalHeight * scale);
+				
+				if (this.fullSizeImage.scaleMethod === 'zoom'){
+					
+					scale = 1;
+					if (newHeight < maxHeight){
+						scale = maxHeight /newHeight;	
+					}
+					else if (newWidth < maxWidth){
+						scale = maxWidth /newWidth;	
+					}
+					
+					if (scale !== 1) {
+						newWidth = Math.round(newWidth * scale);
+						newHeight = Math.round(newHeight * scale);
+					}
+					
+				}
+				else if (this.fullSizeImage.scaleMethod === 'fit') {
+					// Rescale again to ensure full image fits into the viewport
+					scale = 1;
+					if (newWidth > maxWidth) {
+						scale = maxWidth / newWidth;
+					}
+					else if (newHeight > maxHeight) {
+						scale = maxHeight / newHeight;
+					}
+					if (scale !== 1) {
+						newWidth = Math.round(newWidth * scale);
+						newHeight = Math.round(newHeight * scale);
+					}
+				}
+			
 			}
 			
 			newTop = ((maxHeight - newHeight) / 2) + 'px';
