@@ -287,10 +287,11 @@
 		
 		
 		/*
-		 * Function: addEventListener
+		 * Function: addEventHandler
 		 */
-		addEventListener: function(type, handler){
+		addEventHandler: function(type, handler){
 			
+		//	console.log('come on');
 			Util.Events.add(this, type, handler);
 		
 		},

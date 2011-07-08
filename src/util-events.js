@@ -173,6 +173,16 @@
 			},
 			
 			
+			/*
+			 * Function: domReady
+			 */
+			domReady: function(handler){
+				
+				document.addEventListener('DOMContentLoaded', handler, false);
+			
+			},
+			
+			
 			_checkHandlersProperty: function(obj){
 				
 				if (Util.isNothing(obj.__eventHandlers)){

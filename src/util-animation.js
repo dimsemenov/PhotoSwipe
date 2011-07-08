@@ -236,7 +236,6 @@
 					Util.removeElementData(el, 'slideByXPos');
 					Util.removeElementData(el, 'slideByYPos');
 					
-					
 					if (Util.browser.webkit){
 						if (Util.browser.is3dSupported){
 							Util.DOM.setStyle(el, { webkitTransform: 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)'});

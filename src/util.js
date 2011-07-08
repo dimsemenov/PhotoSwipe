@@ -267,7 +267,7 @@
 	if (Code.PhotoSwipe.Util.browser.webkit && !Code.PhotoSwipe.Util.browser.chrome){
 		Code.PhotoSwipe.Util.browser.is3dSupported = !Code.PhotoSwipe.Util.isNothing(testEl.style.WebkitPerspective);	
 	}
-		
+			
 	Code.PhotoSwipe.Util.browser.isCSSTransformSupported = ( !Code.PhotoSwipe.Util.isNothing(testEl.style.WebkitTransform) || !Code.PhotoSwipe.Util.isNothing(testEl.style.MozTransform) || !Code.PhotoSwipe.Util.isNothing(testEl.style.msTransform) || !Code.PhotoSwipe.Util.isNothing(testEl.style.transformProperty) );
 		
 	Code.PhotoSwipe.Util.browser.touchSupported = Code.PhotoSwipe.Util.browser.isEventSupported('touchstart');

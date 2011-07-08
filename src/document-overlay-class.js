@@ -43,8 +43,12 @@
 		resetPosition: function(){
 			
 			// Set the height and width to fill the document
-			Util.DOM.width(this.el, Util.DOM.bodyWidth());
-			Util.DOM.height(this.el, Util.DOM.bodyHeight());
+			Util.DOM.width(this.el, Util.DOM.bodyOuterWidth());
+			var newHeight = Util.DOM.bodyOuterHeight();
+			if (Util.DOM.windowHeight > newHeight){
+				newHeight = Util.DOM.windowHeight;
+			}
+			Util.DOM.height(this.el, newHeight);
 			
 		}
 	

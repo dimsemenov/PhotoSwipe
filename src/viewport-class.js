@@ -88,7 +88,7 @@
 				top: Util.DOM.windowScrollTop()  + 'px'
 			});
 			
-			Util.DOM.width(this.el, Util.DOM.bodyWidth());
+			Util.DOM.width(this.el, Util.DOM.bodyOuterWidth());
 			Util.DOM.height(this.el, Util.DOM.windowHeight());
 	
 		},

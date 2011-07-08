@@ -75,6 +75,16 @@
 				
 				return event.originalEvent;
 			
+			},
+			
+			
+			/*
+			 * Function: domReady
+			 */
+			domReady: function(handler){
+			
+				$(document).ready(handler);
+			
 			}
 			
 		}

@@ -111,7 +111,7 @@
 			}
 			
 			Util.DOM.setStyle(this.el, 'top', top + 'px');
-			Util.DOM.width(this.el, Util.DOM.bodyWidth());
+			Util.DOM.width(this.el, Util.DOM.bodyOuterWidth());
 			
 		},
 		

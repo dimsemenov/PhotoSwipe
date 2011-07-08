@@ -141,7 +141,7 @@ Major update:
 - Should now play nicely if including MooTools thanks to chameron [https://github.com/chameron]
 
 
-1.0.12 09.06.12 - Ste Brennan
+1.0.12 09.06.11 - Ste Brennan
 -----------------------------
 
 - Fixed issues with Chrome 12
@@ -157,7 +157,7 @@ Major update:
 - Updated to jQuery Animate Enhanced v0.75
 
 
-1.0.13 09.06.22 - Ste Brennan
+1.0.13 09.06.11 - Ste Brennan
 -----------------------------
 
 - Upgraded to jQuery Mobile 1.0 beta
@@ -165,7 +165,7 @@ Major update:
 - Added new "double tap" feature. Double tapping an image will zoom the image in and allow the user to pan around. This is still experimental and works on iOS (pinch and zoom still works), Android, BlackBerry, Chrome and Firefox 4 and above
 
 
-1.0.14 24.06.22 - Ste Brennan
+1.0.14 24.06.11 - Ste Brennan
 -----------------------------
 
 - "Double tap" to zoom and pan around an image now working in IE9
@@ -173,7 +173,7 @@ Major update:
 - Major rewrite of how events are handled internally. 
 
 
-1.0.15 02.07.22 - Ste Brennan
+1.0.15 02.07.11 - Ste Brennan
 -----------------------------
 
 - Fixed issues with new event handler. Keyboard control should work again in the non-jQuery version
@@ -181,7 +181,7 @@ Major update:
 - Added change to a resuse issue reported with jQuery Mobile
 
 
-1.0.16 05.07.22 - Ste Brennan
+1.0.16 05.07.11 - Ste Brennan
 -----------------------------
 
 - Added new option to the imageScaleMethod setting "fitNoUpscale". This will ensure the image fits into the viewport but it won't upscale the image
@@ -189,7 +189,23 @@ Major update:
 - Added new example "jquery-mobile-ajax.html"
 
 
-1.0.17 05.07.22 - Ste Brennan
+1.0.17 05.07.11 - Ste Brennan
 -----------------------------
 
 - Fixed issues with "events.html" example
+
+
+1.0.18 08.07.11 - Ste Brennan
+-----------------------------
+
+- Now sized correctly if your HTML body has padding on it
+
+- Fixed issued with jQuery and listening to PhotoSwipe events - was throwing up a "too much recursion" error
+
+- Have had to change the way you listen to events. Use "Code.PhotoSwipe.Current.addEventHandler" not Code.PhotoSwipe.Current.addEventListener. This is related to the above fix
+
+- Upgraded to jQuery 1.6.2
+
+- Upgraded to jQuery Animate Enhanced v0.76
+
+

@@ -287,6 +287,26 @@
 			
 			
 			/*
+			 * Function: documentOuterWidth
+			 */
+			documentOuterWidth: function(){
+				
+				return Util.DOM.width(document.documentElement);
+				
+			},
+
+			
+			/*
+			 * Function: documentOuterHeight
+			 */
+			documentOuterHeight: function(){
+				
+				return Util.DOM.outerHeight(document.documentElement);
+				
+			},
+			
+			
+			/*
 			 * Function: bodyWidth
 			 */
 			bodyWidth: function(){
@@ -302,6 +322,26 @@
 			bodyHeight: function(){
 				
 				return $(document.body).height();
+			
+			},
+			
+			
+			/*
+			 * Function: bodyOuterWidth
+			 */
+			bodyOuterWidth: function(){
+				
+				return Util.DOM.outerWidth(document.body);
+			
+			},
+			
+			
+			/*
+			 * Function: bodyOuterHeight
+			 */
+			bodyOuterHeight: function(){
+				
+				return Util.DOM.outerHeight(document.body);
 			
 			},
 			

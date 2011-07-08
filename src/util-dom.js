@@ -391,7 +391,27 @@
 			 */
 			documentHeight: function(){
 				
-				return Math.round(Util.DOM.height(document.documentElement));
+				return Util.DOM.height(document.documentElement);
+				
+			},
+			
+			
+			/*
+			 * Function: documentOuterWidth
+			 */
+			documentOuterWidth: function(){
+				
+				return Util.DOM.width(document.documentElement);
+				
+			},
+
+			
+			/*
+			 * Function: documentOuterHeight
+			 */
+			documentOuterHeight: function(){
+				
+				return Util.DOM.outerHeight(document.documentElement);
 				
 			},
 			
@@ -412,6 +432,26 @@
 			bodyHeight: function(){
 				
 				return Util.DOM.height(document.body);
+			
+			},
+			
+			
+			/*
+			 * Function: bodyOuterWidth
+			 */
+			bodyOuterWidth: function(){
+				
+				return Util.DOM.outerWidth(document.body);
+			
+			},
+			
+			
+			/*
+			 * Function: bodyOuterHeight
+			 */
+			bodyOuterHeight: function(){
+				
+				return Util.DOM.outerHeight(document.body);
 			
 			},
 			

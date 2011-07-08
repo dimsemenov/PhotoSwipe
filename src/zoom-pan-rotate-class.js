@@ -57,7 +57,7 @@
 				// Odd, for Android 2.2 & above, if you don't specify a zIndex, scaling does not work!
 				zIndex: 1 
 			});
-			Util.DOM.width(this.el, Util.DOM.bodyWidth());
+			Util.DOM.width(this.el, Util.DOM.bodyOuterWidth());
 			Util.DOM.height(this.el, Util.DOM.windowHeight());
 			
 			this.containerEl = Util.DOM.createElement('div');

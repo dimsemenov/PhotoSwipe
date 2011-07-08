@@ -17,7 +17,7 @@
 	<script type="text/javascript" src="../util-animation.js"></script>
 	
 	<!--
-	<script type="text/javascript" src="../lib/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript" src="../lib/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="../lib/jquery.animate-enhanced.min.js"></script>
 	<script type="text/javascript" src="../util-dom-jQuery.js"></script>
 	<script type="text/javascript" src="../util-events-jQuery.js"></script>
@@ -47,9 +47,12 @@
 			"/src/examples/debug.html"
 		
 		*/
-
-		// Set up PhotoSwipe with all anchor tags in the Gallery container 
-		document.addEventListener('DOMContentLoaded', function(){
+		
+		// Here we are using the "Code.PhotoSwipe.Util.Events.domReady" function
+		// to set the DOM ready event handler.
+		// You could quite easily use $(document).ready() or document.addEventListener
+		// as Code.PhotoSwipe.Util.Events.domReady is just a warpper for these
+		Code.PhotoSwipe.Util.Events.domReady(function(e){
 			
 			var addEventListeners = true;
 			
@@ -57,105 +60,105 @@
 				// Add event listeners
 			
 				// onBeforeShow
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeShow, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onBeforeShow, function(e){
 					
 					console.log('onBeforeShow');
 					
 				});
 				
 				// onShow
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShow, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onShow, function(e){
 					
 					console.log('onShow');
 					
 				});
 				
 				// onBeforeHide
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeHide, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onBeforeHide, function(e){
 					
 					console.log('onBeforeHide');
 					
 				});
 				
 				// onHide
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onHide, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onHide, function(e){
 					
 					console.log('onHide');
 					
 				});
 				
 				// onShowNext
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowNext, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onShowNext, function(e){
 					
 					console.log('onShowNext');
 					
 				});
 		
 				// onShowPrevious
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onShowPrevious, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onShowPrevious, function(e){
 					
 					console.log('onShowPrevious');
 					
 				});
 				
 				// onDisplayImage
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onDisplayImage, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onDisplayImage, function(e){
 					
 					console.log('onDisplayImage');
 					
 				});
 				
 				// onResetPosition
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onResetPosition, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onResetPosition, function(e){
 					
 					console.log('onResetPosition');
 					
 				});
 				
 				// onSlideshowStart
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStart, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onSlideshowStart, function(e){
 					
 					console.log('onSlideshowStart');
 					
 				});
 				
 				// onSlideshowStop
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onSlideshowStop, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onSlideshowStop, function(e){
 					
 					console.log('onSlideshowStop');
 					
 				});
 				
 				// onBeforeCaptionAndToolbarShow
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarShow, function(e){
 					
 					console.log('onBeforeCaptionAndToolbarShow');
 					
 				});
 				
 				// onBeforeCaptionAndToolbarHide
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide, function(e){
 					
 					console.log('onBeforeCaptionAndToolbarHide');
 					
 				});
 				
 				// onViewportClick
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onViewportClick, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onViewportClick, function(e){
 					
 					console.log('onViewportClick');
 					
 				});
 				
 				// onCaptionAndToolbarShow
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarShow, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarShow, function(e){
 					
 					console.log('onCaptionAndToolbarShow');
 					
 				});
 				
 				// onCaptionAndToolbarHide
-				Code.PhotoSwipe.Current.addEventListener(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarHide, function(e){
+				Code.PhotoSwipe.Current.addEventHandler(Code.PhotoSwipe.EventTypes.onCaptionAndToolbarHide, function(e){
 					
 					console.log('onCaptionAndToolbarHide');
 					
@@ -204,7 +207,7 @@
 			
 			console.log(thumbEls);
 		
-		}, false);
+		});
 		
 		
 	</script>
