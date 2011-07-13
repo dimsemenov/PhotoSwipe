@@ -146,12 +146,17 @@ div.ps-toolbar-play div.ps-toolbar-content
 	background-position: -88px 0;
 }
 
-/* Hi-res retina display */
-@media only screen and (-webkit-min-device-pixel-ratio: 2)
+/* Hi-res display */
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+       only screen and (min--moz-device-pixel-ratio: 1.5),
+       only screen and (min-resolution: 240dpi)
 {
 	div.ps-toolbar div div.ps-toolbar-content
 	{
+		-moz-background-size: 176px 88px;
+		-o-background-size: 176px 88px;
 		-webkit-background-size: 176px 88px;
+		background-size: 176px 88px;
 		background-image: url(photoswipe-icons@2x.png);
 	}
 }
