@@ -167,9 +167,9 @@
 			 */
 			addClass: function(el, className){
 				
-				var currentClassValue = Util.DOM.getAttribute(el, 'class');
-				
-				var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
+				var 
+					currentClassValue = Util.DOM.getAttribute(el, 'class'),
+					re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
 				
 				if ( ! re.test(currentClassValue) ){
 					if (currentClassValue !== ''){
@@ -186,27 +186,28 @@
 			 * Function: removeClass
 			 */
 			removeClass: function(el, className){
-			
-				var currentClassValue = Util.DOM.getAttribute(el, 'class');
 				
-				var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
+				var 
+					currentClassValue = Util.DOM.getAttribute(el, 'class'),
+					classes = Util.trim(currentClassValue).split(' '),
+					newClassVal = '',
+					i;
 				
-				if (re.test(currentClassValue)){
-					
-					currentClassValue = currentClassValue.replace(re, ' ');
-					
-					Util.DOM.setAttribute(el, 'class', currentClassValue);
-					Util.DOM.removeClass(el, className);
-					
+				for (i=0; i<classes.length; i++){
+					if (classes[i] === className){
+						continue;
+					}
+					if (newClassVal !== ''){
+						newClassVal += ' ';
+					}
+					newClassVal += classes[i];
+				}
+				
+				if (newClassVal === ''){
+					Util.DOM.removeAttribute(el, 'class');
 				}
 				else{
-					currentClassValue = Util.trim(currentClassValue);
-					if (currentClassValue === ''){
-						Util.DOM.removeAttribute(el, 'class');
-					}
-					else{
-						Util.DOM.setAttribute(el, 'class', currentClassValue);
-					}
+					Util.DOM.setAttribute(el, 'class', newClassVal);
 				}
 				
 			},

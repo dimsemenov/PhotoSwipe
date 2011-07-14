@@ -10,19 +10,16 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
 
-Latest Release v1.0.18
+Latest Release v1.0.19
 ----------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.18.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.19.zip)
 
-- Now sized correctly if your HTML body has padding on it
+- Fixed issue with Util.DOM.removeClass
 
-- Fixed issued with jQuery and listening to PhotoSwipe events - was throwing up a "too much recursion" error
+- Typo in events.html corrected
 
-- Have had to change the way you listen to events. Use "Code.PhotoSwipe.Current.addEventHandler" not Code.PhotoSwipe.Current.addEventListener. This is related to the above fix
+- Added hi-res css dedection like how jQuery Mobile does it
 
-- Upgraded to jQuery 1.6.2
-
-- Upgraded to jQuery Animate Enhanced v0.76
 
 
 Features

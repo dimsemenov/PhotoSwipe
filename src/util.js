@@ -256,8 +256,7 @@
 		 * Function: trim
 		 */
 		trim: function(val) {
-			var re = new RegExp(/\s+?/);
-			return val.replace(re, '');
+			return val.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 		
 		

@@ -209,3 +209,12 @@ Major update:
 - Upgraded to jQuery Animate Enhanced v0.76
 
 
+1.0.19 14.07.11 - Ste Brennan
+-----------------------------
+- Fixed issue with Util.DOM.removeClass
+
+- Typo in events.html corrected
+
+- Added hi-res css dedection like how jQuery Mobile does it
+
+

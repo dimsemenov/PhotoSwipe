@@ -253,7 +253,7 @@
 				// to load. If that's the case, rethrow the event, the 
 				// slider will be listening for this and can find a
 				// relevant slideitem for the loaded image
-				this.dispatchEvent({ 
+				Util.Events.fire(this, { 
 					type: Code.PhotoSwipe.SliderItemClass.EventTypes.onFullSizeImageLoadAnomaly, 
 					target: this, 
 					fullSizeImage: e.target 
