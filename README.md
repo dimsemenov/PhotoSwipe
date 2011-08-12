@@ -17,7 +17,7 @@ A beta release of the next version of PhotoSwipe is now available to [download](
 
 This is a brand new version of PhotoSwipe re-written from the ground up.
 
-THIS VERSION IF FOR TESTING / REVIEW PURPOSES ONLY.
+THIS VERSION IS FOR TESTING / REVIEW PURPOSES ONLY.
 
 Unfortunately, to cram in all the great new features, this has meant that how you implement PhotoSwipe had to be modified. I've kept configuration settings etc as close to v1 where possible.
 
