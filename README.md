@@ -10,6 +10,42 @@ The current version supports mobile handsets running WebKit based browsers, i.e.
 PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
 
 
+
+VERSION 2.0.0b1 NOW AVAILABLE!
+------------------------------
+A beta release of the next version of PhotoSwipe is now available to [download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.0b1.zip).
+
+This is a brand new version of PhotoSwipe re-written from the ground up.
+
+THIS VERSION IF FOR TESTING / REVIEW PURPOSES ONLY.
+
+Unfortunately, to cram in all the great new features, this has meant that how you implement PhotoSwipe had to be modified. I've kept configuration settings etc as close to v1 where possible.
+
+It would be great to get any feedback on this before we officially launch v2.
+
+It's recommended you review the examples to see how to implement v2. New features include:
+
+- Being able to drag and "snap" into place the next and previous image rather than just swiping
+
+- Group sets of images on a page and run them within their own instance of PhotoSwipe
+
+- Configurable margin between images
+
+- Provide your own HTML for the toolbar
+
+- Next and previous buttons go to the image directly by default (no animation). This is exactly like iOS. It is of course configurable
+
+- Basic mouse wheel support for moving between the next and previous images
+
+- Play slide show with the "enter" key
+
+- Auto start in slideshow mode
+
+And a host of other under the hood amends, tweaks and fixes.
+
+
+
+
 Latest Release v1.0.19
 ----------------------
 [Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.19.zip)
