@@ -7,21 +7,15 @@ Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a H
 
 The current version supports mobile handsets running WebKit based browsers, i.e. iOS, Android and Blackberry 6.
 
-PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above.
+PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safari and Internet Explorer 8 and above and in a limited capacity on Windows Phone 7 (Mango).
 
 
 
-VERSION 2.0.0b1 NOW AVAILABLE!
-------------------------------
-A beta release of the next version of PhotoSwipe is now available to [download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.0b1.zip).
+Latest Release v2.0.0
+---------------------
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.0.zip)
 
-This is a brand new version of PhotoSwipe re-written from the ground up.
-
-THIS VERSION IS FOR TESTING / REVIEW PURPOSES ONLY.
-
-Unfortunately, to cram in all the great new features, this has meant that how you implement PhotoSwipe had to be modified. I've kept configuration settings etc as close to v1 where possible.
-
-It would be great to get any feedback on this before we officially launch v2.
+This is a brand new version of PhotoSwipe re-written from the ground up. Unfortunately, to cram in all the great new features, this has meant that how you implement PhotoSwipe had to be modified. I've kept configuration settings etc as close to v1 where possible.
 
 It's recommended you review the examples to see how to implement v2. New features include:
 
@@ -43,18 +37,7 @@ It's recommended you review the examples to see how to implement v2. New feature
 
 And a host of other under the hood amends, tweaks and fixes.
 
-
-
-
-Latest Release v1.0.19
-----------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.19.zip)
-
-- Fixed issue with Util.DOM.removeClass
-
-- Typo in events.html corrected
-
-- Added hi-res css dedection like how jQuery Mobile does it
+If you still require v1, you can find the [last build here](https://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.19.zip)
 
 
 
@@ -88,18 +71,19 @@ Features
 - Comprehensive customisation options:
 
     - Presentation controlled via CSS
-	
+
     - Set whether the gallery loops or not i.e. when you reach the end, is the next image the first image, or does the gallery show a bounce effect to indicate that you have reached the end.
   
     - Hide or show captions and toolbar
-  
+
     - Change caption and toolbar positions
-  
+
+    - Provide your own toolbar HTML
+
     - Set the speeds of all animations used, from sliding in to fading.
 
 
-		
-		
+
 Getting Started
 ---------------
 
@@ -111,116 +95,143 @@ There are two distributions of the library:
 
 - The jQuery distribution that uses jQuery as it's engine. 
 
-It is recommended for WebKit based mobile devices to use the default distribution. This distribution will run faster. It does not require jQuery (so one less library to download to your mobile device). It also uses CSS3 to achieve animation effects. This is extremely noticable when running on an iOS device as animation will use hardware acceleration and will feel more "native" to the device. The default distribution will also work on desktop WebKit browsers (such as Chrome and Safari) as well as Firefox.
+It is recommended for WebKit based mobile devices to use the default distribution. This negates a lot of the overhead from using jQuery. It does not require jQuery (so one less library to download to your mobile device!). The default distribution will also work on desktop WebKit browsers (such as Chrome and Safari) as well as Firefox 4 and above.
 
-Use the jQuery distibution if you need to support a wider range of browsers such as Internet Explorer etc. By default, this distribution will not use hardware acceleration for animation on iOS devices so is noticably slower. You can however override the default animation functionality in jQuery by including the excellent [Animate Enhanced](https://github.com/benbarnett/jQuery-Animate-Enhanced) library (example included).
-
-Both default and jQuery distribution come with a jQuery plugin wrapper to bind elements to the gallery. So for the default distribution, if you really need to, you can still use jQuery to find your images in your HTML document, hook into the jQuery DOM ready event and use the jQuery PhotoSwipe plugin to display the library. The gallery will still be running on the default optimised engine, but you have the convience of jQuery to set things up should you need to.
+Use the jQuery distibution if you need to support a wider range of browsers such as Internet Explorer etc. 
 
 
 
 Getting Started - Default Distribution
 --------------------------------------
 
-See "examples/index.html". 
+See "examples/01-default.html". 
 
-This example assumes no jQuery at all and is heavily optimised for WebKit and Mozilla browsers.
+This example assumes no jQuery at all and is heavily optimised for WebKit and Mozilla browsers. PhotoSwipe.attach takes two parameters, an array of HTML elements and optional options.
 
 	// Set up PhotoSwipe with all anchor tags in the Gallery container 
 	document.addEventListener('DOMContentLoaded', function(){
 		
-		Code.photoSwipe('a', '#Gallery');
+		var myPhotoSwipe = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), { enableMouseWheel: false , enableKeyboard: false } );
 		
 	}, false);
-	
-	
-Getting Started - Default Distribution (with jQuery plugin)
------------------------------------------------------------
-	
-See "examples/jquery-plugin.html". 
 
-This example assumes you want to use the convience of jQuery for initiating the gallery, but still the  optimised engine for WebKit and Mozilla browsers.
 
-	$(document).ready(function(){
-			
-		$("#Gallery a").photoSwipe();
-				
-	});
+PhotoSwipe can be initiated without being attached to HTML elements. See "examples/09-exclusive-mode-no-thumbnails.html" for more information.
 
-	
+
+
 Getting Started - Default Distribution (with jQuery engine)
 -----------------------------------------------------------
 
-See "examples/jquery-engine.html". 
+See "examples/02-jquery.html". 
 
-This example assumes you want to use jQuery for the gallery's engine as well as initiating the gallery. It is not advised to use this approach if you are targetting mobile WebKit based devices.
+	// Set up PhotoSwipe with all anchor tags in the Gallery container 
+	$(document).ready(function(){
+		
+		var myPhotoSwipe = $("#Gallery a").photoSwipe({ enableMouseWheel: false , enableKeyboard: false });
+		
+	});
 
-	
+
+
 Options
 -------
 
-- **fadeInSpeed**: The speed of any fading-in elements in milliseconds. Default "250"
+- **allowUserZoom**: Allow the user to zoom / pan around images. Default = true 
 
-- **fadeOutSpeed**: The speed of any fading-out elements in milliseconds. Default "500"
+- **autoStartSlideshow**: Automatically starts the slideshow mode when PhotoSwipe is activated. Default = false
 
-- **slideSpeed**: How fast images slide into view in milliseconds. Default "250"
-	
-- **swipeThreshold**: How many pixels your finger has to move across the screen to register a swipe gesture. Default "50"
+- **allowRotationOnUserZoom**: iOS only - Allow the user to rotate images whilst zooming / panning. Default = false
 
-- **swipeTimeThreshold**: A swipe must take no longer than this value in milli-seconds to be registered as a swipe gesture. Default "250"
+- **backButtonHideEnabled**: This will hide the gallery when the user hits the back button. Useful for Android  and Blackberry. Works in BB6, Android v2.1 and above and iOS 4 and above. Default = true
 
-- **loop**: Whether the gallery auto-loops back to the beginning when you reach the end. Default "true"
+- **captionAndToolbarAutoHideDelay**: How long to wait before the caption and toolbar automatically disappear. Default = 5000. Set to 0 to prevent auto disappearing
 
-- **slideshowDelay**: The delay between showing the next image when in slideshow mode. Default "3000"
-	
-- **imageScaleMethod**: How images will fit onto the screen. Either "fit", "fitNoUpscale" or "zoom". "fit" ensures the image always fits the screen. "fitNoUpscale" works like "fit" but will never upscale the image. "zoom" the image will always fill the full screen, this may cause the image to be "zoomed" in and cropped. Default "fit"
+- **captionAndToolbarFlipPosition**: Place the caption at the bottom and the toolbar at the top. Default = false
 
-- **preventHide**: Once PhotoSwipe is active, prevents the user closing it. Useful for "exclusive mode" (see examples/exclusive-mode.html). Default "false"
+- **captionAndToolbarHide**: Hide the caption and toolbar. Default = false
 
-- **zIndex**: The intial zIndex for PhotoSwipe. Default "1000"
+- **captionAndToolbarOpacity**: The opacity of the caption and toolbar. Default = 0.8
 
-- **backButtonHideEnabled**: This will hide the gallery when the user hits the back button. Useful for Android  and Blackberry. Works in BB6, Android v2.1 and above and iOS 4 and above. Default "true"
+- **captionAndToolbarShowEmptyCaptions**: Shows a blank caption area even if a caption cannot be found for the current image. Default = true
 
-- **allowUserZoom**: Allow the user to zoom / pan around images. Default "true" 
+- **cacheMode**: Code.PhotoSwipe.Cache.Mode.normal (default) or Code.PhotoSwipe.Cache.Mode.aggressive. Changes how PhotoSwipe manages it's cache. Aggressive will purposely set images that are not either the current, next or previous to be an empty "spacer" type image. This helps on older iOS versions if you have excessively large images. In the main, normal should suffice
 
-- **allowRotationOnUserZoom**: iOS only - Allow the user to rotate images whilst zooming / panning. Default "true" 
+- **doubleTapSpeed**: Double tap speed in milliseconds. Default = 300
 
-- **maxUserZoom**: The maximum a user can zoom into an image. Default 5.0 (set to zero for this to be ignored)
+- **doubleTapZoomLevel**: When the user double taps an image, the default "zoom-in" level. Default = 2.5
 
-- **minUserZoom**: The minimum a user can zoom out of an image. Default 0.5 (set to zero for this to be ignored)
+- **enableDrag**: Enables dragging the next / previous image into view. Default = true
 
-- **adjustUserPanToZoom**: Adjusts the speed of panning to match the current zoom value. Default "true"
+- **enableKeyboard**: Enables keyboard support. Default = true
 
-- **doubleClickSpeed**: Double click speed. Default "300" (in milliseconds)
+- **enableMouseWheel**: Enables mouse wheel support. Default = true
 
-- **doubleClickZoom**: When the user double clicks an image, the default "zoom-in" level. Default 2.5
+- **fadeInSpeed**: The speed of any fading-in elements in milliseconds. Default = 250
 
-- **captionAndToolbarHide**: Hide the caption and toolbar. Default "false"
+- **fadeOutSpeed**: The speed of any fading-out elements in milliseconds. Default = 250
 
-- **captionAndToolbarHideOnSwipe**: Hide the caption and toolbar when you swipe to the next image. Default "true"
+- **imageScaleMethod**: How images will fit onto the screen. Either "fit", "fitNoUpscale" or "zoom". "fit" ensures the image always fits the screen. "fitNoUpscale" works like "fit" but will never upscale the image. "zoom" the image will always fill the full screen, this may cause the image to be "zoomed" in and cropped. Default = "fit"
 
-- **captionAndToolbarFlipPosition**: Place the caption at the bottom and the toolbar at the top. Default "false"
+- **invertMouseWheel**: By default, moving the mouse wheel down will move to the next image, up to the previous. Setting this to true reverses this. Default = false
 
-- **captionAndToolbarAutoHideDelay**: How long to wait before the caption and toolbar automatically disappear. Default "5000". Set to "0" to prevent auto disappearing
+- **jQueryMobile**:Whether PhotoSwipe is integrated into a jQuery Mobile project or not. By default, PhotoSwipe will try and work this out for you
 
-- **captionAndToolbarOpacity**: The opacity of the caption and toolbar. Default "0.8"
+- **jQueryMobileDialogHash**: The window hash tag used by jQuery Mobile and dialog pages. Default = "&ui-state=dialog"
 
-- **captionAndToolbarShowEmptyCaptions**: Shows a blank caption area even if a caption cannot be found for the current image. Default "false" 
+- **loop**: Whether the gallery auto-loops back to the beginning when you reach the end. Default = true
 
-- **jQueryMobile**: Whether PhotoSwipe is integrated into a jQuery Mobile project or not. By default, PhotoSwipe will try and work this out for you.
+- **margin**: The margin between each image in pixels. Default = 20
 
-- **jQueryMobileDialogHash**: The window hash tag used by jQuery Mobile and dialog pages. Default "&ui-state=dialog".
+- **maxUserZoom**: The maximum a user can zoom into an image. Default = 5.0 (set to zero for this to be ignored)
+
+- **minUserZoom**: The minimum a user can zoom out of an image. Default = 0.5 (set to zero for this to be ignored)
+
+- **mouseWheelSpeed**: How responsive the mouse wheel is. Default = 500
+
+- **nextPreviousSlideSpeed**: How fast images are displayed when the next/previous buttons are clicked in milliseconds. Default = 0 (immediately)
+
+- **preventHide**: Prevents the user closing PhotoSwipe. Also hides the "close" button from the toolbar. Useful for "exclusive mode" (see examples/08-exclusive-mode.html). Default = false
+
+- **preventSlideshow**: Prevents the slideshow being activated. Also hides the "play" button from the toolbar. Default = false
+
+- **slideshowDelay**: The delay between showing the next image when in slideshow mode in milliseconds. Default = 3000
+
+- **slideSpeed**: How fast images slide into view in milliseconds. Default = 250
+
+- **swipeThreshold**: How many pixels your finger has to move across the screen to register a swipe gesture. Default = 50
+
+- **swipeTimeThreshold**: A swipe must take no longer than this value in milliseconds to be registered as a swipe gesture. Default = 250
+
+- **slideTimingFunction**: Easing function used when sliding. Default = "ease-out
+
+- **zIndex**: The intial zIndex for PhotoSwipe. Default = 1000
+
+
+
+Options - Custom Functions
+--------------------------
+
+You can provide your own functions to tell PhotoSwipe how to work with your mark up etc.
+
+- **getToolbar**: Function that returns the HTML string to be used for the toolbar content
 
 - **getImageSource**: Function to specify how the gallery obatins image sources. By default, the gallery assumes you send it a list of images with each image wrapped in an anchor tag. The anchor tag will contain the URL to the full size image. You can change this e.g. if you supply a list of images without an anchor tag, and supply the full size URL on the image's "rel" attribute:
 
-		Code.photoSwipe('a', '#Gallery', {
+
+		document.addEventListener('DOMContentLoaded', function(){
 		
-			getImageSource: function(el){ 
-				return el.getAttribute('rel'); 
-			}
+			var myPhotoSwipe = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), {
+			
+				getImageSource: function(el){ 
+					return el.getAttribute('rel'); 
+				}
+				
+			} );
 		
-		});
-	
+		}, false);
+
+
 - **getImageCaption**: Like "getImageSource", function to specify how the gallery obatins image captions. By default, the gallery looks for an image's "alt" tag.
 
 
@@ -233,8 +244,9 @@ Options
 			}
 			
 		}
-	
-	
+
+
+
 Keyboard controls for desktop browsers
 --------------------------------------
 
@@ -245,3 +257,5 @@ Keyboard controls for desktop browsers
 - **Escape**: Close gallery
 
 - **Space bar**: Show toolbar / caption if they have faded from view. If both are hidden via the configuration, space bar will close the gallery
+
+- **Enter**: Start slideshow

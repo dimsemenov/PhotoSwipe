@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="PhotoSwipe" default="build" basedir=".">
 	
-	<property name="jscompjar" location="${project.tools.dir}/google-closure/compiler.jar" />
-	
-	<taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="tools/google-closure/compiler.jar" />
-	
 	<property file="build.properties"/>
 	
 	<!--
 	<taskdef name="jsmin" classname="net.matthaynes.jsmin.JSMin_Task" classpath="tools/jsmin/jsmin.0.2.4.jar"/>
 	-->
+	
+	<taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="tools/google-closure/compiler.jar" />
+	
+	<taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask"  classpath="tools/jslint4java-2.0.0/jslint4java-2.0.0.jar" />
+	
 	
 	<target name="build">
 		
@@ -24,13 +25,12 @@
 		<mkdir dir="${project.build.workdir}"/>
 		<mkdir dir="${project.build.artifactdir}/${project.build.version}"/>
 		
-		
 		<antcall target="buildJs">
 			<param name="engine" value=""/>
 		</antcall>
 		
 		<antcall target="buildJs">
-			<param name="engine" value="-jQuery"/>
+			<param name="engine" value=".jquery"/>
 		</antcall>
 		
 		<antcall target="buildLibs" />
@@ -43,92 +43,116 @@
 	
 	<target name="buildJs">
 		
-		<concat destfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.js">	
+		<!-- Checks -->
+		<jslint options="browser,indent=0,plusplus,sloppy,white,indent=0,newcap,nomen,regexp,confusion,forin=true">
+			<formatter type="plain" />		
+			<fileset dir="${project.src.dir}/code.util/" includes="*.js" />
+		</jslint>
+		
+		<jslint options="browser,indent=0,plusplus,sloppy,white,indent=0,newcap,nomen,regexp,confusion,forin=true">
+			<formatter type="plain" />		
+			<fileset dir="${project.src.dir}/code.photoswipe/" includes="*.js" />
+		</jslint>
+		
+		
+		<concat destfile="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.js">	
 			
-			<fileset dir="." includes="${project.src.dir}/util.js" />
-			<fileset dir="." includes="${project.src.dir}/util-dom${engine}.js" />
-			<fileset dir="." includes="${project.src.dir}/util-events${engine}.js" />
-			<fileset dir="." includes="${project.src.dir}/util-animation${engine}.js" />
-			<fileset dir="." includes="${project.src.dir}/element-class.js" />
-			<fileset dir="." includes="${project.src.dir}/full-size-image-class.js" />
-			<fileset dir="." includes="${project.src.dir}/document-overlay-class.js" />
-			<fileset dir="." includes="${project.src.dir}/viewport-class.js" />
-			<fileset dir="." includes="${project.src.dir}/slider-item-class.js" />
-			<fileset dir="." includes="${project.src.dir}/slider-class.js" />
-			<fileset dir="." includes="${project.src.dir}/caption-class.js" />
-			<fileset dir="." includes="${project.src.dir}/toolbar-class.js" />
-			<fileset dir="." includes="${project.src.dir}/caption-toolbar-class.js" />
-			<fileset dir="." includes="${project.src.dir}/zoom-pan-rotate-class.js" />
-			<fileset dir="." includes="${project.src.dir}/photoswipe.js" />
+			<fileset dir="." includes="${project.src.dir}/code.util/util.js" />
+			<fileset dir="." includes="${project.src.dir}/code.util/browser.js" />
 			
+			<fileset dir="." includes="${project.src.dir}/code.util/events${engine}.js" />
+			<fileset dir="." includes="${project.src.dir}/code.util/dom${engine}.js" />
+			<fileset dir="." includes="${project.src.dir}/code.util/animation.js" />
+			
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/touchelement.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/touchelement.class.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/image.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/image.class.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/cache.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/cache.class.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/documentoverlay.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/documentoverlay.class.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/carousel.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/carousel.class.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/carousel.class.animation.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/toolbar.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/toolbar.class.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/uilayer.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/uilayer.class.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/zoompanrotate.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/zoompanrotate.class.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/photoswipe.js" />
+			<fileset dir="." includes="${project.src.dir}/code.photoswipe/photoswipe.class.js" />
+		
 		</concat>
 		
+				
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.js"/>
+			<param name="filePath" value="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.js"/>
 		</antcall>
 		
 		<!-- Minimise -->
-		<jscomp compilationLevel="simple" debug="false" output="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js">
+		<jscomp compilationLevel="simple" debug="false" output="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min.js">
 			<sources dir="${project.build.workdir}">
-				<file name="code-photoswipe${engine}-${project.build.version}.js" />
+				<file name="code.photoswipe${engine}-${project.build.version}.js" />
 			</sources>
 		</jscomp>
-		
 		<!--
-		<jsmin srcfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.js" suffix="true" />
+		<jsmin srcfile="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.js" suffix="true" />
 		-->
 		
 		<!-- Add license etc to the minified version -->
-		<concat destfile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js">	
-			<fileset dir="." includes="${project.src.dir}/version-header.txt" />
-			<fileset dir="." includes="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js" />
+		<concat destfile="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min2.js">	
+			<fileset dir="." includes="${project.src.dir}/version.header.txt" />
+			<fileset dir="." includes="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min.js" />
 		</concat>
 		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js"/>
+			<param name="filePath" value="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min2.js"/>
 		</antcall>
 		
-		<delete file="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js"/>
+		<delete file="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min.js"/>
 		
-		<move file="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min2.js" tofile="${project.build.workdir}/code-photoswipe${engine}-${project.build.version}.min.js" />
-		
-		
+		<move file="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min2.js" tofile="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min.js" />
+			
 		<copy todir="${project.build.workdir}/examples">
 			<fileset dir="${project.src.dir}/examples"/>
 		</copy>
-				
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/index.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/01-default.html"/>
 		</antcall>
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/jquery-plugin.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/02-jquery.html"/>
 		</antcall>
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/jquery-engine.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/03-multiple-image-sets.html"/>
 		</antcall>
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/jquery-engine-animate-enhanced.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/04-jquery-mobile.html"/>
 		</antcall>
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/advanced-setup.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/05-jquery-mobile-ajax.html"/>
 		</antcall>
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/events.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/06-events.html"/>
 		</antcall>
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/exclusive-mode.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/07-custom-toolbar.html"/>
 		</antcall>
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/exclusive-mode-with-array.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/08-exclusive-mode.html"/>
 		</antcall>
+		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/jquery-mobile.html"/>
-		</antcall>
-		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/jquery-mobile-ajax.html"/>
-		</antcall>
-		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/examples/using-meta-data.html"/>
+			<param name="filePath" value="${project.build.workdir}/examples/09-exclusive-mode-no-thumbnails.html"/>
 		</antcall>
 		
 	</target>
@@ -142,26 +166,6 @@
 			<fileset dir="${project.src.dir}/lib"/>
 		</copy>
 		
-		<jscomp compilationLevel="simple" warning="quiet" debug="false" output="${project.build.workdir}/lib/simple-inheritance.min.js">
-			<sources dir="${project.build.workdir}/lib">
-				<file name="simple-inheritance.js" />
-			</sources>
-		</jscomp>
-		
-		<!--
-		<jsmin srcfile="${project.build.workdir}/lib/simple-inheritance.js" suffix="true" />
-		-->
-		
-		<concat destfile="${project.build.workdir}/lib/simple-inheritance.min2.js">	
-			<fileset dir="." includes="${project.build.workdir}/lib/simple-inheritance.txt" />
-			<fileset dir="." includes="${project.build.workdir}/lib/simple-inheritance.min.js" />
-		</concat>
-		
-		<delete file="${project.build.workdir}/lib/simple-inheritance.txt" />
-		<delete file="${project.build.workdir}/lib/simple-inheritance.js" />
-		<delete file="${project.build.workdir}/lib/simple-inheritance.min.js" />
-		
-		<move file="${project.build.workdir}/lib/simple-inheritance.min2.js" tofile="${project.build.workdir}/lib/simple-inheritance.min.js" />
 		
 	</target>
 	
@@ -181,10 +185,10 @@
 			<fileset file="MIT-license.txt"/>
 			<fileset file="README.md"/>
 			<fileset file="${project.src.dir}/change.log"/>
-			<fileset file="${project.src.dir}/photoswipe.css"/>
-			<fileset file="${project.src.dir}/photoswipe-icons.png"/>
-			<fileset file="${project.src.dir}/photoswipe-icons@2x.png"/>
-			<fileset file="${project.src.dir}/photoswipe-loader.gif"/>
+			<fileset file="${project.src.dir}/assets/photoswipe.css"/>
+			<fileset file="${project.src.dir}/assets/icons.png"/>
+			<fileset file="${project.src.dir}/assets/icons@2x.png"/>
+			<fileset file="${project.src.dir}/assets/loader.gif"/>
 		</copy>
 		
 		<copy todir="${project.build.artifactdir}/${project.build.version}/lib">
@@ -195,9 +199,8 @@
 			<fileset dir="${project.build.workdir}/examples"/>
 		</copy>
 		
-		
 		<delete dir="${project.build.workdir}" />
-	
+		
 	</target>
 	
 </project>

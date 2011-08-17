@@ -5,121 +5,22 @@
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
 	<link href="styles.css" type="text/css" rel="stylesheet" />
 	
-	<link href="../assets/photoswipe.css" type="text/css" rel="stylesheet" />
+	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
 	
 	<script type="text/javascript" src="../lib/klass.min.js"></script>
-	
-	<script type="text/javascript" src="../code.util/util.js"></script>
-	<script type="text/javascript" src="../code.util/browser.js"></script>
-	
-	<script type="text/javascript" src="../code.util/dom.js"></script>
-	<script type="text/javascript" src="../code.util/events.js"></script>
-	<script type="text/javascript" src="../code.util/animation.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/touchelement.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/touchelement.class.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/image.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/image.class.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/cache.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/cache.class.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/documentoverlay.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/documentoverlay.class.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/carousel.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/carousel.class.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/carousel.class.animation.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/toolbar.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/toolbar.class.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/uilayer.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/uilayer.class.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/zoompanrotate.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/zoompanrotate.class.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/photoswipe.js"></script>
-	<script type="text/javascript" src="../code.photoswipe/photoswipe.class.js"></script>
+	<script type="text/javascript" src="../code.photoswipe-%%version%%.min.js"></script>
 	
 	
 	<script type="text/javascript">
+
+		(function(window, PhotoSwipe){
 		
-		/* 
-			Overview: 
-			---------
+			document.addEventListener('DOMContentLoaded', function(){
 			
-			This is a debug version loading all int individual class files. 
-			It will not run from the released "examples" folder. It needs to be run from
-			"/src/examples/debug.html"
-		
-		*/
-		
-		// Here we are using the "Code.PhotoSwipe.Util.Events.domReady" function
-		// to set the DOM ready event handler.
-		// You could quite easily use $(document).ready() or document.addEventListener
-		// as Code.PhotoSwipe.Util.Events.domReady is just a warpper for these
-		
-		(function(window, Util, PhotoSwipe){
-			
-			Util.Events.domReady(function(e){
-				
-				var 
-					addEventListeners = false,
-					instance;
-				
-				instance = PhotoSwipe.attach(Util.DOM.find('#Gallery a'), { 
-				
-					// General
-					fadeInSpeed: 250,
-					fadeOutSpeed: 250,
-					preventHide: false,
-					preventSlideshow: false,
-					zIndex: 1000,
-					backButtonHideEnabled: true,
-					enableKeyboard: true,
-					enableMouseWheel: true,
-					invertMouseWheel: false,
-					mouseWheelSpeed: 500,
-					autoStartSlideshow: false,
-					jQueryMobile: ( !Util.isNothing(window.jQuery) && !Util.isNothing(window.jQuery.mobile) ),
-					jQueryMobileDialogHash: '&ui-state=dialog',
+				var
+					options = {},
+					instance = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), options );
 					
-					
-					// Carousel
-					loop: true,
-					slideSpeed: 250,
-					nextPreviousSlideSpeed: 0,
-					enableDrag: true,
-					swipeThreshold: 50,
-					swipeTimeThreshold: 250,
-					slideTimingFunction: 'ease-out',
-					slideshowDelay: 3000,
-					doubleTapSpeed: 250,
-					margin: 20,
-					imageScaleMethod: 'fit', // Either "fit", "fitNoUpscale" or "zoom",
-					
-					// Toolbar
-					captionAndToolbarHide: false,
-					captionAndToolbarFlipPosition: false,
-					captionAndToolbarAlwaysVisible: true,
-					captionAndToolbarAutoHideDelay: 5000,
-					captionAndToolbarOpacity: 0.8,
-					captionAndToolbarShowEmptyCaptions: true,
-					getToolbar: PhotoSwipe.Toolbar.getToolbar,
-					
-					
-					// ZoomPanRotate
-					allowUserZoom: true, 
-					allowRotationOnUserZoom: false,
-					maxUserZoom: 5.0,
-					minUserZoom: 0.5,
-					doubleTapZoomLevel: 2.5,
-					
-					
-					// Cache
-					getImageSource: PhotoSwipe.Cache.Functions.getImageSource,
-					getImageCaption: PhotoSwipe.Cache.Functions.getImageCaption,
-					getImageMetaData: PhotoSwipe.Cache.Functions.getImageMetaData,
-					cacheMode: PhotoSwipe.Cache.Mode.normal
-				
-				});
-				
-				
-				if (addEventListeners){
 					
 					// onBeforeShow
 					instance.addEventHandler(PhotoSwipe.EventTypes.onBeforeShow, function(e){
@@ -194,13 +95,11 @@
 						console.log('onCaptionAndToolbarHide');
 					});
 					
-				}
 					
-					
-			});
+			}, false);
 			
-		}(window, window.Code.Util, window.Code.PhotoSwipe));
-		
+			
+		}(window, window.Code.PhotoSwipe));
 		
 	</script>
 	

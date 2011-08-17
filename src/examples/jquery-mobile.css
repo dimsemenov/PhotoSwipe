@@ -1,0 +1,6 @@
+.gallery { list-style: none; padding: 0; margin: 0; }
+.gallery:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
+.gallery li { float: left; width: 33.33333333%; }
+.gallery li a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
+.gallery li img { display: block; width: 100%; height: auto; }
+#Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }

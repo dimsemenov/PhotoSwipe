@@ -12,8 +12,9 @@
 	<script type="text/javascript" src="../code.util/util.js"></script>
 	<script type="text/javascript" src="../code.util/browser.js"></script>
 	
-	<script type="text/javascript" src="../code.util/dom.js"></script>
-	<script type="text/javascript" src="../code.util/events.js"></script>
+	<script type="text/javascript" src="../lib/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="../code.util/dom.jquery.js"></script>
+	<script type="text/javascript" src="../code.util/events.jquery.js"></script>
 	<script type="text/javascript" src="../code.util/animation.js"></script>
 	<script type="text/javascript" src="../code.photoswipe/touchelement.js"></script>
 	<script type="text/javascript" src="../code.photoswipe/touchelement.class.js"></script>
@@ -72,8 +73,7 @@
 					backButtonHideEnabled: true,
 					enableKeyboard: true,
 					enableMouseWheel: true,
-					invertMouseWheel: false,
-					mouseWheelSpeed: 500,
+					mouseWheelSpeed: 350,
 					autoStartSlideshow: false,
 					jQueryMobile: ( !Util.isNothing(window.jQuery) && !Util.isNothing(window.jQuery.mobile) ),
 					jQueryMobileDialogHash: '&ui-state=dialog',
