@@ -11,9 +11,9 @@ PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safa
 
 
 
-Latest Release v2.0.0
+Latest Release v2.0.1
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.0.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.1.zip)
 
 This is a brand new version of PhotoSwipe re-written from the ground up. Unfortunately, to cram in all the great new features, this has meant that how you implement PhotoSwipe had to be modified. I've kept configuration settings etc as close to v1 where possible.
 
