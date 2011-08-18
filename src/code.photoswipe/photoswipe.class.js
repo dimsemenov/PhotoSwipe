@@ -42,7 +42,7 @@
 		carouselSlideByEndHandler: null,
 		carouselSlideshowStartHandler: null,
 		carouselSlideshowStopHandler: null,
-		toolbarClickHandler: null,
+		toolbarTapHandler: null,
 		toolbarBeforeShowHandler: null,
 		toolbarShowHandler: null,
 		toolbarBeforeHideHandler: null,
@@ -307,7 +307,7 @@
 				this.carouselSlideByEndHandler = this.onCarouselSlideByEnd.bind(this);
 				this.carouselSlideshowStartHandler = this.onCarouselSlideshowStart.bind(this);
 				this.carouselSlideshowStopHandler = this.onCarouselSlideshowStop.bind(this);
-				this.toolbarClickHandler = this.onToolbarClick.bind(this);
+				this.toolbarTapHandler = this.onToolbarTap.bind(this);
 				this.toolbarBeforeShowHandler = this.onToolbarBeforeShow.bind(this);
 				this.toolbarShowHandler = this.onToolbarShow.bind(this);
 				this.toolbarBeforeHideHandler = this.onToolbarBeforeHide.bind(this);
@@ -359,7 +359,7 @@
 			Util.Events.add(this.carousel, Carousel.EventTypes.onSlideshowStop, this.carouselSlideshowStopHandler);
 			
 			if (!Util.isNothing(this.toolbar)){
-				Util.Events.add(this.toolbar, Toolbar.EventTypes.onClick, this.toolbarClickHandler);
+				Util.Events.add(this.toolbar, Toolbar.EventTypes.onTap, this.toolbarTapHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onBeforeShow, this.toolbarBeforeShowHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onShow, this.toolbarShowHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler);
@@ -396,7 +396,7 @@
 			}
 			
 			if (!Util.isNothing(this.toolbar)){
-				Util.Events.remove(this.toolbar, Toolbar.EventTypes.onClick, this.toolbarClickHandler);
+				Util.Events.remove(this.toolbar, Toolbar.EventTypes.onTap, this.toolbarTapHandler);
 				Util.Events.remove(this.toolbar, Toolbar.EventTypes.onBeforeShow, this.toolbarBeforeShowHandler);
 				Util.Events.remove(this.toolbar, Toolbar.EventTypes.onShow, this.toolbarShowHandler);
 				Util.Events.remove(this.toolbar, Toolbar.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler);
@@ -903,9 +903,9 @@
 		
 		
 		/*
-		 * Function: onToolbarClick
+		 * Function: onToolbarTap
 		 */
-		onToolbarClick: function(e){
+		onToolbarTap: function(e){
 		
 			switch(e.action){
 				
@@ -926,7 +926,14 @@
 					break;
 					
 			}
-		
+			
+			Util.Events.fire(this, { 
+				type: PhotoSwipe.EventTypes.onToolbarTap, 
+				target: this,
+				toolbarAction: e.action,
+				tapTarget: e.tapTarget
+			});
+			
 		},
 		
 		

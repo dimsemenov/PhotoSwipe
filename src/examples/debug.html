@@ -194,13 +194,19 @@
 						console.log('onCaptionAndToolbarHide');
 					});
 					
+					// onToolbarTap
+					instance.addEventHandler(PhotoSwipe.EventTypes.onToolbarTap, function(e){
+						console.log('onToolbarTap');
+						console.log(e);
+					});
+					
 				}
 					
 					
 			});
 			
+			
 		}(window, window.Code.Util, window.Code.PhotoSwipe));
-		
 		
 	</script>
 	

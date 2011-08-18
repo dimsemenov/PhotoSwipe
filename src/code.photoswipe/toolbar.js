@@ -30,13 +30,14 @@
 		close: 'close',
 		play: 'play',
 		next: 'next',
-		previous: 'previous'
+		previous: 'previous',
+		none: 'none'
 	};
 	
 	
 	
 	PhotoSwipe.Toolbar.EventTypes = {
-		onClick: 'PhotoSwipeToolbarOnClick',
+		onTap: 'PhotoSwipeToolbarOnClick',
 		onBeforeShow: 'PhotoSwipeToolbarOnBeforeShow',
 		onShow: 'PhotoSwipeToolbarOnShow',
 		onBeforeHide: 'PhotoSwipeToolbarOnBeforeHide',

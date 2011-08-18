@@ -73,7 +73,7 @@
 		 */
 		load: function(){
 			
-			if (this.imageEl.src === this.src){
+			if (this.imageEl.src.indexOf(this.src) > -1){
 				Util.Events.fire(this, {
 					type: PhotoSwipe.Image.EventTypes.onLoad,
 					target: this
@@ -98,7 +98,7 @@
 				return;
 			}
 			
-			if (this.imageEl.src === this.src){
+			if (this.imageEl.src.indexOf(this.src) > -1){
 				this.imageEl.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 				if (!Util.isNothing(this.imageEl.parentNode)){
 					Util.DOM.removeChild(this.imageEl, this.imageEl.parentNode);

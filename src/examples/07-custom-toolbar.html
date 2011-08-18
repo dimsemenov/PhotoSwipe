@@ -32,16 +32,23 @@
 					},
 					instance = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), options );
 					
-					// onShow - add click event handler to our "say hi" button
+					// onShow - store a reference to our "say hi" button
 					instance.addEventHandler(PhotoSwipe.EventTypes.onShow, function(e){
-						sayHi = window.document.querySelectorAll('.say-hi')[0];
-						Util.Events.add(sayHi, 'click', sayHiClickHandler);
+						sayHiEl = window.document.querySelectorAll('.say-hi')[0];
 					});
 					
-					// onBeforeHide - remove click event handler from our "say hi" button
+					// onToolbarTap - listen out for when the toolbar is tapped
+					instance.addEventHandler(PhotoSwipe.EventTypes.onToolbarTap, function(e){
+						if (e.toolbarAction === PhotoSwipe.Toolbar.ToolbarAction.none){
+							if (e.tapTarget === sayHiEl || Util.DOM.isChildOf(e.tapTarget, sayHiEl)){
+								alert('hi!');
+							}
+						}
+					});
+					
+					// onBeforeHide - clean up
 					instance.addEventHandler(PhotoSwipe.EventTypes.onBeforeHide, function(e){
-						Util.Events.remove(sayHi, 'click', sayHiClickHandler);
-						sayHi = null;
+						sayHiEl = null;
 					});
 					
 					

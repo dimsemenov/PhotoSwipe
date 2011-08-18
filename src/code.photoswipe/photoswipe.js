@@ -31,8 +31,9 @@
 		onBeforeCaptionAndToolbarShow: 'PhotoSwipeOnBeforeCaptionAndToolbarShow',
 		onCaptionAndToolbarShow: 'PhotoSwipeOnCaptionAndToolbarShow',
 		onBeforeCaptionAndToolbarHide: 'PhotoSwipeOnBeforeCaptionAndToolbarHide',
-		onCaptionAndToolbarHide: 'PhotoSwipeOnCaptionAndToolbarHide'
-		
+		onCaptionAndToolbarHide: 'PhotoSwipeOnCaptionAndToolbarHide',
+		onToolbarTap: 'PhotoSwipeOnToolbarTap'
+	
 	};
 	
 	

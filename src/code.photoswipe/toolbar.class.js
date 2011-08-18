@@ -319,9 +319,9 @@
 		
 		
 		/*
-		 * Function: handleClick
+		 * Function: handleTap
 		 */
-		handleClick: function(e){
+		handleTap: function(e){
 			
 			this.clearTimeout();
 			
@@ -343,13 +343,14 @@
 			this.setTimeout();
 			
 			if (Util.isNothing(action)){
-				return;
+				action = PhotoSwipe.Toolbar.ToolbarAction.none;
 			}
 			
 			Util.Events.fire(this, { 
-				type: PhotoSwipe.Toolbar.EventTypes.onClick, 
+				type: PhotoSwipe.Toolbar.EventTypes.onTap, 
 				target: this, 
-				action: action 
+				action: action,
+				tapTarget: e.target
 			});
 			
 		},
@@ -471,7 +472,7 @@
 			
 			e.preventDefault();
 			Util.Events.remove(this.toolbarEl, 'click', this.clickHandler);
-			this.handleClick(e);
+			this.handleTap(e);
 			
 		},
 		
@@ -494,7 +495,7 @@
 		onClick: function(e){
 			
 			e.preventDefault();
-			this.handleClick(e);
+			this.handleTap(e);
 			
 		}
 		
