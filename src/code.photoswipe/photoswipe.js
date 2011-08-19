@@ -72,11 +72,11 @@
 	/*
 	 * Function: Code.PhotoSwipe.attach
 	 */
-	PhotoSwipe.attach = function(images, options){
+	PhotoSwipe.attach = function(images, options, id){
 		
 		var i, instance, image;
 		
-		instance = PhotoSwipe.createInstance(images, options);
+		instance = PhotoSwipe.createInstance(images, options, id);
 		
 		// Add click event handlers if applicable
 		for (i=0; i<images.length; i++){
@@ -104,11 +104,9 @@
 	 */
 	if (window.jQuery){
 		
-		window.jQuery.fn.photoSwipe = function(options){
+		window.jQuery.fn.photoSwipe = function(options, id){
 		
-			options = Util.coalesce(options, { });
-			
-			return PhotoSwipe.attach(this, options);
+			return PhotoSwipe.attach(this, options, id);
 			
 		};
 		
@@ -147,7 +145,7 @@
 	/*
 	 * Function: Code.PhotoSwipe.createInstance
 	 */
-	PhotoSwipe.createInstance = function(images, options){
+	PhotoSwipe.createInstance = function(images, options, id){
 		
 		var i, instance, image;
 		
@@ -163,15 +161,17 @@
 			throw 'Code.PhotoSwipe.createInstance: No images to passed.';
 		}
 		
-		instance = PhotoSwipe.getInstance(images);
+		options = Util.coalesce(options, { });
 		
-		if (!Util.isNothing(instance)){
-			throw 'Code.PhotoSwipe.createInstance: This set of images is already associated with a PhotoSwipe instance.';
+		instance = PhotoSwipe.getInstance(id);
+		
+		if (Util.isNothing(instance)){
+			instance = new PhotoSwipe.PhotoSwipeClass(images, options, id);
+			PhotoSwipe.instances.push(instance);
 		}
-		
-		instance = new PhotoSwipe.PhotoSwipeClass(images, options);
-		
-		PhotoSwipe.instances.push(instance);
+		else{
+			throw 'Code.PhotoSwipe.createInstance: Instance with id "' + id +' already exists."';
+		}
 		
 		return instance;
 	
@@ -215,14 +215,14 @@
 	/*
 	 * Function: Code.PhotoSwipe.getInstance
 	 */
-	PhotoSwipe.getInstance = function(images){
+	PhotoSwipe.getInstance = function(id){
 		
 		var i, instance;
 		
 		for (i=0; i<PhotoSwipe.instances.length; i++){
 			
 			instance = PhotoSwipe.instances[i];
-			if (instance.originalImages === images){
+			if (instance.id === id){
 				return instance;
 			}
 			

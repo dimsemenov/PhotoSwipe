@@ -1,0 +1,23 @@
+2.0.0 17.08.11 - Ste Brennan
+----------------------------
+Initial release
+
+
+2.0.1 18.08.11 - Ste Brennan
+----------------------------
+
+- Fixed issue with example "07-custom-toolbar.html"
+ 
+- New event "onToolbarTap"
+
+- Fixed issue with the cache which on certain occassions would lead to images not loading or reloading
+
+
+2.0.1 19.08.11 - Ste Brennan
+----------------------------
+
+- You can now give your PhotoSwipe instances IDs
+
+- Re-written how the jQuery Mobile demo so that it is now based on PhotoSwipe instance IDs
+
+- Fixed back button issue with jQuery Mobile demo

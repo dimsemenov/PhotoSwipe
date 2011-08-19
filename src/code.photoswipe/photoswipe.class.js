@@ -13,6 +13,7 @@
 		
 		
 		
+		id: null,
 		settings: null,
 		isBackEventSupported: null,
 		backButtonClicked: null,
@@ -109,8 +110,15 @@
 		/*
 		 * Function: initialize
 		 */
-		initialize: function(images, options){
-		
+		initialize: function(images, options, id){
+			
+			if (Util.isNothing(id)){
+				this.id = 'PhotoSwipe' + new Date().getTime().toString();
+			}
+			else{
+				this.id = id;
+			}
+			
 			this.originalImages = images;
 			
 			if (Util.Browser.isAndroid){

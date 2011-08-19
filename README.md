@@ -11,9 +11,21 @@ PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safa
 
 
 
-Latest Release v2.0.1
+Latest Release v2.0.2
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.1.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.2.zip)
+
+**Changes for 2.0.2**
+
+- You can now give your PhotoSwipe instances your own string identifiers (IDs)
+
+- **IMPORTANT** Re-written the jQuery Mobile demos so that they are now based on PhotoSwipe instance IDs. If you are implementing PhotoSwipe v2 into jQuery Mobile, please check the supplied examples
+
+- Fixed back button issue with jQuery Mobile demo
+
+
+
+**Important notes about v2**
 
 This is a brand new version of PhotoSwipe re-written from the ground up. Unfortunately, to cram in all the great new features, this has meant that how you implement PhotoSwipe had to be modified. I've kept configuration settings etc as close to v1 where possible.
 
@@ -106,7 +118,7 @@ Getting Started - Default Distribution
 
 See "examples/01-default.html". 
 
-This example assumes no jQuery at all and is heavily optimised for WebKit and Mozilla browsers. PhotoSwipe.attach takes two parameters, an array of HTML elements and optional options.
+This example assumes no jQuery at all and is heavily optimised for WebKit and Mozilla browsers. PhotoSwipe.attach takes three parameters, an array of HTML elements, optional options and optional instance ID string.
 
 	// Set up PhotoSwipe with all anchor tags in the Gallery container 
 	document.addEventListener('DOMContentLoaded', function(){
@@ -123,7 +135,7 @@ PhotoSwipe can be initiated without being attached to HTML elements. See "exampl
 Getting Started - Default Distribution (with jQuery engine)
 -----------------------------------------------------------
 
-See "examples/02-jquery.html". 
+See "examples/02-jquery.html". The plugin takes two parameters both of which optional; an options objectand an instance ID string.
 
 	// Set up PhotoSwipe with all anchor tags in the Gallery container 
 	$(document).ready(function(){
