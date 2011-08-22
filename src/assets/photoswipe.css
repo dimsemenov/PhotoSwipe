@@ -68,7 +68,7 @@ div.ps-caption
 	font-family: "Lucida Grande", Helvetica, Arial,Verdana, sans-serif;
 	text-align: center;
 }
-div.ps-caption *  { display: block; }
+div.ps-caption *  { display: inline; }
 
 div.ps-caption-bottom
 { 

@@ -8,6 +8,7 @@
 	
 		ua: null,
 		version: null,
+		safari: null,
 		webkit: null,
 		opera: null,
 		msie: null,
@@ -18,6 +19,7 @@
 		blackberry: null,
 		iPad: null,
 		iPhone: null,
+		iPod: null,
 		iOS: null,
 		
 		is3dSupported: null,
@@ -30,6 +32,7 @@
 			
 			this.ua = window.navigator.userAgent;
 			this.version = (this.ua.match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ) || []);
+			this.safari = (/Safari/gi).test(window.navigator.appVersion);
 			this.webkit = /webkit/i.test(this.ua);
 			this.opera = /opera/i.test(this.ua);
 			this.msie = /msie/i.test(this.ua) && !this.opera;
@@ -37,14 +40,14 @@
 			this.mozilla = /mozilla/i.test(this.ua) && !/(compatible|webkit)/.test(this.ua);
 			this.android = /android/i.test(this.ua);
 			this.blackberry = /blackberry/i.test(this.ua);
-			this.iPad = /(iPad).*OS\s([\d_]+)/.test(this.ua);
-			this.iPhone = !this.ipad && /(iPhone\sOS)\s([\d_]+)/.test(this.ua);
-			this.iOS = this.iPad || this.iPhone;
+			this.iOS = (/iphone|ipod|ipad/gi).test(window.navigator.platform);
+			this.iPad = (/ipad/gi).test(window.navigator.platform);
+			this.iPhone = (/iphone/gi).test(window.navigator.platform);
+			this.iPod = (/ipod/gi).test(window.navigator.platform);
 			
 			var testEl = document.createElement('div');
 			this.is3dSupported = !Util.isNothing(testEl.style.WebkitPerspective);	
-			this.isCSSTransformSupported = ( !Util.isNothing(testEl.style.WebkitTransform) || !Util.isNothing(testEl.style.MozTransform) || !Util.isNothing(testEl.style.transformProperty) ); 
-			//!Util.isNothing(testEl.style.msTransform)
+			this.isCSSTransformSupported = ( !Util.isNothing(testEl.style.WebkitTransform) || !Util.isNothing(testEl.style.MozTransform) || !Util.isNothing(testEl.style.transformProperty) );
 			this.isTouchSupported = this.isEventSupported('touchstart');
 			this.isGestureSupported = this.isEventSupported('gesturestart');
 			

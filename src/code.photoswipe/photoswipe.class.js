@@ -329,12 +329,17 @@
 				// For some reason, resize was more stable than orientationchange in Android
 				this.orientationEventName = 'resize';
 			}
+			else if (Util.Browser.iOS && (!Util.Browser.safari)){
+				Util.Events.add(window.document.body, 'orientationchange', this.windowOrientationChangeHandler);
+			}
 			else{
 				var supportsOrientationChange = !Util.isNothing(window.onorientationchange);
 				this.orientationEventName = supportsOrientationChange ? 'orientationchange' : 'resize';
 			}
 			
-			Util.Events.add(window, this.orientationEventName, this.windowOrientationChangeHandler);
+			if (!Util.isNothing(this.orientationEventName)){
+				Util.Events.add(window, this.orientationEventName, this.windowOrientationChangeHandler);
+			}
 			Util.Events.add(window, 'scroll', this.windowScrollHandler);
 			
 			if (this.settings.enableKeyboard){
@@ -383,7 +388,14 @@
 		 */
 		removeEventHandlers: function(){
 			
-			Util.Events.remove(window, this.orientationEventName, this.windowOrientationChangeHandler);
+			if (Util.Browser.iOS && (!Util.Browser.safari)){
+				Util.Events.remove(window.document.body, 'orientationchange', this.windowOrientationChangeHandler);
+			}
+			
+			if (!Util.isNothing(this.orientationEventName)){
+				Util.Events.remove(window, this.orientationEventName, this.windowOrientationChangeHandler);
+			}
+			
 			Util.Events.remove(window, 'scroll', this.windowScrollHandler);
 			
 			if (this.settings.enableKeyboard){
@@ -600,7 +612,15 @@
 		 */
 		canUserZoom: function(){
 			
-			if (!Util.Browser.isCSSTransformSupported){
+			var testEl, cacheImage;
+			
+			if (Util.Browser.msie){
+				testEl = document.createElement('div');
+				if (Util.isNothing(testEl.style.msTransform)){
+					return false;
+				}
+			}
+			else if (!Util.Browser.isCSSTransformSupported){
 				return false;
 			}
 			
@@ -612,7 +632,7 @@
 				return false;
 			}
 			
-			var cacheImage = this.cache.images[this.currentIndex];
+			cacheImage = this.cache.images[this.currentIndex];
 			
 			if (Util.isNothing(cacheImage)){
 				return false;

@@ -11,9 +11,19 @@ PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safa
 
 
 
-Latest Release v2.0.2
+Latest Release v2.0.3
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.2.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.0.3.zip)
+
+**Changes for 2.0.3**
+
+- Fixed orientation issue when adding to a homescreen on iOS devices
+
+- Setting fadeSpeed values to zero will stop any fading in / out and will show / hide instantly
+
+- Zoom now works again on IE9
+
+- Modified css to set the contents of the caption to be inline by default
 
 **Changes for 2.0.2**
 

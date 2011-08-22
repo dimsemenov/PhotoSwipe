@@ -74,6 +74,14 @@
 			 */
 			fadeIn: function(el, speed, callback, timingFunction){
 				
+				if (speed <= 0){
+					Util.DOM.setStyle(el, 'opacity', 1);
+					if (!Util.isNothing(callback)){
+						callback(el);
+						return;
+					}
+				}
+				
 				var opacity = Util.DOM.getStyle(el, 'opacity');
 				
 				if (opacity >= 1){
@@ -99,6 +107,14 @@
 			 * Function: fadeOut
 			 */
 			fadeOut: function(el, speed, callback, timingFunction){
+				
+				if (speed <= 0){
+					Util.DOM.setStyle(el, 'opacity', 0);
+					if (!Util.isNothing(callback)){
+						callback(el);
+						return;
+					}
+				}
 				
 				if (Util.Browser.isCSSTransformSupported){
 				

@@ -13,7 +13,7 @@ Initial release
 - Fixed issue with the cache which on certain occassions would lead to images not loading or reloading
 
 
-2.0.1 19.08.11 - Ste Brennan
+2.0.2 19.08.11 - Ste Brennan
 ----------------------------
 
 - You can now give your PhotoSwipe instances IDs
@@ -21,3 +21,15 @@ Initial release
 - Re-written how the jQuery Mobile demo so that it is now based on PhotoSwipe instance IDs
 
 - Fixed back button issue with jQuery Mobile demo
+
+
+2.0.3 22.08.11 - Ste Brennan
+----------------------------
+
+- Fixed orientation issue when adding to a homescreen on iOS devices
+
+- Setting fadeSpeed values to zero will stop any fading in / out and will show / hide instantly
+
+- Zoom now works again on IE9
+
+- Modified css to set the contents of the caption to be inline by default
