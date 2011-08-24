@@ -17,7 +17,7 @@ Latest Release v2.1.0
 
 **Changes for 2.1.0**
 
-- Under the hood changes. Functionally equivalent to 2.0.3
+- "Under the hood" changes. Functionally equivalent to 2.0.3
 
 - Underlying "Util" scripts now belong in their own project making reuse of that code easier
 
