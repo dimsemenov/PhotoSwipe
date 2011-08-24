@@ -5,22 +5,22 @@
 (function(window, klass, Util){
 	
 	
-	Util.registerNamespace('Code.PhotoSwipe.TouchElement');
-	var PhotoSwipe = window.Code.PhotoSwipe;
+	Util.registerNamespace('Code.Util.TouchElement');
 	
 	
-	PhotoSwipe.TouchElement.EventTypes = {
+	Util.TouchElement.EventTypes = {
 	
-		onTouch: 'CodePhotoSwipeTouchElementOnTouch'
+		onTouch: 'CodeUtilTouchElementOnTouch'
 	
 	};
 	
 	
-	PhotoSwipe.TouchElement.ActionTypes = {
+	Util.TouchElement.ActionTypes = {
 		
 		touchStart: 'touchStart',
 		touchMove: 'touchMove',
 		touchEnd: 'touchEnd',
+		touchMoveEnd: 'touchMoveEnd',
 		tap: 'tap',
 		doubleTap: 'doubleTap',
 		swipeLeft: 'swipeLeft',

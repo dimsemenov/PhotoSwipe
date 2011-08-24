@@ -2,14 +2,14 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(window, klass, Util, TouchElement){
+(function(window, klass, Util){
 	
 	
 	Util.registerNamespace('Code.PhotoSwipe.UILayer');
 	var PhotoSwipe = window.Code.PhotoSwipe;
 	
 	
-	PhotoSwipe.UILayer.UILayerClass = TouchElement.TouchElementClass.extend({
+	PhotoSwipe.UILayer.UILayerClass = Util.TouchElement.TouchElementClass.extend({
 		
 		
 		
@@ -46,11 +46,13 @@
 			
 			this.settings = options;
 			
+			/*
 			this.supr({
 				swipeThreshold: this.settings.swipeThreshold,
 				swipeTimeThreshold: this.settings.swipeTimeThreshold,
 				doubleTapSpeed: this.settings.doubleTapSpeed
 			});
+			*/
 			
 			// Main container 
 			this.el = Util.DOM.createElement(
@@ -72,6 +74,8 @@
 			Util.DOM.hide(this.el);
 			
 			Util.DOM.appendToBody(this.el);
+			
+			this.supr(this.el, true, true, true);
 			
 		},
 		
@@ -136,6 +140,5 @@
 (
 	window, 
 	window.klass, 
-	window.Code.Util,
-	window.Code.PhotoSwipe.TouchElement
+	window.Code.Util
 ));

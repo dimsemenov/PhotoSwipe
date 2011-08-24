@@ -366,7 +366,7 @@
 				Util.Events.add(window, 'mousewheel', this.mouseWheelHandler);
 			}
 			
-			Util.Events.add(this.uiLayer, PhotoSwipe.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
+			Util.Events.add(this.uiLayer, Util.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
 			Util.Events.add(this.carousel, Carousel.EventTypes.onSlideByEnd, this.carouselSlideByEndHandler);
 			Util.Events.add(this.carousel, Carousel.EventTypes.onSlideshowStart, this.carouselSlideshowStartHandler);
 			Util.Events.add(this.carousel, Carousel.EventTypes.onSlideshowStop, this.carouselSlideshowStopHandler);
@@ -406,13 +406,18 @@
 				Util.Events.remove(window, 'hashchange', this.windowHashChangeHandler);
 			}
 			
-			Util.Events.remove(this.uiLayer, PhotoSwipe.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
-			Util.Events.remove(this.carousel, Carousel.EventTypes.onSlideByEnd, this.carouselSlideByEndHandler);
-			Util.Events.remove(this.carousel, Carousel.EventTypes.onSlideshowStart, this.carouselSlideshowStartHandler);
-			Util.Events.remove(this.carousel, Carousel.EventTypes.onSlideshowStop, this.carouselSlideshowStopHandler);
-			
 			if (this.settings.enableMouseWheel){
 				Util.Events.remove(window, 'mousewheel', this.mouseWheelHandler);
+			}
+			
+			if (!Util.isNothing(this.uiLayer)){
+				Util.Events.remove(this.uiLayer, Util.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
+			}
+			
+			if (!Util.isNothing(this.toolbar)){
+				Util.Events.remove(this.carousel, Carousel.EventTypes.onSlideByEnd, this.carouselSlideByEndHandler);
+				Util.Events.remove(this.carousel, Carousel.EventTypes.onSlideshowStart, this.carouselSlideshowStartHandler);
+				Util.Events.remove(this.carousel, Carousel.EventTypes.onSlideshowStop, this.carouselSlideshowStopHandler);
 			}
 			
 			if (!Util.isNothing(this.toolbar)){
@@ -628,6 +633,7 @@
 				return false;
 			}
 			
+			
 			if (this.carousel.isSliding){
 				return false;
 			}
@@ -652,7 +658,7 @@
 		 * Function: isZoomActive
 		 */
 		isZoomActive: function(){
-			
+		
 			return (!Util.isNothing(this.zoomPanRotate));
 		
 		},
@@ -790,34 +796,34 @@
 			
 				switch (e.action){
 					
-					case PhotoSwipe.TouchElement.ActionTypes.gestureChange:
+					case Util.TouchElement.ActionTypes.gestureChange:
 						this.zoomPanRotate.zoomRotate(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
 						break;
 					
-					case PhotoSwipe.TouchElement.ActionTypes.gestureEnd:
+					case Util.TouchElement.ActionTypes.gestureEnd:
 						this.zoomPanRotate.setStartingScaleAndRotation(e.scale, (this.settings.allowRotationOnUserZoom) ? e.rotation : 0);
 						break;
 						
-					case PhotoSwipe.TouchElement.ActionTypes.touchStart:
+					case Util.TouchElement.ActionTypes.touchStart:
 						this.zoomPanRotate.panStart(e.point);
 						break;
 					
-					case PhotoSwipe.TouchElement.ActionTypes.touchMove:
+					case Util.TouchElement.ActionTypes.touchMove:
 						this.zoomPanRotate.pan(e.point);
 						break;
 						
-					case PhotoSwipe.TouchElement.ActionTypes.doubleTap:
+					case Util.TouchElement.ActionTypes.doubleTap:
 						this.destroyZoomPanRotate();
 						this.toggleToolbar();
 						break;
 					
-					case PhotoSwipe.TouchElement.ActionTypes.swipeLeft:
+					case Util.TouchElement.ActionTypes.swipeLeft:
 						this.destroyZoomPanRotate();
 						this.next();
 						this.toggleToolbar();
 						break;
 						
-					case PhotoSwipe.TouchElement.ActionTypes.swipeRight:
+					case Util.TouchElement.ActionTypes.swipeRight:
 						this.destroyZoomPanRotate();
 						this.previous();
 						this.toggleToolbar();
@@ -829,9 +835,9 @@
 				
 				switch (e.action){
 					
-					case PhotoSwipe.TouchElement.ActionTypes.touchMove:
-					case PhotoSwipe.TouchElement.ActionTypes.swipeLeft:
-					case PhotoSwipe.TouchElement.ActionTypes.swipeRight:
+					case Util.TouchElement.ActionTypes.touchMove:
+					case Util.TouchElement.ActionTypes.swipeLeft:
+					case Util.TouchElement.ActionTypes.swipeRight:
 						
 						// Hide the toolbar if need be 
 						this.fadeOutToolbarIfVisible();
@@ -840,18 +846,18 @@
 						this.carousel.onTouch(e.action, e.point);
 						break;
 					
-					case PhotoSwipe.TouchElement.ActionTypes.touchStart:
-					case PhotoSwipe.TouchElement.ActionTypes.touchEnd:
+					case Util.TouchElement.ActionTypes.touchStart:
+					case Util.TouchElement.ActionTypes.touchMoveEnd:
 					
 						// Pass the touch onto the carousel
 						this.carousel.onTouch(e.action, e.point);
 						break;
 						
-					case PhotoSwipe.TouchElement.ActionTypes.tap:
+					case Util.TouchElement.ActionTypes.tap:
 						this.toggleToolbar();
 						break;
 						
-					case PhotoSwipe.TouchElement.ActionTypes.doubleTap:
+					case Util.TouchElement.ActionTypes.doubleTap:
 						
 						// Take into consideration the window scroll
 						e.point.x -= Util.DOM.windowScrollLeft();
@@ -888,7 +894,7 @@
 						
 						break;
 					
-					case PhotoSwipe.TouchElement.ActionTypes.gestureStart:
+					case Util.TouchElement.ActionTypes.gestureStart:
 						this.createZoomPanRotate();
 						break;
 				}

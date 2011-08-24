@@ -520,6 +520,7 @@
 				return;
 			}
 			
+			
 			var 
 				width = Util.DOM.windowWidth() + this.settings.margin,
 				diffX,
@@ -534,12 +535,12 @@
 			
 			switch (action){
 				
-				case PhotoSwipe.TouchElement.ActionTypes.swipeLeft:
+				case Util.TouchElement.ActionTypes.swipeLeft:
 					
 					slideBy = width * -1;
 					break;
 					
-				case PhotoSwipe.TouchElement.ActionTypes.swipeRight:
+				case Util.TouchElement.ActionTypes.swipeRight:
 				
 					slideBy = width;
 					break;
@@ -620,7 +621,7 @@
 		previous: function(){
 			
 			this.stopSlideshow();
-			this.slideCarousel({x:0, y:0}, PhotoSwipe.TouchElement.ActionTypes.swipeRight, this.settings.nextPreviousSlideSpeed);
+			this.slideCarousel({x:0, y:0}, Util.TouchElement.ActionTypes.swipeRight, this.settings.nextPreviousSlideSpeed);
 		
 		},
 		
@@ -632,7 +633,7 @@
 		next: function(){
 			
 			this.stopSlideshow();
-			this.slideCarousel({x:0, y:0}, PhotoSwipe.TouchElement.ActionTypes.swipeLeft, this.settings.nextPreviousSlideSpeed);
+			this.slideCarousel({x:0, y:0}, Util.TouchElement.ActionTypes.swipeLeft, this.settings.nextPreviousSlideSpeed);
 		
 		},
 		
@@ -643,7 +644,7 @@
 		 */
 		slideshowNext: function(){
 		
-			this.slideCarousel({x:0, y:0}, PhotoSwipe.TouchElement.ActionTypes.swipeLeft);
+			this.slideCarousel({x:0, y:0}, Util.TouchElement.ActionTypes.swipeLeft);
 		
 		},
 		
@@ -802,7 +803,7 @@
 			
 			switch(action){
 				
-				case PhotoSwipe.TouchElement.ActionTypes.touchStart:
+				case Util.TouchElement.ActionTypes.touchStart:
 					this.touchStartPoint = point;
 					this.touchStartPosition = {
 						x: window.parseInt(Util.DOM.getStyle(this.contentEl, 'left'), 0),
@@ -810,20 +811,20 @@
 					};
 					break;
 				
-				case PhotoSwipe.TouchElement.ActionTypes.touchMove:
+				case Util.TouchElement.ActionTypes.touchMove:
 					this.moveCarousel(point);
 					break;
 					
-				case PhotoSwipe.TouchElement.ActionTypes.touchEnd:
-				case PhotoSwipe.TouchElement.ActionTypes.swipeLeft:
-				case PhotoSwipe.TouchElement.ActionTypes.swipeRight:
+				case Util.TouchElement.ActionTypes.touchMoveEnd:
+				case Util.TouchElement.ActionTypes.swipeLeft:
+				case Util.TouchElement.ActionTypes.swipeRight:
 					this.slideCarousel(point, action);
 					break;
 					
-				case PhotoSwipe.TouchElement.ActionTypes.tap:
+				case Util.TouchElement.ActionTypes.tap:
 					break;
 					
-				case PhotoSwipe.TouchElement.ActionTypes.doubleTap:
+				case Util.TouchElement.ActionTypes.doubleTap:
 					break;
 				
 				
@@ -858,6 +859,5 @@
 (
 	window, 
 	window.klass, 
-	window.Code.Util,
-	window.Code.PhotoSwipe.TouchElement
+	window.Code.Util
 ));

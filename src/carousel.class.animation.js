@@ -68,7 +68,7 @@
 		 */
 		doSlideCarousel: function(xVal, speed){
 			
-			var animateProps;
+			var animateProps, transform;
 			
 			if (speed <= 0){
 				
@@ -79,6 +79,16 @@
 			
 			
 			if (Util.Browser.isCSSTransformSupported){
+				
+				transform = Util.coalesce(this.contentEl.style.webkitTransform, this.contentEl.style.MozTransform, this.contentEl.style.transform, '');
+				if (transform.indexOf('translate3d(' + xVal) === 0){
+					this.slideByEndHandler();
+					return;
+				}
+				else if (transform.indexOf('translate(' + xVal) === 0){
+					this.slideByEndHandler();
+					return;
+				}
 				
 				Util.Animation.slideBy(this.contentEl, xVal, 0, speed, this.slideByEndHandler, this.settings.slideTimingFunction);
 				
