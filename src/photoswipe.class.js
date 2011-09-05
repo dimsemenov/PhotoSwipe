@@ -20,6 +20,7 @@
 		currentIndex: null,
 		originalImages: null,
 		mouseWheelStartTime: null,
+		windowDimensions: null,
 		
 		
 		
@@ -226,6 +227,10 @@
 				throw "Code.PhotoSwipe.PhotoSwipeClass.show: Starting index out of range";
 			}
 			
+			// Store a reference to the current window dimensions
+			// Use this later to souble check that a window has actually
+			// been resized.
+			this.windowDimensions = this.getWindowDimensions();
 			
 			// Set this instance to be the active instance
 			PhotoSwipe.setActivateInstance(this);
@@ -244,6 +249,20 @@
 			// Fade in the document overlay
 			this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this));
 			
+		},
+		
+		
+		
+		/*
+		 * Function: getWindowDimensions
+		 */
+		getWindowDimensions: function(){
+		
+			return {
+				width: Util.DOM.windowWidth(),
+				height: Util.DOM.windowHeight()
+			};
+		
 		},
 		
 		
@@ -268,6 +287,14 @@
 		 * Function: resetPosition
 		 */
 		resetPosition: function(){
+			
+			var newWindowDimensions = this.getWindowDimensions();
+			if (newWindowDimensions.width === this.windowDimensions.width && newWindowDimensions.height === this.windowDimensions.height){
+				// This was added as a fudge for iOS
+				// For some reason when in imageV
+				return;
+			}
+			this.windowDimensions = newWindowDimensions;
 			
 			this.destroyZoomPanRotate();
 			
@@ -793,7 +820,7 @@
 		onUILayerTouch: function(e){
 			
 			if (this.isZoomActive()){
-			
+				
 				switch (e.action){
 					
 					case Util.TouchElement.ActionTypes.gestureChange:

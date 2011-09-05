@@ -88,7 +88,6 @@
 			
 			Util.DOM.insertBefore(this.el, uiLayer.el, document.body);
 			
-			
 			if (Util.Browser.iOS){
 				this.containerEl = Util.DOM.createElement('div');
 				Util.DOM.setStyle(this.containerEl, {
@@ -231,13 +230,12 @@
 		
 		
 		/*
-		
 		 * Function: zoomAndPanToPoint
 		 */
 		zoomAndPanToPoint: function(scaleValue, point){
-						
+			
 			this.panStart({
-				x: Util.DOM.bodyWidth() / 2,
+				x: Util.DOM.windowWidth() / 2,
 				y: Util.DOM.windowHeight() / 2
 			});
 		
@@ -246,6 +244,7 @@
 				dy = point.y - this.panStartingPoint.y,
 				dxScaleAdjust = dx / this.transformSettings.scale,
         dyScaleAdjust = dy / this.transformSettings.scale;
+			
 			
 			this.transformSettings.translateX = 
 				(this.transformSettings.startingTranslateX + dxScaleAdjust) * -1;
@@ -261,8 +260,8 @@
 			this.applyTransform();
 			
 		},
-				
-				
+		
+		
 		
 		/*
 		 * Function: applyTransform
