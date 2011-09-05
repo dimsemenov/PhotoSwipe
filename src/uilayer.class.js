@@ -46,14 +46,6 @@
 			
 			this.settings = options;
 			
-			/*
-			this.supr({
-				swipeThreshold: this.settings.swipeThreshold,
-				swipeTimeThreshold: this.settings.swipeTimeThreshold,
-				doubleTapSpeed: this.settings.doubleTapSpeed
-			});
-			*/
-			
 			// Main container 
 			this.el = Util.DOM.createElement(
 				'div', 
@@ -75,7 +67,12 @@
 			
 			Util.DOM.appendToBody(this.el);
 			
-			this.supr(this.el, true, true, true);
+			this.supr(this.el, {
+				swipe: true,
+				move: true,
+				gesture: true,
+				doubleTap: true
+			});
 			
 		},
 		

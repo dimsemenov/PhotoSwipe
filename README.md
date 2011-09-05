@@ -17,28 +17,11 @@ Latest Release v2.1.0
 
 **Changes for 2.1.0**
 
-- "Under the hood" changes. Functionally equivalent to 2.0.3
+- Under the hood changes. Functionally equivalent to 2.0.3 - however substantial enough refactoring warranting 2.1.0
 
 - Underlying "Util" scripts now belong in their own project making reuse of that code easier
 
-**Changes for 2.0.3**
-
-- Fixed orientation issue when adding to a homescreen on iOS devices
-
-- Setting fadeSpeed values to zero will stop any fading in / out and will show / hide instantly
-
-- Zoom now works again on IE9
-
-- Modified css to set the contents of the caption to be inline by default
-
-**Changes for 2.0.2**
-
-- You can now give your PhotoSwipe instances your own string identifiers (IDs)
-
-- **IMPORTANT** Re-written the jQuery Mobile demos so that they are now based on PhotoSwipe instance IDs. If you are implementing PhotoSwipe v2 into jQuery Mobile, please check the supplied examples
-
-- Fixed back button issue with jQuery Mobile demo
-
+- Fixed issue with erratic zooming especially if you have "imageScaleMethod" set to "zoom"
 
 
 **Important notes about v2**

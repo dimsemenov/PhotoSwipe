@@ -35,10 +35,12 @@ Initial release
 - Modified css to set the contents of the caption to be inline by default
 
 
-2.1.0 24.08.11 - Ste Brennan
+2.1.0 05.09.11 - Ste Brennan
 ----------------------------
 
-- Under the hood changes. Functionally equivalent to 2.0.3
+- Under the hood changes. Functionally equivalent to 2.0.3 - however substantial enough refactoring warranting 2.1.0
 
 - Underlying "Util" scripts now belong in their own project making reuse of that code easier
+
+- Fixed issue with erratic zooming especially if you have "imageScaleMethod" set to "zoom"
 

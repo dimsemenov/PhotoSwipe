@@ -110,13 +110,13 @@
 		
 		<concat destfile="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.js">	
 			
-			<fileset dir="." includes="${project.src.dir}/lib/code.util/util.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/code.util/browser.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/code.util/events${engine}.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/code.util/dom${engine}.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/code.util/animation.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/code.util/touchelement.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/code.util/touchelement.class.js" />
+			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/util.js" />
+			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/browser.js" />
+			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/events${engine}.js" />
+			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/dom${engine}.js" />
+			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/animation.js" />
+			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/touchelement.js" />
+			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/touchelement.class.js" />
 			
 			<fileset dir="." includes="${project.src.dir}/image.js" />
 			<fileset dir="." includes="${project.src.dir}/image.class.js" />
@@ -207,7 +207,7 @@
 		<!-- Copy the library folder to the working folder -->
 		<copy todir="${project.build.workdir}/lib">
 			<fileset dir="${project.src.dir}/lib">
-				<exclude name="**/code.util/**" />
+				<exclude name="**/code.util-${lib.code.util.version}/**" />
 			</fileset>
 		</copy>
 		
