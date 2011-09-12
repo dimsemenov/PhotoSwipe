@@ -24,7 +24,8 @@
 		carousel: 'ps-carousel',
 		content: 'ps-carousel-content',
 		item: 'ps-carousel-item',
-		itemLoading: 'ps-carousel-item-loading'
+		itemLoading: 'ps-carousel-item-loading',
+		itemError: 'ps-carousel-item-error'
 	};
 	
 	

@@ -68,7 +68,8 @@
 				swipe: false,
 				move: false,
 				gesture: false,
-				doubleTap: false
+				doubleTap: false,
+				preventDefaultTouchEvents: true
 			};
 			
 			Util.extend(this.captureSettings, captureSettings);
@@ -275,7 +276,9 @@
 		 */
 		onTouchStart: function(e){
 			
-			e.preventDefault();
+			if (this.captureSettings.preventDefaultTouchEvents){
+				e.preventDefault();
+			}
 			
 			// No longer need mouse events
 			Util.Events.remove(this.el, 'mousedown', this.mouseDownHandler);
@@ -309,8 +312,10 @@
 		 * Function: onTouchMove
 		 */
 		onTouchMove: function(e){
-		
-			e.preventDefault();
+			
+			if (this.captureSettings.preventDefaultTouchEvents){
+				e.preventDefault();
+			}
 			
 			if (this.isGesture && this.captureSettings.gesture){
 				return;
@@ -340,7 +345,9 @@
 				return;
 			}
 			
-			e.preventDefault();
+			if (this.captureSettings.preventDefaultTouchEvents){
+				e.preventDefault();
+			}
 			
 			// http://backtothecode.blogspot.com/2009/10/javascript-touch-and-gesture-events.html
 			// iOS removed the current touch from e.touches on "touchend"

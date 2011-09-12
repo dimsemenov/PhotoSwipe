@@ -50,15 +50,14 @@
 				if (obj.__eventHandlers[type] instanceof Array){
 					
 					var
-						i,
-						len,
+						i, j,
 						handlers = obj.__eventHandlers[type];
 					
 					// Removing all handlers for a type
 					if (Util.isNothing(handler)){
 						
 						if (this._isBrowserObject(obj)){
-							for (i=0; i<handlers.length; i++){
+							for (i=0, j=handlers.length; i<j; i++){
 								obj.removeEventListener(type, handlers[i], false);
 							}
 						}
@@ -68,7 +67,7 @@
 					}
 					
 					// Removing a specific handler
-					for (i=0, len=handlers.length; i < len; i++){
+					for (i=0, j=handlers.length; i<j; i++){
 						if (handlers[i] === handler){
 							handlers.splice(i, 1);
 							break;
@@ -93,8 +92,7 @@
 			fire: function(obj, type){
 				
 				var 
-					i,
-					len,
+					i, j,
 					event,
 					listeners,
 					listener,
@@ -145,7 +143,7 @@
 				if (obj.__eventHandlers[event.type] instanceof Array){
 					listeners = obj.__eventHandlers[event.type];
 					args.unshift(event);
-					for (i=0, len=listeners.length; i < len; i++){
+					for (i=0, j=listeners.length; i<j; i++){
 						listener = listeners[i];
 						if (!Util.isNothing(listener)){
 							listener.apply(obj, args);

@@ -19,11 +19,8 @@
 		src: null,
 		caption: null,
 		metaData: null,
-		naturalWidth: null,
-		naturalHeight: null,
-		isLandscape: null,
-		isLoading: null,
 		imageLoadHandler: null,
+		imageErrorHandler: null,
 		
 		
 		
@@ -52,17 +49,17 @@
 		initialize: function(refObj, src, caption, metaData){
 			
 			this.refObj = refObj;
+			// This is needed. Webkit resolves the src
+			// value which means we can't compare against it in the load function
+			this.originalSrc = src;
 			this.src = src;
 			this.caption = caption;
 			this.metaData = metaData;
-			this.naturalWidth = 0;
-			this.naturalHeight = 0;
-			this.isLandscape = false;
-			this.isLoading = false;
 			
 			this.imageEl = new window.Image();
 			
 			this.imageLoadHandler = this.onImageLoad.bind(this);
+			this.imageErrorHandler = this.onImageError.bind(this);
 			
 		},
 		
@@ -73,16 +70,34 @@
 		 */
 		load: function(){
 			
-			if (this.imageEl.src.indexOf(this.src) > -1){
-				Util.Events.fire(this, {
-					type: PhotoSwipe.Image.EventTypes.onLoad,
-					target: this
-				});
+			this.imageEl.originalSrc = Util.coalesce(this.imageEl.originalSrc, '');
+			
+			if (this.imageEl.originalSrc === this.src){
+				
+				if (this.imageEl.isError){
+					Util.Events.fire(this, {
+						type: PhotoSwipe.Image.EventTypes.onError,
+						target: this
+					});
+				}
+				else{
+					Util.Events.fire(this, {
+						type: PhotoSwipe.Image.EventTypes.onLoad,
+						target: this
+					});
+				}
 				return;
 			}
 			
+			this.imageEl.isError = false;
 			this.imageEl.isLoading = true;
+			this.imageEl.naturalWidth = 0;
+			this.imageEl.naturalHeight = 0;
+			this.imageEl.isLandscape = false;
 			this.imageEl.onload = this.imageLoadHandler;
+			this.imageEl.onerror = this.imageErrorHandler;
+			this.imageEl.onabort = this.imageErrorHandler;
+			this.imageEl.originalSrc = this.src;
 			this.imageEl.src = this.src;
 			
 		},
@@ -122,6 +137,26 @@
 			
 			Util.Events.fire(this, {
 				type: PhotoSwipe.Image.EventTypes.onLoad,
+				target: this
+			});
+			
+		},
+		
+		
+		
+		/*
+		 * Function: onImageError
+		 */
+		onImageError: function(e){
+		
+			this.imageEl.onload = null;
+			this.imageEl.onerror = null;
+			this.imageEl.onabort = null;
+			this.imageEl.isLoading = false;
+			this.imageEl.isError = true;
+			
+			Util.Events.fire(this, {
+				type: PhotoSwipe.Image.EventTypes.onError,
 				target: this
 			});
 			

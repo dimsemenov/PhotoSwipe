@@ -43,13 +43,14 @@
 			if (el.nodeName === "IMG"){
 				return Util.DOM.getAttribute(el, 'alt'); 
 			}
-			var i, childEl;
-			for (i=0; i<el.childNodes.length; i++){
+			var i, j, childEl;
+			for (i=0, j=el.childNodes.length; i<j; i++){
 				childEl = el.childNodes[i];
 				if (el.childNodes[i].nodeName === 'IMG'){
 					return Util.DOM.getAttribute(childEl, 'alt'); 
 				}
 			}
+			
 		},
 	
 	

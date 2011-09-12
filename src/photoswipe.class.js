@@ -50,6 +50,7 @@
 		toolbarBeforeHideHandler: null,
 		toolbarHideHandler: null,
 		mouseWheelHandler: null,
+		zoomPanRotateTransformHandler: null,
 		
 		
 		
@@ -73,6 +74,8 @@
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onCaptionAndToolbarShow);
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide);
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onCaptionAndToolbarHide);
+			Util.Events.remove(this, PhotoSwipe.EventTypes.onZoomPanRotateTransform);
+			
 			
 			this.removeEventHandlers();
 			
@@ -205,7 +208,7 @@
 		 */
 		show: function(obj){
 			
-			var i;
+			var i, j;
 			
 			// Work out what the starting index is
 			if (Util.isNumber(obj)){
@@ -214,7 +217,7 @@
 			else{
 				
 				this.currentIndex = -1;
-				for (i=0; i<this.originalImages.length; i++){
+				for (i=0, j=this.originalImages.length; i<j; i++){
 					if (this.originalImages[i] === obj){
 						this.currentIndex = i;
 						break;
@@ -348,6 +351,7 @@
 				this.toolbarBeforeHideHandler = this.onToolbarBeforeHide.bind(this);
 				this.toolbarHideHandler = this.onToolbarHide.bind(this);
 				this.mouseWheelHandler = this.onMouseWheel.bind(this);
+				this.zoomPanRotateTransformHandler = this.onZoomPanRotateTransform.bind(this);
 				
 			}
 			
@@ -468,6 +472,12 @@
 			if (this.settings.preventHide){
 				return;
 			}
+			
+			if (Util.isNothing(this.documentOverlay)){
+				throw "Code.PhotoSwipe.PhotoSwipeClass.hide: PhotoSwipe instance is already hidden";
+			}
+			
+			this.destroyZoomPanRotate();
 			
 			this.removeEventHandlers();
 			
@@ -611,11 +621,17 @@
 			
 			if (this.canUserZoom() && !this.isZoomActive()){
 				
+				Util.Events.fire(this, PhotoSwipe.EventTypes.onBeforeZoomPanRotateShow);
+				
 				this.zoomPanRotate = new ZoomPanRotate.ZoomPanRotateClass(
 					this.settings, 
 					this.cache.images[this.currentIndex],
 					this.uiLayer
 				);
+				
+				Util.Events.add(this.zoomPanRotate, PhotoSwipe.ZoomPanRotate.EventTypes.onTransform, this.zoomPanRotateTransformHandler);
+				
+				Util.Events.fire(this, PhotoSwipe.EventTypes.onZoomPanRotateShow);
 				
 				this.fadeOutToolbarIfVisible();
 				
@@ -631,8 +647,15 @@
 		destroyZoomPanRotate: function(){
 			
 			if (!Util.isNothing(this.zoomPanRotate)){
+			
+				Util.Events.fire(this, PhotoSwipe.EventTypes.onBeforeZoomPanRotateHide);
+			
+				Util.Events.remove(this.zoomPanRotate, PhotoSwipe.ZoomPanRotate.EventTypes.onTransform, this.zoomPanRotateTransformHandler);
 				this.zoomPanRotate.dispose();
 				this.zoomPanRotate = null;
+				
+				Util.Events.fire(this, PhotoSwipe.EventTypes.onZoomPanRotateHide);
+				
 			}
 		
 		},
@@ -709,13 +732,14 @@
 		onDocumentOverlayFadeIn: function(e){
 			
 			window.setTimeout(function(){
-			
+				
 				Util.DOM.removeClass(window.document.body, PhotoSwipe.CssClasses.buildingBody);
 				Util.DOM.addClass(window.document.body, PhotoSwipe.CssClasses.activeBody);
 				
 				this.addEventHandlers();
 				
 				this.carousel.show(this.currentIndex);
+				
 				this.uiLayer.show();
 				
 				if (this.settings.autoStartSlideshow){
@@ -1109,6 +1133,25 @@
 				target: this
 			});
 		
+		},
+		
+		
+		
+		/*
+		 * Function: onZoomPanRotateTransform
+		 */
+		onZoomPanRotateTransform: function(e){
+			
+			Util.Events.fire(this, {
+				target: this,
+				type: PhotoSwipe.EventTypes.onZoomPanRotateTransform,
+				scale: e.scale,
+				rotation: e.rotation,
+				rotationDegs: e.rotationDegs,
+				translateX: e.translateX,
+				translateY: e.translateY
+			});
+			
 		}
 		
 		

@@ -72,33 +72,43 @@
 			/*
 			 * Function: fadeIn
 			 */
-			fadeIn: function(el, speed, callback, timingFunction){
+			fadeIn: function(el, speed, callback, timingFunction, opacity){
+				
+				opacity = Util.coalesce(opacity, 1);
+				if (opacity <= 0){
+					opacity = 1;
+				}
 				
 				if (speed <= 0){
-					Util.DOM.setStyle(el, 'opacity', 1);
+					Util.DOM.setStyle(el, 'opacity', opacity);
 					if (!Util.isNothing(callback)){
 						callback(el);
 						return;
 					}
 				}
 				
-				var opacity = Util.DOM.getStyle(el, 'opacity');
+				var currentOpacity = Util.DOM.getStyle(el, 'opacity');
 				
-				if (opacity >= 1){
+				if (currentOpacity >= 1){
 					Util.DOM.setStyle(el, 'opacity', 0);
 				}
 				
 				if (Util.Browser.isCSSTransformSupported){
-				
-					this._applyTransition(el, 'opacity', 1, speed, callback, timingFunction);
-					
+					this._applyTransition(el, 'opacity', opacity, speed, callback, timingFunction);
 				}
 				else if (!Util.isNothing(window.jQuery)){
-				
-					window.jQuery(el).fadeTo(speed, 1, callback);
-				
+					window.jQuery(el).fadeTo(speed, opacity, callback);
 				}
 				
+			},
+			
+			
+			
+			/*
+			 * Function: fadeTo
+			 */
+			fadeTo: function(el, opacity, speed, callback, timingFunction){
+				this.fadeIn(el, speed, callback, timingFunction, opacity);
 			},
 			
 			

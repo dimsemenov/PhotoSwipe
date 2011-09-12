@@ -70,9 +70,9 @@
 				var 
 					els = $(selectors, contextEl),
 					retval = [],
-					i;
+					i, j;
 				
-				for (i=0; i<els.length; i++){
+				for (i=0, j=els.length; i<j; i++){
 					retval.push(els[i]);
 				}
 				return retval;

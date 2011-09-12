@@ -44,3 +44,21 @@ Initial release
 
 - Fixed issue with erratic zooming especially if you have "imageScaleMethod" set to "zoom"
 
+
+2.1.1 12.09.11 - Ste Brennan
+----------------------------
+
+- Upgraded libraries tp jQuery 1.6.3, jQueryMobile 1.0b3, Code.Util 1.0.3
+
+- Two new examples: '10-image-meta-data.html' and '11-custom-captions.html'
+
+- Fixed issue when hitting the back button or escape key when zoomed in
+
+- Fixed issue 112 & 79 relating to images not showing
+
+- Fixed bug when closing PhotoSwipe when user has zoomed in on image
+
+- Added new events: onBeforeZoomPanRotateShow, onZoomPanRotateShow, onBeforeZoomPanRotateHide, onZoomPanRotateHide, onZoomPanRotateTransform
+
+- Better handling when images are not found
+

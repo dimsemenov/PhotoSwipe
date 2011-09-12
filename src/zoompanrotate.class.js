@@ -268,13 +268,27 @@
 		 */
 		applyTransform: function(){
 			
-			var transform = 'scale(' + this.transformSettings.scale + ') rotate(' + (this.transformSettings.rotation % 360) + 'deg) translate(' + window.parseInt(this.transformSettings.translateX, 10) + 'px, ' + window.parseInt(this.transformSettings.translateY, 10) + 'px)';
+			var 
+				rotationDegs = this.transformSettings.rotation % 360,
+				translateX = window.parseInt(this.transformSettings.translateX, 10),
+				translateY = window.parseInt(this.transformSettings.translateY, 10),
+				transform = 'scale(' + this.transformSettings.scale + ') rotate(' + rotationDegs + 'deg) translate(' + translateX + 'px, ' + translateY + 'px)';
 			
 			Util.DOM.setStyle(this.transformEl, {
 				webkitTransform: transform,
 				MozTransform: transform,
 				msTransform: transform,
 				transform: transform
+			});
+			
+			Util.Events.fire(this, {
+				target: this,
+				type: PhotoSwipe.ZoomPanRotate.EventTypes.onTransform,
+				scale: this.transformSettings.scale,
+				rotation: this.transformSettings.rotation,
+				rotationDegs: rotationDegs,
+				translateX: translateX,
+				translateY: translateY
 			});
 			
 		}

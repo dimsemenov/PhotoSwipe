@@ -11,17 +11,25 @@ PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safa
 
 
 
-Latest Release v2.1.0
+Latest Release v2.1.1
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.0.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.1.zip)
 
-**Changes for 2.1.0**
+**Changes for 2.1.1**
 
-- Under the hood changes. Functionally equivalent to 2.0.3 - however substantial enough refactoring warranting 2.1.0
+- Upgraded libraries tp jQuery 1.6.3, jQueryMobile 1.0b3, Code.Util 1.0.3
 
-- Underlying "Util" scripts now belong in their own project making reuse of that code easier
+- Two new examples: '10-image-meta-data.html' and '11-custom-captions.html'
 
-- Fixed issue with erratic zooming especially if you have "imageScaleMethod" set to "zoom"
+- Fixed issue when hitting the back button or escape key when zoomed in
+
+- Fixed issue 112 & 79 relating to images not showing
+
+- Fixed bug when closing PhotoSwipe when user has zoomed in on image
+
+- Added new events: onBeforeZoomPanRotateShow, onZoomPanRotateShow, onBeforeZoomPanRotateHide, onZoomPanRotateHide, onZoomPanRotateTransform
+
+- Better handling when images are not found
 
 
 **Important notes about v2**

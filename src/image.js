@@ -12,7 +12,8 @@
 	
 	PhotoSwipe.Image.EventTypes = {
 		
-		onLoad: 'onLoad'
+		onLoad: 'onLoad',
+		onError: 'onError'
 		
 	};
 	

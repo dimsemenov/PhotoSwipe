@@ -24,10 +24,10 @@
 		 */
 		dispose: function(){
 		
-			var prop, i;
+			var prop, i, j;
 			
 			if (!Util.isNothing(this.images)){
-				for (i=0; i<this.images.length; i++){
+				for (i=0, j=this.images.length; i<j; i++){
 					this.images[i].dispose();
 				}
 				this.images.length = 0;
@@ -48,13 +48,13 @@
 		 */
 		initialize: function(images, options){
 			
-			var i, cacheImage, image, src, caption, metaData;
+			var i, j, cacheImage, image, src, caption, metaData;
 			
 			this.settings = options;
 			
 			this.images = [];
 			
-			for (i=0; i<images.length; i++){
+			for (i=0, j=images.length; i<j; i++){
 				
 				image = images[i];
 				src = this.settings.getImageSource(image);
@@ -75,9 +75,9 @@
 		 */
 		getImages: function(indexes){
 		
-			var i, retval = [], cacheImage;
+			var i, j, retval = [], cacheImage;
 			
-			for (i=0; i<indexes.length; i++){
+			for (i=0, j=indexes.length; i<j; i++){
 				cacheImage = this.images[indexes[i]];
 				if (this.settings.cacheMode === PhotoSwipe.Cache.Mode.aggressive){
 					cacheImage.cacheDoNotShrink = true;
@@ -86,7 +86,7 @@
 			}
 			
 			if (this.settings.cacheMode === PhotoSwipe.Cache.Mode.aggressive){
-				for (i=0; i<this.images.length; i++){
+				for (i=0, j=this.images.length; i<j; i++){
 					cacheImage = this.images[i];
 					if (!Util.objectHasProperty(cacheImage, 'cacheDoNotShrink')){
 						cacheImage.shrinkImage();

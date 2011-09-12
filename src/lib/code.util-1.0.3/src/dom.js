@@ -70,9 +70,9 @@
 				var 
 					els = contextEl.querySelectorAll(selectors),
 					retval = [],
-					i;
+					i, j;
 				
-				for (i=0; i<els.length; i++){
+				for (i=0, j=els.length; i<j; i++){
 					retval.push(els[i]);
 				}
 				return retval;
@@ -252,9 +252,9 @@
 					currentClassValue = Util.DOM.getAttribute(el, 'class', ''),
 					classes = Util.trim(currentClassValue).split(' '),
 					newClassVal = '',
-					i;
+					i, j;
 				
-				for (i=0; i<classes.length; i++){
+				for (i=0, j=classes.length; i<j; i++){
 					if (classes[i] !== className){
 						if (newClassVal !== ''){
 							newClassVal += ' ';

@@ -198,6 +198,14 @@
 			<param name="filePath" value="${project.build.workdir}/examples/09-exclusive-mode-no-thumbnails.html"/>
 		</antcall>
 		
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/10-image-meta-data.html"/>
+		</antcall>
+		
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/11-custom-captions.html"/>
+		</antcall>
+		
 	</target>
 	
 	

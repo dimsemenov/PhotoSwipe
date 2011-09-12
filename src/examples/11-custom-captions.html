@@ -9,24 +9,52 @@
 	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
 	
 	<script type="text/javascript" src="../lib/klass.min.js"></script>
-	<script type="text/javascript" src="../lib/jquery-1.6.3.min.js"></script>
-	
-	<script type="text/javascript" src="../code.photoswipe.jquery-%%version%%.min.js"></script>
+	<script type="text/javascript" src="../code.photoswipe-%%version%%.min.js"></script>
 	
 	
 	<script type="text/javascript">
 
-		(function(window, $, PhotoSwipe){
+		(function(window, PhotoSwipe){
+		
+			document.addEventListener('DOMContentLoaded', function(){
 			
-			$(document).ready(function(){
-				
-				var options = {};
-				$("#Gallery a").photoSwipe(options);
+				var
+					options = {
+					
+						getImageCaption: function(el){
+							
+							var captionText, captionEl;
+							
+							// Get the caption from the alt tag
+							if (el.nodeName === "IMG"){
+								captionText = el.getAttribute('alt'); 
+							}
+							var i, j, childEl;
+							for (i=0, j=el.childNodes.length; i<j; i++){
+								childEl = el.childNodes[i];
+								if (el.childNodes[i].nodeName === 'IMG'){
+									captionText = childEl.getAttribute('alt'); 
+								}
+							}
+							
+							// Return a DOM element with custom styling
+							captionEl = document.createElement('div');
+							captionEl.style.cssText = 'background: red; font-weight: bold; padding: 5px;';
+							captionEl.appendChild(document.createTextNode(captionText));
+							return captionEl;
+							
+							// Alternatively you can just pass back a string. However, any HTML 
+							// markup will be escaped
+							
+						}
+					
+					},
+					instance = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), options );
 			
-			});
+			}, false);
 			
 			
-		}(window, window.jQuery, window.Code.PhotoSwipe));
+		}(window, window.Code.PhotoSwipe));
 		
 	</script>
 	

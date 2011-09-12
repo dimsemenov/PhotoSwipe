@@ -25,6 +25,7 @@
 		touchStartPoint: null,
 		touchStartPosition: null,
 		imageLoadHandler: null,
+		imageErrorHandler: null,
 		slideshowTimeout: null,
 		
 		
@@ -63,6 +64,7 @@
 			this.settings = options;
 			this.slideByEndHandler = this.onSlideByEnd.bind(this);
 			this.imageLoadHandler = this.onImageLoad.bind(this);
+			this.imageErrorHandler = this.onImageError.bind(this);
 			this.currentCacheIndex = 0;
 			this.isSliding = false;
 			this.isSlideshowActive = false;
@@ -160,7 +162,7 @@
 				itemWidth = (this.settings.margin > 0) ? width + this.settings.margin : width,
 				itemEls = Util.DOM.find('.' + PhotoSwipe.Carousel.CssClasses.item, this.contentEl),
 				contentWidth = itemWidth * itemEls.length,
-				i,
+				i, j,
 				itemEl, imageEl;
 			
 			
@@ -180,7 +182,7 @@
 			
 			
 			// Set the height and width of item elements
-			for (i=0; i<itemEls.length; i++){
+			for (i=0, j=itemEls.length; i<j; i++){
 				
 				itemEl = itemEls[i];
 				Util.DOM.setStyle(itemEl, {
@@ -348,8 +350,8 @@
 			Util.Animation.resetTranslate(this.contentEl);
 			var 
 				itemEls = this.getItemEls(),
-				i;
-			for (i=0; i<itemEls.length; i++){
+				i, j;
+			for (i=0, j=itemEls.length; i<j; i++){
 				Util.Animation.resetTranslate(itemEls[i]);
 			}
 			
@@ -374,7 +376,7 @@
 				itemEls = this.getItemEls(),
 				nextCacheIndex = this.currentCacheIndex + 1,
 				previousCacheIndex = this.currentCacheIndex - 1;
-						
+			
 			if (this.settings.loop){
 				
 				if (nextCacheIndex > this.cache.images.length-1){
@@ -491,7 +493,8 @@
 		 * Function: addCacheImageToItemEl
 		 */
 		addCacheImageToItemEl: function(cacheImage, itemEl){
-		
+			
+			Util.DOM.removeClass(itemEl, PhotoSwipe.Carousel.CssClasses.itemError);
 			Util.DOM.addClass(itemEl, PhotoSwipe.Carousel.CssClasses.itemLoading);
 			
 			Util.DOM.removeChildren(itemEl);
@@ -504,6 +507,7 @@
 			Util.Animation.resetTranslate(cacheImage.imageEl);
 			
 			Util.Events.add(cacheImage, PhotoSwipe.Image.EventTypes.onLoad, this.imageLoadHandler);
+			Util.Events.add(cacheImage, PhotoSwipe.Image.EventTypes.onError, this.imageErrorHandler);
 			
 			cacheImage.load();
 			
@@ -843,9 +847,30 @@
 			
 			if (!Util.isNothing(cacheImage.imageEl.parentNode)){
 				Util.DOM.removeClass(cacheImage.imageEl.parentNode, PhotoSwipe.Carousel.CssClasses.itemLoading);
-				Util.Events.remove(cacheImage, PhotoSwipe.Image.EventTypes.onLoad, this.imageLoadHandler);
 				this.resetImagePosition(cacheImage.imageEl);
 			}
+			
+			Util.Events.remove(cacheImage, PhotoSwipe.Image.EventTypes.onLoad, this.imageLoadHandler);
+			Util.Events.remove(cacheImage, PhotoSwipe.Image.EventTypes.onError, this.imageErrorHandler);
+			
+		},
+		
+		
+		
+		/*
+		 * Function: onImageError
+		 */
+		onImageError: function(e){
+			
+			var cacheImage = e.target;
+			
+			if (!Util.isNothing(cacheImage.imageEl.parentNode)){
+				Util.DOM.removeClass(cacheImage.imageEl.parentNode, PhotoSwipe.Carousel.CssClasses.itemLoading);
+				Util.DOM.addClass(cacheImage.imageEl.parentNode, PhotoSwipe.Carousel.CssClasses.itemError);
+			}
+			
+			Util.Events.remove(cacheImage, PhotoSwipe.Image.EventTypes.onLoad, this.imageLoadHandler);
+			Util.Events.remove(cacheImage, PhotoSwipe.Image.EventTypes.onError, this.imageErrorHandler);
 			
 		}
 		

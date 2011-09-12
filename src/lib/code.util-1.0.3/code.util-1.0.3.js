@@ -1,6 +1,6 @@
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.2
+// version: 1.0.3
 
 (function (window) {
 	
@@ -41,8 +41,8 @@
 		 */			
 		registerNamespace: function () {
 			var 
-				args = arguments, obj = null, i, j, ns, nsParts, root;
-			for (i = 0; i < args.length; i++) {
+				args = arguments, obj = null, i, j, ns, nsParts, root, argsLen, nsPartsLens;
+			for (i=0, argsLen=args.length; i<argsLen; i++) {
 				ns = args[i];
 				nsParts = ns.split(".");
 				root = nsParts[0];
@@ -51,7 +51,7 @@
 				}
 				obj = window[root];
 				//eval('if (typeof ' + root + ' == "undefined"){' + root + ' = {};} obj = ' + root + ';');
-				for (j = 1; j < nsParts.length; ++j) {
+				for (j=1, nsPartsLens=nsParts.length; j<nsPartsLens; ++j) {
 					obj[nsParts[j]] = obj[nsParts[j]] || {};
 					obj = obj[nsParts[j]];
 				}
@@ -65,8 +65,8 @@
 		 * Takes any number of arguments and returns the first non Null / Undefined argument.
 		 */
 		coalesce: function () {
-			var i;
-			for (i = 0; i < arguments.length; i++) {
+			var i, j;
+			for (i=0, j=arguments.length; i<j; i++) {
 				if (!this.isNothing(arguments[i])) {
 					return arguments[i];
 				}
@@ -222,17 +222,29 @@
 		/*
 		 * Function: indexOf
 		 */
-		arrayIndexOf: function(obj, array){
+		arrayIndexOf: function(obj, array, prop){
 			
-			var i, retval;
+			var i, j, retval, arrayItem;
 			
 			retval = -1;
 			
-			for (i=0; i<array.length; i++){
+			for (i=0, j=array.length; i<j; i++){
 				
-				if (array[i] === obj){
-					retval = i;
-					break;
+				arrayItem = array[i];
+				
+				if (!this.isNothing(prop)){
+					if (this.objectHasProperty(arrayItem, prop)) {
+						if (arrayItem[prop] === obj){
+							retval = i;
+							break;
+						}
+					}
+				}
+				else{
+					if (arrayItem === obj){
+						retval = i;
+						break;
+					}
 				}
 				
 			}
@@ -263,7 +275,7 @@
 }(window));
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.2
+// version: 1.0.3
 
 (function(window, Util) {
 	
@@ -357,9 +369,9 @@
 ;
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.2
+// version: 1.0.3
 
-(function (window, $, Util) {
+(function (window, Util) {
 	
 	Util.extend(Util, {
 		
@@ -372,7 +384,21 @@
 			 */
 			add: function(obj, type, handler){
 				
-				$(obj).bind(type, handler);
+				this._checkHandlersProperty(obj);
+				
+				if (type === 'mousewheel'){
+					type = this._normaliseMouseWheelType();
+				}
+				
+				if (typeof obj.__eventHandlers[type] === 'undefined'){
+					obj.__eventHandlers[type] = [];
+				}
+				obj.__eventHandlers[type].push(handler);
+				
+				// DOM element 
+				if (this._isBrowserObject(obj)){
+					obj.addEventListener(type, handler, false);
+				}
 				
 			},
 			
@@ -384,8 +410,47 @@
 			 */
 			remove: function(obj, type, handler){
 				
-				$(obj).unbind(type, handler);
+				this._checkHandlersProperty(obj);
 				
+				if (type === 'mousewheel'){
+					type = this._normaliseMouseWheelType();
+				}
+				
+				if (obj.__eventHandlers[type] instanceof Array){
+					
+					var
+						i, j,
+						handlers = obj.__eventHandlers[type];
+					
+					// Removing all handlers for a type
+					if (Util.isNothing(handler)){
+						
+						if (this._isBrowserObject(obj)){
+							for (i=0, j=handlers.length; i<j; i++){
+								obj.removeEventListener(type, handlers[i], false);
+							}
+						}
+						
+						obj.__eventHandlers[type] = [];
+						return;
+					}
+					
+					// Removing a specific handler
+					for (i=0, j=handlers.length; i<j; i++){
+						if (handlers[i] === handler){
+							handlers.splice(i, 1);
+							break;
+						}
+					}
+					
+					// DOM element 
+					if (this._isBrowserObject(obj)){
+						obj.removeEventListener(type, handler, false);
+						return;
+					}
+				
+				}
+			
 			},
 			
 			
@@ -396,8 +461,39 @@
 			fire: function(obj, type){
 				
 				var 
+					i, j,
 					event,
-					args = Array.prototype.slice.call(arguments).splice(2);
+					listeners,
+					listener,
+					args = Array.prototype.slice.call(arguments).splice(2),
+					isNative;
+				
+				
+				if (type === 'mousewheel'){
+					type = this._normaliseMouseWheelType();
+				}
+				
+				
+				// DOM element 
+				if (this._isBrowserObject(obj)){
+				
+					if (typeof type !== "string"){
+						throw 'type must be a string for DOM elements';
+					}
+					
+					isNative = this._NATIVE_EVENTS[type];
+					event = document.createEvent(isNative ? "HTMLEvents" : "UIEvents"); 
+					event[isNative ? 'initEvent' : 'initUIEvent'](type, true, true, window, 1);
+					
+					// Fire an event on an element that has no extra arguments
+					if (args.length < 1){
+						obj.dispatchEvent(event);
+						return;
+					}
+				
+				}
+				
+				this._checkHandlersProperty(obj);
 				
 				if (typeof type === "string"){
 					event = { type: type };
@@ -405,8 +501,24 @@
 				else{
 					event = type;
 				}
-				
-				$(obj).trigger( $.Event(event.type, event),  args);
+				if (!event.target){
+					event.target = obj;
+				}
+
+				if (!event.type){ 
+					throw new Error("Event object missing 'type' property.");
+				}
+
+				if (obj.__eventHandlers[event.type] instanceof Array){
+					listeners = obj.__eventHandlers[event.type];
+					args.unshift(event);
+					for (i=0, j=listeners.length; i<j; i++){
+						listener = listeners[i];
+						if (!Util.isNothing(listener)){
+							listener.apply(obj, args);
+						}
+					}
+				}
 				
 			},
 			
@@ -417,12 +529,25 @@
 			getMousePosition: function(event){
 				
 				var retval = {
-					x: event.pageX,
-					y: event.pageY
+					x: 0,
+					y: 0
 				};
 				
-				return retval;
+				if (event.pageX) {
+					retval.x = event.pageX;
+				}
+				else if (event.clientX) {
+					retval.x = event.clientX + (document.documentElement.scrollLeft || document.body.scrollLeft);
+				}
+			
+				if (event.pageY) {
+					retval.y = event.pageY;
+				}
+				else if (event.clientY) {
+					retval.y = event.clientY + ( document.documentElement.scrollTop || document.body.scrollTop);
+				}
 				
+				return retval;
 			},
 			
 			
@@ -431,8 +556,8 @@
 			 */
 			getTouchEvent: function(event){
 				
-				return event.originalEvent;
-				
+				return event;
+			
 			},
 			
 			
@@ -461,10 +586,71 @@
 			 */
 			domReady: function(handler){
 				
-				$(document).ready(handler);
-				
-			}
+				document.addEventListener('DOMContentLoaded', handler, false);
 			
+			},
+			
+			
+			_checkHandlersProperty: function(obj){
+				
+				if (Util.isNothing(obj.__eventHandlers)){
+					Util.extend(obj, {
+						__eventHandlers: { }
+					});
+				}
+			
+			},
+			
+			
+			_isBrowserObject: function(obj){
+				if (obj === window || obj === window.document){
+					return true;
+				}
+				return this._isElement(obj) || this._isNode(obj);
+			},
+			
+			
+			_isElement: function(obj){
+				return (
+					typeof window.HTMLElement === "object" ? obj instanceof window.HTMLElement : //DOM2
+					typeof obj === "object" && obj.nodeType === 1 && typeof obj.nodeName==="string"
+				);
+			},
+			
+			
+			
+			_isNode: function(obj){
+				return (
+					typeof window.Node === "object" ? obj instanceof window.Node : 
+					typeof obj === "object" && typeof obj.nodeType === "number" && typeof obj.nodeName==="string"
+				);
+			},
+			
+			
+			
+			_normaliseMouseWheelType: function(){
+				
+				if (Util.Browser.isEventSupported('mousewheel')){
+					return 'mousewheel';
+				}
+				return 'DOMMouseScroll';
+				
+			},
+			
+			
+			
+			_NATIVE_EVENTS: { 
+				click: 1, dblclick: 1, mouseup: 1, mousedown: 1, contextmenu: 1, //mouse buttons
+				mousewheel: 1, DOMMouseScroll: 1, //mouse wheel
+				mouseover: 1, mouseout: 1, mousemove: 1, selectstart: 1, selectend: 1, //mouse movement
+				keydown: 1, keypress: 1, keyup: 1, //keyboard
+				orientationchange: 1, // mobile
+				touchstart: 1, touchmove: 1, touchend: 1, touchcancel: 1, // touch
+				gesturestart: 1, gesturechange: 1, gestureend: 1, // gesture
+				focus: 1, blur: 1, change: 1, reset: 1, select: 1, submit: 1, //form elements
+				load: 1, unload: 1, beforeunload: 1, resize: 1, move: 1, DOMContentLoaded: 1, readystatechange: 1, //window
+				error: 1, abort: 1, scroll: 1 
+			}
 			
 		}
 	
@@ -475,13 +661,12 @@
 }
 (
 	window,
-	window.jQuery,
 	window.Code.Util
 ));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.2
+// version: 1.0.3
 
-(function (window, $, Util) {
+(function (window, Util) {
 	
 	Util.extend(Util, {
 		
@@ -514,7 +699,7 @@
 			 * Function: removeData
 			 */
 			removeData: function(el, key){
-			
+				
 				Util.DOM.removeAttribute(el, 'data-' + key);
 				
 			},
@@ -537,8 +722,8 @@
 				return childEl === parentEl;
 			},
 			
-			
-			
+	
+		
 			/*
 			 * Function: find
 			 */
@@ -547,31 +732,38 @@
 					contextEl = window.document;
 				}
 				var 
-					els = $(selectors, contextEl),
+					els = contextEl.querySelectorAll(selectors),
 					retval = [],
-					i;
+					i, j;
 				
-				for (i=0; i<els.length; i++){
+				for (i=0, j=els.length; i<j; i++){
 					retval.push(els[i]);
 				}
 				return retval;
 			},
 			
 			
-		
+					
 			/*
 			 * Function: createElement
 			 */
 			createElement: function(type, attributes, content){
 				
-				var retval = $('<' + type +'></' + type + '>');
-				retval.attr(attributes);
-				retval.append(content);
+				var 
+					attribute,
+					retval = document.createElement(type);
+					
+				for(attribute in attributes) {
+					if(Util.objectHasProperty(attributes, attribute)){
+						retval.setAttribute(attribute, attributes[attribute]);
+					}
+				}
+    
+				retval.innerHTML = content || '';
 				
-				return retval[0];
+				return retval;
 				
 			},
-			
 			
 			
 			/*
@@ -579,10 +771,9 @@
 			 */
 			appendChild: function(childEl, parentEl){
 				
-				$(parentEl).append(childEl);
+				parentEl.appendChild(childEl);
 				
 			},
-			
 			
 			
 			/*
@@ -590,10 +781,9 @@
 			 */
 			insertBefore: function(newEl, refEl, parentEl){
 				
-				$(newEl).insertBefore(refEl);
+				parentEl.insertBefore(newEl, refEl);
 				
 			},
-			
 			
 			
 			/*
@@ -601,10 +791,9 @@
 			 */
 			appendText: function(text, parentEl){
 				
-				$(parentEl).text(text);
+				Util.DOM.appendChild(document.createTextNode(text), parentEl);
 				
 			},
-			
 			
 			
 			/*
@@ -612,18 +801,17 @@
 			 */
 			appendToBody: function(childEl){
 				
-				$('body').append(childEl);
+				this.appendChild(childEl, document.body);
 				
 			},
-			
 			
 			
 			/*
 			 * Function: removeChild
 			 */
 			removeChild: function(childEl, parentEl){
-				
-				$(childEl).empty().remove();
+			
+				parentEl.removeChild(childEl);
 				
 			},
 			
@@ -634,7 +822,13 @@
 			 */
 			removeChildren: function(parentEl){
 				
-				$(parentEl).empty();
+				if (parentEl.hasChildNodes()){
+					
+					while (parentEl.childNodes.length >= 1){
+						parentEl.removeChild(parentEl.childNodes[parentEl.childNodes.length -1]);
+					}
+					
+				}
 			
 			},
 			
@@ -645,7 +839,7 @@
 			 */
 			hasAttribute: function(el, attributeName){
 				
-				return !Util.isNothing( $(el).attr(attributeName) );
+				return !Util.isNothing(el.getAttribute(attributeName));
 			
 			},
 			
@@ -656,7 +850,7 @@
 			 */
 			getAttribute: function(el, attributeName, defaultValue){
 				
-				var retval = $(el).attr(attributeName);
+				var retval = el.getAttribute(attributeName);
 				if (Util.isNothing(retval) && !Util.isNothing(defaultValue)){
 					retval = defaultValue;
 				}
@@ -671,7 +865,7 @@
 			 */
 			setAttribute: function(el, attributeName, value){
 				
-				$(el).attr(attributeName, value);
+				el.setAttribute(attributeName, value);
 				
 			},
 			
@@ -682,8 +876,12 @@
 			 */
 			removeAttribute: function(el, attributeName){
 				
-				$(el).removeAttr(attributeName);
+				if (this.hasAttribute(el, attributeName)){
 				
+					el.removeAttribute(attributeName);
+					
+				}
+			
 			},
 			
 			
@@ -693,8 +891,18 @@
 			 */
 			addClass: function(el, className){
 				
-				$(el).addClass(className);
+				var 
+					currentClassValue = Util.DOM.getAttribute(el, 'class', ''),
+					re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
 				
+				if ( ! re.test(currentClassValue) ){
+					if (currentClassValue !== ''){
+						currentClassValue = currentClassValue + ' ';
+					}
+					currentClassValue = currentClassValue + className;
+					Util.DOM.setAttribute(el, 'class', currentClassValue);
+				}
+       
 			},
 			
 			
@@ -703,8 +911,28 @@
 			 * Function: removeClass
 			 */
 			removeClass: function(el, className){
-			
-				$(el).removeClass(className);
+				
+				var 
+					currentClassValue = Util.DOM.getAttribute(el, 'class', ''),
+					classes = Util.trim(currentClassValue).split(' '),
+					newClassVal = '',
+					i, j;
+				
+				for (i=0, j=classes.length; i<j; i++){
+					if (classes[i] !== className){
+						if (newClassVal !== ''){
+							newClassVal += ' ';
+						}
+						newClassVal += classes[i];
+					}
+				}
+				
+				if (newClassVal === ''){
+					Util.DOM.removeAttribute(el, 'class');
+				}
+				else{
+					Util.DOM.setAttribute(el, 'class', newClassVal);
+				}
 				
 			},
 			
@@ -715,7 +943,8 @@
 			 */
 			hasClass: function(el, className){
 				
-				$(el).hasClass(className);
+				var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
+        return re.test(Util.DOM.getAttribute(el, 'class', ''));
 				
 			},
 			
@@ -726,11 +955,12 @@
 			 */
 			setStyle: function(el, style, value){
 				
-				var prop;
+				var prop, val;
 				
 				if (Util.isObject(style)) {
 					for(prop in style) {
 						if(Util.objectHasProperty(style, prop)){
+							
 							if (prop === 'width'){
 								Util.DOM.width(el, style[prop]);
 							}
@@ -738,16 +968,15 @@
 								Util.DOM.height(el, style[prop]);
 							}
 							else{
-								$(el).css(prop, style[prop]);
 								el.style[prop] = style[prop];
 							}
+						
 						}
 					}
 				}
 				else {
-					$(el).css(style, value);
+					el.style[style] = value;
 				}
-				
 			},
 			
 			
@@ -757,7 +986,11 @@
 			 */
 			getStyle: function(el, styleName){
 				
-				return $(el).css(styleName);
+				var retval = window.getComputedStyle(el,'').getPropertyValue(styleName);
+				if (retval === ''){
+					retval = el.style[styleName];
+				}
+				return retval;
 				
 			},
 			
@@ -768,7 +1001,9 @@
 			 */
 			hide: function(el){
 				
-				$(el).hide();
+				// Store the current display value if we use show
+				Util.DOM.setData(el, 'ccl-disp', Util.DOM.getStyle(el, 'display'));
+				Util.DOM.setStyle(el, 'display', 'none');
 			
 			},
 			
@@ -779,7 +1014,13 @@
 			 */
 			show: function(el){
 				
-				$(el).show();
+				if (Util.DOM.getStyle(el, 'display') === 'none'){
+					var oldDisplayValue = Util.DOM.getData(el, 'ccl-disp', 'block');
+					if (oldDisplayValue === 'none' || oldDisplayValue === ''){
+						oldDisplayValue = 'block';
+					}
+					Util.DOM.setStyle(el, 'display', oldDisplayValue);
+				}
 				
 			},
 			
@@ -787,15 +1028,18 @@
 			
 			/*
 			 * Function: width 
-			 * Content width, exludes padding
+			 * Content width, excludes padding
 			 */
 			width: function(el, value){
 				
 				if (!Util.isNothing(value)){
-					$(el).width(value);
+					if (Util.isNumber(value)){
+						value = value + 'px';
+					}
+					el.style.width = value;
 				}
 				
-				return $(el).width();
+				return this._getDimension(el, 'width');
 				
 			},
 			
@@ -806,7 +1050,12 @@
 			 */
 			outerWidth: function(el){
 				
-				return $(el).outerWidth();
+				var retval = Util.DOM.width(el);
+				
+				retval += parseInt(Util.DOM.getStyle(el, 'padding-left'), 10) + parseInt(Util.DOM.getStyle(el, 'padding-right'), 10); 
+				retval += parseInt(Util.DOM.getStyle(el, 'margin-left'), 10) + parseInt(Util.DOM.getStyle(el, 'margin-right'), 10); 
+				retval += parseInt(Util.DOM.getStyle(el, 'border-left-width'), 10) + parseInt(Util.DOM.getStyle(el, 'border-right-width'), 10); 
+				return retval;
 			
 			},
 			
@@ -819,10 +1068,45 @@
 			height: function(el, value){
 				
 				if (!Util.isNothing(value)){
-					$(el).height(value);
+					if (Util.isNumber(value)){
+						value = value + 'px';
+					}
+					el.style.height = value;
 				}
 				
-				return $(el).height();
+				return this._getDimension(el, 'height');
+				
+			},
+			
+			
+			
+			/*
+			 * Function: _getDimension
+			 */
+			_getDimension: function(el, dimension){
+				
+				var 
+					retval = window.parseInt(window.getComputedStyle(el,'').getPropertyValue(dimension)),
+					styleBackup;
+				
+				if (isNaN(retval)){
+					
+					// If this is the case, chances are the element is not displayed and we can't get
+					// the width and height. This temporarily shows and hides to get the value
+					styleBackup = { 
+						display: el.style.display,
+						left: el.style.left
+					};
+					
+					el.style.display = 'block';
+					el.style.left = '-1000000px';
+					
+					retval = window.parseInt(window.getComputedStyle(el,'').getPropertyValue(dimension));
+					
+					el.style.display = styleBackup.display;
+					el.style.left = styleBackup.left;
+				}
+				return retval;
 				
 			},
 			
@@ -833,8 +1117,14 @@
 			 */
 			outerHeight: function(el){
 				
-				return $(el).outerHeight();
+				var retval = Util.DOM.height(el);
 				
+				retval += parseInt(Util.DOM.getStyle(el, 'padding-top'), 10) + parseInt(Util.DOM.getStyle(el, 'padding-bottom'), 10); 
+				retval += parseInt(Util.DOM.getStyle(el, 'margin-top'), 10) + parseInt(Util.DOM.getStyle(el, 'margin-bottom'), 10); 
+				retval += parseInt(Util.DOM.getStyle(el, 'border-top-width'), 10) + parseInt(Util.DOM.getStyle(el, 'border-bottom-width'), 10); 
+								
+				return retval;
+			
 			},
 			
 			
@@ -844,18 +1134,18 @@
 			 */
 			documentWidth: function(){
 				
-				return $(document.documentElement).width();
+				return Util.DOM.width(document.documentElement);
 				
 			},
 
-			
+
 			
 			/*
 			 * Function: documentHeight
 			 */
 			documentHeight: function(){
 				
-				return $(document.documentElement).height();
+				return Util.DOM.height(document.documentElement);
 				
 			},
 			
@@ -888,7 +1178,7 @@
 			 */
 			bodyWidth: function(){
 				
-				return $(document.body).width();
+				return Util.DOM.width(document.body);
 			
 			},
 			
@@ -899,7 +1189,7 @@
 			 */
 			bodyHeight: function(){
 				
-				return $(document.body).height();
+				return Util.DOM.height(document.body);
 			
 			},
 			
@@ -931,12 +1221,9 @@
 			 * Function: windowWidth
 			 */
 			windowWidth: function(){
-				//IE
-				if(!window.innerWidth) {
-					return $(window).width();
-				}
-				//w3c
+			
 				return window.innerWidth;
+			
 			},
 			
 			
@@ -945,12 +1232,9 @@
 			 * Function: windowHeight
 			 */
 			windowHeight: function(){
-				//IE
-				if(!window.innerHeight) {
-					return $(window).height();
-				}
-				//w3c
+			
 				return window.innerHeight;
+			
 			},
 			
 			
@@ -959,12 +1243,9 @@
 			 * Function: windowScrollLeft
 			 */
 			windowScrollLeft: function(){
-				//IE
-				if(!window.pageXOffset) {
-					return $(window).scrollLeft();
-				}
-				//w3c
+			
 				return window.pageXOffset;
+			
 			},
 			
 			
@@ -973,12 +1254,9 @@
 			 * Function: windowScrollTop
 			 */
 			windowScrollTop: function(){
-				//IE
-				if(!window.pageYOffset) {
-					return $(window).scrollTop();
-				}
-				//w3c
+			
 				return window.pageYOffset;
+			
 			}
 			
 		}
@@ -990,12 +1268,11 @@
 }
 (
 	window,
-	window.jQuery,
 	window.Code.Util
 ));
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.2
+// version: 1.0.3
 
 (function (window, Util) {
 	
@@ -1067,33 +1344,43 @@
 			/*
 			 * Function: fadeIn
 			 */
-			fadeIn: function(el, speed, callback, timingFunction){
+			fadeIn: function(el, speed, callback, timingFunction, opacity){
+				
+				opacity = Util.coalesce(opacity, 1);
+				if (opacity <= 0){
+					opacity = 1;
+				}
 				
 				if (speed <= 0){
-					Util.DOM.setStyle(el, 'opacity', 1);
+					Util.DOM.setStyle(el, 'opacity', opacity);
 					if (!Util.isNothing(callback)){
 						callback(el);
 						return;
 					}
 				}
 				
-				var opacity = Util.DOM.getStyle(el, 'opacity');
+				var currentOpacity = Util.DOM.getStyle(el, 'opacity');
 				
-				if (opacity >= 1){
+				if (currentOpacity >= 1){
 					Util.DOM.setStyle(el, 'opacity', 0);
 				}
 				
 				if (Util.Browser.isCSSTransformSupported){
-				
-					this._applyTransition(el, 'opacity', 1, speed, callback, timingFunction);
-					
+					this._applyTransition(el, 'opacity', opacity, speed, callback, timingFunction);
 				}
 				else if (!Util.isNothing(window.jQuery)){
-				
-					window.jQuery(el).fadeTo(speed, 1, callback);
-				
+					window.jQuery(el).fadeTo(speed, opacity, callback);
 				}
 				
+			},
+			
+			
+			
+			/*
+			 * Function: fadeTo
+			 */
+			fadeTo: function(el, opacity, speed, callback, timingFunction){
+				this.fadeIn(el, speed, callback, timingFunction, opacity);
 			},
 			
 			
@@ -1301,7 +1588,7 @@
 ));
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.2
+// version: 1.0.3
 
 (function(window, klass, Util){
 	
@@ -1342,7 +1629,7 @@
 	window.Code.Util
 ));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.2
+// version: 1.0.3
 
 (function(window, klass, Util){
 	
@@ -1410,7 +1697,8 @@
 				swipe: false,
 				move: false,
 				gesture: false,
-				doubleTap: false
+				doubleTap: false,
+				preventDefaultTouchEvents: true
 			};
 			
 			Util.extend(this.captureSettings, captureSettings);
@@ -1617,7 +1905,9 @@
 		 */
 		onTouchStart: function(e){
 			
-			e.preventDefault();
+			if (this.captureSettings.preventDefaultTouchEvents){
+				e.preventDefault();
+			}
 			
 			// No longer need mouse events
 			Util.Events.remove(this.el, 'mousedown', this.mouseDownHandler);
@@ -1651,8 +1941,10 @@
 		 * Function: onTouchMove
 		 */
 		onTouchMove: function(e){
-		
-			e.preventDefault();
+			
+			if (this.captureSettings.preventDefaultTouchEvents){
+				e.preventDefault();
+			}
 			
 			if (this.isGesture && this.captureSettings.gesture){
 				return;
@@ -1682,7 +1974,9 @@
 				return;
 			}
 			
-			e.preventDefault();
+			if (this.captureSettings.preventDefaultTouchEvents){
+				e.preventDefault();
+			}
 			
 			// http://backtothecode.blogspot.com/2009/10/javascript-touch-and-gesture-events.html
 			// iOS removed the current touch from e.touches on "touchend"

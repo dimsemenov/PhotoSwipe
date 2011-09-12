@@ -41,8 +41,8 @@
 		 */			
 		registerNamespace: function () {
 			var 
-				args = arguments, obj = null, i, j, ns, nsParts, root;
-			for (i = 0; i < args.length; i++) {
+				args = arguments, obj = null, i, j, ns, nsParts, root, argsLen, nsPartsLens;
+			for (i=0, argsLen=args.length; i<argsLen; i++) {
 				ns = args[i];
 				nsParts = ns.split(".");
 				root = nsParts[0];
@@ -51,7 +51,7 @@
 				}
 				obj = window[root];
 				//eval('if (typeof ' + root + ' == "undefined"){' + root + ' = {};} obj = ' + root + ';');
-				for (j = 1; j < nsParts.length; ++j) {
+				for (j=1, nsPartsLens=nsParts.length; j<nsPartsLens; ++j) {
 					obj[nsParts[j]] = obj[nsParts[j]] || {};
 					obj = obj[nsParts[j]];
 				}
@@ -65,8 +65,8 @@
 		 * Takes any number of arguments and returns the first non Null / Undefined argument.
 		 */
 		coalesce: function () {
-			var i;
-			for (i = 0; i < arguments.length; i++) {
+			var i, j;
+			for (i=0, j=arguments.length; i<j; i++) {
 				if (!this.isNothing(arguments[i])) {
 					return arguments[i];
 				}
@@ -222,17 +222,29 @@
 		/*
 		 * Function: indexOf
 		 */
-		arrayIndexOf: function(obj, array){
+		arrayIndexOf: function(obj, array, prop){
 			
-			var i, retval;
+			var i, j, retval, arrayItem;
 			
 			retval = -1;
 			
-			for (i=0; i<array.length; i++){
+			for (i=0, j=array.length; i<j; i++){
 				
-				if (array[i] === obj){
-					retval = i;
-					break;
+				arrayItem = array[i];
+				
+				if (!this.isNothing(prop)){
+					if (this.objectHasProperty(arrayItem, prop)) {
+						if (arrayItem[prop] === obj){
+							retval = i;
+							break;
+						}
+					}
+				}
+				else{
+					if (arrayItem === obj){
+						retval = i;
+						break;
+					}
 				}
 				
 			}

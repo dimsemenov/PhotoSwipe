@@ -13,6 +13,12 @@
 	};
 	
 	
+	PhotoSwipe.ZoomPanRotate.EventTypes = {
+	
+		onTransform: 'PhotoSwipeZoomPanRotateOnTransform'
+	
+	};
+	
 }
 (
 	window, 

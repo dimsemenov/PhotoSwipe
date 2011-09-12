@@ -32,7 +32,12 @@
 		onCaptionAndToolbarShow: 'PhotoSwipeOnCaptionAndToolbarShow',
 		onBeforeCaptionAndToolbarHide: 'PhotoSwipeOnBeforeCaptionAndToolbarHide',
 		onCaptionAndToolbarHide: 'PhotoSwipeOnCaptionAndToolbarHide',
-		onToolbarTap: 'PhotoSwipeOnToolbarTap'
+		onToolbarTap: 'PhotoSwipeOnToolbarTap',
+		onBeforeZoomPanRotateShow: 'PhotoSwipeOnBeforeZoomPanRotateShow',
+		onZoomPanRotateShow: 'PhotoSwipeOnZoomPanRotateShow',
+		onBeforeZoomPanRotateHide: 'PhotoSwipeOnBeforeZoomPanRotateHide',
+		onZoomPanRotateHide: 'PhotoSwipeOnZoomPanRotateHide',
+		onZoomPanRotateTransform: 'PhotoSwipeOnZoomPanRotateTransform'
 	
 	};
 	
@@ -74,12 +79,12 @@
 	 */
 	PhotoSwipe.attach = function(images, options, id){
 		
-		var i, instance, image;
+		var i, j, instance, image;
 		
 		instance = PhotoSwipe.createInstance(images, options, id);
 		
 		// Add click event handlers if applicable
-		for (i=0; i<images.length; i++){
+		for (i=0, j=images.length; i<j; i++){
 			
 			image = images[i];
 			if (!Util.isNothing(image.nodeType)){
@@ -120,10 +125,10 @@
 	 */
 	PhotoSwipe.detatch = function(instance){
 	
-		var i, image;
+		var i, j, image;
 		
 		// Remove click event handlers if applicable
-		for (i=0; i<instance.originalImages.length; i++){
+		for (i=0, j=instance.originalImages.length; i<j; i++){
 			
 			image = instance.originalImages[i];
 			if (!Util.isNothing(image.nodeType)){
@@ -217,9 +222,9 @@
 	 */
 	PhotoSwipe.getInstance = function(id){
 		
-		var i, instance;
+		var i, j, instance;
 		
-		for (i=0; i<PhotoSwipe.instances.length; i++){
+		for (i=0, j=PhotoSwipe.instances.length; i<j; i++){
 			
 			instance = PhotoSwipe.instances[i];
 			if (instance.id === id){
@@ -239,9 +244,9 @@
 	 */
 	PhotoSwipe.getInstanceIndex = function(instance){
 		
-		var i, instanceIndex = -1;
+		var i, j, instanceIndex = -1;
 		
-		for (i=0; i<PhotoSwipe.instances.length; i++){
+		for (i=0, j=PhotoSwipe.instances.length; i<j; i++){
 		
 			if (PhotoSwipe.instances[i] === instance){
 				instanceIndex = i;
