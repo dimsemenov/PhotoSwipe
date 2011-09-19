@@ -9,6 +9,10 @@
 	<link href="jquery-mobile.css" type="text/css" rel="stylesheet" />
 	<link href="../assets/photoswipe.css" type="text/css" rel="stylesheet" />
 	
+	<!--
+	<script src="http://192.168.0.98:8888/target/target-script-min.js#anonymous"></script>
+	-->
+	
 	<script type="text/javascript" src="../lib/klass.min.js"></script>
 	<script type="text/javascript" src="../lib/jquery-1.6.3.min.js"></script>
 	<script type="text/javascript" src="../lib/jquery.mobile-1.0b3/jquery.mobile-1.0b3.min.js"></script>
@@ -45,34 +49,35 @@
 			
 			$(document).ready(function(){
 				
-				
-				$('div.gallery-page').live('pageshow', function(e){
+				$('div.gallery-page')
+					.live('pageshow', function(e){
 						
-					// See if there is a PhotoSwipe instance associated with the page.
-					// For this demo I've assumed one page has one instance and the ID 
-					// for each instance is the same as the page ID.
-					//
-					// Of course, it's up to you how many instances per page and what
-					// ID naming convention you use!
-					var 
-						currentPage = $(e.target),
-						photoSwipeInstanceId = currentPage.attr('id'),
-						photoSwipeInstance = PhotoSwipe.getInstance(photoSwipeInstanceId)
-						options = {};
+						var 
+							currentPage = $(e.target),
+							options = {},
+							photoSwipeInstance = $("ul.gallery a", e.target).photoSwipe(options,  currentPage.attr('id'));
+							
+						return true;
+						
+					})
 					
-					if (typeof photoSwipeInstance === "undefined" || photoSwipeInstance === null) {
-						console.log('creating');
-						photoSwipeInstance = $("ul.gallery a", e.target).photoSwipe(options, photoSwipeInstanceId);
-					}
-					
-					return true;
-					
-				})
-					
+					.live('pagehide', function(e){
+						
+						var 
+							currentPage = $(e.target),
+							photoSwipeInstance = PhotoSwipe.getInstance(currentPage.attr('id'));
+
+						if (typeof photoSwipeInstance != "undefined" && photoSwipeInstance != null) {
+							PhotoSwipe.detatch(photoSwipeInstance);
+						}
+						
+						return true;
+						
+					});
+				
 			});
 		
 		}(window, window.jQuery, window.Code.PhotoSwipe));
-		
 		
 	</script>
 	

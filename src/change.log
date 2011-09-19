@@ -62,3 +62,15 @@ Initial release
 
 - Better handling when images are not found
 
+
+2.1.2 19.09.11 - Ste Brennan
+----------------------------
+
+- Modified how PhotoSwipe is initiated within jQuery Mobile projects. Fixes issue reported especially with "05-jquery-mobile-ajax.html" examples. Check it out.
+
+- Stopped core functions like "play()", "next()", "previous()" etc. running when the zoom layer is displayed. This could happen especially if using keyboard controls.
+
+
+
+
+

@@ -536,6 +536,10 @@
 		 */
 		play: function(){
 			
+			if (this.isZoomActive()){
+				return;
+			}
+			
 			if (!this.settings.preventSlideshow){
 				if (!Util.isNothing(this.carousel)){
 					this.fadeOutToolbarIfVisible();
@@ -551,7 +555,11 @@
 		 * Function: stop
 		 */
 		stop: function(){
-		
+			
+			if (this.isZoomActive()){
+				return;
+			}
+			
 			if (!Util.isNothing(this.carousel)){
 				this.carousel.stopSlideshow();
 			}
@@ -564,7 +572,11 @@
 		 * Function: previous
 		 */
 		previous: function(){
-		
+			
+			if (this.isZoomActive()){
+				return;
+			}
+			
 			if (!Util.isNothing(this.carousel)){
 				this.carousel.previous();
 			}
@@ -577,7 +589,11 @@
 		 * Function: next
 		 */
 		next: function(){
-		
+			
+			if (this.isZoomActive()){
+				return;
+			}
+			
 			if (!Util.isNothing(this.carousel)){
 				this.carousel.next();
 			}
@@ -590,6 +606,10 @@
 		 * Function: toggleToolbar
 		 */
 		toggleToolbar: function(){
+			
+			if (this.isZoomActive()){
+				return;
+			}
 			
 			if (!Util.isNothing(this.toolbar)){
 				this.toolbar.toggleVisibility(this.currentIndex);

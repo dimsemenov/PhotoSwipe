@@ -27,29 +27,32 @@
 			
 			$(document).ready(function(){
 				
-				
-				$('div.gallery-page').live('pageshow', function(e){
+				$('div.gallery-page')
+					.live('pageshow', function(e){
 						
-					// See if there is a PhotoSwipe instance associated with the page.
-					// For this demo I've assumed one page has one instance and the ID 
-					// for each instance is the same as the page ID.
-					//
-					// Of course, it's up to you how many instances per page and what
-					// ID naming convention you use!
-					var 
-						currentPage = $(e.target),
-						photoSwipeInstanceId = currentPage.attr('id'),
-						photoSwipeInstance = PhotoSwipe.getInstance(photoSwipeInstanceId)
-						options = {};
+						var 
+							currentPage = $(e.target),
+							options = {},
+							photoSwipeInstance = $("ul.gallery a", e.target).photoSwipe(options,  currentPage.attr('id'));
+							
+						return true;
+						
+					})
 					
-					if (typeof photoSwipeInstance === "undefined" || photoSwipeInstance === null) {
-						photoSwipeInstance = $("ul.gallery a", e.target).photoSwipe(options, photoSwipeInstanceId);
-					}
-					
-					return true;
-					
-				})
-					
+					.live('pagehide', function(e){
+						
+						var 
+							currentPage = $(e.target),
+							photoSwipeInstance = PhotoSwipe.getInstance(currentPage.attr('id'));
+
+						if (typeof photoSwipeInstance != "undefined" && photoSwipeInstance != null) {
+							PhotoSwipe.detatch(photoSwipeInstance);
+						}
+						
+						return true;
+						
+					});
+				
 			});
 		
 		}(window, window.jQuery, window.Code.PhotoSwipe));
