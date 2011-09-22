@@ -71,6 +71,12 @@ Initial release
 - Stopped core functions like "play()", "next()", "previous()" etc. running when the zoom layer is displayed. This could happen especially if using keyboard controls.
 
 
+2.1.3 19.09.11 - Ste Brennan
+----------------------------
+
+- Fixed issue with Android not being picked up correctly (thanks bgz)
+
+- Fixed issues with IE 8
 
 
 

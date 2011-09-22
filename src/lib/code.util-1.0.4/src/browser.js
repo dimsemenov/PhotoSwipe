@@ -37,6 +37,7 @@
 			this.opera = /opera/i.test(this.ua);
 			this.msie = /msie/i.test(this.ua) && !this.opera;
 			this.chrome = /Chrome/i.test(this.ua);
+			this.firefox = /Firefo/i.test(this.ua);
 			this.mozilla = /mozilla/i.test(this.ua) && !/(compatible|webkit)/.test(this.ua);
 			this.android = /android/i.test(this.ua);
 			this.blackberry = /blackberry/i.test(this.ua);

@@ -91,8 +91,8 @@
 			
 			this.imageEl.isError = false;
 			this.imageEl.isLoading = true;
-			this.imageEl.naturalWidth = 0;
-			this.imageEl.naturalHeight = 0;
+			this.imageEl.naturalWidth = null;
+			this.imageEl.naturalHeight = null;
 			this.imageEl.isLandscape = false;
 			this.imageEl.onload = this.imageLoadHandler;
 			this.imageEl.onerror = this.imageErrorHandler;

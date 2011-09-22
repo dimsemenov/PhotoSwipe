@@ -260,7 +260,6 @@
 							}
 							else{
 								$(el).css(prop, style[prop]);
-								el.style[prop] = style[prop];
 							}
 						}
 					}

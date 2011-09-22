@@ -11,15 +11,22 @@ PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safa
 
 
 
-Latest Release v2.1.2
+Have you used PhotoSwipe? It'd be great to hear from you!
+---------------------------------------------------------
+
+It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're looking at showcasing some of the best on [photoswipe.com](http://www.photoswipe.com). Feel free to drop us an email at support@photoswipe.com.
+
+
+
+Latest Release v2.1.3
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.2.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.3.zip)
 
-**Changes for 2.1.2**
+**Changes for 2.1.3**
 
-- Modified how PhotoSwipe is initiated within jQuery Mobile projects. Fixes issue reported especially with "05-jquery-mobile-ajax.html" examples. Check it out.
+- Fixed issue with Android not being picked up correctly (thanks bgz)
 
-- Stopped core functions like "play()", "next()", "previous()" etc. running when the zoom layer is displayed. This could happen especially if using keyboard controls.
+- Fixed issues with IE 8
 
 
 **Important notes about v2**

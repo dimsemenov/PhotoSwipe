@@ -259,6 +259,8 @@
 		
 		<delete dir="${project.build.workdir}" />
 		
+		<fixcrlf srcdir="${project.build.artifactdir}" includes="**/*.log,**/*.js,**/*.txt,**/*.css,**/*.html" eol="crlf" />
+		
 	</target>
 	
 	
@@ -298,6 +300,8 @@
 	<target name="versionStamp">
 		
 		<replace file="${filePath}" token="%%version%%" value="${project.build.version}"/>
+		<replace file="${filePath}" token="%%jqueryversion%%" value="${lib.jquery.version}"/>
+		<replace file="${filePath}" token="%%jqmversion%%" value="${lib.jqm.version}"/>
 		<replace file="${filePath}" token="%%year%%" value="${project.build.year}"/>
 	
 	</target>

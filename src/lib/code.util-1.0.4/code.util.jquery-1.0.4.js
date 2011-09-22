@@ -1,6 +1,6 @@
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.3
+// version: 1.0.4
 
 (function (window) {
 	
@@ -275,7 +275,7 @@
 }(window));
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.3
+// version: 1.0.4
 
 (function(window, Util) {
 	
@@ -312,6 +312,7 @@
 			this.opera = /opera/i.test(this.ua);
 			this.msie = /msie/i.test(this.ua) && !this.opera;
 			this.chrome = /Chrome/i.test(this.ua);
+			this.firefox = /Firefo/i.test(this.ua);
 			this.mozilla = /mozilla/i.test(this.ua) && !/(compatible|webkit)/.test(this.ua);
 			this.android = /android/i.test(this.ua);
 			this.blackberry = /blackberry/i.test(this.ua);
@@ -369,7 +370,7 @@
 ;
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.3
+// version: 1.0.4
 
 (function (window, $, Util) {
 	
@@ -491,7 +492,7 @@
 	window.Code.Util
 ));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.3
+// version: 1.0.4
 
 (function (window, $, Util) {
 	
@@ -751,7 +752,6 @@
 							}
 							else{
 								$(el).css(prop, style[prop]);
-								el.style[prop] = style[prop];
 							}
 						}
 					}
@@ -1007,7 +1007,7 @@
 ));
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.3
+// version: 1.0.4
 
 (function (window, Util) {
 	
@@ -1323,7 +1323,7 @@
 ));
 // Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.3
+// version: 1.0.4
 
 (function(window, klass, Util){
 	
@@ -1364,7 +1364,7 @@
 	window.Code.Util
 ));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 1.0.3
+// version: 1.0.4
 
 (function(window, klass, Util){
 	
