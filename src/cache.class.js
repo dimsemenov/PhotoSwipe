@@ -2,7 +2,7 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-(function(window, klass, Util, Image){
+(function(window, klass, Util){
 	
 	
 	Util.registerNamespace('Code.PhotoSwipe.Cache');
@@ -61,7 +61,7 @@
 				caption = this.settings.getImageCaption(image);
 				metaData = this.settings.getImageMetaData(image);
 				
-				this.images.push(new Image.ImageClass(image, src, caption, metaData));
+				this.images.push(new PhotoSwipe.Image.ImageClass(image, src, caption, metaData));
 				
 			}
 			

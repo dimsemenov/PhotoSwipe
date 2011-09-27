@@ -79,4 +79,11 @@ Initial release
 - Fixed issues with IE 8
 
 
+2.1.4 27.09.11 - Ste Brennan
+----------------------------
+
+- Fixed issue when closing PhotoSwipe immediately after opening but before an image has loaded
+
+
+
 

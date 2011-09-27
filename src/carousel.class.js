@@ -35,7 +35,12 @@
 		 */
 		dispose: function(){
 		
-			var prop;
+			var prop, i, j;
+			
+			for (i=0, j=this.cache.images.length; i<j; i++){
+				Util.Events.remove(this.cache.images[i], PhotoSwipe.Image.EventTypes.onLoad, this.imageLoadHandler);
+				Util.Events.remove(this.cache.images[i], PhotoSwipe.Image.EventTypes.onError, this.imageErrorHandler);
+			}
 			
 			this.stopSlideshow();
 			Util.Animation.stop(this.el);

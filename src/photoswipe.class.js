@@ -477,6 +477,10 @@
 				throw "Code.PhotoSwipe.PhotoSwipeClass.hide: PhotoSwipe instance is already hidden";
 			}
 			
+			if (!Util.isNothing(this.hiding)){
+				return;
+			}
+			
 			this.destroyZoomPanRotate();
 			
 			this.removeEventHandlers();

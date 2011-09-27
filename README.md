@@ -18,15 +18,20 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 
 
-Latest Release v2.1.3
+Latest Release v2.1.4
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.3.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.4.zip)
 
-**Changes for 2.1.3**
+**Changes for 2.1.4**
 
-- Fixed issue with Android not being picked up correctly (thanks bgz)
+- Fixed issue when closing PhotoSwipe immediately after opening but before an image has loaded
 
-- Fixed issues with IE 8
+
+
+**Important notes about the examples and Internet Explorer**
+
+The majority of the bundled examples supplied with PhotoSwipe are running the optimised non-jQuery version. These examples will error on Internet Explorer. This is by design. They will work if you use the jQuery version of PhotoSwipe. Please read the "Getting Started" section below for more information regarding the different implementations of PhotoSwipe.
+
 
 
 **Important notes about v2**
