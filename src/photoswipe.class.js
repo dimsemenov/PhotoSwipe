@@ -210,6 +210,8 @@
 			
 			var i, j;
 			
+			this.backButtonClicked = false;
+			
 			// Work out what the starting index is
 			if (Util.isNumber(obj)){
 				this.currentIndex = obj;

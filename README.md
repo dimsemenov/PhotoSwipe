@@ -18,13 +18,13 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 
 
-Latest Release v2.1.4
+Latest Release v2.1.5
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.4.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.5.zip)
 
-**Changes for 2.1.4**
+**Changes for 2.1.5**
 
-- Fixed issue when closing PhotoSwipe immediately after opening but before an image has loaded
+- Fixed issue with internal property "backButtonClicked" not being reset on close.
 
 
 

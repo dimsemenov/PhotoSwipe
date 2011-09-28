@@ -85,5 +85,10 @@ Initial release
 - Fixed issue when closing PhotoSwipe immediately after opening but before an image has loaded
 
 
+2.1.5 28.09.11 - Ste Brennan
+----------------------------
+
+- Fixed issue with internal property "backButtonClicked" not being reset on close.
+
 
 
