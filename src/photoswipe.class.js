@@ -53,6 +53,10 @@
 		zoomPanRotateTransformHandler: null,
 		
 		
+		_isResettingPosition: null,
+		_uiWebViewResetPositionTimeout: null,
+		_uiWebViewResetPositionDelay: null,
+				
 		
 		/*
 		 * Function: dispose
@@ -135,6 +139,7 @@
 				this.isBackEventSupported = Util.objectHasProperty(window, 'onhashchange');
 			}
 			
+			this._uiWebViewResetPositionDelay = 500;
 			
 			this.settings = {
 				
@@ -151,6 +156,7 @@
 				autoStartSlideshow: false,
 				jQueryMobile: ( !Util.isNothing(window.jQuery) && !Util.isNothing(window.jQuery.mobile) ),
 				jQueryMobileDialogHash: '&ui-state=dialog',
+				enableUIWebViewRepositionTimeout: false,
 				
 				
 				// Carousel
@@ -210,6 +216,7 @@
 			
 			var i, j;
 			
+			this._isResettingPosition = false;
 			this.backButtonClicked = false;
 			
 			// Work out what the starting index is
@@ -293,12 +300,19 @@
 		 */
 		resetPosition: function(){
 			
+			if (this._isResettingPosition){
+				return;
+			}
+			
 			var newWindowDimensions = this.getWindowDimensions();
 			if (newWindowDimensions.width === this.windowDimensions.width && newWindowDimensions.height === this.windowDimensions.height){
 				// This was added as a fudge for iOS
 				// For some reason when in imageV
 				return;
 			}
+			
+			this._isResettingPosition = true;
+			
 			this.windowDimensions = newWindowDimensions;
 			
 			this.destroyZoomPanRotate();
@@ -312,11 +326,13 @@
 			
 			this.uiLayer.resetPosition();
 			
+			this._isResettingPosition = false;
+			
 			Util.Events.fire(this, {
 				type: PhotoSwipe.EventTypes.onResetPosition,
 				target: this
 			});
-		
+			
 		},
 		
 		
@@ -483,6 +499,8 @@
 				return;
 			}
 			
+			this.clearUIWebViewResetPositionTimeout();
+			
 			this.destroyZoomPanRotate();
 			
 			this.removeEventHandlers();
@@ -507,6 +525,8 @@
 			
 			this.documentOverlay.dispose();
 			this.documentOverlay = null;
+			
+			this._isResettingPosition = false;
 			
 			// Deactive this instance
 			PhotoSwipe.unsetActivateInstance();
@@ -780,9 +800,50 @@
 					target: this
 				});
 			
+				this.setUIWebViewResetPositionTimeout();
+				
 			}.bind(this), 250);
 			
 			
+		},
+		
+		
+		
+		/*
+		 * Function: setUIWebViewResetPositionTimeout
+		 */
+		setUIWebViewResetPositionTimeout: function(){
+			
+			if (!this.settings.enableUIWebViewRepositionTimeout){
+				return;
+			}
+			
+			if (!(Util.Browser.iOS && (!Util.Browser.safari))){
+				return;
+			}
+			
+			if (!Util.isNothing(this._uiWebViewResetPositionTimeout)){
+				window.clearTimeout(this._uiWebViewResetPositionTimeout);
+			}
+			this._uiWebViewResetPositionTimeout = window.setTimeout(function(){
+				
+				this.resetPosition();
+				
+				this.setUIWebViewResetPositionTimeout();
+				
+			}.bind(this), this._uiWebViewResetPositionDelay);
+			
+		},
+		
+		
+		
+		/*
+		 * Function: clearUIWebViewResetPositionTimeout
+		 */
+		clearUIWebViewResetPositionTimeout: function(){
+			if (!Util.isNothing(this._uiWebViewResetPositionTimeout)){
+				window.clearTimeout(this._uiWebViewResetPositionTimeout);
+			}
 		},
 		
 		

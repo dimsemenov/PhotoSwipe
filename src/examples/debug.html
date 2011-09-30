@@ -57,7 +57,7 @@
 			Util.Events.domReady(function(e){
 				
 				var 
-					addEventListeners = true,
+					addEventListeners = false,
 					instance;
 				
 				instance = PhotoSwipe.attach(Util.DOM.find('#Gallery a'), { 
@@ -76,6 +76,7 @@
 					autoStartSlideshow: false,
 					jQueryMobile: ( !Util.isNothing(window.jQuery) && !Util.isNothing(window.jQuery.mobile) ),
 					jQueryMobileDialogHash: '&ui-state=dialog',
+					enableUIWebViewRepositionTimeout: true,
 					
 					
 					// Carousel

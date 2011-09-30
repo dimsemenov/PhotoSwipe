@@ -18,13 +18,17 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 
 
-Latest Release v2.1.5
+Latest Release v2.1.6
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.5.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.6.zip)
 
-**Changes for 2.1.5**
+**Changes for 2.1.6**
 
-- Fixed issue with internal property "backButtonClicked" not being reset on close.
+- Upgraded to jQuery Mobile 1.0 RC1
+
+- Added test work around for issue #141 - when rotating an app with PhotoSwipe displayed in a UIWebView, PhotoSwipe does not rotate. This seems to be an issue with UIWebView not PhotoSwipe. To enable this test work around, set "enableUIWebViewRepositionTimeout = true" when creating your PhotoSwipe instance. 
+
+**Please Note** This is not needed for PhoneGap apps, nor web apps added to your homescreen.
 
 
 
