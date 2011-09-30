@@ -1,7 +1,7 @@
 PhotoSwipe - The web image gallery for your mobile device
 =========================================================
 
-[www.photoswipe.com](http://www.photoswipe.com)
+[www.photoswipe.com](http://www.photoswipe.com) - twitter: [@photoswipe](http://twitter.com/#!/photoswipe)
 
 Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript based image gallery specifically targeting mobile devices.
 
@@ -14,7 +14,7 @@ PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safa
 Have you used PhotoSwipe? It'd be great to hear from you!
 ---------------------------------------------------------
 
-It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're looking at showcasing some of the best on [photoswipe.com](http://www.photoswipe.com). Feel free to drop us an email at support@photoswipe.com.
+It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're looking at showcasing some of the best on [photoswipe.com](http://www.photoswipe.com). Feel free to drop us an email at support@photoswipe.com or tweet us [@photoswipe](http://twitter.com/#!/photoswipe).
 
 
 
