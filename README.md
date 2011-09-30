@@ -1,7 +1,8 @@
 PhotoSwipe - The web image gallery for your mobile device
 =========================================================
 
-[www.photoswipe.com](http://www.photoswipe.com) - twitter: [@photoswipe](http://twitter.com/#!/photoswipe)
+web: [www.photoswipe.com](http://www.photoswipe.com)
+twitter: [@photoswipe](http://twitter.com/#!/photoswipe)
 
 Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript based image gallery specifically targeting mobile devices.
 
