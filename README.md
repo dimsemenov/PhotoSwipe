@@ -15,7 +15,7 @@ PhotoSwipe also runs on the desktop and has been tested on Chrome, Firefox, Safa
 Have you used PhotoSwipe? It'd be great to hear from you!
 ---------------------------------------------------------
 
-It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're looking at showcasing some of the best on [photoswipe.com](http://www.photoswipe.com). Feel free to drop us an email at support@photoswipe.com or tweet us [@photoswipe](http://twitter.com/#!/photoswipe).
+It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're looking at showcasing some of the best on [photoswipe.com](http://www.photoswipe.com). Feel free to drop us a tweet at [@photoswipe](http://twitter.com/#!/photoswipe) and tell us all about it!
 
 
 
