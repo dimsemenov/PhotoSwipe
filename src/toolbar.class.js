@@ -377,6 +377,7 @@
 			}
 			
 			this.currentCaption = (this.currentCaption === '\u00A0') ? '' : this.currentCaption;
+			this.resetPosition();
 			
 		},
 		
