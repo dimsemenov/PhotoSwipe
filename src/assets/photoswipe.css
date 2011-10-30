@@ -11,20 +11,21 @@
  */
 
  
-body.ps-active, body.ps-building 
+body.ps-active, body.ps-building, div.ps-active, div.ps-building
 {
 	background: #000;
 	overflow: hidden;
 }
-body.ps-active * 
+body.ps-active *, div.ps-active *
 { 
 	-webkit-tap-highlight-color:  rgba(255, 255, 255, 0); 
 	display: none;
 }
-body.ps-active *:focus 
+body.ps-active *:focus, div.ps-active *:focus 
 { 
 	outline: 0; 
 }
+
 
 /* Document overlay */
 div.ps-document-overlay 

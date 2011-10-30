@@ -44,7 +44,7 @@
 	
 	
 	PhotoSwipe.instances = [];
-	PhotoSwipe.activeInstance = null;
+	PhotoSwipe.activeInstances = [];
 	
 	
 	
@@ -52,13 +52,17 @@
 	 * Function: Code.PhotoSwipe.setActivateInstance
 	 */
 	PhotoSwipe.setActivateInstance = function(instance){
-	
-		if (!Util.isNothing(PhotoSwipe.activeInstance)){
-			throw 'Code.PhotoSwipe.activateInstance: Unable to active instance as another instance is already active';
-		}
 		
-		PhotoSwipe.activeInstance = instance;
-	
+		// Can only have one instance per target (i.e. window or div)
+		var index = Util.arrayIndexOf(instance.settings.target, PhotoSwipe.activeInstances, 'target');
+		if (index > -1){
+			throw 'Code.PhotoSwipe.activateInstance: Unable to active instance as another instance is already active for this target';
+		}
+		PhotoSwipe.activeInstances.push({
+			target: instance.settings.target,
+			instance: instance
+		})
+			
 	};
 	
 	
@@ -66,9 +70,10 @@
 	/*
 	 * Function: Code.PhotoSwipe.unsetActivateInstance
 	 */
-	PhotoSwipe.unsetActivateInstance = function(){
+	PhotoSwipe.unsetActivateInstance = function(instance){
 		
-		PhotoSwipe.activeInstance = null;
+		var index = Util.arrayIndexOf(instance, PhotoSwipe.activeInstances, 'instance');
+		PhotoSwipe.activeInstances.splice(index, 1);
 		
 	};
 	

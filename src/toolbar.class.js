@@ -98,7 +98,13 @@
 				overflow: 'hidden',
 				zIndex: this.settings.zIndex
 			});
-			Util.DOM.appendToBody(this.toolbarEl);
+			
+			if (this.settings.target === window){
+				Util.DOM.appendToBody(this.toolbarEl);
+			}
+			else{
+				Util.DOM.appendChild(this.toolbarEl, this.settings.target);
+			}
 			Util.DOM.hide(this.toolbarEl);
 			
 			this.closeEl = Util.DOM.find('.' + PhotoSwipe.Toolbar.CssClasses.close, this.toolbarEl)[0];
@@ -134,7 +140,13 @@
 				overflow: 'hidden',
 				zIndex: this.settings.zIndex
 			});
-			Util.DOM.appendToBody(this.captionEl);
+			
+			if (this.settings.target === window){
+				Util.DOM.appendToBody(this.captionEl);
+			}
+			else{
+				Util.DOM.appendChild(this.captionEl, this.settings.target);
+			}
 			Util.DOM.hide(this.captionEl);
 			
 			this.captionContentEl = Util.DOM.createElement(
@@ -157,25 +169,39 @@
 		 */
 		resetPosition: function(){
 		
-			var toolbarTop, captionTop;
+			var width, toolbarTop, captionTop;
 			
-			if (this.settings.captionAndToolbarFlipPosition) {
-				toolbarTop = Util.DOM.windowScrollTop();
-				captionTop = (Util.DOM.windowScrollTop() + Util.DOM.windowHeight()) - Util.DOM.height(this.captionEl);
+			if (this.settings.target === window){
+				if (this.settings.captionAndToolbarFlipPosition){
+					toolbarTop = Util.DOM.windowScrollTop();
+					captionTop = (Util.DOM.windowScrollTop() + Util.DOM.windowHeight()) - Util.DOM.height(this.captionEl);
+				}
+				else {
+					toolbarTop = (Util.DOM.windowScrollTop() + Util.DOM.windowHeight()) - Util.DOM.height(this.toolbarEl);
+					captionTop = Util.DOM.windowScrollTop();
+				}	
+				width = Util.DOM.windowWidth();
 			}
-			else {
-				toolbarTop = (Util.DOM.windowScrollTop() + Util.DOM.windowHeight()) - Util.DOM.height(this.toolbarEl);
-				captionTop = Util.DOM.windowScrollTop();
+			else{
+				if (this.settings.captionAndToolbarFlipPosition){
+					toolbarTop = '0';
+					captionTop = Util.DOM.height(this.settings.target) - Util.DOM.height(this.captionEl);
+				}
+				else{
+					toolbarTop = Util.DOM.height(this.settings.target) - Util.DOM.height(this.toolbarEl);
+					captionTop = 0;
+				}
+				width = Util.DOM.width(this.settings.target);
 			}
 			
 			Util.DOM.setStyle(this.toolbarEl, {
 				top: toolbarTop + 'px',
-				width: Util.DOM.windowWidth()
+				width: width
 			});
 		
 			Util.DOM.setStyle(this.captionEl, {
 				top: captionTop + 'px',
-				width: Util.DOM.windowWidth()
+				width: width
 			});
 		},
 		
@@ -377,6 +403,7 @@
 			}
 			
 			this.currentCaption = (this.currentCaption === '\u00A0') ? '' : this.currentCaption;
+			this.resetPosition();
 			
 		},
 		

@@ -63,7 +63,12 @@
 			});
 		
 			Util.DOM.hide(this.el);
-			Util.DOM.appendToBody(this.el);
+			if (this.settings.target === window){
+				Util.DOM.appendToBody(this.el);
+			}
+			else{
+				Util.DOM.appendChild(this.el, this.settings.target);
+			}
 			
 			Util.Animation.resetTranslate(this.el);
 			
@@ -81,23 +86,35 @@
 		 */
 		resetPosition: function(){
 			
-			var 
-				width = Util.DOM.windowWidth(),
+			var width, height, top;
+			
+			if (this.settings.target === window){
+				
+				width = Util.DOM.windowWidth();
 				height = Util.DOM.bodyOuterHeight() * 2; // This covers extra height added by photoswipe
-			
-			if (height < 1){
-				height = this.initialBodyHeight;
+				top = (this.settings.jQueryMobile) ? Util.DOM.windowScrollTop() + 'px' : '0px';
+				
+				if (height < 1){
+					height = this.initialBodyHeight;
+				}
+
+				if (Util.DOM.windowHeight() > height){
+					height = Util.DOM.windowHeight();
+				}
+				
 			}
-			
-			
-			if (Util.DOM.windowHeight() > height){
-				height = Util.DOM.windowHeight();
+			else{
+				
+				width = Util.DOM.width(this.settings.target);
+				height = Util.DOM.height(this.settings.target);
+				top = '0px';
+				
 			}
 			
 			Util.DOM.setStyle(this.el, {
 				width: width,
 				height: height,
-				top: (this.settings.jQueryMobile) ? Util.DOM.windowScrollTop() + 'px' : '0px'
+				top: top
 			});
 		
 		},

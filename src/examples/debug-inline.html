@@ -4,29 +4,59 @@
 	<meta name="author" content="Ste Brennan - Code Computerlove - http://www.codecomputerlove.com/" />
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
+	
 	<link href="styles.css" type="text/css" rel="stylesheet" />
 	
-	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
+	<link href="../assets/photoswipe.css" type="text/css" rel="stylesheet" />
 	
 	<script type="text/javascript" src="../lib/klass.min.js"></script>
-	<script type="text/javascript" src="../lib/jquery-%%jqueryversion%%.min.js"></script>
+	<script type="text/javascript" src="../lib/code.util-1.0.4/code.util-1.0.4.js"></script>
 	
-	<script type="text/javascript" src="../code.photoswipe.jquery-%%version%%.min.js"></script>
+	<script type="text/javascript" src="../image.js"></script>
+	<script type="text/javascript" src="../image.class.js"></script>
+	<script type="text/javascript" src="../cache.js"></script>
+	<script type="text/javascript" src="../cache.class.js"></script>
+	<script type="text/javascript" src="../documentoverlay.js"></script>
+	<script type="text/javascript" src="../documentoverlay.class.js"></script>
+	<script type="text/javascript" src="../carousel.js"></script>
+	<script type="text/javascript" src="../carousel.class.js"></script>
+	<script type="text/javascript" src="../carousel.class.animation.js"></script>
+	<script type="text/javascript" src="../toolbar.js"></script>
+	<script type="text/javascript" src="../toolbar.class.js"></script>
+	<script type="text/javascript" src="../uilayer.js"></script>
+	<script type="text/javascript" src="../uilayer.class.js"></script>
+	<script type="text/javascript" src="../zoompanrotate.js"></script>
+	<script type="text/javascript" src="../zoompanrotate.class.js"></script>
+	<script type="text/javascript" src="../photoswipe.js"></script>
+	<script type="text/javascript" src="../photoswipe.class.js"></script>
 	
 	
 	<script type="text/javascript">
-
-		(function(window, $, PhotoSwipe){
+		
+		/* 
+			Overview: 
+			---------
 			
-			$(document).ready(function(){
+			Debug version to test inline functionality
+		
+		*/
+		
+		(function(window, Util, PhotoSwipe){
+			
+			Util.Events.domReady(function(e){
 				
-				var options = {};
-				$("#Gallery a").photoSwipe(options);
-			
+				var instance = PhotoSwipe.attach(Util.DOM.find('#Gallery a'), {
+					
+					target: Util.DOM.find('#PhotoSwipeTarget')[0],
+					captionAndToolbarFlipPosition: true,
+					captionAndToolbarAutoHideDelay: 0
+				
+				});
+					
 			});
 			
 			
-		}(window, window.jQuery, window.Code.PhotoSwipe));
+		}(window, window.Code.Util, window.Code.PhotoSwipe));
 		
 	</script>
 	
@@ -41,7 +71,10 @@
 
 	<div class="page-content">
 		<h1>PhotoSwipe</h1>
+		<div id="PhotoSwipeTarget" style="width: 300px; height: 150px; background: red; position: absolute; top: 0; left: 0;">
+		</div>
 	</div>
+	
 	
 	<ul id="Gallery" class="gallery">
 		

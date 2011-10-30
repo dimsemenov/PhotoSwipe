@@ -55,7 +55,6 @@
 		
 		_isResettingPosition: null,
 		_uiWebViewResetPositionTimeout: null,
-		_uiWebViewResetPositionDelay: null,
 				
 		
 		/*
@@ -120,6 +119,8 @@
 		 */
 		initialize: function(images, options, id){
 			
+			var targetPosition;
+			
 			if (Util.isNothing(id)){
 				this.id = 'PhotoSwipe' + new Date().getTime().toString();
 			}
@@ -139,8 +140,6 @@
 				this.isBackEventSupported = Util.objectHasProperty(window, 'onhashchange');
 			}
 			
-			this._uiWebViewResetPositionDelay = 500;
-			
 			this.settings = {
 				
 				// General
@@ -157,6 +156,9 @@
 				jQueryMobile: ( !Util.isNothing(window.jQuery) && !Util.isNothing(window.jQuery.mobile) ),
 				jQueryMobileDialogHash: '&ui-state=dialog',
 				enableUIWebViewRepositionTimeout: false,
+				uiWebViewResetPositionDelay: 500,
+				target: window,
+				preventDefaultTouchEvents: true,
 				
 				
 				// Carousel
@@ -171,6 +173,7 @@
 				doubleTapSpeed: 250,
 				margin: 20,
 				imageScaleMethod: 'fit', // Either "fit", "fitNoUpscale" or "zoom",
+				
 				
 				// Toolbar
 				captionAndToolbarHide: false,
@@ -198,6 +201,13 @@
 			};
 			
 			Util.extend(this.settings, options);
+			
+			if (this.settings.target !== window){
+				targetPosition = Util.DOM.getStyle(this.settings.target, 'position');
+				if (targetPosition !== 'relative' || targetPosition !== 'absolute'){
+					Util.DOM.setStyle(this.settings.target, 'position', 'relative');
+				}
+			}
 			
 			if (this.settings.preventHide){
 				this.settings.backButtonHideEnabled = false;
@@ -240,15 +250,20 @@
 			}
 			
 			// Store a reference to the current window dimensions
-			// Use this later to souble check that a window has actually
+			// Use this later to double check that a window has actually
 			// been resized.
-			this.windowDimensions = this.getWindowDimensions();
+			this.isAlreadyGettingPage = this.getWindowDimensions();
 			
 			// Set this instance to be the active instance
 			PhotoSwipe.setActivateInstance(this);
 			
 			// Create components
-			Util.DOM.addClass(window.document.body, PhotoSwipe.CssClasses.buildingBody);
+			if (this.settings.target === window){
+				Util.DOM.addClass(window.document.body, PhotoSwipe.CssClasses.buildingBody);
+			}
+			else{
+				Util.DOM.addClass(this.settings.target, PhotoSwipe.CssClasses.buildingBody);
+			}
 			this.createComponents();
 			
 			
@@ -305,10 +320,11 @@
 			}
 			
 			var newWindowDimensions = this.getWindowDimensions();
-			if (newWindowDimensions.width === this.windowDimensions.width && newWindowDimensions.height === this.windowDimensions.height){
-				// This was added as a fudge for iOS
-				// For some reason when in imageV
-				return;
+			if (!Util.isNothing(this.windowDimensions)){
+				if (newWindowDimensions.width === this.windowDimensions.width && newWindowDimensions.height === this.windowDimensions.height){
+					// This was added as a fudge for iOS
+					return;
+				}
 			}
 			
 			this._isResettingPosition = true;
@@ -389,7 +405,9 @@
 			if (!Util.isNothing(this.orientationEventName)){
 				Util.Events.add(window, this.orientationEventName, this.windowOrientationChangeHandler);
 			}
-			Util.Events.add(window, 'scroll', this.windowScrollHandler);
+			if (this.settings.target === window){
+				Util.Events.add(window, 'scroll', this.windowScrollHandler);
+			}
 			
 			if (this.settings.enableKeyboard){
 				Util.Events.add(window.document, 'keydown', this.keyDownHandler);
@@ -529,7 +547,7 @@
 			this._isResettingPosition = false;
 			
 			// Deactive this instance
-			PhotoSwipe.unsetActivateInstance();
+			PhotoSwipe.unsetActivateInstance(this);
 		
 			Util.Events.fire(this, {
 				type: PhotoSwipe.EventTypes.onHide,
@@ -675,11 +693,17 @@
 					this.uiLayer
 				);
 				
+				// If we don't override this in the event of false
+				// you will be unable to pan around a zoomed image effectively
+				this.uiLayer.captureSettings.preventDefaultTouchEvents = true;
+				
 				Util.Events.add(this.zoomPanRotate, PhotoSwipe.ZoomPanRotate.EventTypes.onTransform, this.zoomPanRotateTransformHandler);
 				
 				Util.Events.fire(this, PhotoSwipe.EventTypes.onZoomPanRotateShow);
 				
-				this.fadeOutToolbarIfVisible();
+				if (!Util.isNothing(this.toolbar) && this.toolbar.isVisible){
+					this.toolbar.fadeOut();
+				}
 				
 			}
 		
@@ -699,6 +723,9 @@
 				Util.Events.remove(this.zoomPanRotate, PhotoSwipe.ZoomPanRotate.EventTypes.onTransform, this.zoomPanRotateTransformHandler);
 				this.zoomPanRotate.dispose();
 				this.zoomPanRotate = null;
+				
+				// Set the preventDefaultTouchEvents back to it was
+				this.uiLayer.captureSettings.preventDefaultTouchEvents = this.settings.preventDefaultTouchEvents;
 				
 				Util.Events.fire(this, PhotoSwipe.EventTypes.onZoomPanRotateHide);
 				
@@ -779,8 +806,10 @@
 			
 			window.setTimeout(function(){
 				
-				Util.DOM.removeClass(window.document.body, PhotoSwipe.CssClasses.buildingBody);
-				Util.DOM.addClass(window.document.body, PhotoSwipe.CssClasses.activeBody);
+				var el = (this.settings.target === window) ? window.document.body : this.settings.target;
+				
+				Util.DOM.removeClass(el, PhotoSwipe.CssClasses.buildingBody);
+				Util.DOM.addClass(el, PhotoSwipe.CssClasses.activeBody);
 				
 				this.addEventHandlers();
 				
@@ -831,7 +860,7 @@
 				
 				this.setUIWebViewResetPositionTimeout();
 				
-			}.bind(this), this._uiWebViewResetPositionDelay);
+			}.bind(this), this.settings.uiWebViewResetPositionDelay);
 			
 		},
 		
@@ -998,8 +1027,10 @@
 					case Util.TouchElement.ActionTypes.doubleTap:
 						
 						// Take into consideration the window scroll
-						e.point.x -= Util.DOM.windowScrollLeft();
-						e.point.y -= Util.DOM.windowScrollTop();
+						if (this.settings.target === window){
+							e.point.x -= Util.DOM.windowScrollLeft();
+							e.point.y -= Util.DOM.windowScrollTop();
+						}
 						
 						// Just make sure that if the user clicks out of the image
 						// that the image does not pan out of view!
@@ -1024,7 +1055,7 @@
 						else if (e.point.y > imageBottom){
 							e.point.y = imageBottom;
 						}
-					
+						
 						this.createZoomPanRotate();
 						if (this.isZoomActive()){
 							this.zoomPanRotate.zoomAndPanToPoint(this.settings.doubleTapZoomLevel, e.point);

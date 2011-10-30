@@ -19,51 +19,25 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 
 
-Latest Release v2.1.6
+Latest Release v3.0.0
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-2.1.6.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.0.zip)
 
-**Changes for 2.1.6**
+**Changes for 3.0.0**
 
-- Upgraded to jQuery Mobile 1.0 RC1
+- You can now specify a target for PhotoSwipe. It doesn't have to run in full screen anymore! To do this, you specify a "target" as part of PhotoSwipe settings. The target MUST be a valid DOM element for it to work. See examples "12-custom-target.html", "13-custom-target-with-indicators.html", "14-multiple-inline-instances.html" for more details.
 
-- Added test work around for issue #141 - when rotating an app with PhotoSwipe displayed in a UIWebView, PhotoSwipe does not rotate. This seems to be an issue with UIWebView not PhotoSwipe. To enable this test work around, set "enableUIWebViewRepositionTimeout = true" when creating your PhotoSwipe instance. 
+- Multi-line captions when caption bar placed at the bottom should now be fixed.
+
+- Upgraded to jQuery Mobile 1.0 RC2
+
+- Work around for issue #141 now officially added - when rotating an app with PhotoSwipe displayed in a UIWebView, PhotoSwipe does not rotate. This seems to be an issue with UIWebView not PhotoSwipe. To enable this work around, set "enableUIWebViewRepositionTimeout = true" when creating your PhotoSwipe instance. You can also specify the frequency of this timeout by setting "uiWebViewResetPositionDelay" (default 500ms)
 
 **Please Note** This is not needed for PhoneGap apps, nor web apps added to your homescreen.
-
-
 
 **Important notes about the examples and Internet Explorer**
 
 The majority of the bundled examples supplied with PhotoSwipe are running the optimised non-jQuery version. These examples will error on Internet Explorer. This is by design. They will work if you use the jQuery version of PhotoSwipe. Please read the "Getting Started" section below for more information regarding the different implementations of PhotoSwipe.
-
-
-
-**Important notes about v2**
-
-This is a brand new version of PhotoSwipe re-written from the ground up. Unfortunately, to cram in all the great new features, this has meant that how you implement PhotoSwipe had to be modified. I've kept configuration settings etc as close to v1 where possible.
-
-It's recommended you review the examples to see how to implement v2. New features include:
-
-- Being able to drag and "snap" into place the next and previous image rather than just swiping
-
-- Group sets of images on a page and run them within their own instance of PhotoSwipe
-
-- Configurable margin between images
-
-- Provide your own HTML for the toolbar
-
-- Next and previous buttons go to the image directly by default (no animation). This is exactly like iOS. It is of course configurable
-
-- Basic mouse wheel support for moving between the next and previous images
-
-- Play slide show with the "enter" key
-
-- Auto start in slideshow mode
-
-And a host of other under the hood amends, tweaks and fixes.
-
-If you still require v1, you can find the [last build here](https://github.com/downloads/codecomputerlove/PhotoSwipe/code-photoswipe.v1.0.19.zip)
 
 
 
@@ -193,6 +167,8 @@ Options
 
 - **enableMouseWheel**: Enables mouse wheel support. Default = true
 
+- **enableUIWebViewRepositionTimeout**: If enabled, continually checks to see if the device orientation has changed. Required as a work around for issue #141. Default = false
+
 - **fadeInSpeed**: The speed of any fading-in elements in milliseconds. Default = 250
 
 - **fadeOutSpeed**: The speed of any fading-out elements in milliseconds. Default = 250
@@ -221,6 +197,8 @@ Options
 
 - **preventSlideshow**: Prevents the slideshow being activated. Also hides the "play" button from the toolbar. Default = false
 
+- **preventDefaultTouchEvents**: Prevents device default touch events (i.e. stops the user scrolling the screen upwards etc). Default = true
+
 - **slideshowDelay**: The delay between showing the next image when in slideshow mode in milliseconds. Default = 3000
 
 - **slideSpeed**: How fast images slide into view in milliseconds. Default = 250
@@ -230,6 +208,10 @@ Options
 - **swipeTimeThreshold**: A swipe must take no longer than this value in milliseconds to be registered as a swipe gesture. Default = 250
 
 - **slideTimingFunction**: Easing function used when sliding. Default = "ease-out
+
+- **target**: DOM Target for PhotoSwipe. By default "window" which will mean PhotoSwipe runs "fullscreen". Value must be a valid DOM element.
+
+- **uiWebViewResetPositionDelay**: Related to enableUIWebViewRepositionTimeout. Default = 500
 
 - **zIndex**: The intial zIndex for PhotoSwipe. Default = 1000
 

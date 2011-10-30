@@ -65,13 +65,19 @@
 			});
 			Util.DOM.hide(this.el);
 			
-			Util.DOM.appendToBody(this.el);
+			if (this.settings.target === window){
+				Util.DOM.appendToBody(this.el);
+			}
+			else{
+				Util.DOM.appendChild(this.el, this.settings.target);
+			}
 			
 			this.supr(this.el, {
 				swipe: true,
 				move: true,
 				gesture: true,
-				doubleTap: true
+				doubleTap: true,
+				preventDefaultTouchEvents: this.settings.preventDefaultTouchEvents
 			});
 			
 		},
@@ -84,12 +90,20 @@
 		resetPosition: function(){
 			
 			// Set the height and width to fill the document
-			Util.DOM.setStyle(this.el, {
-				top: Util.DOM.windowScrollTop()  + 'px',
-				width: Util.DOM.windowWidth(),
-				height: Util.DOM.windowHeight()
-			});
-			
+			if (this.settings.target === window){
+				Util.DOM.setStyle(this.el, {
+					top: Util.DOM.windowScrollTop()  + 'px',
+					width: Util.DOM.windowWidth(),
+					height: Util.DOM.windowHeight()
+				});	
+			}
+			else{
+				Util.DOM.setStyle(this.el, {
+					top: '0px',
+					width: Util.DOM.width(this.settings.target),
+					height: Util.DOM.height(this.settings.target)
+				});
+			}
 			
 		},
 		

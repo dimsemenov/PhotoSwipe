@@ -149,7 +149,12 @@
 			}
 			
 			
-			Util.DOM.appendToBody(this.el);
+			if (this.settings.target === window){
+				Util.DOM.appendToBody(this.el);
+			}
+			else{
+				Util.DOM.appendChild(this.el, this.settings.target);
+			}
 			
 		},
 		
@@ -161,19 +166,27 @@
 		 */
 		resetPosition: function(){
 			
-			var 
-				width = Util.DOM.windowWidth(),
-				height = Util.DOM.windowHeight(),
-				itemWidth = (this.settings.margin > 0) ? width + this.settings.margin : width,
-				itemEls = Util.DOM.find('.' + PhotoSwipe.Carousel.CssClasses.item, this.contentEl),
-				contentWidth = itemWidth * itemEls.length,
-				i, j,
-				itemEl, imageEl;
+			var width, height, top, itemWidth, itemEls, contentWidth, i, j, itemEl, imageEl;
+			
+			if (this.settings.target === window){
+				width = Util.DOM.windowWidth();
+				height = Util.DOM.windowHeight();
+				top = Util.DOM.windowScrollTop()  + 'px';
+			}
+			else{
+				width = Util.DOM.width(this.settings.target);
+				height = Util.DOM.height(this.settings.target);
+				top = '0px';
+			}
+			
+			itemWidth = (this.settings.margin > 0) ? width + this.settings.margin : width;
+			itemEls = Util.DOM.find('.' + PhotoSwipe.Carousel.CssClasses.item, this.contentEl);
+			contentWidth = itemWidth * itemEls.length;
 			
 			
 			// Set the height and width to fill the document
 			Util.DOM.setStyle(this.el, {
-				top: Util.DOM.windowScrollTop()  + 'px',
+				top: top,
 				width: width,
 				height: height
 			});
@@ -315,10 +328,16 @@
 		 */
 		setContentLeftPosition: function(){
 		
-			var 
-				width = Util.DOM.windowWidth(),
-				itemEls = this.getItemEls(),
-				left = 0;
+			var width, itemEls, left;
+			if (this.settings.target === window){
+				width = Util.DOM.windowWidth();
+			}
+			else{
+				width = Util.DOM.width(this.settings.target);
+			}
+			
+			itemEls = this.getItemEls();
+			left = 0;
 				
 			if (this.settings.loop){
 				left = (width + this.settings.margin) * -1;
@@ -529,11 +548,14 @@
 				return;
 			}
 			
+			var width, diffX, slideBy;
 			
-			var 
-				width = Util.DOM.windowWidth() + this.settings.margin,
-				diffX,
-				slideBy;
+			if (this.settings.target === window){
+				width = Util.DOM.windowWidth() + this.settings.margin;
+			}
+			else{
+				width = Util.DOM.width(this.settings.target) + this.settings.margin;
+			}
 			
 			speed = Util.coalesce(speed, this.settings.slideSpeed);
 			

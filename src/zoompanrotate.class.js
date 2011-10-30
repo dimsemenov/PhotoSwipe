@@ -45,7 +45,14 @@
 		 */
 		initialize: function(options, cacheImage, uiLayer){
 			
+			var parentEl, width, height, top;
+			
 			this.settings = options;
+			
+			parentEl = (this.settings.target === window) ? document.body : this.settings.target;
+			width = Util.DOM.width(parentEl);
+			height = Util.DOM.height(parentEl);
+			top = (this.settings.target === window) ? Util.DOM.windowScrollTop() + 'px': '0px';
 			
 			this.imageEl = cacheImage.imageEl.cloneNode(false);
 			Util.DOM.setStyle(this.imageEl, {
@@ -77,24 +84,23 @@
 			);
 			Util.DOM.setStyle(this.el, {
 				left: 0,
-				top: Util.DOM.windowScrollTop()  + 'px',
+				top: top,
 				position: 'absolute',
-				width: Util.DOM.windowWidth(),
-				height: Util.DOM.windowHeight(),
+				width: width,
+				height: height,
 				zIndex: this.settings.zIndex,
 				display: 'block'
 			});
 			
-			
-			Util.DOM.insertBefore(this.el, uiLayer.el, document.body);
+			Util.DOM.insertBefore(this.el, uiLayer.el, parentEl);
 			
 			if (Util.Browser.iOS){
 				this.containerEl = Util.DOM.createElement('div');
 				Util.DOM.setStyle(this.containerEl, {
 					left: 0,
 					top: 0,
-					width: Util.DOM.windowWidth(),
-					height: Util.DOM.windowHeight(),
+					width: width,
+					height: height,
 					position: 'absolute',
 					zIndex: 1
 				});
@@ -234,23 +240,28 @@
 		 */
 		zoomAndPanToPoint: function(scaleValue, point){
 			
-			this.panStart({
-				x: Util.DOM.windowWidth() / 2,
-				y: Util.DOM.windowHeight() / 2
-			});
-		
-			var 
-				dx = point.x - this.panStartingPoint.x,
-				dy = point.y - this.panStartingPoint.y,
-				dxScaleAdjust = dx / this.transformSettings.scale,
-        dyScaleAdjust = dy / this.transformSettings.scale;
 			
+			if (this.settings.target === window){
+				
+				this.panStart({
+					x: Util.DOM.windowWidth() / 2,
+					y: Util.DOM.windowHeight() / 2
+				});
+				
+				var 
+					dx = point.x - this.panStartingPoint.x,
+					dy = point.y - this.panStartingPoint.y,
+					dxScaleAdjust = dx / this.transformSettings.scale,
+					dyScaleAdjust = dy / this.transformSettings.scale;
+					
+				this.transformSettings.translateX = 
+					(this.transformSettings.startingTranslateX + dxScaleAdjust) * -1;
+				
+				this.transformSettings.translateY = 
+					(this.transformSettings.startingTranslateY + dyScaleAdjust) * -1;
+					
+			}
 			
-			this.transformSettings.translateX = 
-				(this.transformSettings.startingTranslateX + dxScaleAdjust) * -1;
-
-			this.transformSettings.translateY = 
-				(this.transformSettings.startingTranslateY + dyScaleAdjust) * -1;
 			
 			this.setStartingScaleAndRotation(scaleValue, 0);
 			this.transformSettings.scale = this.transformSettings.startingScale;
