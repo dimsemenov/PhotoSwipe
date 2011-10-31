@@ -318,7 +318,19 @@
 				left: newLeft,
 				display: 'block'
 			});
-		
+			
+			/* image frame */
+			if (this.settings.showImgFrame) {
+				Util.DOM.setStyle(imageEl.nextSibling, {
+					position: 'absolute',
+					width: newWidth-2,
+					height: newHeight-2,
+					top: newTop,
+					left: newLeft,
+					display: 'block',
+					border: '1px outset rgba(255,255,255,0.15)'
+				});
+			}
 		},
 		
 		
@@ -527,6 +539,12 @@
 				display: 'none'
 			});
 			Util.DOM.appendChild(cacheImage.imageEl, itemEl);
+			
+			/* image frame */
+			if (this.settings.showImgFrame) {
+				var imgFrame = Util.DOM.createElement('div', '', '');
+				Util.DOM.appendChild(imgFrame, itemEl);
+			}
 			
 			Util.Animation.resetTranslate(cacheImage.imageEl);
 			
