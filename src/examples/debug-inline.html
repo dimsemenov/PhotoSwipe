@@ -1,4 +1,5 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
 	<title>PhotoSwipe</title>
 	<meta name="author" content="Ste Brennan - Code Computerlove - http://www.codecomputerlove.com/" />
@@ -10,7 +11,7 @@
 	<link href="../assets/photoswipe.css" type="text/css" rel="stylesheet" />
 	
 	<script type="text/javascript" src="../lib/klass.min.js"></script>
-	<script type="text/javascript" src="../lib/code.util-1.0.4/code.util-1.0.4.js"></script>
+	<script type="text/javascript" src="../lib/code.util-1.0.6/code.util-1.0.6.js"></script>
 	
 	<script type="text/javascript" src="../image.js"></script>
 	<script type="text/javascript" src="../image.class.js"></script>
@@ -45,14 +46,64 @@
 			
 			Util.Events.domReady(function(e){
 				
-				var instance = PhotoSwipe.attach(Util.DOM.find('#Gallery a'), {
-					
-					target: Util.DOM.find('#PhotoSwipeTarget')[0],
-					captionAndToolbarFlipPosition: true,
-					captionAndToolbarAutoHideDelay: 0
+				var instance1, instance2;
 				
-				});
-					
+				instance1 = PhotoSwipe.attach(
+					[
+						{ url: 'images/full/001.jpg', caption: 'Image 001'},
+						{ url: 'images/full/002.jpg', caption: 'Image 002'},
+						{ url: 'images/full/003.jpg', caption: 'Image 003'},
+						{ url: 'images/full/004.jpg', caption: 'Image 004'},
+						{ url: 'images/full/005.jpg', caption: 'Image 005'},
+						{ url: 'images/full/006.jpg', caption: 'Image 006'},
+						{ url: 'images/full/007.jpg', caption: 'Image 007'},
+						{ url: 'images/full/008.jpg', caption: 'Image 008'},
+						{ url: 'images/full/009.jpg', caption: 'Image 009'}
+					],
+					{
+						target: Util.DOM.find('#PhotoSwipeTarget1')[0],
+						getImageSource: function(obj){
+							return obj.url;
+						},
+						getImageCaption: function(obj){
+							return obj.caption;
+						}
+					}
+				);
+				
+				
+				instance2 = PhotoSwipe.attach(
+					[
+						{ url: 'images/full/009.jpg', caption: 'Image 009'},
+						{ url: 'images/full/010.jpg', caption: 'Image 010'},
+						{ url: 'images/full/011.jpg', caption: 'Image 011'},
+						{ url: 'images/full/012.jpg', caption: 'Image 012'},
+						{ url: 'images/full/013.jpg', caption: 'Image 013'},
+						{ url: 'images/full/014.jpg', caption: 'Image 014'},
+						{ url: 'images/full/015.jpg', caption: 'Image 015'},
+						{ url: 'images/full/016.jpg', caption: 'Image 016'},
+						{ url: 'images/full/017.jpg', caption: 'Image 017'},
+						{ url: 'images/full/018.jpg', caption: 'Image 018'}
+					],
+					{
+						target: Util.DOM.find('#PhotoSwipeTarget2')[0],
+						getImageSource: function(obj){
+							return obj.url;
+						},
+						getImageCaption: function(obj){
+							return obj.caption;
+						}
+					}
+				);
+				
+				
+				
+				window.setTimeout(function(){
+					window.scrollTo(0,0);
+					instance1.show(0);
+					instance2.show(0);
+				}, 250);
+				
 			});
 			
 			
@@ -63,56 +114,14 @@
 </head>
 <body>
 
-<div id="Header">
-	<a href="http://www.codecomputerlove.com"><img src="images/codecomputerlovelogo.gif" width="230" height="48" alt="Code Computerlove" /></a>
-</div>
-
 <div id="MainContent">
 
-	<div class="page-content">
-		<h1>PhotoSwipe</h1>
-		<div id="PhotoSwipeTarget" style="width: 300px; height: 150px; background: red; position: absolute; top: 0; left: 0;">
-		</div>
-	</div>
+	<div id="PhotoSwipeTarget1" style="width: 100%; height: 200px;"></div>
 	
-	
-	<ul id="Gallery" class="gallery">
-		
-		<li><a href="images/full/001.jpg"><img src="images/thumb/001.jpg" alt="Image 001" /></a></li>
-		<li><a href="images/full/002.jpg"><img src="images/thumb/002.jpg" alt="Image 002" /></a></li>
-		<li><a href="images/full/003.jpg"><img src="images/thumb/003.jpg" alt="Image 003" /></a></li>
-		<li><a href="images/full/004.jpg"><img src="images/thumb/004.jpg" alt="Image 004" /></a></li>
-		<li><a href="images/full/005.jpg"><img src="images/thumb/005.jpg" alt="Image 005" /></a></li>
-		<li><a href="images/full/006.jpg"><img src="images/thumb/006.jpg" alt="Image 006" /></a></li>
-		<li><a href="images/full/007.jpg"><img src="images/thumb/007.jpg" alt="Image 007" /></a></li>
-		<li><a href="images/full/008.jpg"><img src="images/thumb/008.jpg" alt="Image 008" /></a></li>
-		<li><a href="images/full/009.jpg"><img src="images/thumb/009.jpg" alt="Image 009" /></a></li>
-		<li><a href="images/full/010.jpg"><img src="images/thumb/010.jpg" alt="Image 010" /></a></li>
-		<li><a href="images/full/011.jpg"><img src="images/thumb/011.jpg" alt="Image 011" /></a></li>
-		<li><a href="images/full/012.jpg"><img src="images/thumb/012.jpg" alt="Image 012" /></a></li>
-		<li><a href="images/full/013.jpg"><img src="images/thumb/013.jpg" alt="Image 013" /></a></li>
-		<li><a href="images/full/014.jpg"><img src="images/thumb/014.jpg" alt="Image 014" /></a></li>
-		<li><a href="images/full/015.jpg"><img src="images/thumb/015.jpg" alt="Image 015" /></a></li>
-		<li><a href="images/full/016.jpg"><img src="images/thumb/016.jpg" alt="Image 016" /></a></li>
-		<li><a href="images/full/017.jpg"><img src="images/thumb/017.jpg" alt="Image 017" /></a></li>
-		<li><a href="images/full/018.jpg"><img src="images/thumb/018.jpg" alt="Image 018" /></a></li>
-		
-	</ul>
+	<div id="PhotoSwipeTarget2" style="width: 100%; height: 200px; margin-top: 20px;"></div>
 	
 </div>	
 
-	
-<div id="Footer">
-	<p><small>&copy; 2011 Code Computerlove Ltd - new media agency / digital marketing agency</small></p>
-
-	<div id="SocialLinks">
-		<a href="http://blog.codecomputerlove.com/"><img src="images/blogicon.png" width="32" height="32" alt="Blog" /></a>
-		<a href="http://www.twitter.com/computerlovers"><img src="images/twittericon.png" width="32" height="32" alt="Twitter" /></a>
-		<a href="http://www.facebook.com/CodeComputerlove"><img src="images/facebookicon.png" width="32" height="32" alt="Facebook" /></a>
-		<a href="http://www.flickr.com/photos/codecomputerlove"><img src="images/flickricon.png" width="32" height="32" alt="Flickr" /></a>
-	</div>
-	
-</div>
 
 </body>
 </html>

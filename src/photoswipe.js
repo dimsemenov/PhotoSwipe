@@ -61,7 +61,7 @@
 		PhotoSwipe.activeInstances.push({
 			target: instance.settings.target,
 			instance: instance
-		})
+		});
 			
 	};
 	

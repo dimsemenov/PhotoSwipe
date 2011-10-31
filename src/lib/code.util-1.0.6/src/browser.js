@@ -37,7 +37,8 @@
 			this.opera = /opera/i.test(this.ua);
 			this.msie = /msie/i.test(this.ua) && !this.opera;
 			this.chrome = /Chrome/i.test(this.ua);
-			this.firefox = /Firefo/i.test(this.ua);
+			this.firefox = /Firefox/i.test(this.ua);
+			this.fennec = /Fennec/i.test(this.ua);
 			this.mozilla = /mozilla/i.test(this.ua) && !/(compatible|webkit)/.test(this.ua);
 			this.android = /android/i.test(this.ua);
 			this.blackberry = /blackberry/i.test(this.ua);
@@ -82,6 +83,11 @@
 			}
 			el = null;
 			return isSupported;
+		},
+		
+		
+		isLandscape: function(){
+			return (Util.DOM.windowWidth() > Util.DOM.windowHeight());
 		}
   };
 	

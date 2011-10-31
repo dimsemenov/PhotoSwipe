@@ -207,6 +207,14 @@
 		</antcall>
 		
 		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/12-custom-target.html"/>
+		</antcall>
+		
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/13-custom-target-with-indicators.html"/>
+		</antcall>
+		
+		<antcall target="versionStamp">
 			<param name="filePath" value="${project.build.workdir}/examples/ajax-gallery1.html"/>
 		</antcall>
 		

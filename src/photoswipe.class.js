@@ -209,8 +209,14 @@
 				}
 			}
 			
-			if (this.settings.preventHide){
+			if (this.settings.target !== window){
+				this.isBackEventSupported = false;
 				this.settings.backButtonHideEnabled = false;
+			}
+			else{
+				if (this.settings.preventHide){
+					this.settings.backButtonHideEnabled = false;
+				}
 			}
 			
 			this.cache = new Cache.CacheClass(images, this.settings);
@@ -266,12 +272,10 @@
 			}
 			this.createComponents();
 			
-			
 			Util.Events.fire(this, {
 				type: PhotoSwipe.EventTypes.onBeforeShow,
 				target: this
 			});
-			
 			
 			// Fade in the document overlay
 			this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this));
@@ -412,6 +416,7 @@
 			if (this.settings.enableKeyboard){
 				Util.Events.add(window.document, 'keydown', this.keyDownHandler);
 			}
+			
 			
 			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
 					
@@ -586,7 +591,9 @@
 			
 			if (!this.settings.preventSlideshow){
 				if (!Util.isNothing(this.carousel)){
-					this.fadeOutToolbarIfVisible();
+					if (!Util.isNothing(this.toolbar) && this.toolbar.isVisible){
+						this.toolbar.fadeOut();
+					}
 					this.carousel.startSlideshow();
 				}
 			}

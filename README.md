@@ -25,15 +25,17 @@ Latest Release v3.0.0
 
 **Changes for 3.0.0**
 
-- You can now specify a target for PhotoSwipe. It doesn't have to run in full screen anymore! To do this, you specify a "target" as part of PhotoSwipe settings. The target MUST be a valid DOM element for it to work. See examples "12-custom-target.html", "13-custom-target-with-indicators.html", "14-multiple-inline-instances.html" for more details.
+- You can now specify a target for PhotoSwipe. It doesn't have to run in full screen anymore! To do this, you specify a "target" as part of PhotoSwipe settings. The target MUST be a valid DOM element for it to work. See examples "12-custom-target.html", "13-custom-target-with-indicators.html" for more details.
 
 - Multi-line captions when caption bar placed at the bottom should now be fixed.
 
+- Fixed issue where toolbar and caption remained visible when zooming in and captionAndToolbarAutoHideDelay = 0.
+
 - Upgraded to jQuery Mobile 1.0 RC2
 
-- Work around for issue #141 now officially added - when rotating an app with PhotoSwipe displayed in a UIWebView, PhotoSwipe does not rotate. This seems to be an issue with UIWebView not PhotoSwipe. To enable this work around, set "enableUIWebViewRepositionTimeout = true" when creating your PhotoSwipe instance. You can also specify the frequency of this timeout by setting "uiWebViewResetPositionDelay" (default 500ms)
+- Upgraded Code.Util to 1.0.6
 
-**Please Note** This is not needed for PhoneGap apps, nor web apps added to your homescreen.
+- Work around for issue #141 now officially added - when rotating an app with PhotoSwipe displayed in a UIWebView, PhotoSwipe does not rotate. This seems to be an issue with UIWebView not PhotoSwipe. To enable this work around, set "enableUIWebViewRepositionTimeout = true" when creating your PhotoSwipe instance. You can also specify the frequency of this timeout by setting "uiWebViewResetPositionDelay" (default 500ms) - **Please Note** This is not needed for PhoneGap apps, nor web apps added to your homescreen.
 
 **Important notes about the examples and Internet Explorer**
 

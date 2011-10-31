@@ -7,12 +7,26 @@
 	Util.extend(Util, {
 		
 		DOM: {
-		
+			
+			
 			
 			/*
 			 * Function: setData
 			 */
 			setData: function(el, key, value){
+				
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._setData(el[i], key, value);
+					}
+				}
+				else{
+					Util.DOM._setData(el, key, value);
+				}
+				
+			},
+			_setData: function(el, key, value){
 			
 				Util.DOM.setAttribute(el, 'data-' + key, value);
 			
@@ -35,6 +49,19 @@
 			 * Function: removeData
 			 */
 			removeData: function(el, key){
+				
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._removeData(el[i], key);
+					}
+				}
+				else{
+					Util.DOM._removeData(el, key);
+				}
+				
+			},
+			_removeData: function(el, key){
 			
 				Util.DOM.removeAttribute(el, 'data-' + key);
 				
@@ -192,6 +219,19 @@
 			 */
 			setAttribute: function(el, attributeName, value){
 				
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._setAttribute(el[i], attributeName, value);
+					}
+				}
+				else{
+					Util.DOM._setAttribute(el, attributeName, value);
+				}
+					
+			},
+			_setAttribute: function(el, attributeName, value){
+				
 				$(el).attr(attributeName, value);
 				
 			},
@@ -202,6 +242,19 @@
 			 * Function: removeAttribute
 			 */
 			removeAttribute: function(el, attributeName){
+				
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._removeAttribute(el[i], attributeName);
+					}
+				}
+				else{
+					Util.DOM._removeAttribute(el, attributeName);
+				}
+				
+			},
+			_removeAttribute: function(el, attributeName){
 				
 				$(el).removeAttr(attributeName);
 				
@@ -214,6 +267,19 @@
 			 */
 			addClass: function(el, className){
 				
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._addClass(el[i], className);
+					}
+				}
+				else{
+					Util.DOM._addClass(el, className);
+				}
+				
+			},
+			_addClass: function(el, className){
+				
 				$(el).addClass(className);
 				
 			},
@@ -224,6 +290,19 @@
 			 * Function: removeClass
 			 */
 			removeClass: function(el, className){
+				
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._removeClass(el[i], className);
+					}
+				}
+				else{
+					Util.DOM._removeClass(el, className);
+				}
+					
+			},
+			_removeClass: function(el, className){
 			
 				$(el).removeClass(className);
 				
@@ -246,6 +325,19 @@
 			 * Function: setStyle
 			 */
 			setStyle: function(el, style, value){
+				
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._setStyle(el[i], style, value);
+					}
+				}
+				else{
+					Util.DOM._setStyle(el, style, value);
+				}
+				
+			},
+			_setStyle: function(el, style, value){
 				
 				var prop;
 				
@@ -287,6 +379,17 @@
 			 * Function: hide
 			 */
 			hide: function(el){
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._hide(el[i]);
+					}
+				}
+				else{
+					Util.DOM._hide(el);
+				}
+			},
+			_hide: function(el){
 				
 				$(el).hide();
 			
@@ -298,6 +401,19 @@
 			 * Function: show
 			 */
 			show: function(el){
+				
+				if (Util.isLikeArray(el)){
+					var i, len;
+					for (i=0, len=el.length; i<len; i++){
+						Util.DOM._show(el[i]);
+					}
+				}
+				else{
+					Util.DOM._show(el);
+				}
+				
+			},
+			_show: function(el){
 				
 				$(el).show();
 				

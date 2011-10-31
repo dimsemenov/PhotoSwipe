@@ -5,7 +5,7 @@
 (function(window, klass, Util){
 	
 	
-	Util.registerNamespace('Util.TouchElement');
+	Util.registerNamespace('Code.Util.TouchElement');
 	
 	
 	Util.TouchElement.TouchElementClass = klass({
@@ -160,7 +160,7 @@
 		/*
 		 * Function: fireTouchEvent
 		 */
-		fireTouchEvent: function(){
+		fireTouchEvent: function(e){
 			
 			var 
 				action,
@@ -188,7 +188,9 @@
 							type: Util.TouchElement.EventTypes.onTouch, 
 							target: this, 
 							point: this.touchEndPoint,
-							action: (distX < 0) ? Util.TouchElement.ActionTypes.swipeLeft : Util.TouchElement.ActionTypes.swipeRight
+							action: (distX < 0) ? Util.TouchElement.ActionTypes.swipeLeft : Util.TouchElement.ActionTypes.swipeRight,
+							targetEl: e.target,
+							currentTargetEl: e.currentTarget
 						});
 						return;
 						
@@ -201,7 +203,9 @@
 							type: Util.TouchElement.EventTypes.onTouch, 
 							target: this, 
 							point: this.touchEndPoint,
-							action: (distY < 0) ? Util.TouchElement.ActionTypes.swipeUp : Util.TouchElement.ActionTypes.swipeDown
+							action: (distY < 0) ? Util.TouchElement.ActionTypes.swipeUp : Util.TouchElement.ActionTypes.swipeDown,
+							targetEl: e.target,
+							currentTargetEl: e.currentTarget
 						});
 						return;
 					
@@ -217,7 +221,9 @@
 					type: Util.TouchElement.EventTypes.onTouch, 
 					target: this, 
 					action: Util.TouchElement.ActionTypes.touchMoveEnd,
-					point: this.touchEndPoint
+					point: this.touchEndPoint,
+					targetEl: e.target,
+					currentTargetEl: e.currentTarget
 				});
 				return;
 			}
@@ -229,7 +235,9 @@
 					type: Util.TouchElement.EventTypes.onTouch, 
 					target: this, 
 					point: this.touchEndPoint,
-					action: Util.TouchElement.ActionTypes.tap
+					action: Util.TouchElement.ActionTypes.tap,
+					targetEl: e.target,
+					currentTargetEl: e.currentTarget
 				});
 				return;
 				
@@ -245,7 +253,9 @@
 						type: Util.TouchElement.EventTypes.onTouch, 
 						target: this, 
 						point: this.touchEndPoint,
-						action: Util.TouchElement.ActionTypes.tap
+						action: Util.TouchElement.ActionTypes.tap,
+						targetEl: e.target,
+						currentTargetEl: e.currentTarget
 					});
 					
 				}.bind(this), this.doubleTapSpeed);
@@ -262,7 +272,9 @@
 					type: Util.TouchElement.EventTypes.onTouch, 
 					target: this, 
 					point: this.touchEndPoint,
-					action: Util.TouchElement.ActionTypes.doubleTap
+					action: Util.TouchElement.ActionTypes.doubleTap,
+					targetEl: e.target,
+					currentTargetEl: e.currentTarget
 				});
 				
 			}
@@ -300,7 +312,9 @@
 				type: Util.TouchElement.EventTypes.onTouch, 
 				target: this, 
 				action: Util.TouchElement.ActionTypes.touchStart,
-				point: this.touchStartPoint
+				point: this.touchStartPoint,
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 			
 			
@@ -329,7 +343,9 @@
 				type: Util.TouchElement.EventTypes.onTouch, 
 				target: this, 
 				action: Util.TouchElement.ActionTypes.touchMove,
-				point: this.getTouchPoint(touches)
+				point: this.getTouchPoint(touches),
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 			
 		},
@@ -363,10 +379,12 @@
 				type: Util.TouchElement.EventTypes.onTouch, 
 				target: this, 
 				action: Util.TouchElement.ActionTypes.touchEnd,
-				point: this.touchEndPoint
+				point: this.touchEndPoint,
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 				
-			this.fireTouchEvent();
+			this.fireTouchEvent(e);
 			
 		},
 		
@@ -399,7 +417,9 @@
 				type: Util.TouchElement.EventTypes.onTouch, 
 				target: this, 
 				action: Util.TouchElement.ActionTypes.touchStart,
-				point: this.touchStartPoint
+				point: this.touchStartPoint,
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 			
 		},
@@ -417,7 +437,9 @@
 				type: Util.TouchElement.EventTypes.onTouch, 
 				target: this, 
 				action: Util.TouchElement.ActionTypes.touchMove,
-				point: Util.Events.getMousePosition(e)
+				point: Util.Events.getMousePosition(e),
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 			
 		},
@@ -443,10 +465,12 @@
 				type: Util.TouchElement.EventTypes.onTouch, 
 				target: this, 
 				action: Util.TouchElement.ActionTypes.touchEnd,
-				point: this.touchEndPoint
+				point: this.touchEndPoint,
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 			
-			this.fireTouchEvent();
+			this.fireTouchEvent(e);
 		
 		},
 		
@@ -456,6 +480,14 @@
 		 * Function: onMouseOut
 		 */
 		onMouseOut: function(e){
+			
+			/*
+			 * http://blog.stchur.com/2007/03/15/mouseenter-and-mouseleave-events-for-firefox-and-other-non-ie-browsers/
+			 */
+			var relTarget = e.relatedTarget;
+			if (this.el === relTarget || Util.DOM.isChildOf(relTarget, this.el)){ 
+				return;
+			}
 			
 			e.preventDefault();
 			
@@ -471,10 +503,12 @@
 				type: Util.TouchElement.EventTypes.onTouch, 
 				target: this, 
 				action: Util.TouchElement.ActionTypes.touchEnd,
-				point: this.touchEndPoint
+				point: this.touchEndPoint,
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 			
-			this.fireTouchEvent();
+			this.fireTouchEvent(e);
 			
 		},
 		
@@ -494,7 +528,9 @@
 				target: this, 
 				action: Util.TouchElement.ActionTypes.gestureStart,
 				scale: touchEvent.scale,
-				rotation: touchEvent.rotation
+				rotation: touchEvent.rotation,
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 		
 		},
@@ -515,7 +551,9 @@
 				target: this, 
 				action: Util.TouchElement.ActionTypes.gestureChange,
 				scale: touchEvent.scale,
-				rotation: touchEvent.rotation
+				rotation: touchEvent.rotation,
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 			
 		},
@@ -536,7 +574,9 @@
 				target: this, 
 				action: Util.TouchElement.ActionTypes.gestureEnd,
 				scale: touchEvent.scale,
-				rotation: touchEvent.rotation
+				rotation: touchEvent.rotation,
+				targetEl: e.target,
+				currentTargetEl: e.currentTarget
 			});
 			
 		}
