@@ -50,6 +50,8 @@ Features
 
 - Runs on modern desktop browsers, including Internet Explorer 8 and above.
 
+- From v3 can be run within a div on your page as well as "full screen".
+
 - Multiple input options including swipe gestures (both mouse and screen touches), keyboard control and an interactive on screen toolbar.
 
 - Responsive to device orientation changes.
