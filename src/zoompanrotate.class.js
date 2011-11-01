@@ -49,10 +49,18 @@
 			
 			this.settings = options;
 			
-			parentEl = (this.settings.target === window) ? document.body : this.settings.target;
-			width = Util.DOM.width(parentEl);
-			height = Util.DOM.height(parentEl);
-			top = (this.settings.target === window) ? Util.DOM.windowScrollTop() + 'px': '0px';
+			if (this.settings.target === window){
+				parentEl = document.body;
+				width = Util.DOM.windowWidth();
+				height = Util.DOM.windowHeight();
+				top = Util.DOM.windowScrollTop() + 'px';
+			}
+			else{
+				parentEl = this.settings.target;
+				width = Util.DOM.width(parentEl);
+				height = Util.DOM.height(parentEl);
+				top = '0px';
+			}
 			
 			this.imageEl = cacheImage.imageEl.cloneNode(false);
 			Util.DOM.setStyle(this.imageEl, {

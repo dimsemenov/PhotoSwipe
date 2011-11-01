@@ -19,11 +19,13 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 
 
-Latest Release v3.0.0
+Latest Release v3.0.1
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.0.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.1.zip)
 
-**Changes for 3.0.0**
+Fixed issue with zooming in on an image and still seeing the original behind it (issue #179).
+
+**Changes for v3**
 
 - You can now specify a target for PhotoSwipe. It doesn't have to run in full screen anymore! To do this, you specify a "target" as part of PhotoSwipe settings. The target MUST be a valid DOM element for it to work. See examples "12-custom-target.html", "13-custom-target-with-indicators.html" for more details.
 
