@@ -23,7 +23,7 @@ Latest Release v3.0.1
 ---------------------
 [Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.1.zip)
 
-Fixed issue with zooming in on an image and still seeing the original behind it (issue #179).
+- Fixed issue with zooming in on an image and still seeing the original behind it (issue #179).
 
 **Changes for v3**
 
