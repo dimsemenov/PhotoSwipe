@@ -1,7 +1,7 @@
 PhotoSwipe - The web image gallery for your mobile device
 =========================================================
 
-web: [www.photoswipe.com](http://www.photoswipe.com)
+web: [www.photoswipe.com](http://www.photoswipe.com), [www.codecomputerlove.com](http://www.codecomputerlove.com)
 twitter: [@photoswipe](http://twitter.com/#!/photoswipe)
 
 Inspired by the iOS photo viewer and Google images for mobile, PhotoSwipe is a HTML/CSS/JavaScript based image gallery specifically targeting mobile devices.
@@ -19,11 +19,11 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 
 
-Latest Release v3.0.1
+Latest Release v3.0.2
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.1.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.2.zip)
 
-- Fixed issue with zooming in on an image and still seeing the original behind it (issue #179).
+- Fixed issue on iOS 5, first time an image is zoomed in, the zoomed image is hidden from view immediately. 
 
 **Changes for v3**
 

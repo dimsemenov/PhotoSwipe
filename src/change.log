@@ -1,103 +1,15 @@
-2.0.0 17.08.11 - Ste Brennan
+3.0.0 01.11.11 - Ste Brennan
 ----------------------------
 Initial release
 
 
-2.0.1 18.08.11 - Ste Brennan
+3.0.1 03.11.11 - Ste Brennan
 ----------------------------
 
-- Fixed issue with example "07-custom-toolbar.html"
- 
-- New event "onToolbarTap"
-
-- Fixed issue with the cache which on certain occassions would lead to images not loading or reloading
+- Fixed issue with underlying image still visible when zooming in
 
 
-2.0.2 19.08.11 - Ste Brennan
+3.0.2 04.11.11 - Ste Brennan
 ----------------------------
 
-- You can now give your PhotoSwipe instances IDs
-
-- Re-written how the jQuery Mobile demo so that it is now based on PhotoSwipe instance IDs
-
-- Fixed back button issue with jQuery Mobile demo
-
-
-2.0.3 22.08.11 - Ste Brennan
-----------------------------
-
-- Fixed orientation issue when adding to a homescreen on iOS devices
-
-- Setting fadeSpeed values to zero will stop any fading in / out and will show / hide instantly
-
-- Zoom now works again on IE9
-
-- Modified css to set the contents of the caption to be inline by default
-
-
-2.1.0 05.09.11 - Ste Brennan
-----------------------------
-
-- Under the hood changes. Functionally equivalent to 2.0.3 - however substantial enough refactoring warranting 2.1.0
-
-- Underlying "Util" scripts now belong in their own project making reuse of that code easier
-
-- Fixed issue with erratic zooming especially if you have "imageScaleMethod" set to "zoom"
-
-
-2.1.1 12.09.11 - Ste Brennan
-----------------------------
-
-- Upgraded libraries tp jQuery 1.6.3, jQueryMobile 1.0b3, Code.Util 1.0.3
-
-- Two new examples: '10-image-meta-data.html' and '11-custom-captions.html'
-
-- Fixed issue when hitting the back button or escape key when zoomed in
-
-- Fixed issue 112 & 79 relating to images not showing
-
-- Fixed bug when closing PhotoSwipe when user has zoomed in on image
-
-- Added new events: onBeforeZoomPanRotateShow, onZoomPanRotateShow, onBeforeZoomPanRotateHide, onZoomPanRotateHide, onZoomPanRotateTransform
-
-- Better handling when images are not found
-
-
-2.1.2 19.09.11 - Ste Brennan
-----------------------------
-
-- Modified how PhotoSwipe is initiated within jQuery Mobile projects. Fixes issue reported especially with "05-jquery-mobile-ajax.html" examples. Check it out.
-
-- Stopped core functions like "play()", "next()", "previous()" etc. running when the zoom layer is displayed. This could happen especially if using keyboard controls.
-
-
-2.1.3 19.09.11 - Ste Brennan
-----------------------------
-
-- Fixed issue with Android not being picked up correctly (thanks bgz)
-
-- Fixed issues with IE 8
-
-
-2.1.4 27.09.11 - Ste Brennan
-----------------------------
-
-- Fixed issue when closing PhotoSwipe immediately after opening but before an image has loaded
-
-
-2.1.5 28.09.11 - Ste Brennan
-----------------------------
-
-- Fixed issue with internal property "backButtonClicked" not being reset on close.
-
-
-2.1.6 28.09.11 - Ste Brennan
-----------------------------
-
-- Upgraded to jQuery Mobile 1.0 RC1
-
-- Added test work around for issue #141 - when rotating an app with PhotoSwipe displayed in a UIWebView, PhotoSwipe does not rotate. This seems to be an issue with UIWebView not PhotoSwipe. To enable this test work around, set "enableUIWebViewRepositionTimeout = true" when creating your PhotoSwipe instance. 
-
-**Please Note** This is not needed for PhoneGap apps, nor web apps added to your homescreen.
-
-
+- Fixed issue on iOS 5, first time an image is zoomed in, the zoomed image is hidden from view immediately. 
