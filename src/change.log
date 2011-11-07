@@ -13,3 +13,11 @@ Initial release
 ----------------------------
 
 - Fixed issue on iOS 5, first time an image is zoomed in, the zoomed image is hidden from view immediately. 
+
+
+3.0.3 07.11.11 - Ste Brennan
+----------------------------
+
+- Added new example - 14-tap-image-go-to-url.html
+
+- Ensured that only iOS captures gesture events

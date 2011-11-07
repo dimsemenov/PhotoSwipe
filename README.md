@@ -20,11 +20,13 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 
 
-Latest Release v3.0.2
+Latest Release v3.0.3
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.2.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.3.zip)
 
-- Fixed issue on iOS 5, first time an image is zoomed in, the zoomed image is hidden from view immediately. 
+- Added new example - 14-tap-image-go-to-url.html
+
+- Ensured that only iOS captures gesture events
 
 **Changes for v3**
 

@@ -75,7 +75,7 @@
 			this.supr(this.el, {
 				swipe: true,
 				move: true,
-				gesture: true,
+				gesture: Util.Browser.iOS,
 				doubleTap: true,
 				preventDefaultTouchEvents: this.settings.preventDefaultTouchEvents
 			});
