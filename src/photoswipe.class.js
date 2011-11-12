@@ -264,6 +264,8 @@
 			// Set this instance to be the active instance
 			PhotoSwipe.setActivateInstance(this);
 			
+			this.windowDimensions = this.getWindowDimensions();
+			
 			// Create components
 			if (this.settings.target === window){
 				Util.DOM.addClass(window.document.body, PhotoSwipe.CssClasses.buildingBody);
@@ -725,7 +727,7 @@
 		destroyZoomPanRotate: function(){
 			
 			if (!Util.isNothing(this.zoomPanRotate)){
-			
+				
 				Util.Events.fire(this, PhotoSwipe.EventTypes.onBeforeZoomPanRotateHide);
 			
 				Util.Events.remove(this.zoomPanRotate, PhotoSwipe.ZoomPanRotate.EventTypes.onTransform, this.zoomPanRotateTransformHandler);
