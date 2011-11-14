@@ -20,13 +20,11 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 
 
-Latest Release v3.0.3
+Latest Release v3.0.4
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.3.zip)
+[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.4.zip)
 
-- Added new example - 14-tap-image-go-to-url.html
-
-- Ensured that only iOS captures gesture events
+- Fixed issue with toolbar buttons when a gallery has less than 3 images.
 
 **Changes for v3**
 

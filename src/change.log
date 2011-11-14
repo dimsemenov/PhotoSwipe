@@ -21,3 +21,9 @@ Initial release
 - Added new example - 14-tap-image-go-to-url.html
 
 - Ensured that only iOS captures gesture events
+
+
+3.0.4 14.11.11 - Ste Brennan
+----------------------------
+
+- Fixed issue with toolbar buttons when a gallery has less than 3 images
