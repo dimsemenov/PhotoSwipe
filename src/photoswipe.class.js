@@ -547,6 +547,7 @@
 			this.carousel = null;
 			
 			Util.DOM.removeClass(window.document.body, PhotoSwipe.CssClasses.activeBody);
+			Util.DOM.removeClass(window.document.getElementsByTagName("html")[0], PhotoSwipe.CssClasses.activeBody);
 			
 			this.documentOverlay.dispose();
 			this.documentOverlay = null;
@@ -818,6 +819,7 @@
 				var el = (this.settings.target === window) ? window.document.body : this.settings.target;
 				
 				Util.DOM.removeClass(el, PhotoSwipe.CssClasses.buildingBody);
+                                Util.DOM.addClass(window.document.getElementsByTagName("html")[0], PhotoSwipe.CssClasses.activeBody);
 				Util.DOM.addClass(el, PhotoSwipe.CssClasses.activeBody);
 				
 				this.addEventHandlers();
