@@ -455,11 +455,18 @@
 			
 			Util.DOM.removeClass(this.previousEl, PhotoSwipe.Toolbar.CssClasses.previousDisabled);
 			Util.DOM.removeClass(this.nextEl, PhotoSwipe.Toolbar.CssClasses.nextDisabled);
+            Util.DOM.removeClass(this.playEl, PhotoSwipe.Toolbar.CssClasses.playDisabled);
 			
 			if (index > 0 && index < this.cache.images.length-1){
 				return;
 			}
 			
+            if (index === 0 && index === this.cache.images.length-1){
+                if (!Util.isNothing(this.playEl)){
+					Util.DOM.addClass(this.playEl, PhotoSwipe.Toolbar.CssClasses.playDisabled);
+				}
+			}
+            
 			if (index === 0){
 				if (!Util.isNothing(this.previousEl)){
 					Util.DOM.addClass(this.previousEl, PhotoSwipe.Toolbar.CssClasses.previousDisabled);
