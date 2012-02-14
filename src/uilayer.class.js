@@ -77,7 +77,8 @@
 				move: true,
 				gesture: Util.Browser.iOS,
 				doubleTap: true,
-				preventDefaultTouchEvents: this.settings.preventDefaultTouchEvents
+				preventDefaultTouchEvents: this.settings.preventDefaultTouchEvents,
+				allowVerticalScroll: this.settings.allowVerticalScroll
 			});
 			
 		},

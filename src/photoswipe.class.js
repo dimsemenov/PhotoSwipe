@@ -159,7 +159,7 @@
 				uiWebViewResetPositionDelay: 500,
 				target: window,
 				preventDefaultTouchEvents: true,
-				
+				allowVerticalScroll:false,
 				
 				// Carousel
 				loop: true,
