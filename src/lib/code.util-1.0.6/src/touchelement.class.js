@@ -69,7 +69,8 @@
 				move: false,
 				gesture: false,
 				doubleTap: false,
-				preventDefaultTouchEvents: true
+				preventDefaultTouchEvents: true,
+				allowVerticalScroll:false
 			};
 			
 			Util.extend(this.captureSettings, captureSettings);
@@ -288,7 +289,7 @@
 		 */
 		onTouchStart: function(e){
 			
-			if (this.captureSettings.preventDefaultTouchEvents){
+			if (this.captureSettings.preventDefaultTouchEvents && !this.captureSettings.allowVerticalScroll){
 				e.preventDefault();
 			}
 			
@@ -327,9 +328,7 @@
 		 */
 		onTouchMove: function(e){
 			
-			if (this.captureSettings.preventDefaultTouchEvents){
-				e.preventDefault();
-			}
+		
 			
 			if (this.isGesture && this.captureSettings.gesture){
 				return;
@@ -339,11 +338,21 @@
 				touchEvent = Util.Events.getTouchEvent(e),
 				touches = touchEvent.touches;
 			
+			var point = this.getTouchPoint(touches);
+			
+			if(this.captureSettings.allowVerticalScroll && Math.abs(this.touchStartPoint.x - point.x) < Math.abs(this.touchStartPoint.y - point.y)){
++                return;
++            }
+			
+			if (this.captureSettings.preventDefaultTouchEvents){
+				e.preventDefault();
+			}
+			
 			Util.Events.fire(this, { 
 				type: Util.TouchElement.EventTypes.onTouch, 
 				target: this, 
 				action: Util.TouchElement.ActionTypes.touchMove,
-				point: this.getTouchPoint(touches),
+				point: point,
 				targetEl: e.target,
 				currentTargetEl: e.currentTarget
 			});
@@ -360,11 +369,7 @@
 			if (this.isGesture && this.captureSettings.gesture){
 				return;
 			}
-			
-			if (this.captureSettings.preventDefaultTouchEvents){
-				e.preventDefault();
-			}
-			
+						
 			// http://backtothecode.blogspot.com/2009/10/javascript-touch-and-gesture-events.html
 			// iOS removed the current touch from e.touches on "touchend"
 			// Need to look into e.changedTouches
@@ -373,7 +378,17 @@
 				touchEvent = Util.Events.getTouchEvent(e),
 				touches = (!Util.isNothing(touchEvent.changedTouches)) ? touchEvent.changedTouches : touchEvent.touches;
 			
+			
+			
 			this.touchEndPoint = this.getTouchPoint(touches);
+			
+			if(this.captureSettings.allowVerticalScroll && Math.abs(this.touchStartPoint.x - this.touchEndPoint.x) < Math.abs(this.touchStartPoint.y - this.touchEndPoint.y)){
++                return;
++           }
+			
+			if (this.captureSettings.preventDefaultTouchEvents){
+				e.preventDefault();
+			}
 			
 			Util.Events.fire(this, { 
 				type: Util.TouchElement.EventTypes.onTouch, 
