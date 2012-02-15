@@ -161,7 +161,7 @@ div.ps-toolbar-play div.ps-toolbar-content
 }
 div.ps-toolbar-play-disabled div.ps-toolbar-content
 {
-    background-position: -88px -44px;
+	background-position: -88px -44px;
 }
 
 /* Hi-res display */

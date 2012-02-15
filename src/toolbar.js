@@ -18,7 +18,7 @@
 		captionContent: 'ps-caption-content',
 		close: 'ps-toolbar-close',
 		play: 'ps-toolbar-play',
-        playDisabled: 'ps-toolbar-play-disabled',
+		playDisabled: 'ps-toolbar-play-disabled',
 		previous: 'ps-toolbar-previous',
 		previousDisabled: 'ps-toolbar-previous-disabled',
 		next: 'ps-toolbar-next',
