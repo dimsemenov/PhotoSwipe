@@ -200,6 +200,8 @@ Options
 
 - **nextPreviousSlideSpeed**: How fast images are displayed when the next/previous buttons are clicked in milliseconds. Default = 0 (immediately)
 
+- **nextPrevTimeout**: How long to wait before enabling the next or previous toolbar buttons in milliseconds. Useful to avoid Safari from crashing on the iPad if the next or previous buttons are tapped continuously and without interval. Default = 0 (immediately)
+
 - **preventHide**: Prevents the user closing PhotoSwipe. Also hides the "close" button from the toolbar. Useful for "exclusive mode" (see examples/08-exclusive-mode.html). Default = false
 
 - **preventSlideshow**: Prevents the slideshow being activated. Also hides the "play" button from the toolbar. Default = false

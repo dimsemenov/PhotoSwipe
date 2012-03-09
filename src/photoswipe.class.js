@@ -21,7 +21,7 @@
 		originalImages: null,
 		mouseWheelStartTime: null,
 		windowDimensions: null,
-		
+		nextPrevLocks: null,
 		
 		
 		// Components
@@ -196,7 +196,10 @@
 				getImageSource: PhotoSwipe.Cache.Functions.getImageSource,
 				getImageCaption: PhotoSwipe.Cache.Functions.getImageCaption,
 				getImageMetaData: PhotoSwipe.Cache.Functions.getImageMetaData,
-				cacheMode: PhotoSwipe.Cache.Mode.normal
+				cacheMode: PhotoSwipe.Cache.Mode.normal,
+
+				// Previous and next buttons timeout
+				nextPrevTimeout: 0
 				
 			};
 			
@@ -220,6 +223,8 @@
 			}
 			
 			this.cache = new Cache.CacheClass(images, this.settings);
+
+			this.nextPrevLocks = { next: false, previous: false };
 			
 		},
 		
@@ -1118,15 +1123,27 @@
 		 * Function: onToolbarTap
 		 */
 		onToolbarTap: function(e){
-		
+
+			var runUnlocked = function(container, type){
+				var f = container[type];
+
+				if (!container.nextPrevLocks[type]) {
+					container.nextPrevLocks[type] = true;
+					f.call(container);
+					setTimeout(function() {
+						container.nextPrevLocks[type] = false;
+					}, container.settings.nextPrevTimeout);
+				}
+			};
+
 			switch(e.action){
 				
 				case Toolbar.ToolbarAction.next:
-					this.next();
+					runUnlocked(this, 'next');
 					break;
 				
 				case Toolbar.ToolbarAction.previous:
-					this.previous();
+					runUnlocked(this, 'previous');
 					break;
 					
 				case Toolbar.ToolbarAction.close:
