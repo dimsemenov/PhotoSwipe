@@ -162,7 +162,7 @@ div.ps-toolbar-play div.ps-toolbar-content
 
 /* Hi-res display */
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-       only screen and (min--moz-device-pixel-ratio: 1.5),
+       only screen and (-moz-min-device-pixel-ratio: 1.5),
        only screen and (min-resolution: 240dpi)
 {
 	div.ps-toolbar div div.ps-toolbar-content
