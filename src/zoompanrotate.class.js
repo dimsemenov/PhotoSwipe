@@ -103,7 +103,7 @@
 			Util.DOM.insertBefore(this.el, uiLayer.el, parentEl);
 			
 			if (Util.Browser.iOS){
-				this.containerEl = Util.DOM.createElement('div');
+				this.containerEl = Util.DOM.createElement('div','','');
 				Util.DOM.setStyle(this.containerEl, {
 					left: 0,
 					top: 0,
