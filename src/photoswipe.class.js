@@ -130,7 +130,7 @@
 			
 			this.originalImages = images;
 			
-			if (Util.Browser.android){
+			if (Util.Browser.android && !Util.Browser.firefox){
 				if (window.navigator.userAgent.match(/Android (\d+.\d+)/).toString().replace(/^.*\,/, '') >= 2.1){
 					this.isBackEventSupported = true;
 				}
