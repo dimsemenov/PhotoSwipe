@@ -9,7 +9,9 @@
 	
 	<taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="tools/google-closure/compiler.jar" />
 	
-	<taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask"  classpath="tools/jslint4java-2.0.2/jslint4java-2.0.2.jar" />
+	<taskdef name="jslint"
+	           classname="com.googlecode.jslint4java.ant.JSLintTask"
+	           classpath="tools/jslint4java-2.0.2/jslint4java-2.0.2.jar" />
 	
 	
 	<target name="build">
@@ -55,7 +57,7 @@
 	
 	<target name="checkJS">
 		
-		<jslint options="browser,indent=0,plusplus,sloppy,white,indent=0,newcap,nomen,regexp,confusion,forin=true">
+		<jslint options="browser,indent=0,plusplus,sloppy,white,newcap,nomen,regexp,forin=true">
 			<formatter type="plain" />		
 			<fileset dir="${project.src.dir}" includes="*.js" />
 		</jslint>
