@@ -9,7 +9,7 @@
 	
 	<taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask" classpath="tools/google-closure/compiler.jar" />
 	
-	<taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask"  classpath="tools/jslint4java-2.0.0/jslint4java-2.0.0.jar" />
+	<taskdef name="jslint" classname="com.googlecode.jslint4java.ant.JSLintTask"  classpath="tools/jslint4java-2.0.2/jslint4java-2.0.2.jar" />
 	
 	
 	<target name="build">

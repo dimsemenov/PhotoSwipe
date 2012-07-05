@@ -1,0 +1,119 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>ClassFileSet Type</title>
+</head>
+
+<body>
+<h2><a name="fileset">ClassFileSet</a></h2>
+<p>A classfileset is a specialised type of fileset which, given a set of 
+&quot;root&quot; classes, will include all of the class files upon which the 
+root classes depend. This is typically used to create a jar with all of the
+required classes for a particular application.
+</p>
+<p>
+classfilesets are typically used by reference. They are declared with an
+&quot;id&quot; value and this is then used as a reference where a normal fileset
+is expected.
+</p>
+<p>
+This type requires the <code>BCEL</code> library.
+</p>
+
+
+<h3>Attributes</h3>
+<p>The class fileset support the following attributes in addition
+to those supported by the 
+<a href="../Types/fileset.html">standard fileset</a>:
+</p>
+ 
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">rootclass</td>
+    <td valign="top">A single root class name</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+
+<h3>Nested Elements</h3>
+
+<h4>Root</h4>
+<p>
+When more than one root class is required, multiple nested <code>&lt;root&gt;</code> elements
+may be used
+</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">classname</td>
+    <td valign="top">The fully qualified name of the root class</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+</table>
+
+<h4>RootFileSet</h4>
+<p>
+A root fileset is used to add a set of root classes from a fileset. In this case the entries in 
+the fileset are expected to be Java class files. The name of the Java class is determined by the 
+relative location of the classfile in the fileset. So, the file 
+<code>org/apache/tools/ant/Project.class</code> corresponds to the Java class
+<code>org.apache.tools.ant.Project</code>.</p>
+
+<h4>Examples</h4>
+<blockquote><pre>
+&lt;classfileset id=&quot;reqdClasses" dir=&quot;${classes.dir}&quot;&gt;
+  &lt;root classname=&quot;org.apache.tools.ant.Project&quot;/&gt;
+&lt;/classfileset&gt;
+</pre></blockquote>
+
+<p>This example creates a fileset containing all the class files upon which the 
+<code>org.apache.tools.ant.Project</code> class depends. This fileset could 
+then be used to create a jar. 
+</p>
+
+<blockquote><pre>
+&lt;jar destfile=&quot;minimal.jar&quot;&gt;
+  &lt;fileset refid=&quot;reqdClasses&quot;/&gt;
+&lt;/jar&gt;
+</pre></blockquote>
+
+<blockquote><pre>
+&lt;classfileset id=&quot;reqdClasses&quot; dir=&quot;${classes.dir}&quot;&gt;
+  &lt;rootfileset dir=&quot;${classes.dir}&quot; includes=&quot;org/apache/tools/ant/Project*.class&quot;/&gt;
+&lt;/classfileset&gt;
+</pre></blockquote>
+
+<p>This example constructs the classfileset using all the class with names starting with Project 
+in the org.apache.tools.ant package</p> 
+
+
+
+</body>
+</html>
+

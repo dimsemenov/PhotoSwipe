@@ -1,0 +1,499 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Zip Task</title>
+</head>
+
+<body>
+
+<h2><a name="zip">Zip</a></h2>
+<h3>Description</h3>
+<p>Creates a zipfile.</p>
+<p>The <i>basedir</i> attribute is the reference directory from where to zip.</p>
+<p>Note that file permissions will not be stored in the resulting zipfile.</p>
+<p>It is possible to refine the set of files that are being zipped. This can be
+done with the <i>includes</i>, <i>includesfile</i>, <i>excludes</i>, <i>excludesfile</i> and <i>defaultexcludes</i>
+attributes. With the <i>includes</i> or <i>includesfile</i> attribute you specify the files you want to
+have included by using patterns. The <i>exclude</i> or <i>excludesfile</i> attribute is used to specify
+the files you want to have excluded. This is also done with patterns. And
+finally with the <i>defaultexcludes</i> attribute, you can specify whether you
+want to use default exclusions or not. See the section on <a
+href="../dirtasks.html#directorybasedtasks">directory based tasks</a>, on how the
+inclusion/exclusion of files works, and how to write patterns. </p>
+<p>This task forms an implicit <a href="../Types/fileset.html">FileSet</a> and
+supports most attributes of <code>&lt;fileset&gt;</code>
+(<code>dir</code> becomes <code>basedir</code>) as well as the nested
+<code>&lt;include&gt;</code>, <code>&lt;exclude&gt;</code> and
+<code>&lt;patternset&gt;</code> elements.</p>
+<p>Or, you may place within it nested file sets, or references to file sets.
+In this case <code>basedir</code> is optional; the implicit file set is <i>only used</i>
+if <code>basedir</code> is set. You may use any mixture of the implicit file set
+(with <code>basedir</code> set, and optional attributes like <code>includes</code>
+and optional subelements like <code>&lt;include&gt;</code>); explicit nested
+<code>&lt;fileset&gt;</code> elements so long as at least one fileset total is specified. The ZIP file will
+only reflect the relative paths of files <i>within</i> each fileset. The Zip task and its derivatives know a special form of a fileset named zipfileset that has additional attributes (described below). </p>
+<p>The Zip task also supports the merging of multiple zip files into the zip file. 
+This is possible through either the <i>src</i> attribute of any nested filesets 
+or by using the special nested fileset <i>zipgroupfileset</i>.</p>
+
+<p>The <code>update</code> parameter controls what happens if the ZIP
+file already exists. When set to <code>yes</code>, the ZIP file is
+updated with the files specified. (New files are added; old files are
+replaced with the new versions.) When set to <code>no</code> (the
+default) the ZIP file is overwritten if any of the files that would be
+added to the archive are newer than the entries inside the archive.
+Please note that ZIP files store file modification times with a
+granularity of two seconds.  If a file is less than two seconds newer
+than the entry in the archive, Apache Ant will not consider it newer.</p>
+
+<p>The <code>whenempty</code> parameter controls what happens when no files match.
+If <code>skip</code> (the default), the ZIP is not created and a warning is issued.
+If <code>fail</code>, the ZIP is not created and the build is halted with an error.
+If <code>create</code>, an empty ZIP file (explicitly zero entries) is created,
+which should be recognized as such by compliant ZIP manipulation tools.</p>
+<p>This task will now use the platform's default character encoding
+for filenames - this is consistent with the command line ZIP tools,
+but causes problems if you try to open them from within Java and your
+filenames contain non US-ASCII characters. Use the encoding attribute
+and set it to UTF8 to create zip files that can safely be read by
+Java.  For a more complete discussion,
+see <a href="#encoding">below</a></p>
+
+<p>Starting with Ant 1.5.2, <code>&lt;zip&gt;</code> can store Unix permissions
+inside the archive (see description of the filemode and dirmode
+attributes for <a href="../Types/zipfileset.html">&lt;zipfileset&gt;</a>).
+Unfortunately there is no portable way to store these permissions.
+Ant uses the algorithm used by <a href="http://www.info-zip.org">Info-Zip's</a>
+implementation of the zip and unzip commands - these are the default
+versions of zip and unzip for many Unix and Unix-like systems.</p>
+
+<p><b>Please note that the zip format allows multiple files of the same
+fully-qualified name to exist within a single archive.  This has been
+documented as causing various problems for unsuspecting users.  If you wish
+to avoid this behavior you must set the <code>duplicate</code> attribute
+to a value other than its default, <code>&quot;add&quot;</code>.</b></p>
+
+<p><b>Please also note</b> that different ZIP tools handle timestamps
+differently when it comes to applying timezone offset calculations of
+files.  Some ZIP libraries will store the timestamps as they've been
+read from the filesystem while others will modify the timestamps both
+when reading and writing the files to make all timestamps use the same
+timezone.  A ZIP archive created by one library may extract files with
+"wrong timestamps" when extracted by another library.</p>
+
+<p>Ant's ZIP classes use the same algorithm as the InfoZIP tools and
+zlib (timestamps get adjusted), Windows' "compressed folders" function
+and WinZIP don't change the timestamps.  This means that using the
+unzip task on files created by Windows' compressed folders function
+may create files with timestamps that are "wrong", the same is true if
+you use Windows' functions to extract an Ant generated ZIP
+archive.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td valign="top" align="center"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">destfile</td>
+    <td valign="top">the zip-file to create.</td>
+    <td align="center" valign="top" rowspan="2">Exactly one of the two.</td>
+  </tr>
+  <tr>
+    <td valign="top">zipfile</td>
+    <td valign="top">the <i>deprecated</i> old name of destfile.</td>
+  </tr>
+  <tr>
+    <td valign="top">basedir</td>
+    <td valign="top">the directory from which to zip the files.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">compress</td>
+    <td valign="top">Not only store data but also compress them,
+    defaults to true.  Unless you set the <em>keepcompression</em>
+    attribute to false, this will apply to the entire archive, not
+    only the files you've added while updating.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">keepcompression</td>
+    <td valign="top">For entries coming from existing archives (like
+    nested <em>zipfileset</em>s or while updating the archive), keep
+    the compression as it has been originally instead of using the
+    <em>compress</em> attribute.  Defaults false.  <em>Since Ant
+    1.6</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">The character encoding to use for filenames
+    inside the zip file.  For a list of possible values see <a
+    href="http://download.oracle.com/javase/1.5.0/docs/guide/intl/encoding.doc.html">http://download.oracle.com/javase/1.5.0/docs/guide/intl/encoding.doc.html</a>.
+    Defaults to the platform's default character encoding.
+      <br/>See also the <a href="#encoding">discussion below</a></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">filesonly</td>
+    <td valign="top">Store only file entries, defaults to false</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      included. All files are included when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an include pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top">comma- or space-separated list of patterns of files that must be
+      excluded. No files (except default excludes) are excluded when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludesfile</td>
+    <td valign="top">the name of a file. Each line of this file is
+      taken to be an exclude pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">defaultexcludes</td>
+    <td valign="top">indicates whether default excludes should be used or not
+      (&quot;yes&quot;/&quot;no&quot;). Default excludes are used when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">update</td>
+    <td valign="top">indicates whether to update or overwrite
+      the destination file if it already exists.  Default is &quot;false&quot;.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">whenempty</td>
+    <td valign="top">behavior when no files match.  Valid values are &quot;fail&quot;, &quot;skip&quot;, and &quot;create&quot;.  Default is &quot;skip&quot;.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">duplicate</td>
+    <td valign="top">behavior when a duplicate file is found.  Valid values are &quot;add&quot;, &quot;preserve&quot;, and &quot;fail&quot;. The default value is &quot;add&quot;.  </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">roundup</td>
+    <td valign="top">Whether the file modification times will be
+    rounded up to the next even number of seconds.<br>
+    Zip archives store file modification times with a granularity of
+    two seconds, so the times will either be rounded up or down.  If
+    you round down, the archive will always seem out-of-date when you
+    rerun the task, so the default is to round up.  Rounding up may
+    lead to a different type of problems like JSPs inside a web
+    archive that seem to be slightly more recent than precompiled
+    pages, rendering precompilation useless.<br>
+    Defaults to true.  <em>Since Ant 1.6.2</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">comment</td>
+    <td valign="top">Comment to store in the archive. <em>Since Ant 1.6.3</em></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">level</td>
+    <td valign="top">Non-default level at which file compression should be
+    performed. Valid values range from 0 (no compression/fastest) to 9
+    (maximum compression/slowest). <em>Since Ant 1.7</em></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">preserve0permissions</td>
+    <td valign="top">when updating an archive or adding entries from a
+    different archive Ant will assume that a Unix permissions value of
+    0 (nobody is allowed to do anything to the file/directory) means
+    that the permissions haven't been stored at all rather than real
+    permissions and will instead apply its own default values.<br/>
+    Set this attribute to true if you really want to preserve the
+      original permission field.<em>since Ant 1.8.0</em>
+    </td>
+    <td valign="top" align="center">No, default is false</td>
+  </tr>
+  <tr>
+    <td valign="top">useLanguageEncodingFlag</td>
+    <td valign="top">Whether to set the language encoding flag if the
+      encoding is UTF-8.  This setting doesn't have any effect if the
+      encoding is not UTF-8.
+      <em>Since Ant 1.8.0</em>.
+      <br/>See also the <a href="#encoding">discussion below</a></td>
+    <td align="center" valign="top">No, default is true</td>
+  </tr>
+  <tr>
+    <td valign="top">createUnicodeExtraFields</td>
+    <td valign="top">Whether to create unicode extra fields to store
+      the file names a second time inside the entry's metadata.
+      <br>Possible values are "never", "always" and "not-encodable"
+      which will only add Unicode extra fields if the file name cannot
+      be encoded using the specified encoding.
+      <em>Since Ant 1.8.0</em>.
+      <br/>See also the <a href="#encoding">discussion below</a></td>
+    <td align="center" valign="top">No, default is "never"</td>
+  </tr>
+  <tr>
+    <td valign="top">fallbacktoUTF8</td>
+    <td valign="top">Whether to use UTF-8 and the language encoding
+      flag instead of the specified encoding if a file name cannot be
+      encoded using the specified encoding.
+      <em>Since Ant 1.8.0</em>.
+      <br/>See also the <a href="#encoding">discussion below</a></td>
+    <td align="center" valign="top">No, default is false</td>
+  </tr>
+</table>
+
+<h3><a name="encoding">Encoding of File Names</a></h3>
+
+<p>Traditionally the ZIP archive format uses CodePage 437 as encoding
+  for file name, which is not sufficient for many international
+  character sets.</p>
+
+<p>Over time different archivers have chosen different ways to work
+  around the limitation - the <code>java.util.zip</code> packages
+  simply uses UTF-8 as its encoding for example.</p>
+
+<p>Ant has been offering the encoding attribute of the zip and unzip
+  task as a way to explicitly specify the encoding to use (or expect)
+  since Ant 1.4.  It defaults to the platform's default encoding for
+  zip and UTF-8 for jar and other jar-like tasks (war, ear, ...) as
+  well as the unzip family of tasks.</p>
+
+<p>More recent versions of the ZIP specification introduce something
+  called the &quot;language encoding flag&quot; which can be used to
+  signal that a file name has been encoded using UTF-8.  Starting with
+  Ant 1.8.0 all zip-/jar- and similar archives written by Ant will set
+  this flag, if the encoding has been set to UTF-8.  Our
+  interoperabilty tests with existing archivers didn't show any ill
+  effects (in fact, most archivers ignore the flag to date), but you
+  can turn off the "language encoding flag" by setting the attribute
+  <code>useLanguageEncodingFlag</code> to <code>false</code> on the
+  zip-task if you should encounter problems.</p>
+
+<p>The unzip (and similar tasks) -task will recognize the language
+  encoding flag and ignore the encoding set on the task if it has been
+  found.</p>
+
+<p>The InfoZIP developers have introduced new ZIP extra fields that
+  can be used to add an additional UTF-8 encoded file name to the
+  entry's metadata.  Most archivers ignore these extra fields.  The
+  zip family of tasks support an
+  option <code>createUnicodeExtraFields</code> since Ant 1.8.0 which
+  makes Ant write these extra fields either for all entries ("always")
+  or only those whose name cannot be encoded using the spcified
+  encoding (not-encodeable), it defaults to "never" since the extra
+  fields create bigger archives.</p>
+
+<p>The fallbackToUTF8 attribute of zip can be used to create archives
+  that use the specified encoding in the majority of cases but UTF-8 and
+  the language encoding flag for filenames that cannot be encoded
+  using the specified encoding.</p>
+
+<p>The unzip-task will recognize the unicode extra fields by default
+  and read the file name information from them, unless you set the
+  optional attribute <code>scanForUnicodeExtraFields</code> to
+  false.</p>
+
+<h4>Recommendations for Interoperability</h4>
+
+<p>The optimal setting of flags depends on the archivers you expect as
+  consumers/producers of the ZIP archives.  Below are some test
+  results which may be superseeded with later versions of each
+  tool.</p>
+
+<ul>
+  <li>The java.util.zip package used by the jar executable or to read
+    jars from your CLASSPATH reads and writes UTF-8 names, it doesn't
+    set or recognize any flags or unicode extra fields.</li>
+
+  <li>Starting with Java7 <code>java.util.zip</code> writes UTF-8 by
+    default and uses the language encoding flag.  It is possible to
+    specify a different encoding when reading/writing ZIPs via new
+    constructors.  The package now recognizes the language encoding
+    flag when reading and ignores the Unicode extra fields.</li>
+
+  <li>7Zip writes CodePage 437 by default but uses UTF-8 and the
+    language encoding flag when writing entries that cannot be encoded
+    as CodePage 437 (similar to the zip task with fallbacktoUTF8 set
+    to true).  It recognizes the language encoding flag when reading
+    and ignores the unicode extra fields.</li>
+
+  <li>WinZIP writes CodePage 437 and uses unicode extra fields by
+    default.  It recognizes the unicode extra field and the language
+    encoding flag when reading.</li>
+
+  <li>Windows' "compressed folder" feature doesn't recognize any flag
+    or extra field and creates archives using the platforms default
+    encoding - and expects archives to be in that encoding when reading
+    them.</li>
+
+  <li>InfoZIP based tools can recognize and write both, it is a
+    compile time option and depends on the platform so your mileage
+    may vary.</li>
+
+  <li>PKWARE zip tools recognize both and prefer the language encoding
+    flag.  They create archives using CodePage 437 if possible and UTF-8
+    plus the language encoding flag for file names that cannot be
+    encoded as CodePage 437.</li>
+</ul>
+
+<p>So, what to do?</p>
+
+<p>If you are creating jars, then java.util.zip is your main
+  consumer.  We recommend you set the encoding to UTF-8 and keep the
+  language encoding flag enabled.  The flag won't help or hurt
+  java.util.zip prior to Java7 but archivers that support it will show
+  the correct file names.</p>
+
+<p>For maximum interop it is probably best to set the encoding to
+  UTF-8, enable the language encoding flag and create unicode extra
+  fields when writing ZIPs.  Such archives should be extracted
+  correctly by java.util.zip, 7Zip, WinZIP, PKWARE tools and most
+  likely InfoZIP tools.  They will be unusable with Windows'
+  "compressed folders" feature and bigger than archives without the
+  unicode extra fields, though.</p>
+
+<p>If Windows' "compressed folders" is your primary consumer, then
+  your best option is to explicitly set the encoding to the target
+  platform.  You may want to enable creation of unicode extra fields
+  so the tools that support them will extract the file names
+  correctly.</p>
+
+<h3>Parameters specified as nested elements</h3>
+
+<h4>any resource collection</h4>
+<p><a href="../Types/resources.html#collection">Resource
+Collection</a>s are used to select groups of files to archive.</p>
+<p>Prior to Ant 1.7 only <code>&lt;fileset&gt;</code> and
+<code>&lt;zipfileset&gt;</code> have been supported as nested elements.</p>
+
+<a name="zipgroupfileset" />
+<h4>zipgroupfileset</h4>
+<p>A <code>&lt;zipgroupfileset&gt;</code> allows for multiple zip files to be 
+merged into the archive. Each file found in this fileset is added to the archive 
+the same way that <i>zipfileset src</i> files are added.</p>
+
+<p><code>&lt;zipgroupfileset&gt;</code> is
+  a <a href="../Types/fileset.html">fileset</a> and supports all
+  of its attributes and nested elements.</a>
+
+<h3>Examples</h3>
+<pre>  &lt;zip destfile=&quot;${dist}/manual.zip&quot;
+       basedir=&quot;htdocs/manual&quot;
+  /&gt;</pre>
+<p>zips all files in the <code>htdocs/manual</code> directory into a file called <code>manual.zip</code>
+in the <code>${dist}</code> directory.</p>
+<pre>  &lt;zip destfile=&quot;${dist}/manual.zip&quot;
+       basedir=&quot;htdocs/manual&quot;
+       update=&quot;true&quot;
+  /&gt;</pre>
+<p>zips all files in the <code>htdocs/manual</code> directory into a file called <code>manual.zip</code>
+in the <code>${dist}</code> directory. If <code>manual.zip</code>
+doesn't exist, it is created; otherwise it is updated with the
+new/changed files.</p>
+<pre>  &lt;zip destfile=&quot;${dist}/manual.zip&quot;
+       basedir=&quot;htdocs/manual&quot;
+       excludes=&quot;mydocs/**, **/todo.html&quot;
+  /&gt;</pre>
+<p>zips all files in the <code>htdocs/manual</code> directory. Files in the directory <code>mydocs</code>,
+or files with the name <code>todo.html</code> are excluded.</p>
+<pre>  &lt;zip destfile=&quot;${dist}/manual.zip&quot;
+       basedir=&quot;htdocs/manual&quot;
+       includes=&quot;api/**/*.html&quot;
+       excludes=&quot;**/todo.html&quot;
+  /&gt;</pre>
+<p>zips all files in the <code>htdocs/manual</code> directory. Only html files under the directory <code>api</code>
+are zipped, and files with the name <code>todo.html</code> are excluded.</p>
+<pre>  &lt;zip destfile=&quot;${dist}/manual.zip&quot;&gt;
+    &lt;fileset dir=&quot;htdocs/manual&quot;/&gt;
+    &lt;fileset dir=&quot;.&quot; includes=&quot;ChangeLog.txt&quot;/&gt;
+  &lt;/zip&gt;</pre>
+<p>zips all files in the <code>htdocs/manual</code> directory, and also adds the file <code>ChangeLog.txt</code> in the
+current directory. <code>ChangeLog.txt</code> will be added to the top of the ZIP file, just as if
+it had been located at <code>htdocs/manual/ChangeLog.txt</code>.</p>
+<pre>  &lt;zip destfile=&quot;${dist}/manual.zip&quot;&gt;
+    &lt;zipfileset dir=&quot;htdocs/manual&quot; prefix=&quot;docs/user-guide&quot;/&gt;
+    &lt;zipfileset dir=&quot;.&quot; includes=&quot;ChangeLog27.txt&quot; fullpath=&quot;docs/ChangeLog.txt&quot;/&gt;
+    &lt;zipfileset src=&quot;examples.zip&quot; includes=&quot;**/*.html&quot; prefix=&quot;docs/examples&quot;/&gt;
+  &lt;/zip&gt;</pre>
+<p>zips all files in the <code>htdocs/manual</code> directory into the <code>docs/user-guide</code> directory
+in the archive, adds the file <code>ChangeLog27.txt</code> in the
+current directory as <code>docs/ChangeLog.txt</code>, and includes all the html files in <code>examples.zip</code> 
+under <code>docs/examples</code>.  The archive might end up containing the files:</p>
+<pre>    docs/user-guide/html/index.html
+    docs/ChangeLog.txt
+    docs/examples/index.html
+</pre>
+<p>
+The code
+<pre>
+  &lt;zip destfile=&quot;${dist}/manual.zip&quot;&gt;
+    &lt;zipfileset dir=&quot;htdocs/manual&quot; prefix=&quot;docs/user-guide&quot;/&gt;
+    &lt;zipgroupfileset dir=&quot;.&quot; includes=&quot;examples*.zip&quot;/&gt;
+  &lt;/zip&gt;
+</pre>
+<p>
+<p>zips all files in the <code>htdocs/manual</code> directory into the <code>docs/user-guide</code> directory in the archive and includes all the files in any file that maches <code>examples*.zip</code>, such as all files within <code>examples1.zip</code> or <code>examples_for_brian.zip</code>.
+The same can be achieved with
+<pre>
+  &lt;zip destfile=&quot;${dist}/manual.zip&quot;&gt;
+    &lt;mappedresources&gt;
+      &lt;fileset dir=&quot;htdocs/manual&quot;/&gt;
+      &lt;globmapper from="*" to="docs/user-guide/*"/&gt;
+    &lt;/mappedresources&gt;
+    &lt;archives&gt;
+      &lt;zips&gt;
+        &lt;fileset dir=&quot;.&quot; includes=&quot;examples*.zip&quot;/&gt;
+      &lt;/zips&gt;
+    &lt;/archives&gt;
+  &lt;/zip&gt;
+</pre>
+
+The next example
+
+<pre>
+&lt;zip dest="release.zip"&gt;
+  &lt;tarfileset src="release.tar"/&gt;
+&lt;/zip&gt;
+</pre>
+
+<p>re-packages a TAR archive as a ZIP archive.  If Unix file
+permissions have been stored as part of the TAR file, they will be
+retained in the resulting ZIP archive.</p>
+
+
+
+</body>
+</html>
+

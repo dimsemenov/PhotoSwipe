@@ -1,0 +1,580 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+<title>Writing a Simple Buildfile</title>
+</head>
+
+<body>
+<h1>Using Apache Ant</h1>
+<h2><a name="buildfile">Writing a Simple Buildfile</a></h2>
+<p>Apache Ant's buildfiles are written in XML. Each buildfile contains one project
+and at least one (default) target. Targets contain task elements.
+Each task element of the buildfile can have an <code>id</code> attribute and
+can later be referred to by the value supplied to this. The value has
+to be unique. (For additional information, see the
+<a href="#tasks"> Tasks</a> section below.)</p>
+<h3><a name="projects">Projects</a></h3>
+<p>A <i>project</i> has three attributes:</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">the name of the project.</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">default</td>
+    <td valign="top">the default target to use when no target is supplied.</td>
+    <td align="center" valign="top">No; however, <b>since Ant 1.6.0</b>,
+        every project includes an implicit target that contains any and
+        all top-level tasks and/or types. This target will always be
+        executed as part of the project's initialization, even when Ant is
+        run with the <a href="running.html#options">-projecthelp</a> option.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">basedir</td>
+    <td valign="top">the base directory from which all path calculations are
+      done. This attribute might be overridden by setting
+      the &quot;basedir&quot;
+      property beforehand. When this is done, it must be omitted in the
+      project tag. If neither the attribute nor the property have
+      been set, the parent directory of the buildfile will be used.<br/>
+      A relative path is resolved relative to the directory containing
+      the build file.
+    </td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+<p>Optionally, a description for the project can be provided as a
+top-level <code>&lt;description&gt;</code> element (see the <a
+href="Types/description.html">description</a> type).</p>
+
+<p>Each project defines one or more <i>targets</i>.
+A target is a set of <i>tasks</i> you want
+to be executed. When starting Ant, you can select which target(s) you
+want to have executed. When no target is given,
+the project's default is used.</p>
+
+<h3><a name="targets">Targets</a></h3>
+<p>A target can depend on other targets. You might have a target for compiling,
+for example, and a target for creating a distributable. You can only build a
+distributable when you have compiled first, so the distribute target
+<i>depends on</i> the compile target. Ant resolves these dependencies.</p>
+<p>It should be noted, however, that Ant's <code>depends</code> attribute
+only specifies the <i>order</i> in which targets should be executed - it
+does not affect whether the target that specifies the dependency(s) gets
+executed if the dependent target(s) did not (need to) run.
+</p>
+
+<p>More information can be found in the
+  dedicated <a href="targets.html">manual page</a>.</p>
+
+<h3><a name="tasks">Tasks</a></h3>
+<p>A task is a piece of code that can be executed.</p>
+<p>A task can have multiple attributes (or arguments, if you prefer). The value
+of an attribute might contain references to a property. These references will be
+resolved before the task is executed.</p>
+<p>Tasks have a common structure:</p>
+<blockquote>
+  <pre>&lt;<i>name</i> <i>attribute1</i>=&quot;<i>value1</i>&quot; <i>attribute2</i>=&quot;<i>value2</i>&quot; ... /&gt;</pre>
+</blockquote>
+<p>where <i>name</i> is the name of the task,
+<i>attributeN</i> is the attribute name, and
+<i>valueN</i> is the value for this attribute.</p>
+<p>There is a set of <a href="tasklist.html" target="navFrame">built-in tasks</a>, but it is also very
+easy to <a href="develop.html#writingowntask">write your own</a>.</p>
+<p>All tasks share a task name attribute. The value of
+this attribute will be used in the logging messages generated by
+Ant.</p>
+Tasks can be assigned an <code>id</code> attribute:
+<blockquote>
+<pre>&lt;<i>taskname</i> id="<i>taskID</i>" ... /&gt;</pre>
+</blockquote>
+where <i>taskname</i> is the name of the task, and <i>taskID</i> is
+a unique identifier for this task.
+You can refer to the
+corresponding task object in scripts or other tasks via this name.
+For example, in scripts you could do:
+<blockquote>
+<pre>
+&lt;script ... &gt;
+  task1.setFoo("bar");
+&lt;/script&gt;
+</pre>
+</blockquote>
+to set the <code>foo</code> attribute of this particular task instance.
+In another task (written in Java), you can access the instance via
+<code>project.getReference("task1")</code>.
+<p>
+Note<sup>1</sup>: If &quot;task1&quot; has not been run yet, then
+it has not been configured (ie., no attributes have been set), and if it is
+going to be configured later, anything you've done to the instance may
+be overwritten.
+</p>
+<p>
+Note<sup>2</sup>: Future versions of Ant will most likely <i>not</i>
+be backward-compatible with this behaviour, since there will likely be no
+task instances at all, only proxies.
+</p>
+
+<h3><a name="properties">Properties</a></h3>
+
+<p>Properties are an important way to customize a build process or
+  to just provide shortcuts for strings that are used repeatedly
+  inside a build file.</p>
+
+<p>In its most simple form properties are defined in the build file
+  (for example by the <a href="Tasks/property.html">property</a>
+  task) or might be set outside Ant.  A property has a name and a
+  value; the name is case-sensitive. Properties may be used in the
+  value of task attributes or in the nested text of tasks that support
+  them.  This is done by placing the property name between
+  &quot;<code>${</code>&quot; and &quot;<code>}</code>&quot; in the
+  attribute value. For example, if there is a &quot;builddir&quot;
+  property with the value &quot;build&quot;, then this could be used
+  in an attribute like this: <code>${builddir}/classes</code>.  This
+  is resolved at run-time as <code>build/classes</code>.</p>
+
+<p>With Ant 1.8.0 property expansion has become much more powerful
+  than simple key value pairs, more details can be
+  found <a href="properties.html">in the concepts section</a> of this
+  manual.</p>
+
+<h3><a name="example">Example Buildfile</a></h3>
+<pre>
+&lt;project name=&quot;MyProject&quot; default=&quot;dist&quot; basedir=&quot;.&quot;&gt;
+    &lt;description&gt;
+        simple example build file
+    &lt;/description&gt;
+  &lt;!-- set global properties for this build --&gt;
+  &lt;property name=&quot;src&quot; location=&quot;src&quot;/&gt;
+  &lt;property name=&quot;build&quot; location=&quot;build&quot;/&gt;
+  &lt;property name=&quot;dist&quot;  location=&quot;dist&quot;/&gt;
+
+  &lt;target name=&quot;init&quot;&gt;
+    &lt;!-- Create the time stamp --&gt;
+    &lt;tstamp/&gt;
+    &lt;!-- Create the build directory structure used by compile --&gt;
+    &lt;mkdir dir=&quot;${build}&quot;/&gt;
+  &lt;/target&gt;
+
+  &lt;target name=&quot;compile&quot; depends=&quot;init&quot;
+        description=&quot;compile the source &quot; &gt;
+    &lt;!-- Compile the java code from ${src} into ${build} --&gt;
+    &lt;javac srcdir=&quot;${src}&quot; destdir=&quot;${build}&quot;/&gt;
+  &lt;/target&gt;
+
+  &lt;target name=&quot;dist&quot; depends=&quot;compile&quot;
+        description=&quot;generate the distribution&quot; &gt;
+    &lt;!-- Create the distribution directory --&gt;
+    &lt;mkdir dir=&quot;${dist}/lib&quot;/&gt;
+
+    &lt;!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file --&gt;
+    &lt;jar jarfile=&quot;${dist}/lib/MyProject-${DSTAMP}.jar&quot; basedir=&quot;${build}&quot;/&gt;
+  &lt;/target&gt;
+
+  &lt;target name=&quot;clean&quot;
+        description=&quot;clean up&quot; &gt;
+    &lt;!-- Delete the ${build} and ${dist} directory trees --&gt;
+    &lt;delete dir=&quot;${build}&quot;/&gt;
+    &lt;delete dir=&quot;${dist}&quot;/&gt;
+  &lt;/target&gt;
+&lt;/project&gt;
+</pre>
+
+<p>Notice that we are declaring properties outside any target.  As of
+Ant 1.6 all tasks can be declared outside targets (earlier version
+only allowed <tt>&lt;property&gt;</tt>,<tt>&lt;typedef&gt;</tt> and
+<tt>&lt;taskdef&gt;</tt>).  When you do this they are evaluated before
+any targets are executed.  Some tasks will generate build failures if
+they are used outside of targets as they may cause infinite loops
+otherwise (<code>&lt;antcall&gt;</code> for example).</p>
+
+<p>
+We have given some targets descriptions; this causes the <tt>projecthelp</tt>
+invocation option to list them as public targets with the descriptions; the
+other target is internal and not listed.
+<p>
+Finally, for this target to work the source in the <tt>src</tt> subdirectory
+should be stored in a directory tree which matches the package names. Check the
+<tt>&lt;javac&gt;</tt> task for details.
+
+<h3><a name="filters">Token Filters</a></h3>
+<p>A project can have a set of tokens that might be automatically expanded if
+found when a file is copied, when the filtering-copy behavior is selected in the
+tasks that support this. These might be set in the buildfile
+by the <a href="Tasks/filter.html">filter</a> task.</p>
+<p>Since this can potentially be a very harmful behavior,
+the tokens in the files <b>must</b>
+be of the form <code>@</code><i>token</i><code>@</code>, where
+<i>token</i> is the token name that is set
+in the <code>&lt;filter&gt;</code> task. This token syntax matches the syntax of other build systems
+that perform such filtering and remains sufficiently orthogonal to most
+programming and scripting languages, as well as with documentation systems.</p>
+<p>Note: If a token with the format <code>@</code><i>token</i><code>@</code>
+is found in a file, but no
+filter is associated with that token, no changes take place;
+therefore, no escaping
+method is available - but as long as you choose appropriate names for your
+tokens, this should not cause problems.</p>
+<p><b>Warning:</b> If you copy binary files with filtering turned on, you can corrupt the
+files. This feature should be used with text files <em>only</em>.</p>
+
+<h3><a name="path">Path-like Structures</a></h3>
+<p>You can specify <code>PATH</code>- and <code>CLASSPATH</code>-type
+references using both
+&quot;<code>:</code>&quot; and &quot;<code>;</code>&quot; as separator
+characters. Ant will
+convert the separator to the correct character of the current operating
+system.</p>
+<p>Wherever path-like values need to be specified, a nested element can
+be used. This takes the general form of:</p>
+<pre>
+    &lt;classpath&gt;
+      &lt;pathelement path=&quot;${classpath}&quot;/&gt;
+      &lt;pathelement location=&quot;lib/helper.jar&quot;/&gt;
+    &lt;/classpath&gt;
+</pre>
+<p>The <code>location</code> attribute specifies a single file or
+directory relative to the project's base directory (or an absolute
+filename), while the <code>path</code> attribute accepts colon-
+or semicolon-separated lists of locations. The <code>path</code>
+attribute is intended to be used with predefined paths - in any other
+case, multiple elements with <code>location</code> attributes should be
+preferred.</p>
+<p><em>Since Ant 1.8.2</em> the location attribute can also contain a
+  wildcard in its last path component (i.e. it can end in a
+  &quot;*&quot;) in order to support wildcard CLASSPATHs introduced
+  with Java6.  Ant will not expand or evaluate the wildcards and the
+  resulting path may not work as anything else but a CLASSPATH - or
+  even as a CLASSPATH for a Java VM prior to Java6.</p>
+<p>As a shortcut, the <code>&lt;classpath&gt;</code> tag
+supports <code>path</code> and
+<code>location</code> attributes of its own, so:</p>
+<pre>
+    &lt;classpath&gt;
+      &lt;pathelement path=&quot;${classpath}&quot;/&gt;
+    &lt;/classpath&gt;
+</pre>
+<p>can be abbreviated to:</p>
+<pre>
+    &lt;classpath path=&quot;${classpath}&quot;/&gt;
+</pre>
+<p>In addition, one or more
+<a href="Types/resources.html#collection">Resource Collection</a>s
+can be specified as nested elements (these must consist of
+<a href="Types/resources.html#file">file</a>-type resources only).
+Additionally, it should be noted that although resource collections are
+processed in the order encountered, certain resource collection types
+such as <a href="Types/fileset.html">fileset</a>,
+<a href="Types/dirset.html">dirset</a> and
+<a href="Types/resources.html#files">files</a>
+are undefined in terms of order.</p>
+<pre>
+    &lt;classpath&gt;
+      &lt;pathelement path=&quot;${classpath}&quot;/&gt;
+      &lt;fileset dir=&quot;lib&quot;&gt;
+        &lt;include name=&quot;**/*.jar&quot;/&gt;
+      &lt;/fileset&gt;
+      &lt;pathelement location=&quot;classes&quot;/&gt;
+      &lt;dirset dir=&quot;${build.dir}&quot;&gt;
+        &lt;include name=&quot;apps/**/classes&quot;/&gt;
+        &lt;exclude name=&quot;apps/**/*Test*&quot;/&gt;
+      &lt;/dirset&gt;
+      &lt;filelist refid=&quot;third-party_jars&quot;/&gt;
+    &lt;/classpath&gt;
+</pre>
+<p>This builds a path that holds the value of <code>${classpath}</code>,
+followed by all jar files in the <code>lib</code> directory,
+the <code>classes</code> directory, all directories named
+<code>classes</code> under the <code>apps</code> subdirectory of
+<code>${build.dir}</code>, except those
+that have the text <code>Test</code> in their name, and
+the files specified in the referenced FileList.</p>
+<p>If you want to use the same path-like structure for several tasks,
+you can define them with a <code>&lt;path&gt;</code> element at the
+same level as <i>target</i>s, and reference them via their
+<i>id</i> attribute--see <a href="#references">References</a> for an
+example.</p>
+
+<p>By default a path like structure will re-evaluate all nested
+  resource collections whenever it is used, which may lead to
+  unnecessary re-scanning of the filesystem.  Since Ant 1.8.0 path has
+  an optional <i>cache</i> attribute, if it is set to true, the path
+  instance will only scan its nested resource collections once and
+  assume it doesn't change during the build anymore (the default
+  for <i>cache</i> still is <i>false</i>).  Even if you are using the
+  path only in a single task it may improve overall performance to set
+  <i>cache</i> to <i>true</i> if you are using complex nested
+  constructs.</p>
+
+<p>A path-like structure can include a reference to another path-like
+structure (a path being itself a resource collection)
+via nested <code>&lt;path&gt;</code> elements:</p>
+<pre>
+    &lt;path id=&quot;base.path&quot;&gt;
+      &lt;pathelement path=&quot;${classpath}&quot;/&gt;
+      &lt;fileset dir=&quot;lib&quot;&gt;
+        &lt;include name=&quot;**/*.jar&quot;/&gt;
+      &lt;/fileset&gt;
+      &lt;pathelement location=&quot;classes&quot;/&gt;
+    &lt;/path&gt;
+
+    &lt;path id=&quot;tests.path&quot; cache=&quot;true&quot;&gt;
+      &lt;path refid=&quot;base.path&quot;/&gt;
+      &lt;pathelement location=&quot;testclasses&quot;/&gt;
+    &lt;/path&gt;
+</pre>
+ The shortcuts previously mentioned for <code>&lt;classpath&gt;</code> are also valid for <code>&lt;path&gt;</code>.For example:
+<pre>
+    &lt;path id=&quot;base.path&quot;&gt;
+      &lt;pathelement path=&quot;${classpath}&quot;/&gt;
+    &lt;/path&gt;
+</pre>
+can be written as:
+<pre>
+    &lt;path id=&quot;base.path&quot; path=&quot;${classpath}&quot;/&gt;
+</pre>
+
+  <h4><a name="pathshortcut">Path Shortcut</a></h4>
+  <p>
+    In Ant 1.6 a shortcut for converting paths to OS specific strings
+    in properties has been added. One can use the expression 
+    ${toString:<em>pathreference</em>} to convert a path element
+    reference to a string that can be used for a path argument.
+    For example:
+  </p>
+<pre>
+  &lt;path id="lib.path.ref"&gt;
+    &lt;fileset dir="lib" includes="*.jar"/&gt;
+  &lt;/path&gt;
+  &lt;javac srcdir="src" destdir="classes"&gt;
+    &lt;compilerarg arg="-Xbootclasspath/p:${toString:lib.path.ref}"/&gt;
+  &lt;/javac&gt;
+</pre>
+
+
+<h3><a name="arg">Command-line Arguments</a></h3>
+<p>Several tasks take arguments that will be passed to another
+process on the command line. To make it easier to specify arguments
+that contain space characters, nested <code>arg</code> elements can be used.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+<tr>
+  <td width="12%" valign="top"><b>Attribute</b></td>
+  <td width="78%" valign="top"><b>Description</b></td>
+  <td width="10%" valign="top"><b>Required</b></td>
+</tr>
+  <tr>
+    <td valign="top">value</td>
+    <td valign="top">a single command-line argument; can contain space
+      characters.</td>
+    <td align="center" rowspan="5">Exactly one of these.</td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">The name of a file as a single command-line
+      argument; will be replaced with the absolute filename of the file.</td>
+  </tr>
+  <tr>
+    <td valign="top">path</td>
+    <td valign="top">A string that will be treated as a path-like
+      string as a single command-line argument; you can use <code>;</code>
+      or <code>:</code> as
+      path separators and Ant will convert it to the platform's local
+      conventions.</td>
+  </tr>
+  <tr>
+    <td valign="top">pathref</td>
+    <td valign="top"><a href="#references">Reference</a> to a path
+      defined elsewhere.  Ant will convert it to the platform's local
+      conventions.</td>
+  </tr>
+  <tr>
+    <td valign="top">line</td>
+    <td valign="top">a space-delimited list of command-line arguments.</td>
+  </tr>
+  <tr>
+    <td valign="top">prefix</td>
+    <td valign="top">A fixed string to be placed in front of the
+      argument. In the case of a line broken into parts, it will be
+      placed in front of every part. <em>Since Ant 1.8.</em></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">suffix</td>
+    <td valign="top">A fixed string to be placed immediately after the
+      argument. In the case of a line broken into parts, it will be
+      placed after every part. <em>Since Ant 1.8.</em></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+
+<p>It is highly recommended to avoid the <code>line</code> version
+when possible.  Ant will try to split the command line in a way
+similar to what a (Unix) shell would do, but may create something that
+is very different from what you expect under some circumstances.</p>
+
+<h4>Examples</h4>
+<blockquote><pre>
+  &lt;arg value=&quot;-l -a&quot;/&gt;
+</pre></blockquote>
+<p>is a single command-line argument containing a space character,
+<i>not</i> separate commands "-l" and "-a".</p>
+<blockquote><pre>
+  &lt;arg line=&quot;-l -a&quot;/&gt;
+</pre></blockquote>
+<p>This is a command line with two separate arguments, "-l" and "-a".</p>
+<blockquote><pre>
+  &lt;arg path=&quot;/dir;/dir2:\dir3&quot;/&gt;
+</pre></blockquote>
+<p>is a single command-line argument with the value
+<code>\dir;\dir2;\dir3</code> on DOS-based systems and
+<code>/dir:/dir2:/dir3</code> on Unix-like systems.</p>
+
+<h3><a name="references">References</a></h3>
+
+<p>Any project element can be assigned an identifier using its
+<code>id</code> attribute. In most cases the element can subsequently
+be referenced by specifying the <code>refid</code> attribute on an
+element of the same type.  This can be useful if you are going to
+replicate the same snippet of XML over and over again--using a
+<code>&lt;classpath&gt;</code> structure more than once, for example.</p>
+<p>The following example:</p>
+<blockquote><pre>
+&lt;project ... &gt;
+  &lt;target ... &gt;
+    &lt;rmic ...&gt;
+      &lt;classpath&gt;
+        &lt;pathelement location=&quot;lib/&quot;/&gt;
+        &lt;pathelement path=&quot;${java.class.path}/&quot;/&gt;
+        &lt;pathelement path=&quot;${additional.path}&quot;/&gt;
+      &lt;/classpath&gt;
+    &lt;/rmic&gt;
+  &lt;/target&gt;
+
+  &lt;target ... &gt;
+    &lt;javac ...&gt;
+      &lt;classpath&gt;
+        &lt;pathelement location=&quot;lib/&quot;/&gt;
+        &lt;pathelement path=&quot;${java.class.path}/&quot;/&gt;
+        &lt;pathelement path=&quot;${additional.path}&quot;/&gt;
+      &lt;/classpath&gt;
+    &lt;/javac&gt;
+  &lt;/target&gt;
+&lt;/project&gt;
+</pre></blockquote>
+<p>could be rewritten as:</p>
+<blockquote><pre>
+&lt;project ... &gt;
+  &lt;path id=&quot;project.class.path&quot;&gt;
+    &lt;pathelement location=&quot;lib/&quot;/&gt;
+    &lt;pathelement path=&quot;${java.class.path}/&quot;/&gt;
+    &lt;pathelement path=&quot;${additional.path}&quot;/&gt;
+  &lt;/path&gt;
+
+  &lt;target ... &gt;
+    &lt;rmic ...&gt;
+      &lt;classpath refid=&quot;project.class.path&quot;/&gt;
+    &lt;/rmic&gt;
+  &lt;/target&gt;
+
+  &lt;target ... &gt;
+    &lt;javac ...&gt;
+      &lt;classpath refid=&quot;project.class.path&quot;/&gt;
+    &lt;/javac&gt;
+  &lt;/target&gt;
+&lt;/project&gt;
+</pre></blockquote>
+<p>All tasks that use nested elements for 
+<a href="Types/patternset.html">PatternSet</a>s, 
+<a href="Types/fileset.html">FileSet</a>s, 
+<a href="Types/zipfileset.html">ZipFileSet</a>s or 
+<a href="#path">path-like structures</a> accept references to these structures 
+as shown in the examples. Using <code>refid</code> on a task will ordinarily 
+have the same effect (referencing a task already declared), but the user 
+should be aware that the interpretation of this attribute is dependent on the 
+implementation of the element upon which it is specified. Some tasks (the 
+<a href="Tasks/property.html">property</a> task is a handy example) 
+deliberately assign a different meaning to <code>refid</code>.</p>
+
+
+<h3><a name="external-tasks">Use of external tasks</a></h3> 
+Ant supports a plugin mechanism for using third party tasks. For using them you 
+have to do two steps: 
+<ol>
+  <li>place their implementation somewhere where Ant can find them</li>
+  <li>declare them.</li>
+</ol> 
+Don't add anything to the CLASSPATH environment variable - this is often the  
+reason for very obscure errors. Use Ant's own <a href="install.html#optionalTasks">mechanisms</a> 
+for adding libraries: 
+<ul>
+  <li>via command line argument <code>-lib</code></li>
+  <li>adding to <code>${user.home}/.ant/lib</code></li>
+  <li>adding to <code>${ant.home}/lib</code></li>
+</ul>
+For the declaration there are several ways:
+<ul>
+  <li>declare a single task per using instruction using  
+      <code>&lt;<a href="Tasks/taskdef.html">taskdef</a> name=&quot;taskname&quot; 
+      classname=&quot;ImplementationClass&quot;/&gt;</code>
+      <br>
+      <code>&lt;taskdef name=&quot;for&quot; classname=&quot;net.sf.antcontrib.logic.For&quot; /&gt; 
+      &lt;for ... /&gt;</code>
+  </li>
+  <li>declare a bundle of tasks using a properties-file holding these 
+      taskname-ImplementationClass-pairs and <code>&lt;taskdef&gt;</code>
+      <br>
+      <code>&lt;taskdef resource=&quot;net/sf/antcontrib/antcontrib.properties&quot; /&gt; 
+      &lt;for ... /&gt;</code>
+  </li>
+  <li>declare a bundle of tasks using a <a href="Types/antlib.html">xml-file</a> holding these  
+      taskname-ImplementationClass-pairs and <code>&lt;taskdef&gt;</code>
+      <br>
+      <code>&lt;taskdef resource=&quot;net/sf/antcontrib/antlib.xml&quot; /&gt; 
+      &lt;for ... /&gt;</code>
+  </li>
+  <li>declare a bundle of tasks using a xml-file named antlib.xml, XML-namespace and 
+      <a href="Types/antlib.html#antlibnamespace"><code>antlib:</code> protocoll handler</a> 
+      <br>
+      <code>&lt;project xmlns:ac=&quot;antlib:net.sf.antconrib&quot;/&gt; 
+      &lt;ac:for ... /&gt;</code>
+  </li>
+</ul>
+
+If you need a special function, you should
+<ol>
+  <li>have a look at this manual, because Ant provides lot of tasks</li>
+  <li>have a look at the external task page in the <a href="../external.html">manual</a>
+      (or better <a href="http://ant.apache.org/external.html">online</a>)</li>
+  <li>have a look at the external task <a href="http://wiki.apache.org/ant/AntExternalTaskdefs">wiki 
+      page</a></li>
+  <li>ask on the <a href="http://ant.apache.org/mail.html#User%20List">Ant user</a> list</li>
+  <li><a href="tutorial-writing-tasks.html">implement </a>(and share) your own</li>
+</ol>
+
+</body>
+</html>

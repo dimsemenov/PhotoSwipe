@@ -1,0 +1,210 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>JavaCC Task</title>
+</head>
+
+<body>
+
+<h2><a name="javacc">JavaCC</a></h2>
+<h3>Description</h3>
+<p>
+  Invokes the <a HREF="http://javacc.dev.java.net/" target="_top">JavaCC</a> compiler
+  compiler on a grammar file.
+</p>
+<p>
+  To use the javacc task, set the <i>target</i> attribute to the name of the
+  grammar file to process.  You also need to specify the directory containing
+  the JavaCC installation using the <i>javacchome</i> attribute, so that Apache Ant
+  can find the JavaCC classes.  Optionally, you can also set the
+  <i>outputdirectory</i> to write the generated file to a specific directory.
+  Otherwise javacc writes the generated files to the directory containing
+  the grammar file.
+</p>
+<p>
+  This task only invokes JavaCC if the grammar file is newer than the generated
+  Java files.  javacc assumes that the Java class name of the generated parser
+  is the same as the name of the grammar file, ignoring the .jj.
+  If this is not the case, the javacc task will still work, but it will always
+  generate the output files.
+</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">target</td>
+    <td valign="top">The grammar file to process.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">javacchome</td>
+    <td valign="top">The directory containing the JavaCC distribution.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">outputdirectory</td>
+    <td valign="top">
+      The directory to write the generated files to.  If not set, the files
+      are written to the directory containing the grammar file.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">buildparser</td>
+    <td valign="top">Sets the BUILD_PARSER grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">buildtokenmanager</td>
+    <td valign="top">Sets the BUILD_TOKEN_MANAGER grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">cachetokens</td>
+    <td valign="top">Sets the CACHE_TOKENS grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">choiceambiguitycheck</td>
+    <td valign="top">Sets the CHOICE_AMBIGUITY_CHECK grammar option.  This is an integer option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">commontokenaction</td>
+    <td valign="top">Sets the COMMON_TOKEN_ACTION grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">debuglookahead</td>
+    <td valign="top">Sets the DEBUG_LOOKAHEAD grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">debugparser</td>
+    <td valign="top">Sets the DEBUG_PARSER grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">debugtokenmanager</td>
+    <td valign="top">Sets the DEBUG_TOKEN_MANAGER grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">errorreporting</td>
+    <td valign="top">Sets the ERROR_REPORTING grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">forcelacheck</td>
+    <td valign="top">Sets the FORCE_LA_CHECK grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignorecase</td>
+    <td valign="top">Sets the IGNORE_CASE grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">javaunicodeescape</td>
+    <td valign="top">Sets the JAVA_UNICODE_ESCAPE grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">jdkversion</td>
+    <td valign="top">Sets the JDK_VERSION option. This is a string option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>  <tr>
+    <td valign="top">keeplinecolumn</td>
+    <td valign="top">Sets the KEEP_LINE_COLUMN grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">lookahead</td>
+    <td valign="top">Sets the LOOKAHEAD grammar option.  This is an integer option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">optimizetokenmanager</td>
+    <td valign="top">Sets the OPTIMIZE_TOKEN_MANAGER grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">otherambiguitycheck</td>
+    <td valign="top">Sets the OTHER_AMBIGUITY_CHECK grammar option.  This is an integer option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">sanitycheck</td>
+    <td valign="top">Sets the SANITY_CHECK grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">static</td>
+    <td valign="top">Sets the STATIC grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">unicodeinput</td>
+    <td valign="top">Sets the UNICODE_INPUT grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">usercharstream</td>
+    <td valign="top">Sets the USER_CHAR_STREAM grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">usertokenmanager</td>
+    <td valign="top">Sets the USER_TOKEN_MANAGER grammar option.  This is a boolean option.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">maxmemory</td>
+    <td valign="top">Max amount of memory to allocate to the forked
+      VM.  <em>since Ant 1.8.3</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+<h3>Example</h3>
+<blockquote><pre>
+&lt;javacc
+    target=&quot;src/Parser.jj&quot;
+    outputdirectory=&quot;build/src&quot;
+    javacchome=&quot;c:/program files/JavaCC&quot;
+    static=&quot;true&quot;
+/&gt;
+</pre></blockquote>
+<p>
+  This invokes JavaCC on grammar file src/Parser.jj, writing the generated
+  files to build/src.  The grammar option STATIC is set to true when
+  invoking JavaCC.
+</p>
+
+
+</body>
+</html>
+
+
