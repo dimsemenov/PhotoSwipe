@@ -1,0 +1,603 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+<title>Listeners &amp; Loggers</title>
+</head>
+
+<body>
+<h1>Listeners &amp; Loggers</h1>
+
+<h2><a name="Overview">Overview</a></h2>
+
+<p>Apache Ant has two related features to allow the build process to be monitored:
+listeners and loggers.</p>
+
+<h3><a name="Listeners">Listeners</a></h3>
+
+<p>A listener is alerted of the following events:</p>
+
+<ul>
+  <li>build started</li>
+  <li>build finished</li>
+  <li>target started</li>
+  <li>target finished</li>
+  <li>task started</li>
+  <li>task finished</li>
+  <li>message logged</li>
+</ul>
+
+<p>
+  These are used internally for various recording and housekeeping operations,
+  however new listeners may registered on the command line through the <code>-listener</code>
+  argument.
+</p>
+
+<h3><a name="Loggers">Loggers</a></h3>
+
+<p>Loggers extend the capabilities of listeners and add the following features:</p>
+
+<ul>
+  <li>Receives a handle to the standard output and error print streams and
+  therefore can log information to the console or the <code>-logfile</code> specified file.</li>
+  <li>Logging level (-quiet, -verbose, -debug) aware</li>
+  <li>Emacs-mode aware</li>
+</ul>
+
+<h2><a name="builtin">Built-in Listeners/Loggers</a></h2>
+
+<table border="1" cellspacing="1" width="100%" id="AutoNumber1">
+  <tr>
+    <td width="33%">Classname</td>
+    <td width="33%">Description</td>
+    <td width="34%">Type</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#DefaultLogger">org.apache.tools.ant.DefaultLogger</a></code></td>
+    <td width="33%">The logger used implicitly unless overridden with the
+    <code>-logger</code> command-line switch.</td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#NoBannerLogger">
+    org.apache.tools.ant.NoBannerLogger</a></code></td>
+    <td width="33%">This logger omits output of empty target output.</td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#MailLogger">
+    org.apache.tools.ant.listener.MailLogger</a></code></td>
+    <td width="33%">Extends DefaultLogger such that output is still generated
+    the same, and when the build is finished an e-mail can be sent.</td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#AnsiColorLogger">
+    org.apache.tools.ant.listener.AnsiColorLogger</a></code></td>
+    <td width="33%">Colorifies the build output.</td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#Log4jListener">
+    org.apache.tools.ant.listener.Log4jListener</a></code></td>
+    <td width="33%">Passes events to Log4j for highly customizable logging.</td>
+    <td width="34%">BuildListener</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#XmlLogger">org.apache.tools.ant.XmlLogger</a></code></td>
+    <td width="33%">Writes the build information to an XML file.</td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#TimestampedLogger">org.apache.tools.ant.TimestampedLogger</a></code></td>
+    <td width="33%">Prints the time that a build finished</td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#BigProjectLogger">org.apache.tools.ant.listener.BigProjectLogger</a></code></td>
+    <td width="33%">Prints the project name every target</td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#SimpleBigProjectLogger">org.apache.tools.ant.listener.SimpleBigProjectLogger</a></code></td>
+    <td width="33%">Prints the project name for subprojects only, otherwise like NoBannerLogger <em>Since Ant 1.8.1</em></td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+  <tr>
+    <td width="33%"><code><a href="#ProfileLogger">org.apache.tools.ant.listener.ProfileLogger</a></code></td>
+    <td width="33%">The default logger, with start times, end times and
+    durations added for each task and target.</td>
+    <td width="34%">BuildLogger</td>
+  </tr>
+</table>
+
+
+
+<h3><a name="DefaultLogger">DefaultLogger</a></h3>
+<p>Simply run Ant normally, or:</p>
+<blockquote>
+<p><code>ant -logger org.apache.tools.ant.DefaultLogger</code></p>
+</blockquote>
+
+
+
+<h3><a name="NoBannerLogger">NoBannerLogger</a></h3>
+<p>Removes output of empty target output.</p>
+<blockquote>
+<p><code>ant -logger org.apache.tools.ant.NoBannerLogger</code></p>
+</blockquote>
+
+
+
+<h3><a name="MailLogger">MailLogger</a></h3>
+<p>The MailLogger captures all output logged through DefaultLogger (standard Ant
+output) and will send success and failure messages to unique e-mail lists, with
+control for turning off success or failure messages individually.</p>
+
+<p>Properties controlling the operation of MailLogger:</p>
+<table border="1" cellspacing="1" width="100%" id="AutoNumber2">
+  <tr>
+    <th width="337">Property</th>
+    <th width="63%">Description</th>
+    <th width="63%">Required</th>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.mailhost </td>
+    <td width="63%">Mail server to use</td>
+    <td width="63%">No, default &quot;localhost&quot;</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.port </td>
+    <td width="63%">SMTP Port for the Mail server</td>
+    <td width="63%">No, default &quot;25&quot;</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.user</td>
+    <td width="63%">user name for SMTP auth</td>
+    <td width="63%">Yes, if SMTP auth is required on your SMTP server<br>
+    the email message will be then sent using Mime and requires JavaMail</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.password</td>
+    <td width="63%">password for SMTP auth</td>
+    <td width="63%">Yes, if SMTP auth is required on your SMTP server<br>
+    the email message will be then sent using Mime and requires JavaMail</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.ssl</td>
+    <td width="63%">on or true if ssl is needed<br>
+    This feature requires JavaMail</td>
+    <td width="63%">
+    no</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.from</td>
+    <td width="63%">Mail &quot;from&quot; address</td>
+    <td width="63%">Yes, if mail needs to be sent</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.replyto</td>
+    <td width="63%">Mail &quot;replyto&quot; address(es), comma-separated</td>
+    <td width="63%">No</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.failure.notify </td>
+    <td width="63%">Send build failure e-mails?</td>
+    <td width="63%">No, default &quot;true&quot;</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.success.notify </td>
+    <td width="63%">Send build success e-mails?</td>
+    <td width="63%">No, default &quot;true&quot;</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.failure.to </td>
+    <td width="63%">Address(es) to send failure messages to, comma-separated</td>
+    <td width="63%">Yes, if failure mail is to be sent</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.success.to </td>
+    <td width="63%">Address(es) to send success messages to, comma-separated</td>
+    <td width="63%">Yes, if success mail is to be sent</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.failure.subject </td>
+    <td width="63%">Subject of failed build</td>
+    <td width="63%">No, default &quot;Build Failure&quot;</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.success.subject </td>
+    <td width="63%">Subject of successful build</td>
+    <td width="63%">No, default &quot;Build Success&quot;</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.failure.body</td>
+    <td width="63%">Fixed body of the email for a failed
+      build.  <em>Since Ant 1.8.0</em></td>
+    <td width="63%">No, default is to send the full log output.</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.success.body</td>
+    <td width="63%">Fixed body of the email for a successful
+      build.  <em>Since Ant 1.8.0</em></td>
+    <td width="63%">No, default is to send the full log output.</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.mimeType</td>
+    <td width="63%">MIME-Type of the message.  <em>Since Ant 1.8.0</em></td>
+    <td width="63%">No, default is text/plain</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.charset</td>
+    <td width="63%">Character set of the message.  <em>Since Ant 1.8.0</em></td>
+    <td width="63%">No</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.starttls.enable</td>
+    <td width="63%">on or true if STARTTLS should be supported
+    (requires JavaMail).  <em>Since Ant 1.8.0</em></td>
+    <td width="63%">No, default is false</td>
+  </tr>
+  <tr>
+    <td width="337">MailLogger.properties.file </td>
+    <td width="63%">Filename of properties file that will override other values.</td>
+    <td width="63%">No</td>
+  </tr>
+</table>
+
+<blockquote>
+<p><code>ant -logger org.apache.tools.ant.listener.MailLogger</code></p>
+</blockquote>
+
+
+
+<h3><a name="AnsiColorLogger">AnsiColorLogger</a></h3>
+
+<p>The AnsiColorLogger adds color to the standard Ant output
+by prefixing and suffixing ANSI color code escape sequences to
+it.  It is just an extension of <a href="#DefaultLogger">DefaultLogger</a>
+and hence provides all features that DefaultLogger does.</p>
+<p>AnsiColorLogger differentiates the output by assigning
+different colors depending upon the type of the message.</p>
+<p>If used with the -logfile option, the output file
+will contain all the necessary escape codes to
+display the text in colorized mode when displayed
+in the console using applications like cat, more, etc.</p>
+<p>This is designed to work on terminals that support ANSI
+color codes.  It works on XTerm, ETerm, Win9x Console
+(with ANSI.SYS loaded.), etc.</p>
+<p><Strong>NOTE:</Strong>
+It doesn't work on WinNT and successors, even when a COMMAND.COM console loaded with
+ANSI.SYS is used.</p>
+<p>If the user wishes to override the default colors
+with custom ones, a file containing zero or more of the
+custom color key-value pairs must be created.  The recognized keys
+and their default values are shown below:</p><code><pre>
+AnsiColorLogger.ERROR_COLOR=2;31
+AnsiColorLogger.WARNING_COLOR=2;35
+AnsiColorLogger.INFO_COLOR=2;36
+AnsiColorLogger.VERBOSE_COLOR=2;32
+AnsiColorLogger.DEBUG_COLOR=2;34</pre></code>
+<p>Each key takes as value a color combination defined as
+<b>Attribute;Foreground;Background</b>.  In the above example, background
+value has not been used.</p>
+<p>This file must be specfied as the value of a system variable
+named ant.logger.defaults and passed as an argument using the -D
+option to the <b>java</b> command that invokes the Ant application.
+An easy way to achieve this is to add -Dant.logger.defaults=
+<i>/path/to/your/file</i> to the ANT_OPTS environment variable.
+Ant's launching script recognizes this flag and will pass it to
+the java command appropriately.</p>
+<p>Format:</p><pre>
+AnsiColorLogger.*=Attribute;Foreground;Background
+
+Attribute is one of the following:
+0 -&gt; Reset All Attributes (return to normal mode)
+1 -&gt; Bright (Usually turns on BOLD)
+2 -&gt; Dim
+3 -&gt; Underline
+5 -&gt; link
+7 -&gt; Reverse
+8 -&gt; Hidden
+
+Foreground is one of the following:
+30 -&gt; Black
+31 -&gt; Red
+32 -&gt; Green
+33 -&gt; Yellow
+34 -&gt; Blue
+35 -&gt; Magenta
+36 -&gt; Cyan
+37 -&gt; White
+
+Background is one of the following:
+40 -&gt; Black
+41 -&gt; Red
+42 -&gt; Green
+43 -&gt; Yellow
+44 -&gt; Blue
+45 -&gt; Magenta
+46 -&gt; Cyan
+47 -&gt; White</pre>
+
+<blockquote>
+<p><code>ant -logger org.apache.tools.ant.listener.AnsiColorLogger</code></p>
+</blockquote>
+
+
+
+<h3><a name="Log4jListener">Log4jListener</a></h3>
+<p>Passes build events to Log4j, using the full classname's of the generator of
+each build event as the category:</p>
+<ul>
+  <li>build started / build finished - org.apache.tools.ant.Project</li>
+  <li>target started / target finished - org.apache.tools.ant.Target</li>
+  <li>task started / task finished - the fully qualified classname of the task</li>
+  <li>message logged - the classname of one of the above, so if a task logs a
+  message, its classname is the category used, and so on.</li>
+</ul>
+<p>All start events are logged as INFO.&nbsp; Finish events are either logged as
+INFO or ERROR depending on whether the build failed during that stage. Message
+events are logged according to their Ant logging level, mapping directly to a
+corresponding Log4j level.</p>
+
+<blockquote>
+<p><code>ant -listener org.apache.tools.ant.listener.Log4jListener</code></p>
+</blockquote>
+
+<p>To use Log4j you will need the Log4j JAR file and a 'log4j.properties'
+configuration file.  Both should be placed somewhere in your Ant
+classpath. If the log4j.properties is in your project root folder you can
+add this with <i>-lib</i> option:</p>
+
+<blockquote>
+<pre><code>ant -listener org.apache.tools.ant.listener.Log4jListener -lib .</code></pre>
+</blockquote>
+
+<p>If, for example, you wanted to capture the same information output to the
+console by the DefaultLogger and send it to a file named 'build.log', you
+could use the following configuration:</p>
+
+<blockquote>
+<pre><code>log4j.rootLogger=ERROR, LogFile
+log4j.logger.org.apache.tools.ant.Project=INFO
+log4j.logger.org.apache.tools.ant.Target=INFO
+log4j.logger.org.apache.tools.ant.taskdefs=INFO
+log4j.logger.org.apache.tools.ant.taskdefs.Echo=WARN
+
+log4j.appender.LogFile=org.apache.log4j.FileAppender
+log4j.appender.LogFile.layout=org.apache.log4j.PatternLayout
+log4j.appender.LogFile.layout.ConversionPattern=[%6r] %8c{1} : %m%n
+log4j.appender.LogFile.file=build.log
+</code></pre>
+</blockquote>
+
+<p>For more information about configuring Log4J see <a href="http://logging.apache.org/log4j/docs/documentation.html">its
+documentation page</a>.</p>
+
+
+
+<h3><a name="XmlLogger">XmlLogger</a></h3>
+<p>Writes all build information out to an XML file named log.xml, or the value
+of the <code>XmlLogger.file</code> property if present, when used as a
+listener. When used as a logger, it writes all output to either the
+console or to the value of <code>-logfile</code>. Whether used as a listener
+or logger, the output is not generated until the build is complete, as it
+buffers the information in order to provide timing information for task,
+targets, and the project.</p>
+<p>By default the XML file creates a reference to an XSLT file "log.xsl" in the current directory;
+look in ANT_HOME/etc for one of these. You can set the property
+<code>ant.XmlLogger.stylesheet.uri</code> to provide a uri to a style sheet.
+this can be a relative or absolute file path, or an http URL.
+If you set the property to the empty string, "", no XSLT transform
+is declared at all.</p>
+
+<blockquote>
+<p><code>ant -listener org.apache.tools.ant.XmlLogger</code><br>
+<code>ant -logger org.apache.tools.ant.XmlLogger -verbose -logfile build_log.xml</code></p>
+</blockquote>
+
+
+
+
+<h3><a name="TimestampedLogger">TimestampedLogger</a></h3>
+<p>
+  Acts like the default logger, except that the final success/failure message also includes
+  the time that the build completed. For example:
+</p>
+<pre>
+  BUILD SUCCESSFUL - at 16/08/05 16:24
+</pre>
+<p>To use this listener, use the command:</p>
+
+<blockquote>
+<code>ant  -logger org.apache.tools.ant.listener.TimestampedLogger</code>
+</blockquote>
+
+
+
+<h3><a name="BigProjectLogger">BigProjectLogger</a></h3>
+<p>
+  This logger is designed to make examining the logs of a big build easier,
+  especially those run under continuous integration tools. It
+</p>
+<ol>
+  <li>When entering a child project, prints its name and directory</li>
+  <li>When exiting a child project, prints its name</li>
+  <li>Includes the name of the project when printing a target</li>
+  <li>Omits logging the names of all targets that have no direct task output</li>
+  <li>Includes the build finished timestamp of the TimeStamp logger</li>
+</ol>
+<p>
+  This is useful when using &lt;subant&gt; to build a large project
+  from many smaller projects -the output shows which particular
+  project is building. Here is an example in which "clean" is being called
+  on all a number of child projects, only some of which perform work:
+</p>
+<pre>
+
+======================================================================
+Entering project "xunit"
+In /home/ant/components/xunit
+======================================================================
+
+xunit.clean:
+   [delete] Deleting directory /home/ant/components/xunit/build
+   [delete] Deleting directory /home/ant/components/xunit/dist
+
+======================================================================
+Exiting project "xunit"
+======================================================================
+
+======================================================================
+Entering project "junit"
+In /home/ant/components/junit
+======================================================================
+
+======================================================================
+Exiting project "junit"
+======================================================================
+</pre>
+
+<p>
+  The entry and exit messages are very verbose in this example, but in
+  a big project compiling or testing many child components, the messages
+  are reduced to becoming clear delimiters of where different projects
+  are in charge -or more importantly, which project is failing.
+</p>
+<p>To use this listener, use the command:</p>
+<blockquote>
+<code>ant  -logger org.apache.tools.ant.listener.BigProjectLogger</code>
+</blockquote>
+
+<h3><a name="SimpleBigProjectLogger">SimpleBigProjectLogger</a></h3>
+<p>Like <code>BigProjectLogger</code>, project-qualified target names are printed,
+useful for big builds with subprojects.
+Otherwise it is as quiet as <code>NoBannerLogger</code>:</p>
+<pre>
+Buildfile: /sources/myapp/build.xml
+
+myapp-lib.compile:
+Created dir: /sources/myapp/lib/build/classes
+Compiling 1 source file to /sources/myapp/lib/build/classes
+
+myapp-lib.jar:
+Building jar: /sources/myapp/lib/build/lib.jar
+
+myapp.compile:
+Created dir: /sources/myapp/build/classes
+Compiling 2 source files to /sources/myapp/build/classes
+
+myapp.jar:
+Building jar: /sources/myapp/build/myapp.jar
+
+BUILD SUCCESSFUL
+Total time: 1 second
+</pre>
+<p><b>since Ant 1.8.1</b></p>
+<p>To use this listener, use the command:</p>
+<blockquote>
+<code>ant -logger org.apache.tools.ant.listener.SimpleBigProjectLogger</code>
+</blockquote>
+
+<h3><a name="ProfileLogger">ProfileLogger</a></h3>
+<p>This logger stores the time needed for executing a task, target and the whole build and prints
+these information. The output contains a timestamp when entering the build, target or task and a timestamp and the needed time when exiting.
+</p>
+<!-- This is the 'since' as described in the Loggers JavaDoc -->
+<p><b>since Ant 1.8.0</b></p>
+<h4>Example</h4>
+Having that buildfile
+<pre>
+&lt;project&gt;
+    &lt;target name=&quot;aTarget&quot;&gt;
+        &lt;echo&gt;echo-task&lt;/echo&gt;
+        &lt;zip destfile=&quot;my.zip&quot;&gt;
+            &lt;fileset dir=&quot;${ant.home}&quot;/&gt;
+        &lt;/zip&gt;
+    &lt;/target&gt;
+    &lt;target name=&quot;anotherTarget&quot; depends=&quot;aTarget&quot;&gt;
+        &lt;echo&gt;another-echo-task&lt;/echo&gt;
+    &lt;/target&gt;
+&lt;/project&gt;
+</pre>
+and executing with <tt>ant -logger org.apache.tools.ant.listener.ProfileLogger anotherTarget</tt> gives that output (with other timestamps and duration of course ;) :
+<pre>
+Buildfile: ...\build.xml
+
+Target aTarget: started Thu Jan 22 09:01:00 CET 2009
+
+echo: started Thu Jan 22 09:01:00 CET 2009
+     [echo] echo-task
+
+echo: finished Thu Jan 22 09:01:00 CET 2009 (250ms)
+
+zip: started Thu Jan 22 09:01:00 CET 2009
+      [zip] Building zip: ...\my.zip
+
+zip: finished Thu Jan 22 09:01:01 CET 2009 (1313ms)
+
+Target aTarget: finished Thu Jan 22 09:01:01 CET 2009 (1719ms)
+
+Target anotherTarget: started Thu Jan 22 09:01:01 CET 2009
+
+echo: started Thu Jan 22 09:01:01 CET 2009
+     [echo] another-echo-task
+
+echo: finished Thu Jan 22 09:01:01 CET 2009 (0ms)
+
+Target anotherTarget: finished Thu Jan 22 09:01:01 CET 2009 (0ms)
+
+BUILD SUCCESSFUL
+Total time: 2 seconds
+</pre>
+
+
+
+<h2><a name="dev">Writing your own</a></h2>
+
+<p>See the <a href="develop.html#buildevents">Build Events</a> section for
+developers.</p>
+
+<p>Notes:</p>
+
+<ul>
+  <li>
+    A listener or logger should not write to standard output or error in the <code>messageLogged() method</code>;
+    Ant captures these internally and it will trigger an infinite loop.
+  </li>
+  <li>
+    Logging is synchronous; all listeners and loggers are called one after the other, with the build blocking until
+    the output is processed. Slow logging means a slow build.
+  </li>
+  <li>When a build is started, and <code>BuildListener.buildStarted(BuildEvent event)</code> is called,
+    the project is not fully functional. The build has started, yes, and the event.getProject() method call
+    returns the Project instance, but that project is initialized with JVM and ant properties, nor has it
+    parsed the build file yet. You cannot call <code>Project.getProperty()</code> for property lookup, or
+    <code>Project.getName()</code> to get the project name (it will return null).
+  </li>
+  <li>
+    Classes that implement <code>org.apache.tools.ant.SubBuildListener</code> receive notifications when child projects
+    start and stop.
+  </li>
+</ul>
+
+</body>
+</html>

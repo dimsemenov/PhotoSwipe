@@ -1,0 +1,273 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>SignJar Task</title>
+</head>
+
+<body>
+
+<h2><a name="signjar">SignJar</a></h2>
+<h3>Description</h3>
+<p>Signs JAR files with the <tt>jarsigner</tt> command line tool. 
+It will take a named file in the <tt>jar</tt> attribute, and an optional
+<tt>destDir</tt> or <tt>signedJar</tt> attribute. Nested paths are also
+supported; here only an (optional) <tt>destDir</tt> is allowed. If a destination
+directory or explicit JAR file name is not provided, JARs are signed in place.
+</p>
+<p>
+Dependency rules
+</p>
+<ul>
+<li>Nonexistent destination JARs are created/signed</li>
+<li>Out of date destination JARs are created/signed</li>
+<li>If a destination file and a source file are the same,
+and <tt>lazy</tt> is true, the JAR is only signed if it does not 
+contain a signature by this alias.</li>
+<li>If a destination file and a source file are the same,
+and <tt>lazy</tt> is false, the JAR is signed.</li> 
+</ul>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">jar</td>
+    <td valign="top">the jar file to sign</td>
+    <td valign="top" align="center">Yes, unless nested paths have
+      been used.</td>
+  </tr>
+  <tr>
+    <td valign="top">alias</td>
+    <td valign="top">the alias to sign under</td>
+    <td valign="top" align="center">Yes.</td>
+  </tr>
+  <tr>
+    <td valign="top">storepass</td>
+    <td valign="top">password for keystore integrity.</td>
+    <td valign="top" align="center">Yes.</td>
+  </tr>
+  <tr>
+    <td valign="top">keystore</td>
+    <td valign="top">keystore location</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">storetype</td>
+    <td valign="top">keystore type</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">keypass</td>
+    <td valign="top">password for private key (if different)</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">sigfile</td>
+    <td valign="top">name of .SF/.DSA file</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">signedjar</td>
+    <td valign="top">name of signed JAR file. This can only be set when 
+    the <tt>jar</tt> attribute is set.</td>
+    <td valign="top" align="center">No.</td>
+  </tr>
+  <tr>
+    <td valign="top">verbose</td>
+    <td valign="top">(true | false) verbose output when signing</td>
+    <td valign="top" align="center">No; default false</td>
+  </tr>
+  <tr>
+    <td valign="top">internalsf</td>
+    <td valign="top">(true | false) include the .SF file inside the signature
+block</td>
+    <td valign="top" align="center">No; default false</td>
+  </tr>
+  <tr>
+    <td valign="top">sectionsonly</td>
+    <td valign="top">(true | false) don't compute hash of entire manifest</td>
+    <td valign="top" align="center">No; default false</td>
+  </tr>
+  <tr>
+    <td valign="top">lazy</td>
+    <td valign="top">flag to control whether the presence of a signature
+  file means a JAR is signed. This is only used when the target JAR matches
+  the source JAR</td>
+    <td valign="top" align="center">No; default false</td>
+  </tr>
+  <tr>
+    <td valign="top">maxmemory</td>
+    <td valign="top">Specifies the maximum memory the jarsigner VM will use. Specified in the
+                     style of standard java memory specs (e.g. 128m = 128 MBytes)</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">preservelastmodified</td>
+    <td valign="top">Give the signed files the same last modified
+      time as the original jar files.</td>
+    <td valign="top" align="center">No; default false.</td>
+  </tr>
+  <tr>
+    <td valign="top">tsaurl</td>
+    <td valign="top">URL for a timestamp authority for timestamped
+    JAR files in Java1.5+</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">tsacert</td>
+    <td valign="top">alias in the keystore for a timestamp authority for 
+    timestamped JAR files in Java1.5+</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">executable</td>
+    <td valign="top">Specify a particular <code>jarsigner</code> executable
+      to use in place of the default binary (found in the same JDK as
+      Apache Ant is running in).<br/>
+      Must support the same command line options as the Sun JDK
+      jarsigner command.
+      <em>since Ant 1.8.0</em>.</td>
+    <td align="center" valign="top">No</td>
+  </tr>  
+  <tr>
+    <td valign="top">force</td>
+    <td valign="top">Whether to force signing of the jar file even if
+      it doesn't seem to be out of date or already signed.
+      <em>since Ant 1.8.0</em>.</td>
+    <td align="center" valign="top">No; default false</td>
+  </tr>  
+  <tr>
+    <td valign="top">sigalg</td>
+    <td valign="top">name of signature algorithm</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">digestalg</td>
+    <td valign="top">name of digest algorithm</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+<h3>Parameters as nested elements</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">path</td>
+    <td valign="top">path of JAR files to sign. <em>since Ant 1.7</em></td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">fileset</td>
+    <td valign="top">fileset of JAR files to sign. </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">mapper</td>
+    <td valign="top">A mapper to rename jar files during signing</td>
+    <td valign="top" align="center">No, and only one can be supplied</td>
+  </tr>
+  <tr>
+    <td valign="top">sysproperty</td>
+    <td valign="top">JVM system properties, with the syntax of Ant
+    <a href="exec.html#env">environment variables</a> </td>
+    <td valign="top" align="center">No, and only one can be supplied</td>
+  </tr>
+ </table>
+
+
+<h3>Examples</h3>
+  <blockquote><pre>
+&lt;signjar jar=&quot;${dist}/lib/ant.jar&quot;
+alias=&quot;apache-group&quot; storepass=&quot;secret&quot;/&gt;
+</pre></blockquote>
+<p>
+  signs the ant.jar with alias &quot;apache-group&quot; accessing the
+  keystore and private key via &quot;secret&quot; password.
+</p>
+  <blockquote><pre>
+&lt;signjar destDir="signed"
+    alias="testonly" keystore="testkeystore"
+    storepass="apacheant"
+    preservelastmodified="true"&gt;
+  &lt;path&gt;
+    &lt;fileset dir="dist" includes="**/*.jar" /&gt;
+  &lt;/path&gt;
+  &lt;flattenmapper /&gt;
+&lt;/signjar&gt;
+</pre></blockquote>
+<p>
+Sign all JAR files matching the dist/**/*.jar pattern, copying them to the
+directory "signed" afterwards. The flatten mapper means that they will
+all be copied to this directory, not to subdirectories.
+
+</p>
+  <blockquote><pre>
+&lt;signjar
+    alias="testonly" keystore="testkeystore"
+    storepass="apacheant"
+    lazy="true"
+    &gt;
+  &lt;path&gt;
+    &lt;fileset dir="dist" includes="**/*.jar" /&gt;
+  &lt;/path&gt;
+&lt;/signjar&gt;
+</pre></blockquote>
+<p>
+Sign all the JAR files in dist/**/*.jar <i>in-situ</i>. Lazy signing is used,
+so the files will only be signed if they are not already signed.
+</p>
+  <blockquote><pre>
+&lt;signjar
+    alias="testonly" keystore="testkeystore"
+    storepass="apacheant"
+    sigalg="MD5withRSA"
+    digestalg="SHA1"&gt;
+  &lt;path&gt;
+    &lt;fileset dir="dist" includes="**/*.jar" /&gt;
+  &lt;/path&gt;
+&lt;/signjar&gt;
+</pre></blockquote>
+<p>
+Sign all the JAR files in dist/**/*.jar using the digest algorithm SHA1 and the
+signature algorithm MD5withRSA. This is especially useful when you want to use
+the JDK 7 jarsigner (which uses SHA256 and SHA256withRSA as default) to create
+signed jars that will be deployed on platforms not supporting SHA256 and
+SHA256withRSA.
+</p>
+<h3>About timestamp signing</h3>
+
+<p>
+Timestamped JAR files are a new feature in Java1.5; a feature supported in Ant since
+Ant 1.7. Ant does not yet support proxy setup for this singing process. 
+</p>
+
+
+
+</body>
+</html>
+

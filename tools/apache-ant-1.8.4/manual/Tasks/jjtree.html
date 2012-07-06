@@ -1,0 +1,563 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta http-equiv="Content-Language" content="en-us">
+   <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>JJTree Task</title>
+</head>
+<body>
+
+<h2>
+<a NAME="jjtree"></a>JJTree</h2>
+
+<h3>
+Description</h3>
+<p>Invokes the <a href="http://javacc.dev.java.net/">JJTree</a> preprocessor
+for the JavaCC compiler compiler. It inserts parse tree building actions
+at various places in the JavaCC source that it generates. The output of
+JJTree is run through JavaCC to create the parser.
+<p>To use the jjtree task, set the <i>target</i> attribute to the name
+of the JJTree grammar file to process. You also need to specify the directory
+containing the JavaCC installation using the <i>javacchome</i> attribute,
+so that Ant can find the JavaCC classes. Optionally, you can also set the
+<i>outputdirectory</i>
+to write the generated JavaCC grammar and node files to a specific directory.
+Otherwise jjtree writes the generated JavaCC grammar and node files to the directory
+containing the JJTree grammar file. As an extra option, you can also set the
+<i>outputfile</i> to write the generated JavaCC grammar file to a specific (directory and) file.
+Otherwise jjtree writes the generated JavaCC grammar file as the JJTree
+grammar file with a suffix .jj.</p>
+<p>This task only invokes JJTree if the grammar file is newer than the
+generated JavaCC file.</p>
+
+<h3>Parameters</h3>
+
+<table BORDER CELLSPACING=0 CELLPADDING=2 >
+<tr>
+<td VALIGN=TOP><b>Attribute</b></td>
+
+<td VALIGN=TOP><b>Description</b></td>
+
+<td ALIGN=CENTER VALIGN=TOP><b>Required</b></td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>target</td>
+
+<td VALIGN=TOP>The jjtree grammar file to process.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>Yes</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>javacchome</td>
+
+<td VALIGN=TOP>The directory containing the JavaCC distribution.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>Yes</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>outputdirectory</td>
+
+<td VALIGN=TOP>The directory to write the generated JavaCC grammar and node files to.
+If not set, the files are written to the directory containing the grammar file.&nbsp;</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>outputfile</td>
+
+<td VALIGN=TOP>The file to write the generated JavaCC grammar file
+to. If not set, the file is written with the same name as the JJTree
+grammar file but with a the suffix <code>.jj</code>.  This is a
+filename relative to <em>outputdirectory</em> if specified, the
+project's basedir.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>buildnodefiles</td>
+
+<td VALIGN=TOP>Sets the BUILD_NODE_FILES grammar option. This is a boolean
+option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>multi</td>
+
+<td VALIGN=TOP>Sets the MULTI grammar option. This is a boolean option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>nodedefaultvoid</td>
+
+<td VALIGN=TOP>Sets the NODE_DEFAULT_VOID grammar option. This is a boolean
+option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>nodefactory</td>
+
+<td VALIGN=TOP>Sets the NODE_FACTORY grammar option. This is boolean option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>nodescopehook</td>
+
+<td VALIGN=TOP>Sets the NODE_SCOPE_HOOK grammar option. This is a boolean
+option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>nodeusesparser</td>
+
+<td VALIGN=TOP>Sets the NODE_USES_PARSER grammar option. This is a boolean
+option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>static</td>
+
+<td VALIGN=TOP>Sets the STATIC grammar option. This is a boolean option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>visitor</td>
+
+<td VALIGN=TOP>Sets the VISITOR grammar option. This is a boolean option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>nodepackage</td>
+
+<td VALIGN=TOP>Sets the NODE_PACKAGE grammar option. This is a string option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>visitorexception</td>
+
+<td VALIGN=TOP>Sets the VISITOR_EXCEPTION grammar option. This is a string
+option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP>nodeprefix</td>
+
+<td VALIGN=TOP>Sets the NODE_PREFIX grammar option. This is a string option.</td>
+
+<td ALIGN=CENTER VALIGN=TOP>No</td>
+</tr>
+
+  <tr>
+    <td valign="top">maxmemory</td>
+    <td valign="top">Max amount of memory to allocate to the forked
+      VM.  <em>since Ant 1.8.3</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3>
+Example</h3>
+
+<blockquote>
+<pre>&lt;jjtree&nbsp;
+&nbsp;&nbsp;&nbsp; target="src/Parser.jjt"&nbsp;
+&nbsp;&nbsp;&nbsp; outputdirectory="build/src"
+&nbsp;&nbsp;&nbsp; javacchome="c:/program files/JavaCC"&nbsp;
+&nbsp;&nbsp;&nbsp; nodeusesparser="true"
+/&gt;</pre>
+</blockquote>
+This invokes JJTree on grammar file src/Parser.jjt, writing the generated
+grammar file, Parser.jj, file to build/src. The grammar option NODE_USES_PARSER
+is set to true when invoking JJTree.
+<br>
+
+<h3>Comparison output locations between command line JJTree and different Ant taskdef versions</h3>
+
+<table cellpadding="3" border="1">
+<tr>
+  <td><b>Command Line JJTree options</b>
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>and Generated Files</i> (working directory: <code>/tmp</code>)</td>
+  <td><b>Ant 1.5.3</b> versus command line</td>
+  <td><b>Ant 1.6</b> versus command line</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  grammar.jjt</b>
+    /tmp/grammar.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  relative/grammar.jjt</b>
+    /tmp/grammar.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td><pre>
+/tmp/relative/grammar.jj
+/tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  /tmp/absolute/grammar.jjt</b>
+    /tmp/grammar.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td><pre>
+/tmp/absolute/grammar.jj
+/tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_DIRECTORY:relative  grammar.jjt</b>
+    /tmp/relative/grammar.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_DIRECTORY:relative  relative/grammar.jjt</b>
+    /tmp/relative/grammar.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_DIRECTORY:relative  /tmp/absolute/grammar.jjt</b>
+    /tmp/relative/grammar.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_DIRECTORY:/tmp/absolute/  grammar.jjt</b>
+    /tmp/absolute/grammar.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_DIRECTORY:/tmp/absolute/  relative/grammar.jjt</b>
+    /tmp/absolute/grammar.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_DIRECTORY:/tmp/absolute/  /tmp/absolute/grammar.jjt</b>
+    /tmp/absolute/grammar.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Same</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  grammar.jjt</b>
+    /tmp/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  relative/grammar.jjt</b>
+    /tmp/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  /tmp/absolute/grammar.jjt</b>
+    /tmp/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  -OUTPUT_DIRECTORY:relative  grammar.jjt</b>
+    /tmp/relative/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  -OUTPUT_DIRECTORY:relative  relative/grammar.jjt</b>
+    /tmp/relative/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  -OUTPUT_DIRECTORY:relative  /tmp/absolute/grammar.jjt</b>
+    /tmp/relative/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  grammar.jjt</b>
+    /tmp/absolute/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  relative/grammar.jjt</b>
+    /tmp/absolute/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  /tmp/absolute/grammar.jjt</b>
+    /tmp/absolute/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  relative/grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  /tmp/absolute/grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  -OUTPUT_DIRECTORY:relative  grammar.jjt</b>
+    /tmp/relative/subdir/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  -OUTPUT_DIRECTORY:relative  relative/grammar.jjt</b>
+    /tmp/relative/subdir/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  -OUTPUT_DIRECTORY:relative  /tmp/absolute/grammar.jjt</b>
+    /tmp/relative/subdir/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  grammar.jjt</b>
+    /tmp/absolute/subdir/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  relative/grammar.jjt</b>
+    /tmp/absolute/subdir/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:subdir/output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  /tmp/absolute/grammar.jjt</b>
+    /tmp/absolute/subdir/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  relative/grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  /tmp/absolute/grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:<i><u>D:</u></i>/tmp/subdir/output.jj  grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Not Supported *)</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:<i><u>D:</u></i>/tmp/subdir/output.jj  relative/grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Not Supported *)</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:<i><u>D:</u></i>/tmp/subdir/output.jj  /tmp/absolute/grammar.jjt</b>
+    /tmp/subdir/output.jj
+    /tmp/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Not Supported *)</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  -OUTPUT_DIRECTORY:relative  grammar.jjt</b>
+    /tmp/relative/tmp/subdir/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  -OUTPUT_DIRECTORY:relative  relative/grammar.jjt</b>
+    /tmp/relative/tmp/subdir/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  -OUTPUT_DIRECTORY:relative  /tmp/absolute/grammar.jjt</b>
+    /tmp/relative/tmp/subdir/output.jj
+    /tmp/relative/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  grammar.jjt</b>
+    /tmp/absolute/tmp/subdir/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  relative/grammar.jjt</b>
+    /tmp/absolute/tmp/subdir/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+<tr>
+  <td><pre><b>jjtree  -OUTPUT_FILE:/tmp/subdir/output.jj  -OUTPUT_DIRECTORY:/tmp/absolute/  /tmp/absolute/grammar.jjt</b>
+    /tmp/absolute/tmp/subdir/output.jj
+    /tmp/absolute/&lt;generated&gt;.java</pre>
+  </td>
+  <td>Not Supported</td>
+  <td>Same</td>
+</tr>
+</table>
+
+<p>*) <u>Footnote</u>: When running JJTree with the Ant taskdef <i>jjtree</i> the option <code>-OUTPUT_DIRECTORY</code> must always 
+be set, because the project's basedir and the Ant working directory might differ. So even if you don't specify the jjtree taskdef 
+<i>outputdirectory</i> JJTree will be called with the <code>-OUTPUT_DIRECTORY</code> set to the project's basedirectory. 
+But when the <code>-OUTPUT_DIRECTORY</code> is set, the <code>-OUTPUT_FILE</code> setting is handled as if relative to this 
+<code>-OUTPUT_DIRECTORY</code>. Thus when the <code>-OUTPUT_FILE</code> is absolute or contains a drive letter we have a 
+problem. 
+Therefore absolute <i>outputfile</i>s (when the <i>outputdirectory</i> isn't specified) are made relative to the default directory.
+And for this reason <i>outputfile</i>s that contain a drive letter can't be supported.</p>
+
+<p>By the way: specifying a drive letter in the <code>-OUTPUT_FILE</code> when the <code>-OUTPUT_DIRECTORY</code> is set, also 
+results in strange behavior when running JJTree from the command line.</p>
+
+<br>
+
+
+
+
+</body>
+</html>
+
