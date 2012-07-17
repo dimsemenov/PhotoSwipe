@@ -476,7 +476,7 @@
 				Util.Events.remove(window.document, 'keydown', this.keyDownHandler);
 			}
 			
-			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
+			if (this.isBackEventSupported && this.settings.backButtonHideEnabled && this.windowHashChangeHandler!=null){
 				Util.Events.remove(window, 'hashchange', this.windowHashChangeHandler);
 			}
 			
