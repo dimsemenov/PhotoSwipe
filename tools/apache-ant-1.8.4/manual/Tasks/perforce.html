@@ -1,0 +1,1006 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Perforce Tasks</title>
+</head>
+<body>
+<h1>Perforce Tasks User Manual</h1>
+<p>by</p>
+<ul>
+    <li>Les Hughes (<a href="mailto:leslie.hughes@rubus.com">leslie.hughes@rubus.com</a>)</li>
+    <li>Kirk Wylie (<a href="mailto:kirk@radik.com">kirk@radik.com</a>)</li>
+    <li>Matt Bishop (<a href="mailto:matt@thebishops.org">matt@thebishops.org</a>)</li>
+    <li>Antoine Levy-Lambert</li>
+</ul>
+<hr>
+<h2>Contents</h2>
+<ul>
+    <li><a href="#intro">Introduction</a></li>
+    <li><a href="#tasks">The Tasks</a></li>
+    <li><a href="#changes">Change History</a></li>
+</ul>
+<br>
+<h2><a name="intro">Introduction</a></h2>
+<p>These tasks provide an interface to the <a href="http://www.perforce.com" target="_top">Perforce</a> SCM.
+The <code>org.apache.tools.ant.taskdefs.optional.perforce</code> package consists of a simple framework to support 
+p4 functionality as well as some Apache Ant tasks encapsulating frequently used (by me :-) p4 commands. 
+However, the addition of new p4 commands is a pretty simple task (see the source). 
+Although it is possible to use these commands on the desktop, 
+they were primarily intended to be used by automated build systems.</p>
+
+<p><b>Note:</b> These tasks require the <a href="http://attic.apache.org/projects/jakarta-oro.html" target="_top">oro</a> regular
+expression package. See <a href="../install.html#librarydependencies">library dependencies</a> for the precise
+version required.
+You will also need the Perforce client executable (p4 or p4.exe but not p4win.exe) in your path.
+</p>
+
+
+
+<h2><a name="tasks">The Tasks</a></h2>
+
+<table border="0" cellspacing="0" cellpadding="3">
+    <tr>
+      <td><b>Task</b></td>
+      <td><b>Description</b></td>
+    </tr>
+    <tr>
+        <td><a href="#p4sync">P4Sync</a></td>
+        <td>Synchronise a workspace to a depot</td>
+    </tr>
+    <tr>
+        <td><a href="#p4change">P4Change</a></td>
+        <td>Request a new changelist from the Perforce server</td>
+    </tr>
+    <tr>
+        <td><a href="#p4edit">P4Edit</a></td>
+        <td>Open files for edit (checkout)</td>
+    </tr>
+    <tr>
+        <td><a href="#p4submit">P4Submit</a></td>
+        <td>Submit a changelist to the Perforce server (checkin)</td>
+    </tr>
+    <tr>
+        <td><a href="#p4have">P4Have</a></td>
+        <td>List current files in client view, useful for reporting</td>
+    </tr>
+    <tr>
+        <td><a href="#p4label">P4Label</a></td>
+        <td>Create a label reflecting files in the current workspace</td>
+    </tr>
+    <tr>
+        <td><a href="#p4labelsync">P4Labelsync</a></td>
+        <td>Syncs an existing label</td>
+    </tr>
+    <tr>
+        <td><a href="#p4counter">P4Counter</a></td>
+        <td>Obtain or set the value of a counter</td>
+    </tr>
+	    <tr>
+        <td><a href="#p4reopen">P4Reopen</a></td>
+        <td>Move files between changelists</td>
+    </tr>
+
+	    <tr>
+        <td><a href="#p4revert">P4Revert</a></td>
+        <td>Revert files</td>
+    </tr>
+	    
+    <tr>
+        <td><a href="#p4add">P4Add</a></td>
+        <td>Add files</td>
+    </tr>
+    <tr>
+      <td><a href="#p4delete">P4Delete</a></td>
+      <td>Delete files</td>
+    </tr>
+    <tr>
+      <td><a href="#p4integrate">P4Integrate</a></td>
+      <td>Integrate files</td>
+    </tr>
+    <tr>
+      <td><a href="#p4resolve">P4Resolve</a></td>
+      <td>Resolve files</td>
+    </tr>
+    <tr>
+        <td><a href="#p4fstat">P4Fstat</a></td>
+        <td>Show differences between local repository and p4 repository</td>
+    </tr>
+</table>
+
+<h3>General P4 Properties</h3>
+<p>Each p4 task requires a number of settings, either through build-wide properties, individual attributes 
+or environment variables. These are
+</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Property</b></td>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Env Var</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Default</b></td>
+  </tr>
+  <tr>
+    <td valign="top">p4.port</td>
+    <td valign="top">port</td>
+    <td valign="top">P4PORT</td>
+    <td valign="top">The p4d server and port to connect to</td>
+    <td valign="top">perforce:1666</td>
+  </tr>
+  <tr>
+    <td valign="top">p4.client</td>
+    <td valign="top">client</td>
+    <td valign="top">P4CLIENT</td>
+    <td valign="top">The p4 client spec to use</td>
+    <td valign="top">The logged in username</td>
+  </tr>
+  <tr>
+    <td valign="top">p4.user</td>
+    <td valign="top">user</td>
+    <td valign="top">P4USER</td>
+    <td valign="top">The p4 username</td>
+    <td valign="top">The logged in username</td>
+  </tr>
+<tr>
+    <td valign="top" align="center">--</td>
+    <td valign="top">view</td>
+    <td valign="top" align="center">--</td>
+    <td valign="top">The client, branch or label view to operate upon. See the p4 user guide for more info.</td>
+    <td valign="top">//...</td>
+  </tr>
+
+</table>
+<p> Your local installation of Perforce may require other settings (e.g.
+P4PASSWD, P4CONFIG). Many of these settings can be set using the globalopts
+attribute (described below), but not all. If a setting cannot be set
+by the command-line options, then it can only be set outside of Ant as an 
+environment variable.
+</p>
+<p>
+Additionally, you may also specify the following attributes:
+</p>
+<p>
+<table border="1" cellpadding="2" cellspacing="0">
+<tr>
+  <td valign="top"><b>Attribute</b></td>
+  <td valign="top"><b>Description</b></td>
+  <td align="center" valign="top"><b>Required</b></td>
+</tr>
+<tr>
+    <td valign="top">failonerror</td>
+    <td valign="top">Specifies whether to stop the build
+     (<code>true</code>|<code>yes</code>|<code>on</code>)
+     or keep going (<code>false</code>|<code>no</code>|<code>off</code>)
+     if an error is returned from the p4 command.</td>
+    <td valign="top">No; defaults to true.</td>
+  </tr>
+  <tr>
+      <td valign="top">globalopts<br></td>
+      <td valign="top">Specifies global options for perforce to use while
+      executing the task. These properties should be concatenated into one
+      string,<br>
+      such as "-P <i>password</i> -C EUCJIS". Use the command-line option
+      syntax, NOT the environment variable names. See the<br>
+      Perforce Command Reference for details.</td>
+      <td valign="top">No<br></td>
+  </tr>
+</table>
+</p>
+
+<h3>Examples</h3>
+<p>Setting in the environment:-</p>
+<p>
+(Unix csh)</p>
+<pre>setenv P4PORT myperforcebox:1666</pre>
+<p>(Unix sh et al)</p>
+<pre>P4USER=myp4userid; export P4USER</pre>
+<p>Using build properties:-</p>
+<pre>&lt;property name=&quot;p4.client&quot; value=&quot;nightlybuild&quot;/&gt;</pre>
+<p>Using task attributes:-</p>
+<pre>
+&lt;p4Whatever
+	port=&quot;myserver:1666&quot;
+	client=&quot;smoketest&quot;
+	user=&quot;smoketestdude&quot;
+	.
+	.
+	.
+/&gt;
+</pre>
+
+<p>
+For more information regarding the underlying 'p4' commands you are referred to the Perforce Command Reference
+available from the <a href="http://www.perforce.com/" target="_top">Perforce website</a>.
+</p>
+
+
+<hr>
+<h2>Task Descriptions</h2>
+<h2><a name="p4sync">P4Sync</a></h2>
+<h3>Description:</h3>
+<p>Synchronize the current workspace with the depot.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">force</td>
+    <td valign="top">force a refresh of files, if this attribute has
+    been set.</td>
+    <td valign="top" align="center">no - if omitted, it will be off,
+    otherwise a refresh will be forced.</td>
+  </tr>
+<tr>
+    <td valign="top">label</td>
+    <td valign="top">sync client to label</td>
+    <td valign="top" align="center">no</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>&lt;p4sync label=&quot;nightlybuild-0.0123&quot; force=&quot;foo&quot;/&gt;
+&lt;p4sync view=&quot;//depot/projects/projectfoo/main/src/...&quot;/&gt;
+</pre>
+<hr>
+
+
+
+<h2><a name="p4change">P4Change</a></h2>
+<h3>Description:</h3>
+<p>Request a new changelist from the Perforce server. 
+This task sets the ${p4.change} property which can then be passed to <A HREF="#p4submit">P4Submit</A>,
+<A HREF="#p4edit">P4Edit</A>, or <a HREF="#p4add">P4Add</A>, or <a HREF="#p4delete">P4Delete</A>,
+then to <A HREF="#p4submit">P4Submit</A>.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">description</td>
+    <td valign="top">Description for ChangeList. If none specified, it will
+                     default to "AutoSubmit By Ant"</td>
+    <td valign="top" align="center">No.</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>&lt;p4change description="Change Build Number in Script"&gt;
+</pre>
+<hr>
+
+
+
+
+<h2><a name="p4edit">P4Edit</a></h2>
+<h3>Description:</h3>
+<p>Open file(s) for edit. P4Change should be used to obtain a new changelist for P4Edit as,
+although P4Edit can open files to the default change,  P4Submit cannot yet submit it.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">view</td>
+    <td valign="top">The filespec to request to edit</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">change</td>
+    <td valign="top">An existing changelist number to assign files to.</td>
+    <td valign="top" align="center">No, but see above.</td>
+  </tr>
+
+</table>
+
+<h3>Examples</h3>
+<pre>
+&lt;p4edit
+    view=&quot;//depot/projects/projectfoo/main/src/Blah.java...&quot;
+    change=&quot;${p4.change}&quot;/&gt;
+</pre>
+<hr>
+
+
+
+
+<h2><a name="p4submit">P4Submit</a></h2>
+<h3>Description:</h3>
+<p>Submit a changelist, usually obtained from P4Change.
+<p>P4Submit will also change the value of the property p4.change if the change list is renamed by the Perforce server.
+<p>P4Submit will set a property p4.needsresolve to 1 if the change could not be submitted due to files needing resolving.
+<p>Files will need resolve if at the time of checking in, the revision that was checked out to do the current edit
+is not the latest any more.
+<p>If no files need resolve, the p4.needsresolve will be set to 0.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">change</td>
+    <td valign="top">The changelist number to submit</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">changeproperty</td>
+    <td valign="top">Name of a property to which the new change number
+    will be assigned if the Perforce server renumbers the change<br>
+    Since Ant 1.6.1</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">needsresolveproperty</td>
+    <td valign="top">Name of property which will be set to <code>true</code>
+    if the submit requires a resolve<br>
+    Since Ant 1.6.1</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>&lt;p4submit change=&quot;${p4.change}&quot;/&gt;
+</pre>
+<hr>
+
+
+
+
+<h2><a name="p4have">P4Have</a></h2>
+<h3>Description:</h3>
+<p>List handy file info reflecting the current client contents.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">None</td>
+    <td valign="top" align="center">--</td>
+    <td valign="top" align="center">--</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>&lt;p4have/&gt;
+</pre>
+<hr>
+
+
+
+
+<h2><a name="p4label">P4Label</a></h2>
+<h3>Description:</h3>
+<p>Create a new label and set contents to reflect current client file revisions.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the label</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">view</td>
+    <td valign="top">client view to use for label<br>
+    The view can contain multiple lines separated by ; or :</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">desc</td>
+    <td valign="top">Label Description</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">lock</td>
+    <td valign="top">Lock the label once created.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+
+
+</table>
+<h3>Examples</h3>
+<pre>
+&lt;p4label
+	name=&quot;NightlyBuild:${DSTAMP}:${TSTAMP}&quot; 
+	desc=&quot;Auto Nightly Build&quot;
+	lock=&quot;locked&quot;
+	view=&quot;//firstdepot/...;//secondepot/foo/bar/...&quot;
+/&gt;
+</pre>
+<hr>
+
+
+<h2><a name="p4labelsync">P4Labelsync</a></h2>
+<h3>Description:</h3>
+<p>Syncs an existing label against the current workspace or against specified revisions.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+    <td align="center" valign="top"><b>Perforce command line flag</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the label</td>
+    <td valign="center" align="center">Yes</td>
+    <td valign="top" align="center">-l labelname</td>
+  </tr>
+  <tr>
+    <td valign="top">view</td>
+    <td valign="top">
+    list of files or revision specs separated by : or ;<br>
+    in the absence of this attribute, the labelsync will be done against the current Perforce client or the value of the p4client attribute or the value of the p4.client property or the value of the environment variable P4CLIENT</td>
+    <td valign="center" align="center">No</td>
+    <td valign="center" align="center">file[revRange] ... </td>
+  </tr>
+  <tr>
+    <td valign="top">simulationmode</td>
+    <td valign="top">Displays which effect the operation would have on the label but do not actually do it</td>
+    <td valign="center" align="center">No</td>
+    <td valign="top" align="center">-n</td>
+  </tr>
+  <tr>
+    <td valign="top">add</td>
+    <td valign="top">If set to true, preserve files which exist in the label, but not in the current view</td>
+    <td valign="center" align="center">No</td>
+    <td valign="top" align="center">-a</td>
+  </tr>
+  <tr>
+    <td valign="top">delete</td>
+    <td valign="top">If set to true, remove from the label the files mentioned in the view attribute</td>
+    <td valign="center" align="center">No</td>
+    <td valign="top" align="center">-d</td>
+  </tr>
+
+
+</table>
+<h3>Examples</h3>
+<pre>
+&lt;
+p4labelsync
+name=&quot;current_release&quot;
+view="//depot/...#head;//depot2/file1#25"
+add=&quot;true&quot;
+/&gt;
+</pre>
+This example will add into the label called <i>current_release</i> the current head revision of all the files located under <i>//depot</i>
+and the revision 25 of the file <i>//depot2/file1</i>.
+<pre>
+&lt;
+p4labelsync
+name=&quot;current_release&quot;
+p4client=&quot;myclient&quot;
+/&gt;
+</pre>
+This example will update the label called <i>current_release</i> so that it reflects the Perforce client <i>myclient</i>.<br>
+Files present in the label before the sync and not present currently in the client will be removed from the label, because the add attribute is not set.
+<pre>
+&lt;
+p4labelsync
+name=&quot;current_release&quot;
+/&gt;
+</pre>
+This example will update the label called <i>current_release</i> so that it reflects the current default client for the ant Perforce tasks.<br>
+The default client is by order of priority :
+<ul>
+<li>
+the value of the p4.client property if set in the project
+</li>
+<li>
+the value of the P4CLIENT environment variable
+</li>
+<li>
+the default Perforce client from the Windows registry under Windows operating systems
+</li>
+</ul>
+Files present in the label before the sync and not present currently in the client will be removed from the label, because the add attribute is not set.
+<hr>
+
+
+<h2><a name="p4counter">P4Counter</a></h2>
+<h3>Description:</h3>
+<p>
+Obtain or set the value of a counter. When used in its base form
+(where only the counter name is provided), the counter value will be
+printed to the output stream. When the value is provided, the counter
+will be set to the value provided. When a property name is provided,
+the property will be filled with the value of the counter. You may
+not specify to both get and set the value of the counter in the same
+Task.
+</p>
+<P>
+The user performing this task must have Perforce &quot;review&quot; permissions
+as defined by Perforce protections in order for this task to succeed.
+</P>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the counter</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">value</td>
+    <td valign="top">The new value for the counter</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">property</td>
+    <td valign="top">The property to be set with the value of the counter</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+Print the value of the counter named &quot;last-clean-build&quot; to the output stream:
+<pre>
+&lt;p4counter name=&quot;last-clean-build&quot;/&gt;
+</PRE>
+Set the value of the counter based on the value of the &quot;TSTAMP&quot; property:
+<PRE>
+&lt;p4counter name=&quot;last-clean-build&quot; value=&quot;${TSTAMP}&quot;/&gt;
+</PRE>
+Set the value of the &quot;p4.last.clean.build&quot; property to the current
+value of the &quot;last-clean-build&quot; counter:
+<PRE>
+&lt;p4counter name=&quot;last-clean-build&quot; property=&quot;p4.last.clean.build&quot;/&gt;
+</pre>
+<hr>
+
+
+
+
+<h2><a name="p4reopen">P4Reopen</a></h2>
+<h3>Description:</h3>
+<p>
+Move (or reopen in Perforce speak) checkout files between changelists.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">tochange</td>
+    <td valign="top">The changelist to move files to.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+Move all open files to the default changelist
+<pre>
+&lt;p4reopen view=&quot;//...&quot; tochange=&quot;default&quot;/&gt;
+</PRE>
+Create a new changelist then reopen into it, any files from the view //projects/foo/main/...
+<PRE>
+&lt;p4change description="Move files out of the way"/&gt;
+&lt;p4reopen view=&quot;//projects/foo/main/...&quot; tochange=&quot;${p4.change}&quot;/&gt;
+</pre>
+<hr>
+
+
+
+<h2><a name="p4revert">P4Revert</a></h2>
+<h3>Description:</h3>
+<p>
+Reverts files.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">change</td>
+    <td valign="top">The changelist to revert.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">revertOnlyUnchanged</td>
+    <td valign="top">Revert only unchanged files (p4 revert -a)</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  
+</table>
+
+<h3>Examples</h3>
+Revert everything!
+<pre>
+&lt;p4revert view=&quot;//...&quot;/&gt;
+</PRE>
+Revert any unchanged files in the default change
+<PRE>
+&lt;p4revert change="default" revertonlyunchanged=&quot;true&quot;/&gt;
+</pre>
+<hr>
+
+<h2><a name="p4add">P4Add</a></h2>
+<h3>Description:</h3>
+<p>
+Adds files specified in nested fileset children.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">commandlength</td>
+    <td valign="top">A positive integer specifying the maximum length
+        of the commandline when calling Perforce to add the files. 
+        Defaults to 450, higher values mean faster execution,
+        but also possible failures.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">changelist</td>
+    <td valign="top">If specified the open files are associated with the
+specified pending changelist number; otherwise the open files are
+associated with the default changelist.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  
+</table>
+
+<h3>Examples</h3>
+Require a changelist, add all java files starting from a directory,
+and submit
+
+<pre>
+&lt;p4change/&gt;
+&lt;p4add commandlength=&quot;20000&quot; changelist=&quot;${p4.change}&quot;&gt;
+    &lt;fileset dir=&quot;../dir/src/&quot; includes=&quot;**/*.java&quot;/&gt;
+&lt;p4add&gt;
+&lt;p4submit change=&quot;${p4.change}&quot;/&gt;
+</pre>
+<hr>
+
+<h2><a name="p4fstat">P4Fstat</a></h2>
+<h3>Description:</h3>
+<p>
+Lists files under Perforce control and files not under Perforce control in one or several filesets
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">showfilter</td>
+    <td valign="top">should be one of
+      <table border="1">
+        <tr><td>value</td><td>description</td></tr>
+        <tr><td>&quot;all&quot;</td><td>list all files, first the ones which are under Perforce control, then the others</td></tr>
+        <tr><td>&quot;existing&quot;</td><td>list only files under Perforce control</td></tr>
+        <tr><td>&quot;non-existing&quot;</td><td>list only files which are not under Perforce control</td></tr></table>
+    </td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">fileset</td>
+    <td valign="top">one or several <a href="../Types/fileset.html">fileset(s)</a></td>
+    <td valign="top" align="center">yes (at least one fileset is needed)</td>
+  </tr>
+</table>
+Several nested filesets can be used with P4Fstat, one should be there at least.
+<h3>Examples</h3>
+will list all the files under C:\dev\gnu\depot, sorted by under Perforce or not under Perforce<br>
+<pre>
+&lt;project name=&quot;p4fstat&quot; default=&quot;p4fstat&quot; basedir=&quot;C:\dev\gnu&quot;&gt;
+    &lt;target name=&quot;p4fstat&quot; &gt;
+        &lt;p4fstat showfilter=&quot;all&quot;&gt;
+            &lt;fileset dir=&quot;depot&quot; includes=&quot;**/*&quot;/&gt;
+        &lt;/p4fstat&gt;
+    &lt;/target&gt;
+&lt;/project&gt;</p>
+</pre>
+
+
+
+
+<h2><a name="p4delete">P4Delete</a></h2>
+<h3>Description:</h3>
+<p>Open file(s) for delete. P4Change should be used to obtain a new changelist for P4Delete as,
+although P4Delete can open files to the default change,  P4Submit cannot yet submit it.
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">view</td>
+    <td valign="top">The filespec to request to delete</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">change</td>
+    <td valign="top">An existing changelist number to assign files to.</td>
+    <td valign="top" align="center">No, but see above.</td>
+  </tr>
+
+</table>
+
+<h3>Examples</h3>
+<pre>
+&lt;p4delete
+    view=&quot;//depot/projects/projectfoo/main/src/Blah.java...&quot;
+    change=&quot;${p4.change}&quot;/&gt;
+</pre>
+<hr>
+<h2><a name="p4integrate">P4Integrate</a></h2>
+<h3>Description:</h3>
+<p>Open file(s) for integrate. P4Change should be used to obtain a new changelist for P4Integrate as,
+although P4Integrate can open files to the default change,  P4Submit cannot yet submit it.
+</p>
+<h3>Parameters</h3>
+<p>If this task is used without using a branch definition, both fromfile and tofile must be supplied.
+If a branch definition is supplied, at least one of fromfile or tofile should be supplied.
+Both fromfile and tofile can be supplied together with a branch definition.</p>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+    <td align="center" valign="top"><b>Perforce command line flag</b></td>
+  </tr>
+  <tr>
+    <td valign="top">fromfile</td>
+    <td valign="top">Original file or view</td>
+    <td valign="top" align="center">required if a branch is not specified</td>
+    <td valign="top" align="center"></td>
+  </tr>
+  <tr>
+    <td valign="top">tofile</td>
+    <td valign="top">Target file or view.</td>
+    <td valign="top" align="center">required if a branch is not specified</td>
+    <td valign="top" align="center"></td>
+  </tr>
+  <tr>
+    <td valign="top">branch</td>
+    <td valign="top">Name of branch specification</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-b</td>
+  </tr>
+  <tr>
+    <td valign="top">change</td>
+    <td valign="top">An existing changelist number to assign files to.</td>
+    <td valign="top" align="center">No, but see above.</td>
+    <td valign="top" align="center">-c</td>
+  </tr>
+  <tr>
+    <td valign="top">forceintegrate</td>
+    <td valign="top">Forces integration regardless of previous integration history (*)</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-f</td>
+  </tr>
+  <tr>
+    <td valign="top">restoredeletedrevisions</td>
+    <td valign="top">Enables integration around deleted revisions (*)</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-d</td>
+  </tr>
+  <tr>
+    <td valign="top">leavetargetrevision</td>
+    <td valign="top">Prevents target files from being synced to head revision before integration (*)</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-h</td>
+  </tr>
+  <tr>
+    <td valign="top">enablebaselessmerges</td>
+    <td valign="top">Forces integration to existing target files which have no integration history relative to the source files (*)</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-i</td>
+  </tr>
+  <tr>
+    <td valign="top">simulationmode</td>
+    <td valign="top">Displays which integrations are necessary but do not actually schedule them (*)</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-n</td>
+  </tr>
+  <tr>
+    <td valign="top">reversebranchmappings</td>
+    <td valign="top">Reverses mappings in the branch view, with source and target files exchanging place (*)</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-r</td>
+  </tr>
+  <tr>
+    <td valign="top">propagatesourcefiletype</td>
+    <td valign="top">Makes source file type propagate to existing target files (*)</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-t</td>
+  </tr>
+  <tr>
+    <td valign="top">nocopynewtargetfiles</td>
+    <td valign="top">Prevents the physical delivery on disk of new target files (*)</td>
+    <td valign="center">No</td>
+    <td valign="top" align="center">-v</td>
+  </tr>
+</table>
+<br>
+(*) The following applies for a number of flags. The default is false. To set the flag, use  &quot;true&quot;
+
+<h3>Examples</h3>
+<pre>
+&lt;p4integrate
+    fromfile=&quot;//depot/projects/projectfoo/main/src/Blah.java...&quot;
+    tofile=&quot;//depot/projects/projectfoo/release/src/Blah.java...&quot;
+    change=&quot;${p4.change}&quot;/&gt;
+</pre>
+<hr>
+<h2><a name="p4resolve">P4Resolve</a></h2>
+<h3>Description:</h3>
+<p>Resolves files. You want to do this if :
+<ul>
+<li>
+there have been or there may be concurrent edits of the same file. For instance, you have begun to edit a file, and while you were working on it, somebody has submitted a new version  of the same file. When you first attempt to submit your file(s), you will get a message (property p4.needsresolve set).
+</li>
+<li>
+you have just been doing an integration to existing target files
+</li>
+</ul>
+P4Resolve does not use a change list number (it takes it from the files it is working on).
+</p>
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+    <td align="center" valign="top"><b>Perforce command line flag</b></td>
+  </tr>
+  <tr>
+    <td valign="top">view</td>
+    <td valign="top">The filespec to request to delete</td>
+    <td valign="top" align="center">Yes</td>
+    <td valign="top" align="center"></td>
+   </tr>
+  <tr>
+    <td valign="top">resolvemode</td>
+    <td valign="top">Should have one of these values :
+      <ul>
+        <li>&quot;automatic&quot;</li>
+        <li>&quot;force&quot;</li>
+        <li>&quot;safe&quot;</li>
+        <li>&quot;theirs&quot;</li>
+        <li>&quot;yours&quot;</li>
+      </ul></td>
+    <td valign="top" align="center">Yes</td>
+    <td valign="top" align="center">corresponds to one of -am -af -as -at -ay </td>
+  </tr>
+  <tr>
+    <td valign="top">redoall</td>
+    <td valign="top">allows previously resolved files to be resolved again (*)</td>
+    <td valign="top" align="center">No</td>
+    <td valign="top" align="center">-f</td>
+  </tr>
+  <tr>
+    <td valign="top">simulationmode</td>
+    <td valign="top">Lists the integrations which would be performed, without actually doing them. (*)</td>
+    <td valign="top" align="center">No</td>
+    <td valign="top" align="center">-n</td>
+  </tr>
+  <tr>
+    <td valign="top">forcetextmode</td>
+    <td valign="top">Attempts a textual merge, even for binary files (*)</td>
+    <td valign="top" align="center">No</td>
+    <td valign="top" align="center">-t</td>
+  </tr>
+  <tr>
+    <td valign="top">markersforall</td>
+    <td valign="top">Puts in markers for all changes, conflicting or not (*)</td>
+    <td valign="top" align="center">No</td>
+    <td valign="top" align="center">-v</td>
+  </tr>
+</table>
+<br>
+(*) The following applies for a number of flags. The default is false. To set the flag, use  &quot;true&quot;
+
+<h3>Examples</h3>
+<pre>
+&lt;p4resolve
+    view=&quot;//depot/projects/projectfoo/main/src/Blah.java...&quot;
+    resolvemode=&quot;automatic&quot;/&gt;
+</pre>
+
+<h2><a name="changes">Change History</a></h2>
+<table border="1" cellpadding="2" cellspacing="0">
+<tr>
+    <td valign="top">Sept 2000</td>
+    <td valign="top" align="center">--</td>
+    <td valign="top">Internal Release within Rubus</td>
+</tr>
+
+<tr>
+    <td valign="top">Nov 2000</td>
+    <td valign="top">V1.0</td>
+    <td valign="top">Initial Release donated to ASF :-)</td>
+</tr>
+<tr>
+    <td valign="top">Jan 2001</td>
+    <td valign="top">V1.1</td>
+    <td valign="top">Fixed cross platform (NT/Unix) bug<br>
+    Refactored p4 output handling code<br>
+    Refactored exec'ing code</td>    
+</tr>
+<tr>
+    <td valign="top">Jan 2003</td>
+    <td valign="top">V1.2</td>
+    <td valign="top">Added globalopts to P4Base to allow 
+                     additional global options to be set.<br>
+                     Added p4fstat task</td>
+</tr>
+<tr>
+    <td valign="top">May 2003</td>
+    <td valign="top">V1.3</td>
+    <td valign="top">Added p4labelsync, p4resolve, p4integrate.<br>
+                     Changed p4submit (detection of changes of change numbers,
+                     and of failed submits due to resolution needed)</td>
+</tr>
+<tr>
+    <td valign="top">Jan 2004</td>
+    <td valign="top">Ant 1.6.1</td>
+    <td valign="top">
+Changed p4submit, needsresolveproperty and changeproperty added</td>
+</tr>
+</table>
+
+</body>
+</html>

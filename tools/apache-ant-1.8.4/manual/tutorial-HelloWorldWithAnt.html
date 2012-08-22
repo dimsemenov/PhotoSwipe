@@ -1,0 +1,520 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+<head>
+  <title>Tutorial: Hello World with Apache Ant</title>
+  <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+</head>
+<body>
+<h1>Tutorial: Hello World with Apache Ant</h1>
+
+<p>This document provides a step by step tutorial for starting java programming with Apache Ant.
+It does <b>not</b> contain deeper knowledge about Java or Ant. This tutorial has the goal
+to let you see, how to do the easiest steps in Ant.</p>
+
+
+
+<h2>Content</h2>
+<p><ul>
+<li><a href="#prepare">Preparing the project</a></li>
+<li><a href="#four-steps">Enhance the build file</a></li>
+<li><a href="#enhance">Enhance the build file</a></li>
+<li><a href="#ext-libs">Using external libraries</a></li>
+<li><a href="#resources">Resources</a></li>
+</ul></p>
+
+
+<a name="prepare"></a>
+<h2>Preparing the project</h2>
+<p>We want to separate the source from the generated files, so our java source files will
+be in <tt>src</tt> folder. All generated files should be under <tt>build</tt>, and there
+splitted into several subdirectories for the individual steps: <tt>classes</tt> for our compiled
+files and <tt>jar</tt> for our own JAR-file.</p>
+<p>We have to create only the <tt>src</tt> directory. (Because I am working on Windows, here is 
+the win-syntax - translate to your shell):</p>
+
+<pre class="code">
+md src
+</pre>
+
+<p>The following simple Java class just prints a fixed message out to STDOUT,
+so just write this code into <tt>src\oata\HelloWorld.java</tt>.</p>
+
+<pre class="code">
+package oata;
+
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
+}
+</pre>
+
+<p>Now just try to compile and run that:
+<pre class="code">
+md build\classes
+javac -sourcepath src -d build\classes src\oata\HelloWorld.java
+java -cp build\classes oata.HelloWorld
+</pre>
+which will result in
+<pre class="output">
+Hello World
+</pre>
+</p>
+
+<p>Creating a jar-file is not very difficult. But creating a <i>startable</i> jar-file needs more steps: create a
+manifest-file containing the start class, creating the target directory and archiving the files.</p>
+<pre class="code">
+echo Main-Class: oata.HelloWorld&gt;myManifest
+md build\jar
+jar cfm build\jar\HelloWorld.jar myManifest -C build\classes .
+java -jar build\jar\HelloWorld.jar
+</pre>
+
+<p><b>Note:</b> Do not have blanks around the &gt;-sign in the <tt>echo Main-Class</tt> instruction because it would 
+falsify it!</p>
+
+
+<a name="four-steps"></a>
+<h2>Four steps to a running application</h2>
+<p>After finishing the java-only step we have to think about our build process. We <i>have</i> to compile our code, otherwise we couldn't
+start the program. Oh - "start" - yes, we could provide a target for that. We <i>should</i> package our application.
+Now it's only one class - but if you want to provide a download, no one would download several hundreds files ...
+(think about a complex Swing GUI - so let us create a jar file. A startable jar file would be nice ... And it's a
+good practise to have a "clean" target, which deletes all the generated stuff. Many failures could be solved just
+by a "clean build".</p>
+
+<p>By default Ant uses <tt>build.xml</tt> as the name for a buildfile, so our <tt>.\build.xml</tt> would be:</p>
+<pre class="code">
+&lt;project&gt;
+
+    &lt;target name="clean"&gt;
+        &lt;delete dir="build"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="compile"&gt;
+        &lt;mkdir dir="build/classes"/&gt;
+        &lt;javac srcdir="src" destdir="build/classes"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="jar"&gt;
+        &lt;mkdir dir="build/jar"/&gt;
+        &lt;jar destfile="build/jar/HelloWorld.jar" basedir="build/classes"&gt;
+            &lt;manifest&gt;
+                &lt;attribute name="Main-Class" value="oata.HelloWorld"/&gt;
+            &lt;/manifest&gt;
+        &lt;/jar&gt;
+    &lt;/target&gt;
+
+    &lt;target name="run"&gt;
+        &lt;java jar="build/jar/HelloWorld.jar" fork="true"/&gt;
+    &lt;/target&gt;
+
+&lt;/project&gt;
+</pre>
+
+<p>Now you can compile, package and run the application via</p>
+<pre class="code">
+ant compile
+ant jar
+ant run
+</pre>
+<p>Or shorter with</p>
+<pre class="code">
+ant compile jar run
+</pre>
+
+<p>While having a look at the buildfile, we will see some similar steps between Ant and the java-only commands:
+<table>
+<tr>
+  <th>java-only</th>
+  <th>Ant</th>
+</tr>
+<tr>
+  <td valign="top"><pre class="code">
+md build\classes
+javac
+    -sourcepath src
+    -d build\classes
+    src\oata\HelloWorld.java
+echo Main-Class: oata.HelloWorld>mf
+md build\jar
+jar cfm
+    build\jar\HelloWorld.jar
+    mf
+    -C build\classes
+    .
+
+
+
+java -jar build\jar\HelloWorld.jar
+  </pre></td>
+  <td valign="top"><pre class="code">
+&lt;mkdir dir="build/classes"/&gt;
+&lt;javac
+    srcdir="src"
+    destdir="build/classes"/&gt;
+<i>&lt;!-- automatically detected --&gt;</i>
+<i>&lt;!-- obsolete; done via manifest tag --&gt;</i>
+&lt;mkdir dir="build/jar"/&gt;
+&lt;jar
+    destfile="build/jar/HelloWorld.jar"
+
+    basedir="build/classes"&gt;
+    &lt;manifest&gt;
+        &lt;attribute name="Main-Class" value="oata.HelloWorld"/&gt;
+    &lt;/manifest&gt;
+&lt;/jar&gt;
+&lt;java jar="build/jar/HelloWorld.jar" fork="true"/&gt;
+  </pre></td>
+</tr></table>
+</p>
+
+
+
+<a name="enhance"></a>
+<h2>Enhance the build file</h2>
+<p>Now we have a working buildfile we could do some enhancements: many time you are referencing the
+same directories, main-class and jar-name are hard coded, and while invocation you have to remember
+the right order of build steps.</p>
+<p>The first and second point would be addressed with <i>properties</i>, the third with a special property - an attribute
+of the &lt;project&gt;-tag and the fourth problem can be solved using dependencies.</p>
+
+
+<pre class="code">
+&lt;project name="HelloWorld" basedir="." default="main"&gt;
+
+    &lt;property name="src.dir"     value="src"/&gt;
+
+    &lt;property name="build.dir"   value="build"/&gt;
+    &lt;property name="classes.dir" value="${build.dir}/classes"/&gt;
+    &lt;property name="jar.dir"     value="${build.dir}/jar"/&gt;
+
+    &lt;property name="main-class"  value="oata.HelloWorld"/&gt;
+
+
+
+    &lt;target name="clean"&gt;
+        &lt;delete dir="${build.dir}"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="compile"&gt;
+        &lt;mkdir dir="${classes.dir}"/&gt;
+        &lt;javac srcdir="${src.dir}" destdir="${classes.dir}"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="jar" depends="compile"&gt;
+        &lt;mkdir dir="${jar.dir}"/&gt;
+        &lt;jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}"&gt;
+            &lt;manifest&gt;
+                &lt;attribute name="Main-Class" value="${main-class}"/&gt;
+            &lt;/manifest&gt;
+        &lt;/jar&gt;
+    &lt;/target&gt;
+
+    &lt;target name="run" depends="jar"&gt;
+        &lt;java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="clean-build" depends="clean,jar"/&gt;
+
+    &lt;target name="main" depends="clean,run"/&gt;
+
+&lt;/project&gt;
+</pre>
+
+
+<p>Now it's easier, just do a <tt class="code">ant</tt> and you will get</p>
+<pre class="output">
+Buildfile: build.xml
+
+clean:
+
+compile:
+    [mkdir] Created dir: C:\...\build\classes
+    [javac] Compiling 1 source file to C:\...\build\classes
+
+jar:
+    [mkdir] Created dir: C:\...\build\jar
+      [jar] Building jar: C:\...\build\jar\HelloWorld.jar
+
+run:
+     [java] Hello World
+
+main:
+
+BUILD SUCCESSFUL
+</pre>
+
+
+<a name="ext-libs"></a>
+<h2>Using external libraries</h2>
+<p>Somehow told us not to use syso-statements. For log-Statements we should use a Logging-API - customizable on a high
+degree (including switching off during usual life (= not development) execution). We use Log4J for that, because <ul>
+<li>it is not part of the JDK (1.4+) and we want to show how to use external libs</li>
+<li>it can run under JDK 1.2 (as Ant)</li>
+<li>it's highly configurable</li>
+<li>it's from Apache ;-)</li>
+</ul></p>
+<p>We store our external libraries in a new directory <tt>lib</tt>. Log4J can be
+<a href="http://www.apache.org/dist/logging/log4j/1.2.13/logging-log4j-1.2.13.zip">downloaded [1]</a> from Logging's Homepage.
+Create the <tt>lib</tt> directory and extract the log4j-1.2.9.jar into that lib-directory. After that we have to modify
+our java source to use that library and our buildfile so that this library could be accessed during compilation and run.
+</p>
+<p>Working with Log4J is documented inside its manual. Here we use the <i>MyApp</i>-example from the
+<a href="http://logging.apache.org/log4j/docs/manual.html">Short Manual [2]</a>. First we have to modify the java source to
+use the logging framework:</p>
+
+<pre class="code">
+package oata;
+
+<b>import org.apache.log4j.Logger;</b>
+<b>import org.apache.log4j.BasicConfigurator;</b>
+
+public class HelloWorld {
+    <b>static Logger logger = Logger.getLogger(HelloWorld.class);</b>
+
+    public static void main(String[] args) {
+        <b>BasicConfigurator.configure();</b>
+        <font color="blue"><b>logger.info("Hello World");</b></font>          // the old SysO-statement
+    }
+}
+</pre>
+
+<p>Most of the modifications are "framework overhead" which has to be done once. The blue line is our "old System-out"
+statement.</p>
+<p>Don't try to run <tt>ant</tt> - you will only get lot of compiler errors. Log4J is not inside the classpath so we have
+to do a little work here. But do not change the CLASSPATH environment variable! This is only for this project and maybe
+you would break other environments (this is one of the most famous mistakes when working with Ant). We introduce Log4J
+(or to be more precise: all libraries (jar-files) which are somewhere under <tt>.\lib</tt>) into our buildfile:</p>
+
+<pre class="code">
+&lt;project name="HelloWorld" basedir="." default="main"&gt;
+    ...
+    <b>&lt;property name="lib.dir"     value="lib"/&gt;</b>
+
+    <b>&lt;path id="classpath"&gt;</b>
+        <b>&lt;fileset dir="${lib.dir}" includes="**/*.jar"/&gt;</b>
+    <b>&lt;/path&gt;</b>
+
+    ...
+
+    &lt;target name="compile"&gt;
+        &lt;mkdir dir="${classes.dir}"/&gt;
+        &lt;javac srcdir="${src.dir}" destdir="${classes.dir}" <b>classpathref="classpath"</b>/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="run" depends="jar"&gt;
+        &lt;java fork="true" <b>classname="${main-class}"</b>&gt;
+            <b>&lt;classpath&gt;</b>
+                <b>&lt;path refid="classpath"/&gt;</b>
+                <font color="red"><b>&lt;path location="${jar.dir}/${ant.project.name}.jar"/&gt;</b></font>
+            <b>&lt;/classpath&gt;</b>
+        &lt;/java&gt;
+    &lt;/target&gt;
+
+    ...
+
+&lt;/project&gt;
+</pre>
+
+<p>In this example we start our application not via its Main-Class manifest-attribute, because we could not provide
+a jarname <i>and</i> a classpath. So add our class in the red line to the already defined path and start as usual. Running
+<tt>ant</tt> would give (after the usual compile stuff):</p>
+
+<pre class="output">
+[java] 0 [main] INFO oata.HelloWorld  - Hello World
+</pre>
+
+<p>What's that? <ul>
+<li><i>[java]</i> Ant task running at the moment</li>
+<li><i>0</i> <font size="-1">sorry don't know - some Log4J stuff</font></li>
+<li><i>[main]</i> the running thread from our application </li>
+<li><i>INFO</i> log level of that statement</i>
+<li><i>oata.HelloWorld</i> source of that statement</i>
+<li><i>-</i> separator</li>
+<li><i>Hello World</i> the message</li>
+</ul>
+For another layout ... have a look inside Log4J's documentation about using other PatternLayout's.</p>
+
+
+<a name="config-files">
+<h2>Configuration files</h2>
+<p>Why we have used Log4J? "It's highly configurable"? No - all is hard coded! But that is not the debt of Log4J - it's
+ours. We had coded <tt>BasicConfigurator.configure();</tt> which implies a simple, but hard coded configuration. More
+confortable would be using a property file. In the java source delete the BasicConfiguration-line from the main() method
+(and the related import-statement). Log4J will search then for a configuration as described in it's manual. Then create 
+a new file <tt>src/log4j.properties</tt>. That's the default name for Log4J's configuration and using that name would make 
+life easier - not only the framework knows what is inside, you too!</p>
+
+<pre class="code">
+log4j.rootLogger=DEBUG, <b>stdout</b>
+
+log4j.appender.<b>stdout</b>=org.apache.log4j.ConsoleAppender
+
+log4j.appender.<b>stdout</b>.layout=org.apache.log4j.PatternLayout
+log4j.appender.<b>stdout</b>.layout.ConversionPattern=<font color="blue"><b>%m%n</b></font>
+</pre>
+
+<p>This configuration creates an output channel ("Appender") to console named as <tt>stdout</tt> which prints the
+message (%m) followed by a line feed (%n) - same as the earlier System.out.println() :-) Oooh kay - but we haven't
+finished yet. We should deliver the configuration file, too. So we change the buildfile:</p>
+
+<pre class="code">
+    ...
+    &lt;target name="compile"&gt;
+        &lt;mkdir dir="${classes.dir}"/&gt;
+        &lt;javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/&gt;
+        <b>&lt;copy todir="${classes.dir}"&gt;</b>
+            <b>&lt;fileset dir="${src.dir}" excludes="**/*.java"/&gt;</b>
+        <b>&lt;/copy&gt;</b>
+    &lt;/target&gt;
+    ...
+</pre>
+
+<p>This copies all resources (as long as they haven't the suffix ".java") to the build directory, so we could
+start the application from that directory and these files will included into the jar.</p>
+
+
+<a name="junit">
+<h2>Testing the class</h2>
+<p>In this step we will introduce the usage of the JUnit [3] testframework in combination with Ant. Because Ant
+has a built-in JUnit 3.8.2 you could start directly using it. Write a test class in <tt>src\HelloWorldTest.java</tt>: </p>
+
+<pre class="code">
+public class HelloWorldTest extends junit.framework.TestCase {
+
+    public void testNothing() {
+    }
+    
+    public void testWillAlwaysFail() {
+        fail("An error message");
+    }
+    
+}</pre>
+
+<p>Because we dont have real business logic to test, this test class is very small: just show how to start. For 
+further information see the JUnit documentation [3] and the manual of <a href="Tasks/junit.html">junit</a> task.
+Now we add a junit instruction to our buildfile:</p>
+
+<pre class="code">
+    ...
+
+    &lt;path <b>id="application"</b> location="${jar.dir}/${ant.project.name}.jar"/&gt;
+
+    &lt;target name="run" depends="jar"&gt;
+        &lt;java fork="true" classname="${main-class}"&gt;
+            &lt;classpath&gt;
+                &lt;path refid="classpath"/&gt;
+                <b>&lt;path refid="application"/&gt;</b>
+            &lt;/classpath&gt;
+        &lt;/java&gt;
+    &lt;/target&gt;
+    
+    <b>&lt;target name="junit" depends="jar"&gt;
+        &lt;junit printsummary="yes"&gt;
+            &lt;classpath&gt;
+                &lt;path refid="classpath"/&gt;
+                &lt;path refid="application"/&gt;
+            &lt;/classpath&gt;
+            
+            &lt;batchtest fork="yes"&gt;
+                &lt;fileset dir="${src.dir}" includes="*Test.java"/&gt;
+            &lt;/batchtest&gt;
+        &lt;/junit&gt;
+    &lt;/target&gt;</b>
+
+    ...
+
+</pre>
+
+<p>We reuse the path to our own jar file as defined in run-target by
+  giving it an ID and making it globally available.
+The <tt>printsummary=yes</tt> lets us see more detailed information than just a "FAILED" or "PASSED" message.
+How much tests failed? Some errors? Printsummary lets us know. The classpath is set up to find our classes.
+To run tests the <tt>batchtest</tt> here is used, so you could easily add more test classes in the future just
+by naming them <tt>*Test.java</tt>. This is a common naming scheme.</p>
+
+<p>After a <tt class="code">ant junit</tt> you'll get:</p>
+
+<pre class="output">
+...
+junit:
+    [junit] Running HelloWorldTest
+    [junit] Tests run: 2, Failures: 1, Errors: 0, Time elapsed: 0,01 sec
+    [junit] Test HelloWorldTest FAILED
+
+BUILD SUCCESSFUL
+...
+</pre>
+
+<p>We can also produce a report. Something that you (and other) could read after closing the shell .... 
+There are two steps: 1. let &lt;junit&gt; log the information and 2. convert these to something readable (browsable).<p>
+
+<pre class="code">
+    ...
+    <b>&lt;property name="report.dir"  value="${build.dir}/junitreport"/&gt;</b>
+    ...
+    &lt;target name="junit" depends="jar"&gt;
+        <b>&lt;mkdir dir="${report.dir}"/&gt;</b>
+        &lt;junit printsummary="yes"&gt;
+            &lt;classpath&gt;
+                &lt;path refid="classpath"/&gt;
+                &lt;path refid="application"/&gt;
+            &lt;/classpath&gt;
+            
+            <b>&lt;formatter type="xml"/&gt;</b>
+            
+            &lt;batchtest fork="yes" <b>todir="${report.dir}"</b>&gt;
+                &lt;fileset dir="${src.dir}" includes="*Test.java"/&gt;
+            &lt;/batchtest&gt;
+        &lt;/junit&gt;
+    &lt;/target&gt;
+    
+    <b>&lt;target name="junitreport"&gt;
+        &lt;junitreport todir="${report.dir}"&gt;
+            &lt;fileset dir="${report.dir}" includes="TEST-*.xml"/&gt;
+            &lt;report todir="${report.dir}"/&gt;
+        &lt;/junitreport&gt;
+    &lt;/target&gt;</b>
+</pre>
+
+<p>Because we would produce a lot of files and these files would be written to the current directory by default,
+we define a report directory, create it before running the <tt>junit</tt> and redirect the logging to it. The log format
+is XML so <tt>junitreport</tt> could parse it. In a second target <tt>junitreport</tt> should create a browsable 
+HTML-report for all generated xml-log files in the report directory. Now you can open the ${report.dir}\index.html and
+see the result (looks something like JavaDoc).<br>
+Personally I use two different targets for junit and junitreport. Generating the HTML report needs some time and you dont
+need the HTML report just for testing, e.g. if you are fixing an error or a integration server is doing a job.
+</p>
+
+
+
+
+<a name="resources"></a>
+<h2>Resources</h2>
+<pre>
+    [1] <a href="http://www.apache.org/dist/logging/log4j/1.2.13/logging-log4j-1.2.13.zip">http://www.apache.org/dist/logging/log4j/1.2.13/logging-log4j-1.2.13.zip</a>
+    [2] <a href="http://logging.apache.org/log4j/docs/manual.html">http://logging.apache.org/log4j/docs/manual.html</a>
+    [3] <a href="http://www.junit.org/index.htm">http://www.junit.org/index.htm</a>
+</pre>
+
+
+
+
+</body>
+</html>

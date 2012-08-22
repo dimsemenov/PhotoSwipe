@@ -260,8 +260,8 @@
 		 */
 		objectHasProperty: function(obj, propName){
 			
-			if (obj.hasOwnProperty){
-				return obj.hasOwnProperty(propName);
+			if (propName in obj) {
+				return propName in obj;
 			}
 			else{
 				return ('undefined' !== typeof obj[propName]);

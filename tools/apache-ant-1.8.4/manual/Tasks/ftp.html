@@ -1,0 +1,724 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>FTP Task</title>
+</head>
+
+<body>
+
+<h2><a name="ftp">FTP</a></h2>
+<h3>Description</h3>
+<p>The ftp task implements a basic FTP client that can send, receive,
+list, delete files, and create directories.  See below for descriptions and examples of how
+to perform each task.</p>
+<p><b>Note:</b> This task depends on external libraries not included in the Apache Ant distribution.
+See <a href="../install.html#commons-net">Library Dependencies</a> for more information.
+<i>Get the latest version of this library, for the best support in Ant</i>
+
+</p>
+<p>The ftp task attempts to determine what file system is in place on the FTP server.
+Supported server types are Unix, NT, OS2, VMS, and OS400.  In addition, NT and OS400 servers
+which have been configured to display the directory in Unix style are also supported correctly.
+Otherwise, the system will default to Unix standards.
+<i>remotedir</i> must be specified in the exact syntax required by the ftp
+server. If the usual Unix conventions are not supported by the server,
+<i>separator</i> can be used to set the file separator that should be used
+instead.</p>
+<p>See the section on <a href="../dirtasks.html#directorybasedtasks">directory based
+tasks</a>, on how the inclusion/exclusion of files works, and how to
+write patterns.</p>
+<p>
+This task does not currently use the proxy information set by the
+<a href="setproxy.html"><code>&lt;setproxy&gt;</code></a> task, and cannot go through
+a firewall via socks. 
+<p>
+<b>Warning: </b> there have been problems reported concerning the ftp get with the <code>newer</code> attribute.
+Problems might be due to format of ls -l differing from what is expected by commons-net,
+for instance due to specificities of language used by the ftp server in the directory listing.
+If you encounter such a problem, please send an email including a sample directory listing
+coming from your ftp server (ls -l on the ftp prompt).
+</p>
+<p>
+If you can connect but not upload or download, try setting the <code>passive</code>
+attribute to true to use the existing (open) channel, instead of having the server
+try to set up a new connection.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top" width="15%"><b>Attribute</b></td>
+    <td valign="top" width="65%"><b>Description</b></td>
+    <td align="center" valign="top" width="20%"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">server</td>
+    <td valign="top">the address of the remote ftp server.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">port</td>
+    <td valign="top">the port number of the remote ftp server.
+                     Defaults to port 21.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">userid</td>
+    <td valign="top">the login id to use on the ftp server.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">password</td>
+    <td valign="top">the login password to use on the ftp server.</td>
+    <td valign="top" align="center">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">account</td>
+    <td valign="top">the account to use on the ftp server.
+        <em>since Ant 1.7</em>.
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">remotedir</td>
+    <td valign="top">remote directory on the
+                     ftp server
+                     see table below for detailed usage
+                     </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">action</td>
+    <td valign="top">the ftp action to perform, defaulting to "send".
+                     Currently supports "put", "get",
+                     "del", "list", "chmod",
+                     "mkdir", "rmdir", and "site".</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">binary</td>
+    <td valign="top">selects binary-mode ("yes") or text-mode
+                     ("no") transfers.
+                     Defaults to "yes"</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">passive</td>
+    <td valign="top">selects passive-mode ("yes") transfers, for
+                     better through-firewall connectivity, at the price
+                     of performance.
+                     Defaults to "no"</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">verbose</td>
+    <td valign="top">displays information on each file transferred if set 
+                     to "yes". Defaults to "no".</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">depends</td>
+    <td valign="top">transfers only new or changed files if set to 
+                     "yes". Defaults to "no".</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">newer</td>
+    <td valign="top">a synonym for <i>depends</i>.
+    see timediffauto and timediffmillis</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">timediffauto</td>
+    <td valign="top">set to <code>"true"</code>
+    to make ant calculate the time difference between client and server.<br>
+    <em>requires write access in the remote directory</em><br>
+    Since ant 1.6</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <a name="timestampGranularity"/>
+  <tr>
+    <td valign="top">timestampGranularity</td>
+    <td valign="top">Specify either <code>MINUTE</code>, <code>NONE</code>,
+     (or you may specify <code>""</code> which is equivalent to not specifying a value,
+     useful for property-file driven scripts).  Allows override of the typical situation 
+     in PUT and GET where local filesystem timestamps are <code>HH:mm:ss</code> 
+     and the typical FTP server's timestamps are <code>HH:mm</code>.  This can throw 
+     off uptodate calculations.  However, the default values should suffice for most
+     applications.<br>
+    Since ant 1.7
+    </td>
+    <td valign="top" align="center">No.  Only applies in "puts" and "gets" where the
+    default values are <code>MINUTE</code> for PUT and <code>NONE</code> for GET.  
+    (It is not as necessary in GET because we have the <b>preservelastmodified</b> option.)</td>
+  </tr>
+  <tr>
+    <td valign="top">timediffmillis</td>
+    <td valign="top"><b>Deprecated</b>. Number of milliseconds to add to the time on 
+    the remote machine to get the time on the local machine.  The <b>timestampGranularity</b> 
+    attribute (for which the default values should suffice in most situations), and the 
+    <b>serverTimeZoneConfig</b> option, should make this unnecessary. 
+    <b>serverTimeZoneConfig</b> does the math for you and also knows about 
+    Daylight Savings Time.<br>
+    Since ant 1.6
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">separator</td>
+    <td valign="top">sets the file separator used on the ftp server.
+                     Defaults to "/".</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">umask</td>
+    <td valign="top">sets the default file permissions for new files,
+                     unix only.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">chmod</td>
+    <td valign="top">sets or changes file permissions for new or existing files,
+      unix only. If used with a put action, chmod will be issued for each file.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">listing</td>
+    <td valign="top">the file to write results of the "list" action.
+                     Required for the "list" action, ignored otherwise.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">ignoreNoncriticalErrors</td>
+    <td valign="top">flag which permits the task to ignore some non-fatal error
+      codes sent by some servers during directory creation: wu-ftp in particular.
+      Default: false</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">skipFailedTransfers</td>
+    <td valign="top">flag which enables unsuccessful file put, delete
+    and get operations to be skipped with a warning and the
+    remainder of the files still transferred. Default: false</td>
+    <td valign="top" align="center">No</td>
+  </tr>  
+  <tr>
+    <td valign="top">preservelastmodified</td>
+    <td valign="top">Give the copied files the same last modified
+      time as the original source files (applies to getting files only).
+      (<em>Note</em>: Ignored on Java 1.1)</td>
+    <td valign="top" align="center">No; defaults to false.</td>
+  </tr>
+  <tr>
+    <td valign="top">retriesAllowed</td>
+    <td valign="top">Set the number of retries allowed on an file-transfer operation.
+    If a number > 0 specified, each file transfer can fail up to that
+    many times before the operation is failed.  If -1 or "forever" specified, the
+    operation will keep trying until it succeeds.</td>
+    <td valign="top" align="center">No; defaults to 0</td>
+  </tr>
+  <tr>
+    <td valign="top">siteCommand</td>
+    <td valign="top">Set the server-specific SITE command to execute if
+    the <code>action</code> attribute has been specified as <code>"site"</code>.
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">initialSiteCommand</td>
+    <td valign="top">Set a server-specific SITE command to execute immediately
+      after login.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">enableRemoteVerification</td>
+    <td valign="top">Whether data connection sshould be verified to
+    connect to the same host as the control connection.  This is a
+    security measure that is enabled by default, but it may be useful
+    to disable it in certain firewall scenarios.
+      <em>since Ant 1.8.0</em></td>
+    <td valign="top" align="center">No, default is true</td>
+  </tr>
+
+    <tr>
+    <td colspan="3">
+    <p><b>The following attributes require <a href=
+    "http://commons.apache.org/net/download_net.cgi">
+    jakarta-commons-net-1.4.0 or greater</a>.</b></p>
+    <p>
+    Use these options when the standard options don't work, because
+    <ul><li>the server is in a different timezone and you need timestamp
+    dependency checking</li>
+    <li>the default timestamp formatting doesn't match the server display and
+    list parsing therefore fails</li></ul>
+    </p><p>
+    If none of these is specified, the default mechanism of letting the system
+    auto-detect the server OS type based on the FTP SYST command and assuming
+    standard formatting for that OS type will be used.
+    </p><p>
+    To aid in property-file-based development where a build script is configured
+    with property files, for any of these attributes, a value of <code>""</code>
+    is equivalent to not specifying it.
+    </p><p>
+    Please understand that these options are incompatible with the autodetection
+    scheme.  If any of these options is specified, (other than with a value of
+    <code>""</code> ) a system type must be chosen and if systemTypeKey is not
+    specified, UNIX will be assumed. The philosophy behind this is that these
+    options are for setting non-standard formats, and a build-script author who
+    knows what system he is dealing with will know what options to need to be
+    set. Otherwise, these options should be left alone and the default
+    autodetection scheme can be used and will work in the majority of cases.
+    </p></td>
+    </tr>
+  <tr>
+    <td valign="top">systemTypeKey</td>
+    <td valign="top">Specifies the type of system in use on the server.
+      Supported values are <code>"UNIX", "VMS", "WINDOWS", "OS/2", "OS/400",
+      "MVS".</code>  If not specified, (or specified as <code>""</code>) and if
+      no other xxxConfig attributes are specified, the autodectection mechanism
+      based on the FTP SYST command will be used.<br>
+      Since ant 1.7
+    </td>
+    <td valign="top" align="center">No, but if any of the following xxxConfig
+        attributes is specified, UNIX will be assumed, even if <code>""</code>
+        is specified here.
+    </td>
+   </tr>
+   <tr>
+    <td valign="top">serverTimeZoneConfig</td>
+    <td valign="top">Specify as a Java
+     <a href="http://download.oracle.com/javase/6/docs/api/java/util/TimeZone.html">
+     TimeZone</a> identifier, (e.g. <code>GMT</code>, <code>America/Chicago</code> or
+    <code>Asia/Jakarta</code>) the timezone used by the server for timestamps.  This 
+      enables timestamp dependency checking even when the server is in a different 
+      time zone from the client. Time Zones know, also, about daylight savings time, 
+      and do not require you to calculate milliseconds of difference.  If not specified, 
+      (or specified as <code>""</code>), the time zone of the client is assumed.<br>
+      Since ant 1.7
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    
+    <td valign="top">defaultDateFormatConfig</td>
+    <td valign="top">Specify in Java 
+    <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
+     SimpleDateFormat</a> notation, (e.g.
+     <code>yyyy-MM-dd</code>), the date format generally used by the FTP server
+      to parse dates.  In some cases this will be the only date format used.
+      In others, (unix for example) this will be used for dates
+      older than a year old. (See <b>recentDateFormatConfig</b>).  If not specified,
+      (or specified as <code>""</code>), the default date format for the system
+      type indicated by the <b>systemTypeKey</b> attribute will be used.<br>
+      Since ant 1.7
+    </td>
+    <td valign="top" align="center">
+    No.
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">recentDateFormatConfig</td>
+    <td valign="top">Specify in Java 
+    <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">
+     SimpleDateFormat</a> notation,
+      (e.g. <code>MMM dd hh:mm</code>) the date format used by the FTP server
+      to parse dates less than a year old.  If not specified (or specified as
+      <code>""</code>), and if the system type indicated by the system key uses
+      a recent date format, its standard format will be used.<br>
+      Since ant 1.7
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">serverLanguageCodeConfig</td>
+    <td valign="top">a <a href="http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt">
+      two-letter ISO-639 language code</a> used to specify the
+      language used by the server to format month names.  This only needs to be
+      specified when the server uses non-numeric abbreviations for months in its
+      date listings in a language other than English.  This appears to be
+      becoming rarer and rarer, as commonly distributed ftp servers seem
+      increasingly to use English or all-numeric formats.
+      Languages supported are:
+      <ul>
+      	<li>en - English</li>
+      	<li>fr - French</li>
+      	<li>de - German</li>
+      	<li>it - Italian</li>
+      	<li>es - Spanish</li>
+      	<li>pt - Portuguese</li>
+      	<li>da - Danish</li>
+      	<li>sv - Swedish</li>
+      	<li>no - Norwegian</li>
+      	<li>nl - Dutch</li>
+      	<li>ro - Romanian</li>
+      	<li>sq - Albanian</li>
+      	<li>sh - Serbo-croatian</li>
+      	<li>sk - Slovak</li>
+      	<li>sl - Slovenian</li>
+      </ul>
+      If you require a language other than the above, see also the
+      <b>shortMonthNamesConfig</b> attribute.<br>
+      Since ant 1.7
+    </td>
+
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">shortMonthNamesConfig</td>
+    <td valign="top">specify the month abbreviations used on the server in file
+      timestamp dates as a pipe-delimited string for each month. For example,
+      a set of month names used by a hypothetical
+      Icelandic FTP server might conceivably be specified as
+      <code>"jan|feb|mar|apr|ma&#xED;|j&#xFA;n|j&#xFA;l|&#xE1;g&#xFA;|sep|okt|n&#xF3;v|des"</code>.
+      This attribute exists primarily to support languages not supported by
+      the <b>serverLanguageCode</b> attribute.<br>
+      Since ant 1.7
+    </td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</table>
+<h3>Note about remotedir attribute</h3>
+<table  border="1" cellpadding="2" cellspacing="0"
+ >
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;" width="20%">Action<br>
+      </td>
+      <td style="vertical-align: top;" width="40%">meaning of <code>remotedir</code><br>
+      </td>
+      <td style="vertical-align: top;">use of nested <code>fileset</code>
+(s)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;" width="20%">send/put<br>
+      </td>
+      <td style="vertical-align: top;" width="40%">base directory to
+which the files are sent<br>
+      </td>
+      <td style="vertical-align: top;">they are used normally and
+evaluated on the local machine<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;" width="20%">recv/get<br>
+      </td>
+      <td style="vertical-align: top;" width="40%">base directory from
+which the files are retrieved<br>
+      </td>
+      <td style="vertical-align: top;">the remote files located under
+the <code>remotedir </code>matching the include/exclude patterns of
+the <code>fileset&nbsp;</code></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;" width="20%">del/delete<br>
+      </td>
+      <td style="vertical-align: top;" width="40%">base directory from
+which files get deleted<br>
+      </td>
+      <td style="vertical-align: top;">the remote files located under
+the <code>remotedir </code>matching the include/exclude patterns of
+the <code>fileset <br>
+      </code></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;" width="20%">list<br>
+      </td>
+      <td style="vertical-align: top;" width="40%">base directory from
+which files are listed<br>
+      </td>
+      <td style="vertical-align: top;">the remote files located under
+the <code>remotedir </code>matching the include/exclude patterns of
+the <code>fileset <br>
+      </code></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;" width="20%">mkdir</td>
+      <td style="vertical-align: top;" width="40%">directory to create<br>
+      </td>
+      <td style="vertical-align: top;">not used<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;" width="20%">chmod</td>
+      <td style="vertical-align: top;" width="40%">base directory from
+which the mode of files get changed<br>
+      </td>
+      <td style="vertical-align: top;">the remote files located under
+the <code>remotedir </code>matching the include/exclude patterns of
+the <code>fileset <br>
+      </code></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;" width="20%">rmdir<br>
+      </td>
+      <td style="vertical-align: top;" width="40%">base directory from
+which directories get removed<br>
+      </td>
+      <td style="vertical-align: top;">the remote directories located
+under the <code>remotedir </code>matching the include/exclude
+patterns of the <code>fileset <br>
+      </code></td>
+    </tr>
+  </tbody>
+</table><h3>Parameters specified as nested elements</h3>
+<h4>fileset</h4>
+<p>The ftp task supports any number of nested <a
+href="../Types/fileset.html"><code>&lt;fileset&gt;</code></a> elements to specify
+the files to be retrieved, or deleted, or listed, or whose mode you want to change.</p>
+<p>
+The attribute <code>followsymlinks</code> of <code>fileset</code> is supported on
+local (put) as well as remote (get, chmod, delete) filesets.
+<em>Before ant 1.6 there was no support of symbolic links in remote filesets.
+In order to exclude symbolic links (preserve the behavior of ant 1.5.x and older),
+you need to explicitly set <code>followsymlinks</code> to <code>false</code>.</em>
+On remote filesets hidden files are not checked for being symbolic links. Hidden
+files are currently assumed to not be symbolic links.
+</p>
+
+<h3>Sending Files</h3>
+<p>The easiest way to describe how to send files is with a couple of examples:</p>
+<pre>
+  &lt;ftp server="ftp.apache.org"
+       userid="anonymous"
+       password="me@myorg.com"&gt;
+    &lt;fileset dir="htdocs/manual"/&gt;
+  &lt;/ftp&gt;
+</pre>
+<p>Logs in to <code>ftp.apache.org</code> as <code>anonymous</code> and 
+uploads all files in the <code>htdocs/manual</code> directory 
+to the default directory for that user.</p>
+<pre>  &lt;ftp server="ftp.apache.org"
+       remotedir="incoming"
+       userid="anonymous"
+       password="me@myorg.com"
+       depends="yes"&gt;
+    &lt;fileset dir="htdocs/manual"/&gt;
+  &lt;/ftp&gt;</pre>
+<p>Logs in to <code>ftp.apache.org</code> as <code>anonymous</code> and
+uploads all new or changed files in the <code>htdocs/manual</code> directory 
+to the <code>incoming</code> directory relative to the default directory
+for <code>anonymous</code>.</p>
+<pre>  &lt;ftp server="ftp.apache.org"
+       port="2121"
+       remotedir="/pub/incoming"
+       userid="coder"
+       password="java1"
+       passive="yes"
+       depends="yes"
+       binary="no"&gt;
+    &lt;fileset dir="htdocs/manual"&gt;
+      &lt;include name="**/*.html"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;</pre>
+<p>Logs in to <code>ftp.apache.org</code> at port <code>2121</code> as
+<code>coder</code> with password <code>java1</code> and uploads all new or
+changed HTML files in the <code>htdocs/manual</code> directory to the
+<code>/pub/incoming</code> directory. The files are transferred in text mode.
+Passive mode has been switched on to send files from behind a firewall.</p>
+<pre>  &lt;ftp server="ftp.hypothetical.india.org"
+       port="2121"
+       remotedir="/pub/incoming"
+       userid="coder"
+       password="java1"
+       depends="yes"
+       binary="no"
+       systemTypeKey="Windows"
+       serverTimeZoneConfig="India/Calcutta"&gt;
+    &lt;fileset dir="htdocs/manual"&gt;
+      &lt;include name="**/*.html"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;</pre>
+<p>Logs in to a Windows server at <code>ftp.hypothetical.india.org</code>
+at port <code>2121</code> as <code>coder</code> with password <code>java1</code>
+and uploads all new or changed (accounting for timezone differences)
+HTML files in the <code>htdocs/manual</code>
+directory to the <code>/pub/incoming</code> directory. The files are transferred
+in text mode.</p>
+<pre>  &lt;ftp server="ftp.nt.org"
+       remotedir="c:\uploads"
+       userid="coder"
+       password="java1"
+       separator="\"
+       verbose="yes"&gt;
+    &lt;fileset dir="htdocs/manual"&gt;
+      &lt;include name="**/*.html"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;</pre><p>Logs in to the Windows-based <code>ftp.nt.org</code> as 
+<code>coder</code> with password <code>java1</code> and uploads all 
+HTML files in the <code>htdocs/manual</code> directory to the 
+<code>c:\uploads</code> directory.  Progress messages are displayed as each
+file is uploaded.</p>
+<h3>Getting Files</h3>
+<p>Getting files from an FTP server works pretty much the same way as 
+sending them does.  The only difference is that the nested filesets
+use the remotedir attribute as the base directory for the files on the
+FTP server, and the dir attribute as the local directory to put the files
+into.  The file structure from the FTP site is preserved on the local machine.</p>
+<pre>
+  &lt;ftp action="get"
+       server="ftp.apache.org"
+       userid="anonymous"
+       password="me@myorg.com"&gt;
+    &lt;fileset dir="htdocs/manual"&gt;
+      &lt;include name="**/*.html"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;
+</pre>
+<p>Logs in to <code>ftp.apache.org</code> as <code>anonymous</code> and 
+recursively downloads all .html files from default directory for that user 
+into the <code>htdocs/manual</code> directory on the local machine.</p>
+<pre>
+  &lt;ftp action="get"
+       server="ftp.apache.org"
+       userid="anonymous"
+       password="me@myorg.com"
+       systemTypeKey="UNIX"
+       defaultDateFormatConfig="yyyy-MM-dd HH:mm"&gt;
+    &lt;fileset dir="htdocs/manual"&gt;
+      &lt;include name="**/*.html"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;
+</pre>
+<p>If apache.org ever switches to a unix FTP server that uses the new all-numeric
+format for timestamps, this version would become necessary.  It would accomplish
+the same functionality as the previous example but would successfully handle the
+numeric timestamps.
+The <code>systemTypeKey</code> is not necessary here but helps clarify what is
+going on.</p>
+<pre>
+  &lt;ftp action="get"
+       server="ftp.hypthetical.fr"
+       userid="anonymous"
+       password="me@myorg.com"
+       defaultDateFormatConfig="d MMM yyyy"
+       recentDateFormatConfig="d MMM HH:mm"
+       serverLanguageCodeConfig="fr"&gt;
+     &lt;fileset dir="htdocs/manual"&gt;
+      &lt;include name="**/*.html"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;
+</pre>
+<p>Logs into a UNIX FTP server at <code>ftp.hypothetical.fr</code> which displays
+dates with French names in Standard European format, as <code>anonymous</code>, and
+recursively downloads all .html files from default directory for that user
+into the <code>htdocs/manual</code> directory on the local machine.</p>
+
+<h3>Deleting Files</h3>
+As you've probably guessed by now, you use nested fileset elements to 
+select the files to delete from the remote FTP server.  Again, the 
+filesets are relative to the remote directory, not a local directory.  In
+fact, the dir attribute of the fileset is ignored completely.
+
+<pre>
+  &lt;ftp action="del"
+       server="ftp.apache.org"
+       userid="anonymous"
+       password="me@myorg.com"&gt;
+    &lt;fileset&gt;
+      &lt;include name="**/*.tmp"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;
+</pre>
+<p>Logs in to <code>ftp.apache.org</code> as <code>anonymous</code> and
+tries to delete all *.tmp files from the default directory for that user.
+If you don't have permission to delete a file, a BuildException is thrown.</p>
+<h3>Listing Files</h3>
+<pre>
+  &lt;ftp action="list"
+       server="ftp.apache.org"
+       userid="anonymous"
+       password="me@myorg.com"
+       listing="data/ftp.listing"&gt;
+    &lt;fileset&gt;
+      &lt;include name="**"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;
+</pre>
+<p>This provides a file listing in <code>data/ftp.listing</code> of all the files on
+the FTP server relative to the default directory of the <code>anonymous</code>
+user. The listing is in whatever format the FTP server normally lists files.</p>
+
+<h3>Creating Directories</h3>
+<p>Note that with the mkdir action, the directory to create is specified using the
+remotedir attribute.</p>
+<pre>
+  &lt;ftp action="mkdir"
+       server="ftp.apache.org"
+       userid="anonymous"
+       password="me@myorg.com"
+       remotedir="some/remote/dir"/&gt;
+</pre>
+<p>This creates the directory <code>some/remote/dir</code> beneath the default root
+directory.  As with all other actions, the directory separator character must be correct
+according to the desires of the FTP server.</p>
+<h3>Removing Directories</h3>
+This action uses nested fileset elements to 
+select the directories to remove from the remote FTP server.  The 
+filesets are relative to the remote directory, not a local directory. 
+The dir attribute of the fileset is ignored completely.
+The directories to be removed must be empty, or contain only
+other directories that have been also selected to be removed by the filesets
+patterns, otherwise a BuildException will be thrown.
+Also, if you don't have permission to remove a directory, a BuildException is 
+thrown.
+
+<pre>
+  &lt;ftp action="rmdir"
+       server="ftp.apache.org"
+       userid="anonymous"
+       password="me@myorg.com"
+       remotedir="/somedir" &gt;
+    &lt;fileset&gt;
+      &lt;include name="dira"/&gt;
+      &lt;include name="dirb/**"/&gt;
+    &lt;/fileset&gt;
+  &lt;/ftp&gt;
+</pre>
+<p>Logs in to <code>ftp.apache.org</code> as <code>anonymous</code> and
+tries to remove <code>/somedir/dira</code> directory and
+all the directories tree starting at, and including, <code>/somedir/dirb</code>.
+When removing the <code>/somedir/dirb</code> tree,
+it will start at the leaves moving up to the root, so that when
+it tries to remove a directory it is sure all the directories under it are
+already removed.
+Obviously all the files in the tree must have been already deleted.
+</p>
+<p>As an example suppose you want to delete everything contained into 
+<code>/somedir</code>, so invoke first the <code>&lt;ftp&gt;</code> task with
+<code>action="delete"</code>, then with
+<code>action="rmdir"</code> specifying in both cases
+<code>remotedir="/somedir"</code> and
+
+<pre>
+    &lt;fileset&gt;
+        &lt;include name="**"/&gt;
+    &lt;/fileset&gt;
+</pre>
+
+The directory specified in the <code>remotedir</code> parameter is never
+selected for remove, so if you need to remove it, specify its parent in
+<code>remotedir</code> parameter and include it in the 
+<code>&lt;fileset&gt;</code> pattern, like <code>"somedir/**"</code>.
+</p>
+
+
+</body>
+</html>
+

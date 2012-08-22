@@ -1,0 +1,228 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+<title>Delete Task</title>
+</head>
+
+<body>
+
+<h2><a name="delete">Delete</a></h2>
+<h3>Description</h3>
+<p>Deletes a single file, a specified directory and all its files and
+subdirectories, or a set of files specified by one or more
+<a href="../Types/resources.html#collection">resource collection</a>s.
+The literal implication of <code>&lt;fileset&gt;</code> is that
+directories are not included; however the removal of empty directories can
+be triggered when using nested filesets by setting the
+<code>includeEmptyDirs</code> attribute to <i>true</i>. Note that this
+attribute is meaningless in the context of any of the various resource
+collection types that <i>do</i> include directories, but that no attempt
+will be made to delete non-empty directories in any case.  Whether a
+directory is empty or not is decided by looking into the filesystem -
+include or exclude patterns don't apply here.</p>
+<p>
+If you use this task to delete temporary files created by editors
+and it doesn't seem to work, read up on the
+<a href="../dirtasks.html#defaultexcludes">default exclusion set</a>
+in <strong>Directory-based Tasks</strong>, and see the
+<code>defaultexcludes</code> attribute below.
+
+<p>For historical reasons <code>&lt;delete dir="x"/&gt;</code> is
+  different from <code>&lt;delete&gt;&lt;fileset
+  dir="x"/&gt;&lt;/delete&gt;</code>, it will try to remove everything
+  inside "x" including "x" itself, not taking default excludes into
+  account, blindly following all symbolic links.  If you need more
+  control, use a nested <code>&lt;fileset&gt;</code>.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">file</td>
+    <td valign="top">The file to delete, specified as either the simple
+     filename (if the file exists in the current base directory), a
+     relative-path filename, or a full-path filename.</td>
+    <td align="center" valign="middle" rowspan="2">At least one of the two,
+     unless nested resource collections are specified
+  </tr>
+  <tr>
+    <td valign="top">dir</td>
+    <td valign="top">The directory to delete, including all its files and
+     subdirectories.<br>
+     <b>Note:</b> <code>dir</code> is <em>not</em> used
+     to specify a directory name for <code>file</code>; <code>file</code>
+     and <code>dir</code> are independent of each other.<br>
+     <b>WARNING:</b> Do <b>not</b> set <code>dir</code> to
+     <code>&quot;.&quot;</code>, <code>&quot;${basedir}&quot;</code>,
+     or the full-pathname equivalent unless you truly <em>intend</em> to
+     recursively remove the entire contents of the current base directory
+     (and the base directory itself, if different from the current working
+     directory).</td>
+  </tr>
+  <tr>
+    <td valign="top">verbose</td>
+    <td valign="top">Whether to show the name of each deleted file.</td>
+    <td align="center" valign="top">No, default &quot;false&quot;</i></td>
+  </tr>
+  <tr>
+    <td valign="top">quiet</td>
+    <td valign="top">If the specified file or directory does not exist,
+     do not display a diagnostic message (unless Apache Ant
+     has been invoked with the <code>-verbose</code> or
+     <code>-debug</code> switches) or modify the exit status to
+     reflect an error.
+     When set to &quot;true&quot;, if a file or directory cannot be deleted,
+     no error is reported. This setting emulates the
+     <code>-f</code> option to the Unix <em>rm</em> command.
+     Setting this to &quot;true&quot; implies setting
+     <code>failonerror</code> to &quot;false&quot;.
+    </td>
+    <td align="center" valign="top">No, default &quot;false&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">failonerror</td>
+    <td valign="top">Controls whether an error (such as a failure to
+    delete a file) stops the build or is merely reported to the screen.
+    Only relevant if <code>quiet</code> is &quot;false&quot;.</td>
+    <td align="center" valign="top">No, default &quot;true&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">includeemptydirs</td>
+    <td valign="top">Whether to delete empty directories
+                     when using filesets.</td>
+    <td align="center" valign="top">No, default &quot;false&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">includes</td>
+    <td valign="top"><em>Deprecated.</em>  Use resource collections.
+      Comma- or space-separated list of patterns of
+      files that must be deleted. All files are relative to the directory
+      specified in <code>dir</code>.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">includesfile</td>
+    <td valign="top"><em>Deprecated.</em>  Use resource collections.
+      The name of a file. Each line of
+      this file is taken to be an include pattern.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludes</td>
+    <td valign="top"><em>Deprecated.</em>  Use resource collections.
+      Comma- or space-separated list of patterns of
+      files that must be excluded from the deletion list.
+      All files are relative to the directory specified in <code>dir</code>.
+      No files (except default excludes) are excluded when omitted.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">excludesfile</td>
+    <td valign="top"><em>Deprecated.</em>  Use resource collections.
+      The name of a file. Each line of
+      this file is taken to be an exclude pattern</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">defaultexcludes</td>
+    <td valign="top"><em>Deprecated.</em>  Use resource collections.
+      Whether to use <a href="../dirtasks.html#defaultexcludes">
+      default excludes.</a></td>
+    <td align="center" valign="top">No, default &quot;true&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">deleteonexit</td>
+    <td valign="top">
+      Indicates whether to use File#deleteOnExit() if there is a
+      failure to delete a file, this causes the jvm to attempt
+      to delete the file when the jvm process is terminating.
+      <em>Since Ant 1.6.2</em></td>
+    <td align="center" valign="top">No, default &quot;false&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">removeNotFollowedSymlinks</td>
+    <td valign="top">
+      Whether symbolic links (not the files/directories they link to)
+      should be removed if they haven't been followed because
+      followSymlinks was false or the maximum number of symbolic links
+      was too big.
+      <em>Since Ant 1.8.0</em></td>
+    <td align="center" valign="top">No, default &quot;false&quot;</td>
+  </tr>
+  <tr>
+    <td valign="top">performGCOnFailedDelete</td>
+    <td valign="top">
+      If Ant fails to delete a file or directory it will retry the
+      operation once.  If this flag is set to true it will perform a
+      garbage collection before retrying the delete.<br/>
+      Setting this flag to true is known to resolve some problems on
+      Windows (where it defaults to true) but also for directory trees
+      residing on an NFS share.
+      <em>Since Ant 1.8.3</em></td>
+    <td align="center" valign="top">No, default &quot;true&quot; on
+      Windows and &quot;true&quot; on any other OS.</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>  &lt;delete file=&quot;/lib/ant.jar&quot;/&gt;</pre>
+<p>deletes the file <code>/lib/ant.jar</code>.</p>
+<pre>  &lt;delete dir=&quot;lib&quot;/&gt;</pre>
+<p>deletes the <code>lib</code> directory, including all files
+and subdirectories of <code>lib</code>.</p>
+
+<pre>  &lt;delete&gt;
+    &lt;fileset dir=&quot;.&quot; includes=&quot;**/*.bak&quot;/&gt;
+  &lt;/delete&gt;
+</pre>
+<p>deletes all files with the extension <code>.bak</code> from the current directory
+and any subdirectories.</p>
+
+<pre>  &lt;delete includeEmptyDirs=&quot;true&quot;&gt;
+    &lt;fileset dir=&quot;build&quot;/&gt;
+  &lt;/delete&gt;
+</pre>
+<p>deletes all files and subdirectories of <code>build</code>, including
+<code>build</code> itself.</p>
+
+<pre>  &lt;delete includeemptydirs=&quot;true&quot;&gt;
+    &lt;fileset dir=&quot;build&quot; includes=&quot;**/*&quot;/&gt;
+  &lt;/delete&gt;
+</pre>
+<p>deletes all files and subdirectories of <code>build</code>, without
+<code>build</code> itself.</p>
+
+<pre>  &lt;delete includeemptydirs=&quot;true&quot;&gt;
+    &lt;fileset dir=&quot;src&quot; includes=&quot;**/.svn/&quot; defaultexcludes=&quot;false&quot;/&gt;
+  &lt;/delete&gt;
+</pre>
+<p>deletes the subversion metadata directories under <code>src</code>. Because <code>.svn</code>
+is on of the <a href="../dirtasks.html#defaultexcludes">default excludes</a> you have to use the 
+<code>defaultexcludes</code> flag, otherwise Ant wont delete these directories and the files in it.</p>
+
+
+
+</body>
+</html>
