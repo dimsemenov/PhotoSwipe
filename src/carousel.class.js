@@ -310,6 +310,23 @@
 			newTop = Math.round( ((maxHeight - newHeight) / 2) ) + 'px';
 			newLeft = Math.round( ((maxWidth - newWidth) / 2) ) + 'px';
 			
+/*			var positionConstraintsList = this.settings.imagePosition.split(" "); 
+			var positionConstraints = {};
+			for (var i=0; i<positionConstraintsList.length; ++i) {
+				positionConstraints[positionConstraintsList[i]] = true;
+			}
+*/			
+			if (this.settings.imagePosition.top) {
+				newTop = '0px';
+			} else if (this.settings.imagePosition.bottom) {
+				newTop = (maxHeight - newHeight) + 'px';
+			}  
+			if (this.settings.imagePosition.left) {
+				newLeft = '0px';
+			} else if (this.settings.imagePosition.right) {
+				newLeft = (maxWidth - newWidth) + 'px';
+			}  
+			
 			Util.DOM.setStyle(imageEl, {
 				position: 'absolute',
 				width: newWidth,

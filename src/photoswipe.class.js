@@ -173,6 +173,12 @@
 				doubleTapSpeed: 250,
 				margin: 20,
 				imageScaleMethod: 'fit', // Either "fit", "fitNoUpscale" or "zoom",
+				imagePosition: {
+					top: false,
+					bottom: false,
+					left: false,
+					right: false
+				},
 				
 				
 				// Toolbar
