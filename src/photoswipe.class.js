@@ -814,6 +814,8 @@
 		onDocumentOverlayFadeIn: function(e){
 			
 			window.setTimeout(function(){
+				if (Util.isNothing(this.settings))
+					return;
 				
 				var el = (this.settings.target === window) ? window.document.body : this.settings.target;
 				
