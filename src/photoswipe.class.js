@@ -173,6 +173,7 @@
 				doubleTapSpeed: 250,
 				margin: 20,
 				imageScaleMethod: 'fit', // Either "fit", "fitNoUpscale" or "zoom",
+				showImgFrame : true,
 				
 				
 				// Toolbar
