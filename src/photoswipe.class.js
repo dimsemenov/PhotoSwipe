@@ -90,6 +90,8 @@
 				this.carousel.dispose();
 			}
 			
+			this.destroyZoomPanRotate();
+			
 			if (!Util.isNothing(this.uiLayer)){
 				this.uiLayer.dispose();
 			}
@@ -97,8 +99,6 @@
 			if (!Util.isNothing(this.toolbar)){
 				this.toolbar.dispose();
 			}
-			
-			this.destroyZoomPanRotate();
 			
 			if (!Util.isNothing(this.cache)){
 				this.cache.dispose();
@@ -814,6 +814,8 @@
 		onDocumentOverlayFadeIn: function(e){
 			
 			window.setTimeout(function(){
+				if (Util.isNothing(this.settings))
+					return;
 				
 				var el = (this.settings.target === window) ? window.document.body : this.settings.target;
 				

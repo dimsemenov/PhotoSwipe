@@ -32,6 +32,9 @@
 			var prop, i;
 			
 			this.shrinkImage();
+
+			if (!Util.isNothing(this.imageEl))
+                		this.imageEl.onload = null;
 			
 			for (prop in this) {
 				if (Util.objectHasProperty(this, prop)) {
