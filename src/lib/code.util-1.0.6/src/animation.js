@@ -10,13 +10,13 @@
 				
 			_applyTransitionDelay: 50,
 			
-			_transitionEndLabel: (window.document.documentElement.style.webkitTransition !== undefined) ? "webkitTransitionEnd" : "transitionend",
+			_transitionEndLabel: (window.document.documentElement.style.webkitTransition !== undefined) ? "webkitTransitionEnd" : (window.document.documentElement.style.OTransition !== undefined) ? "oTransitionEnd otransitionend" : "transitionend",
 			
 			_transitionEndHandler: null,
 			
-			_transitionPrefix: (window.document.documentElement.style.webkitTransition !== undefined) ? "webkitTransition" : (window.document.documentElement.style.MozTransition !== undefined) ? "MozTransition" : "transition",
+			_transitionPrefix: (window.document.documentElement.style.webkitTransition !== undefined) ? "webkitTransition" : (window.document.documentElement.style.MozTransition !== undefined) ? "MozTransition" : (window.document.documentElement.style.OTransition !== undefined) ? "OTransition" : "transition",
 			
-			_transformLabel: (window.document.documentElement.style.webkitTransform !== undefined) ? "webkitTransform" : (window.document.documentElement.style.MozTransition !== undefined) ? "MozTransform" : "transform",
+			_transformLabel: (window.document.documentElement.style.webkitTransform !== undefined) ? "webkitTransform" : (window.document.documentElement.style.MozTransform !== undefined) ? "MozTransform" : (window.document.documentElement.style.OTransform !== undefined) ? "OTransform" : "transform",
 						
 			
 			/*
@@ -249,7 +249,7 @@
 						property = el.style[this._transitionPrefix + 'Property'],
 						callbackLabel = (property !== '') ? 'ccl' + property + 'callback' : 'cclallcallback',
 						callback,
-						transform = Util.coalesce(el.style.webkitTransform, el.style.MozTransform, el.style.transform),
+						transform = Util.coalesce(el.style.webkitTransform, el.style.MozTransform, el.style.OTransform, el.style.transform),
 						transformMatch, 
 						transformExploded,
 						domX = window.parseInt(Util.DOM.getStyle(el, 'left'), 0),
