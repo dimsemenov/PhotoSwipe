@@ -476,7 +476,7 @@
 				Util.Events.remove(window.document, 'keydown', this.keyDownHandler);
 			}
 			
-			if (this.isBackEventSupported && this.settings.backButtonHideEnabled && this.windowHashChangeHandler!=null){
+			if (this.isBackEventSupported && this.settings.backButtonHideEnabled && this.windowHashChangeHandler !== null){
 				Util.Events.remove(window, 'hashchange', this.windowHashChangeHandler);
 			}
 			
@@ -814,8 +814,9 @@
 		onDocumentOverlayFadeIn: function(e){
 			
 			window.setTimeout(function(){
-				if (Util.isNothing(this.settings))
+				if (Util.isNothing(this.settings)){
 					return;
+				}
 				
 				var el = (this.settings.target === window) ? window.document.body : this.settings.target;
 				
