@@ -80,7 +80,7 @@
 			
 			if (Util.Browser.isCSSTransformSupported){
 				
-				transform = Util.coalesce(this.contentEl.style.webkitTransform, this.contentEl.style.MozTransform, this.contentEl.style.transform, '');
+				transform = Util.coalesce(this.contentEl.style.webkitTransform, this.contentEl.style.MozTransform, this.contentEl.style.OTransform, this.contentEl.style.transform, '');
 				if (transform.indexOf('translate3d(' + xVal) === 0){
 					this.slideByEndHandler();
 					return;
