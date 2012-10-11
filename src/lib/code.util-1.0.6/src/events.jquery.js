@@ -15,6 +15,10 @@
 			 */
 			add: function(obj, type, handler){
 				
+				if (type === 'mousewheel'){
+					type = this._normaliseMouseWheelType();
+				}
+				
 				$(obj).bind(type, handler);
 				
 			},
@@ -27,6 +31,10 @@
 			 */
 			remove: function(obj, type, handler){
 				
+				if (type === 'mousewheel'){
+					type = this._normaliseMouseWheelType();
+				}
+	
 				$(obj).unbind(type, handler);
 				
 			},
@@ -41,6 +49,10 @@
 				var 
 					event,
 					args = Array.prototype.slice.call(arguments).splice(2);
+				
+				if (type === 'mousewheel'){
+					type = this._normaliseMouseWheelType();
+				}
 				
 				if (typeof type === "string"){
 					event = { type: type };
@@ -87,11 +99,11 @@
 				
 				var delta = 0;
 				
-				if (!Util.isNothing(event.wheelDelta)){
-					delta = event.wheelDelta / 120;
+				if (!Util.isNothing(event.originalEvent.wheelDelta)){
+					delta = event.originalEvent.wheelDelta / 120;
 				}
-				else if (!Util.isNothing(event.detail)){
-					delta = -event.detail / 3;
+				else if (!Util.isNothing(event.originalEvent.detail)){
+					delta = -event.originalEvent.detail / 3;
 				}
 				
 				return delta;
@@ -105,6 +117,15 @@
 			domReady: function(handler){
 				
 				$(document).ready(handler);
+				
+			},
+			
+			_normaliseMouseWheelType: function(){
+				
+				if (Util.Browser.isEventSupported('mousewheel')){
+					return 'mousewheel';
+				}
+				return 'DOMMouseScroll';
 				
 			}
 			
