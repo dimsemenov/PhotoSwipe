@@ -401,7 +401,7 @@
 				this.orientationEventName = 'resize';
 			}
 			else if (Util.Browser.iOS && (!Util.Browser.safari)){
-				Util.Events.add(window.document.body, 'orientationchange', this.windowOrientationChangeHandler);
+				Util.Events.add(window.document.body, 'orientationchange.' + this.id, this.windowOrientationChangeHandler);
 			}
 			else{
 				var supportsOrientationChange = !Util.isNothing(window.onorientationchange);
@@ -409,14 +409,14 @@
 			}
 			
 			if (!Util.isNothing(this.orientationEventName)){
-				Util.Events.add(window, this.orientationEventName, this.windowOrientationChangeHandler);
+				Util.Events.add(window, this.orientationEventName + '.' + this.id, this.windowOrientationChangeHandler);
 			}
 			if (this.settings.target === window){
-				Util.Events.add(window, 'scroll', this.windowScrollHandler);
+				Util.Events.add(window, 'scroll.' + this.id, this.windowScrollHandler);
 			}
 			
 			if (this.settings.enableKeyboard){
-				Util.Events.add(window.document, 'keydown', this.keyDownHandler);
+				Util.Events.add(window.document, 'keydown.' + this.id, this.keyDownHandler);
 			}
 			
 			
@@ -432,12 +432,12 @@
 					window.location.hash = this.currentHistoryHashValue;
 				}
 								
-				Util.Events.add(window, 'hashchange', this.windowHashChangeHandler);
+				Util.Events.add(window, 'hashchange.' + this.id, this.windowHashChangeHandler);
 			
 			}
 			
 			if (this.settings.enableMouseWheel){
-				Util.Events.add(window, 'mousewheel', this.mouseWheelHandler);
+				Util.Events.add(window, 'mousewheel.' + this.id, this.mouseWheelHandler);
 			}
 			
 			Util.Events.add(this.uiLayer, Util.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
@@ -463,25 +463,25 @@
 		removeEventHandlers: function(){
 			
 			if (Util.Browser.iOS && (!Util.Browser.safari)){
-				Util.Events.remove(window.document.body, 'orientationchange', this.windowOrientationChangeHandler);
+				Util.Events.remove(window.document.body, 'orientationchange.' + this.id, this.windowOrientationChangeHandler);
 			}
 			
 			if (!Util.isNothing(this.orientationEventName)){
-				Util.Events.remove(window, this.orientationEventName, this.windowOrientationChangeHandler);
+				Util.Events.remove(window, this.orientationEventName + '.' + this.id, this.windowOrientationChangeHandler);
 			}
 			
-			Util.Events.remove(window, 'scroll', this.windowScrollHandler);
+			Util.Events.remove(window, 'scroll.' + this.id, this.windowScrollHandler);
 			
 			if (this.settings.enableKeyboard){
-				Util.Events.remove(window.document, 'keydown', this.keyDownHandler);
+				Util.Events.remove(window.document, 'keydown.' + this.id, this.keyDownHandler);
 			}
 			
 			if (this.isBackEventSupported && this.settings.backButtonHideEnabled){
-				Util.Events.remove(window, 'hashchange', this.windowHashChangeHandler);
+				Util.Events.remove(window, 'hashchange.' + this.id, this.windowHashChangeHandler);
 			}
 			
 			if (this.settings.enableMouseWheel){
-				Util.Events.remove(window, 'mousewheel', this.mouseWheelHandler);
+				Util.Events.remove(window, 'mousewheel.' + this.id, this.mouseWheelHandler);
 			}
 			
 			if (!Util.isNothing(this.uiLayer)){
