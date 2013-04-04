@@ -57,11 +57,15 @@
 			for (i=0, j=images.length; i<j; i++){
 				
 				image = images[i];
-				src = this.settings.getImageSource(image);
-				caption = this.settings.getImageCaption(image);
 				metaData = this.settings.getImageMetaData(image);
-				
-				this.images.push(new PhotoSwipe.Image.ImageClass(image, src, caption, metaData));
+
+				if (typeof image === "string") {
+					this.images.push(new PhotoSwipe.Image.ImageClass(null, image, null, metaData));
+				} else {
+					src = this.settings.getImageSource(image);
+					caption = this.settings.getImageCaption(image);
+					this.images.push(new PhotoSwipe.Image.ImageClass(image, src, caption, metaData));
+				}
 				
 			}
 			
