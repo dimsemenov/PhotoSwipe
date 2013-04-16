@@ -326,12 +326,6 @@
 			}
 			
 			var newWindowDimensions = this.getWindowDimensions();
-			if (!Util.isNothing(this.windowDimensions)){
-				if (newWindowDimensions.width === this.windowDimensions.width && newWindowDimensions.height === this.windowDimensions.height){
-					// This was added as a fudge for iOS
-					return;
-				}
-			}
 			
 			this._isResettingPosition = true;
 			
