@@ -179,6 +179,7 @@
 				captionAndToolbarHide: false,
 				captionAndToolbarFlipPosition: false,
 				captionAndToolbarAutoHideDelay: 5000,
+				captionAndToolbarAutoHideOnSwipe: true,
 				captionAndToolbarOpacity: 0.8,
 				captionAndToolbarShowEmptyCaptions: true,
 				getToolbar: PhotoSwipe.Toolbar.getToolbar,
@@ -1021,7 +1022,9 @@
 					case Util.TouchElement.ActionTypes.swipeRight:
 						
 						// Hide the toolbar if need be 
-						this.fadeOutToolbarIfVisible();
+						if (this.settings.captionAndToolbarAutoHideOnSwipe){
+							this.fadeOutToolbarIfVisible();
+						}
 						
 						// Pass the touch onto the carousel
 						this.carousel.onTouch(e.action, e.point);

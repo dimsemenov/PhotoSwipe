@@ -155,6 +155,8 @@ Options
 
 - **captionAndToolbarAutoHideDelay**: How long to wait before the caption and toolbar automatically disappear. Default = 5000. Set to 0 to prevent auto disappearing
 
+- **captionAndToolbarAutoHideOnSwipe**: This will hide the caption and toolbar when the user changes the image using a swipe gesture. Default = true.
+
 - **captionAndToolbarFlipPosition**: Place the caption at the bottom and the toolbar at the top. Default = false
 
 - **captionAndToolbarHide**: Hide the caption and toolbar. Default = false
