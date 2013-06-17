@@ -119,7 +119,7 @@ This example assumes no jQuery at all and is heavily optimised for WebKit and Mo
 	// Set up PhotoSwipe with all anchor tags in the Gallery container 
 	document.addEventListener('DOMContentLoaded', function(){
 		
-		var myPhotoSwipe = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), { enableMouseWheel: false , enableKeyboard: false } );
+		var myPhotoSwipe = Code.PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), { enableMouseWheel: false , enableKeyboard: false } );
 		
 	}, false);
 
