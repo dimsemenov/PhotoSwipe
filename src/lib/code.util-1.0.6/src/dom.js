@@ -709,8 +709,21 @@
 			
 				return window.pageYOffset;
 			
-			}
+			},
 			
+			
+			
+			/*
+			 * Function: pixelRatio
+			 */
+			pixelRatio: function(){
+			
+				if(!window.devicePixelRatio) {
+					return 1;
+				}
+				return window.devicePixelRatio;
+			}
+
 		}
 	
 		

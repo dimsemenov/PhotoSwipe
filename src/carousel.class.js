@@ -244,8 +244,8 @@
 			
 			if (this.settings.imageScaleMethod === 'fitNoUpscale'){
 				
-				newWidth = imageEl.naturalWidth;
-				newHeight =imageEl.naturalHeight;
+				newWidth = imageEl.naturalWidth / Util.DOM.pixelRatio();
+				newHeight = imageEl.naturalHeight / Util.DOM.pixelRatio();
 				
 				if (newWidth > maxWidth){
 					scale = maxWidth / newWidth;
