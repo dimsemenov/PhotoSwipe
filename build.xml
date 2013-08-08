@@ -254,7 +254,7 @@
 			<fileset file="${project.src.dir}/change.log"/>
 			<fileset file="${project.src.dir}/assets/photoswipe.css"/>
 			<fileset file="${project.src.dir}/assets/icons.png"/>
-			<fileset file="${project.src.dir}/assets/icons@2x.png"/>
+			<fileset file="${project.src.dir}/assets/icons-2x.png"/>
 			<fileset file="${project.src.dir}/assets/loader.gif"/>
 			<fileset file="${project.src.dir}/assets/error.gif"/>
 		</copy>
