@@ -200,7 +200,10 @@
 				
 				var delta = 0;
 				
-				if (!Util.isNothing(event.wheelDelta)){
+				if (!Util.isNothing(event.deltaY)){
+					delta = -event.deltaY;
+				}
+				else if (!Util.isNothing(event.wheelDelta)){
 					delta = event.wheelDelta / 120;
 				}
 				else if (!Util.isNothing(event.detail)){
@@ -261,7 +264,10 @@
 			
 			_normaliseMouseWheelType: function(){
 				
-				if (Util.Browser.isEventSupported('mousewheel')){
+				if (Util.Browser.isEventSupported('wheel')){
+					return 'wheel';
+				}
+				else if (Util.Browser.isEventSupported('mousewheel')){
 					return 'mousewheel';
 				}
 				return 'DOMMouseScroll';
@@ -272,7 +278,7 @@
 			
 			_NATIVE_EVENTS: { 
 				click: 1, dblclick: 1, mouseup: 1, mousedown: 1, contextmenu: 1, //mouse buttons
-				mousewheel: 1, DOMMouseScroll: 1, //mouse wheel
+				wheel: 1, mousewheel: 1, DOMMouseScroll: 1, //mouse wheel
 				mouseover: 1, mouseout: 1, mousemove: 1, selectstart: 1, selectend: 1, //mouse movement
 				keydown: 1, keypress: 1, keyup: 1, //keyboard
 				orientationchange: 1, // mobile

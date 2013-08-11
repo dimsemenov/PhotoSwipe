@@ -99,7 +99,10 @@
 				
 				var delta = 0;
 				
-				if (!Util.isNothing(event.originalEvent.wheelDelta)){
+				if (!Util.isNothing(event.originalEvent.deltaY)){
+					delta = -event.originalEvent.deltaY;
+				}
+				else if (!Util.isNothing(event.originalEvent.wheelDelta)){
 					delta = event.originalEvent.wheelDelta / 120;
 				}
 				else if (!Util.isNothing(event.originalEvent.detail)){
@@ -122,7 +125,13 @@
 			
 			_normaliseMouseWheelType: function(){
 				
-				if (Util.Browser.isEventSupported('mousewheel')){
+				if (Util.Browser.isEventSupported('wheel')){
+					return 'wheel';
+				}
+				else if (Util.Browser.msie && document.documentMode > 8){
+					return 'wheel';
+				}
+				else if (Util.Browser.isEventSupported('mousewheel')){
 					return 'mousewheel';
 				}
 				return 'DOMMouseScroll';

@@ -436,9 +436,7 @@
 			
 			}
 			
-			if (this.settings.enableMouseWheel){
-				Util.Events.add(window, 'mousewheel', this.mouseWheelHandler);
-			}
+			Util.Events.add(window.document, 'mousewheel', this.mouseWheelHandler);
 			
 			Util.Events.add(this.uiLayer, Util.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
 			Util.Events.add(this.carousel, Carousel.EventTypes.onSlideByEnd, this.carouselSlideByEndHandler);
@@ -480,9 +478,7 @@
 				Util.Events.remove(window, 'hashchange', this.windowHashChangeHandler);
 			}
 			
-			if (this.settings.enableMouseWheel){
-				Util.Events.remove(window, 'mousewheel', this.mouseWheelHandler);
-			}
+			Util.Events.remove(window.document, 'mousewheel', this.mouseWheelHandler);
 			
 			if (!Util.isNothing(this.uiLayer)){
 				Util.Events.remove(this.uiLayer, Util.TouchElement.EventTypes.onTouch, this.uiLayerTouchHandler);
@@ -1160,9 +1156,19 @@
 		 */
 		onMouseWheel: function(e){
 			
+			e.preventDefault();
+			
+			if(!this.settings.enableMouseWheel){
+				return;
+			}
+			
 			var 
 				delta = Util.Events.getWheelDelta(e),
 				dt = e.timeStamp - (this.mouseWheelStartTime || 0);
+			
+			if(delta === 0){
+				return;
+			}
 			
 			if (dt < this.settings.mouseWheelSpeed) {
 				return;
