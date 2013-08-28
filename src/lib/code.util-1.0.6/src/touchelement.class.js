@@ -105,11 +105,6 @@
 			}
 
 			Util.Events.add(this.el, 'touchstart', this.touchStartHandler);
-			if (this.captureSettings.move){
-				Util.Events.add(this.el, 'touchmove', this.touchMoveHandler);
-			}
-			Util.Events.add(this.el, 'touchend', this.touchEndHandler);
-
 			Util.Events.add(this.el, 'mousedown', this.mouseDownHandler);
 
 			if (Util.Browser.isGestureSupported && this.captureSettings.gesture){
@@ -128,10 +123,6 @@
 		removeEventHandlers: function(){
 
 			Util.Events.remove(this.el, 'touchstart', this.touchStartHandler);
-			if (this.captureSettings.move){
-				Util.Events.remove(this.el, 'touchmove', this.touchMoveHandler);
-			}
-			Util.Events.remove(this.el, 'touchend', this.touchEndHandler);
 			Util.Events.remove(this.el, 'mousedown', this.mouseDownHandler);
 
 			if (Util.Browser.isGestureSupported && this.captureSettings.gesture){
@@ -293,8 +284,14 @@
 				e.preventDefault();
 			}
 
-			// No longer need mouse events
+			// Temporarily no longer need mouse events
 			Util.Events.remove(this.el, 'mousedown', this.mouseDownHandler);
+
+			// Add move/end
+			if (this.captureSettings.move){
+				Util.Events.add(this.el, 'touchmove', this.touchMoveHandler);
+			}
+			Util.Events.add(this.el, 'touchend', this.touchEndHandler);
 
 			var
 				touchEvent = Util.Events.getTouchEvent(e),
@@ -378,7 +375,12 @@
 				touchEvent = Util.Events.getTouchEvent(e),
 				touches = (!Util.isNothing(touchEvent.changedTouches)) ? touchEvent.changedTouches : touchEvent.touches;
 
+			if (this.captureSettings.move){
+				Util.Events.remove(this.el, 'touchmove', this.touchMoveHandler);
+			}
+			Util.Events.remove(this.el, 'touchend', this.touchEndHandler);
 
+			Util.Events.add(this.el, 'mousedown', this.mouseDownHandler);
 
 			this.touchEndPoint = this.getTouchPoint(touches);
 
@@ -412,10 +414,8 @@
 
 			e.preventDefault();
 
-			// No longer need touch events
-			Util.Events.remove(this.el, 'touchstart', this.mouseDownHandler);
-			Util.Events.remove(this.el, 'touchmove', this.touchMoveHandler);
-			Util.Events.remove(this.el, 'touchend', this.touchEndHandler);
+			// Temporarily no longer need touch events
+			Util.Events.remove(this.el, 'touchstart', this.touchStartHandler);
 
 			// Add move/up/out
 			if (this.captureSettings.move){
@@ -474,6 +474,8 @@
 			Util.Events.remove(this.el, 'mouseup', this.mouseUpHandler);
 			Util.Events.remove(this.el, 'mouseout', this.mouseOutHandler);
 
+			Util.Events.add(this.el, 'touchstart', this.touchStartHandler);
+
 			this.touchEndPoint = Util.Events.getMousePosition(e);
 
 			Util.Events.fire(this, {
@@ -511,6 +513,8 @@
 			}
 			Util.Events.remove(this.el, 'mouseup', this.mouseUpHandler);
 			Util.Events.remove(this.el, 'mouseout', this.mouseOutHandler);
+
+			Util.Events.add(this.el, 'touchstart', this.touchStartHandler);
 
 			this.touchEndPoint = Util.Events.getMousePosition(e);
 
