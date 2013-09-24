@@ -43,6 +43,7 @@
 			this.android = /android/i.test(this.ua);
 			this.blackberry = /blackberry/i.test(this.ua);
 			this.iOS = (/iphone|ipod|ipad/gi).test(window.navigator.platform);
+			this.iOS7 = this.iOS && (/OS 7_/i).test(navigator.userAgent);
 			this.iPad = (/ipad/gi).test(window.navigator.platform);
 			this.iPhone = (/iphone/gi).test(window.navigator.platform);
 			this.iPod = (/ipod/gi).test(window.navigator.platform);
@@ -72,6 +73,15 @@
 		 * http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
 		 */
 		isEventSupported: function(eventName) {
+			/* Override gesture support detection for ios7 because it's 
+			 * moved from window to document and we can't 
+			 * just document.createElement another document 
+			 */
+			 
+			if(this.iOS7 && eventName == "gesturestart"){
+				return true;
+			}
+
 			var 
 				el = document.createElement(this._eventTagNames[eventName] || 'div'),
 				isSupported;

@@ -113,6 +113,12 @@
 			Util.Events.add(this.el, 'mousedown', this.mouseDownHandler);
 
 			if (Util.Browser.isGestureSupported && this.captureSettings.gesture){
+				var el = this.el
+		
+				if(Util.Browser.iOS7 && el == window){
+					el = document;
+				}
+				
 				Util.Events.add(this.el, 'gesturestart', this.gestureStartHandler);
 				Util.Events.add(this.el, 'gesturechange', this.gestureChangeHandler);
 				Util.Events.add(this.el, 'gestureend', this.gestureEndHandler);
