@@ -51,7 +51,7 @@
 			this.is3dSupported = !Util.isNothing(testEl.style.WebkitPerspective);	
 			this.isCSSTransformSupported = ( !Util.isNothing(testEl.style.WebkitTransform) || !Util.isNothing(testEl.style.MozTransform) || !Util.isNothing(testEl.style.OTransform) || !Util.isNothing(testEl.style.transformProperty) );
 			this.isTouchSupported = this.isEventSupported('touchstart');
-			this.isGestureSupported = this.isEventSupported('gesturestart');
+			this.isGestureSupported = this.isEventSupported('gesturestart') || this.iOS;
 			
 		},
 		
