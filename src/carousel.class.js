@@ -170,8 +170,8 @@
 			
 			if (this.settings.target === window){
 				width = Util.DOM.windowWidth();
-				height = Util.DOM.windowHeight();
-				top = Util.DOM.windowScrollTop()  + 'px';
+				height = Util.DOM.windowHeight() - (this.settings.carouselTopBottomPadding * 2);
+				top = (Util.DOM.windowScrollTop() + this.settings.carouselTopBottomPadding)  + 'px';
 			}
 			else{
 				width = Util.DOM.width(this.settings.target);
