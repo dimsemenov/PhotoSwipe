@@ -287,6 +287,28 @@
 		
 		
 		/*
+		 * Function: addImage
+		 */
+		addImage: function(obj){
+			this.originalImages.push(obj);
+
+			// Add click handler to the link
+			Util.Events.add(obj, 'click', PhotoSwipe.onTriggerElementClick.bind(this));
+
+			// Create image and add it to the cached images
+			this.cache.images.push(
+				new Code.PhotoSwipe.Image.ImageClass(
+					obj,
+					this.settings.getImageSource(obj),
+					this.settings.getImageCaption(obj),
+					this.settings.getImageMetaData(obj)
+				)
+			);
+		},
+		
+		
+		
+		/*
 		 * Function: getWindowDimensions
 		 */
 		getWindowDimensions: function(){
