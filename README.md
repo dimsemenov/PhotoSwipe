@@ -1,6 +1,4 @@
-The Code Computerlove team is no longer managing and supporting Photoswipe. But we’re passing it on to you.
-===========================================================================================================
-Thanks for making Photoswipe so successful and we hope that you, the community will continue to make use of it.
+The new version of PhotoSwipe with major improvements is under development and will be released in near future.
 
 
 PhotoSwipe - The web image gallery for your mobile device
