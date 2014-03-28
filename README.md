@@ -25,7 +25,6 @@ It'd be fantastic to see how you have implemented PhotoSwipe on your site! We're
 
 Latest Release v3.0.5
 ---------------------
-[Download](http://github.com/downloads/codecomputerlove/PhotoSwipe/code.photoswipe-3.0.5.zip)
 
 - Fixed user agent string issues with Firefox for Android
 - Fixed iOS5 black screen issue when using pinch to zoom
