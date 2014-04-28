@@ -13,7 +13,6 @@
  
 body.ps-active, body.ps-building, div.ps-active, div.ps-building
 {
-	background: #000;
 	overflow: hidden;
 }
 body.ps-active *, div.ps-active *
