@@ -143,7 +143,11 @@
 		 * Function: isLikeArray
 		 */
 		isLikeArray: function(obj) { 
-			return typeof obj.length === 'number';
+			try {
+				return typeof obj.length === 'number';
+			} catch (e) {
+				return false;
+			}
 		},
 		
 		
