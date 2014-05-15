@@ -131,7 +131,8 @@
 			this.originalImages = images;
 			
 			if (Util.Browser.android && !Util.Browser.firefox){
-				if (window.navigator.userAgent.match(/Android (\d+.\d+)/).toString().replace(/^.*\,/, '') >= 2.1){
+				var androidMatch = window.navigator.userAgent.match(/Android (\d+.\d+)/);
+				if (androidMatch !== null && androidMatch.toString().replace(/^.*\,/, '') >= 2.1){
 					this.isBackEventSupported = true;
 				}
 			}
