@@ -1,4 +1,0 @@
-// PhotoSwipe - http://www.photoswipe.com/
-// Copyright (c) %%year%% by Code Computerlove (http://www.codecomputerlove.com)
-// Licensed under the MIT license
-// version: %%version%%

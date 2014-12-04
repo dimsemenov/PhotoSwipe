@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#" debug="true">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+    <meta charset="utf-8">
+
+    <title>{{ page.title }}</title>
+    
+    <link rel="shortcut icon" href="test/favicon.ico" type="image/x-icon" />
+    <link rel="icon apple-touch-icon" href="test/apple-touch-icon-144x144.png" sizes="144x144" type="image/png">
+
+
+    <meta name="description" content="{{page.description}}">
+  <meta name="viewport" content="width = device-width, initial-scale = 1.0"> 
+
+
+
+
+      <!--    <meta name="viewport" content="width=1024" /> -->
+ <!-- <meta name="viewport" content="width=device-width, user-scalable=no"> -->
+
+
+    <meta name="author" content="Dmitry Semenov">
+    <link rel="canonical" href="{{page.canonical_url}}">
+
+    <meta property="og:url" content="{{page.canonical_url}}">
+    <meta property="og:title" content="{{page.title}}">
+    <meta property="og:description" content="{{page.description}}">
+    <!-- <meta property="og:image" content="http://dimsemenov.com/magnific-og-400x400.jpg"> -->
+
+    <link href="https://plus.google.com/102586375605352607718" rel="publisher" />
+
+      <link href="site-assets/site.css?v={{site.mfpversion}}" rel="stylesheet" />
+      <link href="dist/photoswipe.css?v={{site.mfpversion}}" rel="stylesheet" />
+      <link href="dist/default-skin/default-skin.css?v={{site.mfpversion}}" rel="stylesheet" />
+
+    
+
+
+      <!--[if lt IE 9]>
+       <script>
+          document.createElement('figure');
+       </script>
+      <![endif]-->
+
+
+  </head>
+
+  <body>
+
+
+    {% if page.markdownpage == true %}
+    <div class="section docs"><div class="row">
+    {% else %}
+    {% endif %}
+
+
+    {{ content | markdown }}
+
+
+    {% if page.markdownpage == true %}
+    </div></div>
+
+    <script>
+      // Disable codepens on small screens, sort of.
+      if(screen.width && screen.width < 1200 ) {
+        var els = document.querySelectorAll('.codepen-embed');
+
+        for (i = 0; i < els.length; ++i) {
+          els[i].className += " codepen-embed--disabled";
+        }
+      } else {
+        document.write('<script src="//assets.codepen.io/assets/embed/ei.js"><' + '\/script>');
+      }
+    </script>
+
+
+
+    {% else %}
+    {% endif %}
+
+    {% if site.url != 'local' %}
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-49016964-1', 'photoswipe.com');
+      ga('send', 'pageview');
+
+    </script>
+    {% endif %}
+
+
+
+
+  </body>
+</html>

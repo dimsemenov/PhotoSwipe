@@ -1,0 +1,789 @@
+@import "../main-settings";
+
+// body:after {
+//     display:none;
+//     content: url(default-skin.svg) url(default-skin.png);
+// }
+
+.pswp__ui {
+	-webkit-font-smoothing: auto;
+	visibility: visible;
+	opacity: 1;
+	z-index: 1050;
+}
+
+.pswp__top-bar {
+	position: absolute;
+	left:0;
+	top:0;
+	height: 44px;
+	width:100%;
+}
+
+
+/**
+ * Loading indicator, aka preloader.
+ * You can play with preloader is here: http://codepen.io/dimsemenov/pen/yyBWoR
+ */
+.pswp__preloader {
+	width:44px;
+	height:44px;
+	
+	position: absolute;
+	top:0;
+	left:50%;
+	margin-left: -22px;
+
+	z-index: 20;
+	
+	opacity: 0;
+	position:relative;
+
+	-webkit-transition: opacity 0.25s ease-out; 
+	transition: opacity 0.25s ease-out; 
+	will-change: opacity;
+}
+.pswp__preloader__icn {
+	width: 20px;
+	height: 20px;
+	margin: 12px;
+}
+
+.pswp__preloader--active {
+	opacity: 1;
+	.pswp__preloader__icn {
+		background: url(preloader.gif) 0 0 no-repeat;
+	}
+}
+
+
+
+.pswp--css_animation {
+
+	.pswp__preloader--active {
+		opacity: 1;
+		.pswp__preloader__icn {
+			-webkit-animation: clockwise 500ms linear infinite;
+			animation: clockwise 500ms linear infinite;
+		}
+		.pswp__preloader__donut {
+			-webkit-animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
+			animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
+		}
+	}
+
+	
+	.pswp__preloader__icn {
+		background: none;
+		opacity:0.75;
+
+		width: 14px;
+		height: 14px;
+
+		position: absolute;
+		left:15px;
+		top:15px;
+		margin: 0;
+	}
+
+	// The idea of animating inner circle is based on Polymer loading indicator 
+	// by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html
+	.pswp__preloader__cut {
+		position: relative;
+		width: 7px;
+		height: 14px;
+		overflow: hidden;
+	}
+
+	.pswp__preloader__donut {
+		box-sizing: border-box;
+
+		width: 14px;
+		height: 14px;
+
+		border: 2px solid #FFF;
+		border-radius: 50%;
+		border-left-color: transparent;
+		border-bottom-color: transparent;
+
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		background: none;
+		margin:0;
+
+		
+	}
+
+}
+
+@-webkit-keyframes clockwise {
+  0% { -webkit-transform: rotate(0deg) }
+  100% { -webkit-transform: rotate(360deg) }
+}
+@keyframes clockwise {
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(360deg) }
+}
+@-webkit-keyframes donut-rotate {
+  0% { -webkit-transform: rotate(0) }
+  50% { -webkit-transform: rotate(-140deg) }
+  100% { -webkit-transform: rotate(0) }
+}
+@keyframes donut-rotate {
+  0% { transform: rotate(0) }
+  50% { transform: rotate(-140deg) }
+  100% { transform: rotate(0) }
+}
+
+
+.pswp__error-msg {
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 100%;
+	text-align: center;
+	color: #FFF;
+	font-size: 14px;
+	line-height: 16px;
+	margin-top: -8px;
+	color:#FFF;
+	opacity:0.7;
+}
+.pswp__error-msg a {
+	color: #FFF;
+	text-decoration: underline;
+}
+
+.pswp__button {
+	width: 44px;
+	height: 44px;
+	position: relative;
+	background: none;
+	cursor: pointer;
+	overflow: visible;
+	border: 0;
+	-webkit-appearance: none;
+	display: block;
+	outline: none;
+	padding: 0;
+	margin: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	float: right;
+	opacity: 0.75;
+	-webkit-transition: opacity 0.25s;
+	transition: opacity 0.25s;
+
+	&:focus,
+	&:hover {
+		opacity: 1;
+	}
+	
+	&:active {
+		opacity: 0.9;
+	}
+	&::-moz-focus-inner {
+		padding: 0;
+		border: 0
+	}
+}
+.pswp--animated-in .pswp__button  {
+	-webkit-transition: opacity 0.25s;
+	transition: opacity 0.25s;
+}
+
+.pswp__ui--over-close .pswp__button--close {
+	opacity: 1;
+}
+.pswp__button,
+.pswp__button--arrow--left:before,
+.pswp__button--arrow--right:before {
+	background: url(default-skin.png) 0 0 no-repeat;
+	background-size: 264px 88px;
+	width: 44px;
+	height: 44px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.1),  (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
+    .pswp--svg .pswp__button,
+    .pswp--svg .pswp__button--arrow--left:before,
+	.pswp--svg .pswp__button--arrow--right:before  {
+        background-image: url(default-skin.svg);
+    }
+    .pswp--svg .pswp__button--arrow--left,
+	.pswp--svg .pswp__button--arrow--right {
+		background: none;
+	}
+}
+
+.pswp__counter,
+.pswp__share-modal  {
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	user-select:none;
+}
+
+.pswp__share-modal {
+	display: block;
+	background: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	padding: 10px;
+	position: absolute;
+	z-index: 1450;
+	opacity: 0;
+
+	-webkit-transition: opacity 0.25s ease-out;
+	transition: opacity 0.25s ease-out;
+
+	will-change: opacity;
+	-webkit-backface-visibility: hidden;
+}
+.pswp__share-modal--hidden {
+	display:none;
+}
+
+
+// .pswp__item,
+// .pswp__caption,
+// .pswp__zoom-wrap,
+// .pswp__ui {
+//  // close area cursor
+// 	cursor: -webkit-zoom-out;
+// 	cursor: -moz-zoom-out;
+// 	cursor: zoom-out;
+// }
+
+.pswp__share-tooltip {
+	z-index: 1550;
+	position: absolute;
+	background: #FFF;
+	top: 56px;
+	border-radius:2px;
+	display: block;
+	width: auto;
+	right: 44px;
+	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+
+	-webkit-transform: translateY(6px);
+	transform: translateY(6px);
+
+	-webkit-transition: -webkit-transform 0.25s;
+	transition: transform 0.25s;
+
+	will-change: transform;
+	-webkit-backface-visibility: hidden;
+
+	a {
+		display: block;
+		padding: 8px 12px;
+		color: #000;
+		text-decoration: none;
+		font-size: 14px;
+		line-height: 18px;
+
+		&:hover {
+			text-decoration: none;
+			color: #000;
+		}
+	}
+}
+
+
+.pswp__share-modal--fade-in {
+	opacity: 1;
+	.pswp__share-tooltip {
+		-webkit-transform: translateY(0);
+		transform: translateY(0);
+	}
+}
+
+
+
+// increase size of share-links on touch devices
+.pswp--touch .pswp__share-tooltip a {
+	padding: 16px 12px;
+}
+
+
+
+
+// .pswp__button--share {
+// 	cursor: pointer;
+// 	opacity: 0.75;
+// }
+
+a.pswp__share--facebook {
+	&:before {
+		content: '';
+		display: block;
+		width: 0;
+		height: 0;
+		position: absolute;
+		top: -12px;
+		right: 15px;
+		border: 6px solid rgba(0, 0, 0, 0);
+		border-bottom-color: #FFF;
+		-webkit-pointer-events: none;
+		-moz-pointer-events: none;
+		pointer-events: none;
+	}
+	&:hover {
+		background: #3E5C9A;
+		color: #FFF;
+		&:before {
+			border-bottom-color: #3E5C9A;
+		}
+	}
+}
+a.pswp__share--twitter {
+	&:hover {
+		background: #55ACEE;
+		color: #FFF;
+	}
+}
+a.pswp__share--pinterest {
+	&:hover {
+		background: #CCC;
+		color: #CE272D;
+	}
+}
+a.pswp__share--download {
+	&:hover {
+		background: #DDD;
+	}
+}
+
+
+
+
+
+
+// .pswp__button--share,
+// .pswp__button--close,
+// .pswp__button--zoom,
+// .pswp__button--fs,
+// .pswp__button--arrow--left:before,
+// .pswp__button--arrow--right:before {
+// 	background: url(default-skin.png) 0 0 no-repeat;
+// 	padding: 0;
+// 	width: 44px;
+// 	height: 44px;
+// }
+
+// @media (-webkit-min-device-pixel-ratio: 1.1),  (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
+//     .pswp__button--share,
+// 	.pswp__button--close,
+// 	.pswp__button--zoom,
+// 	.pswp__button--fs,
+// 	.pswp__button--arrow--left:before,
+// 	.pswp__button--arrow--right:before {
+//         background-image: url(default-skin.svg);
+//         background-size: 600px 264px;
+//         background-position: 0 0;
+//     }
+// }
+
+
+
+.pswp__button--close {
+	background-position: 0 -44px;
+}
+.pswp__button--share {
+	background-position: -44px -44px;
+}
+
+.pswp__button--fs {
+	display: none;
+}
+.pswp--supports-fs .pswp__button--fs {
+	display: block;
+}
+.pswp--fs .pswp__button--fs {
+	background-position: -44px 0;
+}
+
+.pswp__button--zoom {
+	display: none;
+	background-position: -88px 0;
+}
+
+// .pswp--supports-fs .pswp__button--zoom {
+// 	right: 132px;
+// }
+.pswp--zoom-allowed .pswp__button--zoom {
+	display: block;
+}
+.pswp--zoomed-in .pswp__button--zoom {
+	background-position: -132px 0;
+}
+
+
+
+.pswp__button--arrow--left,
+.pswp__button--arrow--right {
+	background: none;
+	top: 50%;
+	margin-top: -50px;
+	width: 70px;
+	height: 100px;
+	position: absolute;
+	
+}
+
+.pswp__top-bar,
+.pswp__button--arrow--left,
+.pswp__button--arrow--right {
+	-webkit-backface-visibility: hidden; //make composite layers (as these elements are above sliding/paning area)
+	will-change: opacity;
+}
+
+.pswp--touch {
+	.pswp__button--arrow--left,
+	.pswp__button--arrow--right {
+		visibility: hidden;		
+	}
+}
+
+
+
+.pswp__button--arrow--left {
+	left: 0;
+}
+.pswp__button--arrow--right {
+	right: 0;
+}
+.pswp__button--arrow--left:before,
+.pswp__button--arrow--right:before {
+	content: '';
+	top: 35px;
+	background-color: rgba(0,0,0,0.3);
+	height: 30px;
+	width: 32px;
+	position: absolute;
+}
+.pswp__button--arrow--left:before {
+	left: 6px;
+	background-position: -138px -44px;
+}
+.pswp__button--arrow--right:before {
+	right: 6px;
+	background-position: -94px -44px;
+}
+
+
+
+.pswp__counter {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 44px;
+	font-size: 13px;
+	line-height: 44px;
+	color: #FFF;
+	opacity: 0.75;
+	padding: 0 10px;
+}
+
+
+
+// .pswp__caption { 
+// 	text-align: left;
+// 	position: absolute;
+// 	color: #FFF;
+// 	width: 160px;
+// 	margin-left: 10px;
+// 	margin-top: 44px;
+
+// 	margin-left: 0;
+
+// 	p {
+// 		margin: 0;
+// 		text-align: left;
+// 		color: #FFF;
+// 		font-size: 13px;
+// 		padding: 0;
+// 		line-height: 18px; // one line caption is 44px height
+// 		small {
+// 			font-size: 11px;
+// 			color: #AAA;
+// 		}
+// 	}
+// }
+
+// .pswp__caption--bottom {
+// 	// important, because we reset JS styling
+// 	left: 0 !important;
+// 	top: auto !important;
+// 	width: 100% !important;
+
+// 	bottom: 0;
+// 	background: rgba(0,0,0,0.7);
+// 	p {
+// 		max-width: 600px;
+// 		margin: 0 auto;
+// 		padding: 10px;
+// 	}
+// }
+
+
+@media screen and (max-width: 1024px) {
+	.pswp_scroll-wrap {
+		top: 0;
+		bottom: 0;
+	}
+	.pswp__caption {
+		margin-top: 0;
+	}
+	.pswp__preloader {
+		position: relative;
+		left: auto;
+		top:auto;
+		margin:0;
+		float:right;
+	}
+}
+
+
+.pswp__caption {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	color: #FFF;
+	width: 100%;
+	min-height: 44px;
+	
+	small {
+		font-size: 11px;
+		color: #BBB;
+
+	}
+}
+
+
+.pswp__caption__center {
+	text-align: left;
+	max-width: 420px;
+	margin: 0 auto;
+	color: #FFF;
+	font-size: 13px;
+	padding: 10px;
+	line-height: 20px;
+	color: #CCC;
+}
+.pswp__caption--empty {
+	display: none;
+}
+// Same caption, but fake, used to get height
+.pswp__caption--fake {
+	visibility: hidden;
+}
+
+// .pswp__ui--fit {
+// 	.pswp__top-bar,
+// 	.pswp__caption {
+// 		background: none;
+// 	}
+// }
+// .pswp__ui {
+// 	display: none !important;
+// }
+
+
+
+.pswp__bg,
+.pswp__caption,
+.pswp__top-bar,
+.pswp--has_mouse .pswp__button--arrow--left,
+.pswp--has_mouse .pswp__button--arrow--right{
+	will-change:opacity;
+	-webkit-transition: opacity $pswp__controls-transition-duration cubic-bezier(.4,0,.22,1);
+	transition: opacity $pswp__controls-transition-duration cubic-bezier(.4,0,.22,1);
+}
+
+.pswp--animated-in {
+	.pswp__bg,
+	.pswp__zoom-wrap {
+		-webkit-transition: none;
+		transition: none;
+	}
+}
+
+.pswp--has_mouse {
+	.pswp__button--arrow--left,
+	.pswp__button--arrow--right {
+		visibility: visible;
+	}
+}
+
+
+// For fade transition
+//.pswp {
+	//opacity: 0;
+	//will-change:opacity;
+	//-webkit-transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
+	//transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
+//}
+// .pswp__bg {
+// 	opacity: 1;
+// }
+
+
+
+.pswp__top-bar,
+.pswp__caption {
+	background-color: rgba(0,0,0,0.5);
+}
+.pswp__ui--fit {
+	.pswp__top-bar,
+	.pswp__caption {
+		background-color: rgba(0,0,0,0.3);
+	}
+}
+
+
+.pswp__ui--hidden {
+	.pswp__top-bar,
+	.pswp__caption,
+	.pswp__button--arrow--left,
+	.pswp__button--arrow--right {
+		opacity: 0;
+	}
+}
+
+.pswp__ui--idle {
+	.pswp__top-bar { opacity: 0; }
+	.pswp__button--arrow--left,
+	.pswp__button--arrow--right {
+		opacity: 0;
+	}
+}
+
+
+// Force paint & create composition layer for controls. Paint happens 50ms before the  ma 
+.pswp__ui--hidden  {
+	.pswp__top-bar,
+	.pswp__caption,
+	.pswp__bg,
+	.pswp__button--arrow--left,
+	.pswp__button--arrow--right {
+		opacity: 0.001; // some browsers don't force paint when opacity:0, which leads to lag at the beginning of transition
+	}
+}
+
+
+
+// .pswp__bg {
+// 	opacity: 0.001;
+// }
+
+
+
+.pswp__element--disabled {
+	display: none !important;
+}
+
+
+// .pswp__caption {
+// //	z-index: 100;
+// //	-webkit-perspective: 1000;
+// 	-webkit-font-smoothing: subpixel-antialiased;
+// //	background: #000;
+// }
+// .pswp--has_mouse .pswp__container {
+// 	z-index: 101;
+// }
+
+// .pswp__bg,
+// .pswp__scroll-wrap,
+// .pswp__container,
+// .pswp__zoom-wrap {
+// 	-webkit-backface-visibility: hidden;
+// }
+// .pswp {
+// 	// create separate layer, to avoid pain of position:fixed on window.onscroll
+//   	-webkit-backface-visibility: hidden;
+// }
+
+// .pswp {
+// 	background: #000;
+// }
+// .pswp__bg {
+// 	z-index: 50;
+// 	//display: none !important;
+// }
+// .pswp__scroll-wrap {
+// 	z-index: 51;
+// }
+
+
+// .pswp--notouch {
+// 	.pswp__caption {
+// 		opacity: 1 !important;
+// 	}
+// }
+
+
+// EEE skin
+// .pswp__bg {
+// 	background: #fff;
+// }
+// .pswp__img--placeholder--blank {
+// 	background: #eee;
+// }
+// .pswp__counter,
+// .pswp__caption__center {
+// 	color: #222;
+// }
+
+// .pswp__top-bar,
+// .pswp__share-modal,
+// .pswp__caption {
+// 	background: rgba(255,255,255,0.75);
+// }
+// .pswp--notouch .pswp__share-modal {
+// 	background: rgba(255,255,255, 0.5);
+// }
+// .pswp__button--arrow--left:before,
+// .pswp__button--arrow--right:before {
+// 	background-color: rgba(255,255,255,0.6);
+// }
+// .pswp__button--share,
+// .pswp__button--close,
+// .pswp__button--zoom,
+// .pswp__button--fs,
+// .pswp__button--arrow--left:before,
+// .pswp__button--arrow--right:before {
+// 	background-image: url(default-light-skin.png);
+// }
+
+// @media (-webkit-min-device-pixel-ratio: 1.1),  (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
+//     .pswp__button--share,
+// 	.pswp__button--close,
+// 	.pswp__button--zoom,
+// 	.pswp__button--fs,
+// 	.pswp__button--arrow--left:before,
+// 	.pswp__button--arrow--right:before {
+//         background-image: url(default-light-skin.svg);
+//     }
+// }
+
+
+.pswp--minimal--dark {
+	.pswp__top-bar {
+		background: none;
+	}
+	// .pswp__button,
+	// .pswp__counter {
+	// 	background-color: rgba(0,0,0,0.3);
+	// }
+	.pswp__button--arrow--left,
+	.pswp__button--arrow--right {
+		background: none;
+	}
+}
