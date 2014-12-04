@@ -409,8 +409,6 @@ a.pswp__share--download {
 	}
 }
 
-
-
 .pswp__button--arrow--left {
 	left: 0;
 }
@@ -435,8 +433,6 @@ a.pswp__share--download {
 	background-position: -94px -44px;
 }
 
-
-
 .pswp__counter {
 	position: absolute;
 	left: 0;
@@ -448,9 +444,6 @@ a.pswp__share--download {
 	opacity: 0.75;
 	padding: 0 10px;
 }
-
-
-
 
 
 @media screen and (max-width: 1024px) {
@@ -529,18 +522,6 @@ a.pswp__share--download {
 		visibility: visible;
 	}
 }
-
-
-// For fade transition
-//.pswp {
-	//opacity: 0;
-	//will-change:opacity;
-	//-webkit-transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
-	//transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
-//}
-// .pswp__bg {
-// 	opacity: 1;
-// }
 
 .pswp__top-bar,
 .pswp__caption {

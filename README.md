@@ -21,7 +21,7 @@ To compile PhotoSwipe by yourself, first of make sure that you have [Node.js](ht
 
 	git clone https://github.com/dimsemenov/PhotoSwipe.git
 
-2) Go inside Magnific Popup folder that you fetched and install Node dependencies
+2) Go inside PhotoSwipe folder that you fetched and install Node dependencies
 
 	cd PhotoSwipe && npm install
 

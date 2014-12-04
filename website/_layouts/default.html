@@ -11,14 +11,7 @@
 
 
     <meta name="description" content="{{page.description}}">
-  <meta name="viewport" content="width = device-width, initial-scale = 1.0"> 
-
-
-
-
-      <!--    <meta name="viewport" content="width=1024" /> -->
- <!-- <meta name="viewport" content="width=device-width, user-scalable=no"> -->
-
+    <meta name="viewport" content="width = device-width, initial-scale = 1.0"> 
 
     <meta name="author" content="Dmitry Semenov">
     <link rel="canonical" href="{{page.canonical_url}}">
@@ -30,20 +23,28 @@
 
     <link href="https://plus.google.com/102586375605352607718" rel="publisher" />
 
-      <link href="site-assets/site.css?v={{site.mfpversion}}" rel="stylesheet" />
-      <link href="dist/photoswipe.css?v={{site.mfpversion}}" rel="stylesheet" />
-      <link href="dist/default-skin/default-skin.css?v={{site.mfpversion}}" rel="stylesheet" />
-
+    <link href="site-assets/site.css?v={{site.pswpversion}}" rel="stylesheet" />
+    <link href="dist/photoswipe.css?v={{site.pswpversion}}" rel="stylesheet" />
+    <link href="dist/default-skin/default-skin.css?v={{site.pswpversion}}" rel="stylesheet" />
     
+    <script type="text/javascript" src="http://use.typekit.net/snf1yod.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
+    {% if site.url == 'local' %}
+      <script>
+        document.write('<script src=dist/photoswipe.js?r='+Math.random()+'><\/script>');
+        document.write('<script src=dist/photoswipe-ui-default.js?r='+Math.random()+'><\/script>');
+      </script>  
+    {% else %}
+      <script src="dist/photoswipe.min.js?v={{site.pswpversion}}"></script>
+      <script src="dist/photoswipe-ui-default.min.js?v={{site.pswpversion}}"></script>
+    {% endif %}
 
       <!--[if lt IE 9]>
        <script>
           document.createElement('figure');
        </script>
       <![endif]-->
-
-
   </head>
 
   <body>

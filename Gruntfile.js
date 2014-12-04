@@ -14,7 +14,7 @@ module.exports = function(grunt) {
 "permalink: /:title/ \r\n"+
 "exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile', 'changelog.md', 'compiler.jar', 'private', 'photoswipe.sublime-project', 'photoswipe.sublime-workspace', '.htaccess'] \r\n"+
 "auto: true \r\n"+
-"mfpversion: <%= pkg.version %> \r\n"+
+"pswpversion: <%= pkg.version %> \r\n"+
 
 "markdown: redcarpet \r\n"+
 "kramdown: \r\n"+
