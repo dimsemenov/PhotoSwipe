@@ -1,9 +1,10 @@
-@import "../main-settings";
+/**
+ * Default PhotoSwipe UI CSS file, http://photoswipe.com
+ * @author Dmitry Semenov
+ */
 
-// body:after {
-//     display:none;
-//     content: url(default-skin.svg) url(default-skin.png);
-// }
+
+@import "../main-settings";
 
 .pswp__ui {
 	-webkit-font-smoothing: auto;
@@ -310,14 +311,6 @@
 	padding: 16px 12px;
 }
 
-
-
-
-// .pswp__button--share {
-// 	cursor: pointer;
-// 	opacity: 0.75;
-// }
-
 a.pswp__share--facebook {
 	&:before {
 		content: '';
@@ -360,37 +353,6 @@ a.pswp__share--download {
 }
 
 
-
-
-
-
-// .pswp__button--share,
-// .pswp__button--close,
-// .pswp__button--zoom,
-// .pswp__button--fs,
-// .pswp__button--arrow--left:before,
-// .pswp__button--arrow--right:before {
-// 	background: url(default-skin.png) 0 0 no-repeat;
-// 	padding: 0;
-// 	width: 44px;
-// 	height: 44px;
-// }
-
-// @media (-webkit-min-device-pixel-ratio: 1.1),  (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
-//     .pswp__button--share,
-// 	.pswp__button--close,
-// 	.pswp__button--zoom,
-// 	.pswp__button--fs,
-// 	.pswp__button--arrow--left:before,
-// 	.pswp__button--arrow--right:before {
-//         background-image: url(default-skin.svg);
-//         background-size: 600px 264px;
-//         background-position: 0 0;
-//     }
-// }
-
-
-
 .pswp__button--close {
 	background-position: 0 -44px;
 }
@@ -413,9 +375,6 @@ a.pswp__share--download {
 	background-position: -88px 0;
 }
 
-// .pswp--supports-fs .pswp__button--zoom {
-// 	right: 132px;
-// }
 .pswp--zoom-allowed .pswp__button--zoom {
 	display: block;
 }
@@ -492,44 +451,6 @@ a.pswp__share--download {
 
 
 
-// .pswp__caption { 
-// 	text-align: left;
-// 	position: absolute;
-// 	color: #FFF;
-// 	width: 160px;
-// 	margin-left: 10px;
-// 	margin-top: 44px;
-
-// 	margin-left: 0;
-
-// 	p {
-// 		margin: 0;
-// 		text-align: left;
-// 		color: #FFF;
-// 		font-size: 13px;
-// 		padding: 0;
-// 		line-height: 18px; // one line caption is 44px height
-// 		small {
-// 			font-size: 11px;
-// 			color: #AAA;
-// 		}
-// 	}
-// }
-
-// .pswp__caption--bottom {
-// 	// important, because we reset JS styling
-// 	left: 0 !important;
-// 	top: auto !important;
-// 	width: 100% !important;
-
-// 	bottom: 0;
-// 	background: rgba(0,0,0,0.7);
-// 	p {
-// 		max-width: 600px;
-// 		margin: 0 auto;
-// 		padding: 10px;
-// 	}
-// }
 
 
 @media screen and (max-width: 1024px) {
@@ -584,18 +505,6 @@ a.pswp__share--download {
 	visibility: hidden;
 }
 
-// .pswp__ui--fit {
-// 	.pswp__top-bar,
-// 	.pswp__caption {
-// 		background: none;
-// 	}
-// }
-// .pswp__ui {
-// 	display: none !important;
-// }
-
-
-
 .pswp__bg,
 .pswp__caption,
 .pswp__top-bar,
@@ -632,8 +541,6 @@ a.pswp__share--download {
 // .pswp__bg {
 // 	opacity: 1;
 // }
-
-
 
 .pswp__top-bar,
 .pswp__caption {
@@ -677,113 +584,19 @@ a.pswp__share--download {
 }
 
 
-
-// .pswp__bg {
-// 	opacity: 0.001;
-// }
-
-
-
 .pswp__element--disabled {
 	display: none !important;
 }
 
-
-// .pswp__caption {
-// //	z-index: 100;
-// //	-webkit-perspective: 1000;
-// 	-webkit-font-smoothing: subpixel-antialiased;
-// //	background: #000;
-// }
-// .pswp--has_mouse .pswp__container {
-// 	z-index: 101;
-// }
-
-// .pswp__bg,
-// .pswp__scroll-wrap,
-// .pswp__container,
-// .pswp__zoom-wrap {
-// 	-webkit-backface-visibility: hidden;
-// }
-// .pswp {
-// 	// create separate layer, to avoid pain of position:fixed on window.onscroll
-//   	-webkit-backface-visibility: hidden;
-// }
-
-// .pswp {
-// 	background: #000;
-// }
-// .pswp__bg {
-// 	z-index: 50;
-// 	//display: none !important;
-// }
-// .pswp__scroll-wrap {
-// 	z-index: 51;
-// }
-
-
-// .pswp--notouch {
-// 	.pswp__caption {
-// 		opacity: 1 !important;
-// 	}
-// }
-
-
-// EEE skin
-// .pswp__bg {
-// 	background: #fff;
-// }
-// .pswp__img--placeholder--blank {
-// 	background: #eee;
-// }
-// .pswp__counter,
-// .pswp__caption__center {
-// 	color: #222;
-// }
-
-// .pswp__top-bar,
-// .pswp__share-modal,
-// .pswp__caption {
-// 	background: rgba(255,255,255,0.75);
-// }
-// .pswp--notouch .pswp__share-modal {
-// 	background: rgba(255,255,255, 0.5);
-// }
-// .pswp__button--arrow--left:before,
-// .pswp__button--arrow--right:before {
-// 	background-color: rgba(255,255,255,0.6);
-// }
-// .pswp__button--share,
-// .pswp__button--close,
-// .pswp__button--zoom,
-// .pswp__button--fs,
-// .pswp__button--arrow--left:before,
-// .pswp__button--arrow--right:before {
-// 	background-image: url(default-light-skin.png);
-// }
-
-// @media (-webkit-min-device-pixel-ratio: 1.1),  (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
-//     .pswp__button--share,
-// 	.pswp__button--close,
-// 	.pswp__button--zoom,
-// 	.pswp__button--fs,
-// 	.pswp__button--arrow--left:before,
-// 	.pswp__button--arrow--right:before {
-//         background-image: url(default-light-skin.svg);
-//     }
-// }
-
-
 .pswp--minimal--dark {
+
 	.pswp__top-bar {
 		background: none;
 	}
-	// .pswp__button,
-	// .pswp__counter {
-	// 	background-color: rgba(0,0,0,0.3);
-	// }
+	
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right {
 		background: none;
 	}
+
 }

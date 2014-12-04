@@ -25,7 +25,12 @@ module.exports = function(grunt) {
     // Metadata.
     pkg: grunt.file.readJSON('photoswipe.json'),
 
-    banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
+    banner: '/*! PhotoSwipe - v<%= pkg.version %> - ' +
+      '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+      '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
+      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>; */\n',
+
+    defaultUIBanner:  '/*! PhotoSwipe Default UI - <%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
       '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>; */\n',
@@ -81,7 +86,8 @@ module.exports = function(grunt) {
         basePath: 'src/js/',
         dest: 'dist/photoswipe.js',
         uidest: 'dist/photoswipe-ui-default.js',
-        banner: '<%= banner %>'
+        banner: '<%= banner %>',
+        defaultUIBanner: '<%= defaultUIBanner %>'
       }
     },
     jekyll: {
@@ -191,7 +197,7 @@ module.exports = function(grunt) {
         newContents = this.data.banner;// + ";(function(w) {\n\t\"use strict\";\n";
 
 
-    newContents = "(function (root, factory) { \n"+
+    newContents += "(function (root, factory) { \n"+
       "\tif (typeof define === 'function' && define.amd) {\n" +
         "\t\tdefine(factory);\n" +
       "\t} else if (typeof exports === 'object') {\n" +
@@ -247,6 +253,7 @@ module.exports = function(grunt) {
     grunt.file.write( this.data.dest, newContents );
 
     var uiContents = grunt.file.read( basePath + 'ui/photoswipe-ui-default.js' );
+    uiContents = this.data.defaultUIBanner + uiContents;
     grunt.file.write( this.data.uidest, uiContents );
   });
 
