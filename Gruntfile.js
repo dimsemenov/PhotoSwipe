@@ -20,6 +20,13 @@ module.exports = function(grunt) {
 "kramdown: \r\n"+
 "  input: GFM \r\n";
   
+  var awsDefaults = {};
+  if( grunt.file.exists('./aws-keys.json') ) {
+    awsDefaults = grunt.file.readJSON('./aws-keys.json')
+  }
+
+
+
   // Project configuration.
   grunt.initConfig({
     // Metadata.
@@ -154,13 +161,13 @@ module.exports = function(grunt) {
       }
     },
 
-
-    aws: grunt.file.readJSON('aws-keys.json'), // Read the file
+    //,
+    // aws: grunt.file.readJSON('aws-keys.json'), // Read the file
     
     aws_s3: {
       options: {
-        accessKeyId: '<%= aws.AWSAccessKeyId %>', // Use the variables
-        secretAccessKey: '<%= aws.AWSSecretKey %>', // You can also use env variables
+        accessKeyId: awsDefaults ? awsDefaults.AWSAccessKeyId : '', // Use the variables
+        secretAccessKey: awsDefaults ? awsDefaults.AWSSecretKey : '', // You can also use env variables
         region: 'eu-west-1',
         uploadConcurrency: 5, // 5 simultaneous uploads
         downloadConcurrency: 5 // 5 simultaneous downloads

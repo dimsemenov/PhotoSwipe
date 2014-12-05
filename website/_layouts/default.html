@@ -19,7 +19,7 @@
     <meta property="og:url" content="{{page.canonical_url}}">
     <meta property="og:title" content="{{page.title}}">
     <meta property="og:description" content="{{page.description}}">
-    <!-- <meta property="og:image" content="http://dimsemenov.com/magnific-og-400x400.jpg"> -->
+    <meta property="og:image" content="http://photoswipe.com/test/horizontal-swipe.jpg">
 
     <link href="https://plus.google.com/102586375605352607718" rel="publisher" />
 
@@ -27,8 +27,7 @@
     <link href="dist/photoswipe.css?v={{site.pswpversion}}" rel="stylesheet" />
     <link href="dist/default-skin/default-skin.css?v={{site.pswpversion}}" rel="stylesheet" />
     
-    <script type="text/javascript" src="http://use.typekit.net/snf1yod.js"></script>
-    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+   
 
     {% if site.url == 'local' %}
       <script>
@@ -39,6 +38,9 @@
       <script src="dist/photoswipe.min.js?v={{site.pswpversion}}"></script>
       <script src="dist/photoswipe-ui-default.min.js?v={{site.pswpversion}}"></script>
     {% endif %}
+
+      <script src="//use.typekit.net/snf1yod.js"></script>
+    <script>try{Typekit.load();}catch(e){}</script>
 
       <!--[if lt IE 9]>
        <script>
@@ -81,6 +83,7 @@
     {% endif %}
 
     {% if site.url != 'local' %}
+    <!-- analytics -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -91,6 +94,31 @@
       ga('send', 'pageview');
 
     </script>
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter24301471 = new Ya.Metrika({id:24301471,
+                        webvisor:true,
+                        clickmap:true});
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+    </script>
+    <noscript><div><img src="//mc.yandex.ru/watch/24301471" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
     {% endif %}
 
 

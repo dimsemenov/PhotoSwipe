@@ -1,3 +1,4 @@
+node_modules/
 release/*
 /release
 /node_modules
@@ -28,5 +29,9 @@ website/dist/
 /.idea
 .node-version
 .sass-cache/
+
+
+
+
 
 
