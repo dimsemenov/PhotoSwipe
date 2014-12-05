@@ -1,5 +1,5 @@
 {
-  "name": "PhotoSwipe",
+  "name": "photoswipe",
   "description": "Touch-friendly image gallery for mobile and desktop. Without dependencies.",
   "version": "4.0.0",
   "main": [
