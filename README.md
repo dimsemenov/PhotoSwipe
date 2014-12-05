@@ -5,6 +5,8 @@ JavaScript image gallery for mobile and desktop.
 - [Documentation and getting started guide](http://photoswipe.com/documentation.html).
 - [Demo and plugin home page](http://photoswipe.com).
 
+Optionally, install via Bower: `bower install photoswipe`.
+
 ## Location of stuff
 
 - Generated popup JS, CSS files, SVG & PNG sprites are in folder `dist/`.
@@ -12,6 +14,9 @@ JavaScript image gallery for mobile and desktop.
 - Website (examples & documentation) is in folder `website/`.
 - Documentation page itself is in `website/documentation.md`.
 
+## Plugins or extensions
+
+Wrote a plugin for some CMS? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I'll post link to it here.
 
 ## Build 
 
