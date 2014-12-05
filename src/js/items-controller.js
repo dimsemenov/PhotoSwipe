@@ -185,6 +185,7 @@ var _getItemAt,
 		}
 	},
 	_appendImagesPool = function() {
+
 		if(_imagesToAppendPool.length) {
 			var poolItem;
 
@@ -436,17 +437,20 @@ _registerModule('Controller', {
 					}
 					
 
-					if( self.allowProgressiveImg() ) {
-						// just append image
-						if(!_initialContentSet /*&& index === _currentItemIndex*/) {
-							_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:img, index:index, holder:holder});
-						} else {
-							_appendImage(index, item, baseDiv, img, true, true);
-						}
-					}
+					
 
 					if(!item.loading) {
 						_preloadImage(item);
+					}
+
+
+					if( self.allowProgressiveImg() ) {
+						// just append image
+						if(!_initialContentSet) {
+							_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:(img || item.img), index:index, holder:holder});
+						} else {
+							_appendImage(index, item, baseDiv, (img || item.img), true, true);
+						}
 					}
 					
 					
