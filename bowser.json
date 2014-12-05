@@ -1,0 +1,19 @@
+{
+  "name": "PhotoSwipe",
+  "description": "Touch-friendly image gallery for mobile and desktop. Without dependencies.",
+  "version": "4.0.0",
+  "main": [
+    "dist/photoswipe.js",
+    "dist/photoswipe-ui-default.js",
+    "dist/photoswipe.css",
+    "dist/default-skin/default-skin.css"
+  ],
+  "dependencies": {
+  },
+  "ignore": [
+    "node_modules/",
+    "components/",
+    "website/",
+    "libs/"
+  ]
+}
