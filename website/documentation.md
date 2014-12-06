@@ -16,10 +16,9 @@ markdownpage: true
 
 ---
 
-# <a href="./">PhotoSwipe</a> Documentation
+# <a href="./">PhotoSwipe</a> Documentation <a href="https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation.md" style="vertical-align: super;font-size: 14px;text-decoration: underline;">suggest an edit</a>
 
-[GitHub](https://github.com/dimsemenov/PhotoSwipe) &middot; [@photoswipe on Twitter](https://github.com/dimsemenov/PhotoSwipe) &middot; [feature requests & ideas](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas)
-
+[GitHub](https://github.com/dimsemenov/PhotoSwipe) &middot; [@photoswipe on Twitter](https://github.com/dimsemenov/PhotoSwipe) &middot; [feature requests & ideas](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) &middot; [ask questions through StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe)
 
 First things that you should know before you start:
 
@@ -33,7 +32,7 @@ First things that you should know before you start:
 
 ### <a name="init-include-files"></a>Step 1: include JS and CSS files
 
-You can find them in `dist/` folder of [GitHub](https://github.com/dimsemenov/PhotoSwipe) repository.
+You can find them in [dist/](https://github.com/dimsemenov/PhotoSwipe/tree/master/dist) folder of [GitHub](https://github.com/dimsemenov/PhotoSwipe) repository. Sass and uncompiled JS files are in folder [src/](https://github.com/dimsemenov/PhotoSwipe/tree/master/src).
 
 ```html
 <!-- Core CSS file -->
@@ -418,7 +417,8 @@ var openPhotoSwipe = function(index, disableAnimation) {
     // define options (if needed)
     options = {
     	index: index,
-        
+
+
 		getThumbBoundsFn: function(index) {
 			// See Options->getThumbBoundsFn section of docs for more info
 			var thumbnail = items[index].el.children[0],
@@ -588,6 +588,11 @@ Keyboard left or right arrow key navigation. Option can be changed dynamically (
 ### `history` <code class="default">boolean</code> <code class="default">true</code>
 
 If set to `false` disables history module (back button to close gallery, unique URL for each slide). You can also just exclude `history.js` module from your build.
+
+
+### `galleryUID` <code class="default">integer</code> <code class="default">1</code>
+
+Gallery unique ID. Used by History module when forming URL. For example, second picture of gallery with UID 1 will have URL: `http://example.com/#&gid=1&pid=2`.
 
 
 ### `errorMsg` <code class="default">string</code> <code class="default"><div class="pswp__error-msg"><a href="%url%" target="_blank">The image</a> could not be loaded.</div></code>
@@ -771,10 +776,7 @@ pswp.isMainScrollAnimating
 pswp.bg
 
 // container element (pswp__container)
-pswp.container 
-
-
-
+pswp.container
 ```
 
 
@@ -875,9 +877,11 @@ Take a look in source of `src/js/ui/photoswipe-ui-default.js`, it's built just u
 
 ## About
 
-PhotoSwipe is in beta, more detailed documentation coming soon. For now please report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe) and suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas).
+PhotoSwipe is in beta, more detailed documentation coming soon. For now please report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask qustions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
 
 To get notified about updates follow [@photoswipe on Twitter](https://github.com/dimsemenov/PhotoSwipe) and star/watch project on [GitHub](https://github.com/dimsemenov/PhotoSwipe).
+
+If you think that something should be improved in this documentation page, feel free to [suggest an edit on GitHub](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation.md).
 
 <iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>
 
