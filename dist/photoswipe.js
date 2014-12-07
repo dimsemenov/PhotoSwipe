@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.0 - 2014-12-05
+/*! PhotoSwipe - v4.0.0 - 2014-12-08
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 (function (root, factory) { 
@@ -26,7 +26,6 @@ var framework = {
 	features: null,
 	
 	bind: function(target, type, listener, unbind) {
-
 		var methodName = (unbind ? 'remove' : 'add') + 'EventListener';
 		type = type.split(' ');
 		for(var i = 0; i < type.length; i++) {
@@ -34,7 +33,6 @@ var framework = {
 				target[methodName]( type[i], listener, false);
 			}
 		}
-			
 	},
 	isArray: function(obj) {
 		return (obj instanceof Array);
@@ -55,7 +53,7 @@ var framework = {
 	},
 	removeClass: function(el, className) {
 		var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
-     	el.className = el.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); 
+		el.className = el.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); 
 	},
 	addClass: function(el, className) {
 		if( !framework.hasClass(el,className) ) {
@@ -75,20 +73,21 @@ var framework = {
 		}
 		return -1;
 	},
-	// getOffset: function(el) {
-	// 	// http://stackoverflow.com/a/11396681/331460
-	//     var bodyRect = document.body.getBoundingClientRect(),
- //    		elemRect = el.getBoundingClientRect();
-
-	//     return { x: elemRect.left - bodyRect.left, y: elemRect.top - bodyRect.top };
-	// },
+	/*
+		getOffset: function(el) {
+			// http://stackoverflow.com/a/11396681/331460
+			var bodyRect = document.body.getBoundingClientRect(),
+			elemRect = el.getBoundingClientRect();
+			return { x: elemRect.left - bodyRect.left, y: elemRect.top - bodyRect.top };
+		},
+	*/
 	extend: function(o1, o2, preventOverwrite) {
 		for (var prop in o2) {
 			if (o2.hasOwnProperty(prop)) {
 				if(preventOverwrite && o1.hasOwnProperty(prop)) {
 					continue;
 				}
-			    o1[prop] = o2[prop];
+				o1[prop] = o2[prop];
 			}
 		}
 	},
@@ -106,26 +105,26 @@ var framework = {
 				return --k * k * k + 1;
 			}
 		}
-		// elastic: {
-		// 	out: function ( k ) {
+		/*
+			elastic: {
+				out: function ( k ) {
 
-		// 		var s, a = 0.1, p = 0.4;
-		// 		if ( k === 0 ) return 0;
-		// 		if ( k === 1 ) return 1;
-		// 		if ( !a || a < 1 ) { a = 1; s = p / 4; }
-		// 		else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
-		// 		return ( a * Math.pow( 2, - 10 * k) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) + 1 );
+					var s, a = 0.1, p = 0.4;
+					if ( k === 0 ) return 0;
+					if ( k === 1 ) return 1;
+					if ( !a || a < 1 ) { a = 1; s = p / 4; }
+					else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
+					return ( a * Math.pow( 2, - 10 * k) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) + 1 );
 
-		// 	},
-		// },
-		// back: {
-		// 	out: function ( k ) {
-
-		// 		var s = 1.70158;
-		// 		return --k * k * ( ( s + 1 ) * k + s ) + 1;
-
-		// 	}
-		// }
+				},
+			},
+			back: {
+				out: function ( k ) {
+					var s = 1.70158;
+					return --k * k * ( ( s + 1 ) * k + s ) + 1;
+				}
+			}
+		*/
 	},
 
 	/**
@@ -133,10 +132,10 @@ var framework = {
 	 * @return {object}
 	 * 
 	 * {
-	 * 	raf : request animation frame function
-	 * 	caf : cancel animation frame function
-	 * 	transfrom : transform property key (with vendor), or null if not supported
-	 * 	oldIE : IE8 or below
+	 *  raf : request animation frame function
+	 *  caf : cancel animation frame function
+	 *  transfrom : transform property key (with vendor), or null if not supported
+	 *  oldIE : IE8 or below
 	 * }
 	 * 
 	 */
@@ -172,26 +171,26 @@ var framework = {
 			// This detection is made because of buggy top/bottom toolbars that don't trigger window.resize event when appear.
 			// For more info refer to _isFixedPosition variable in core.js
 			if (/iP(hone|od)/.test(navigator.platform)) {
-			    var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
-			    v = parseInt(v[1], 10);
-			    if(v >= 1 && v < 8 ) {
-			    	features.isOldIOSPhone = true;
-			    }
+				var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+				v = parseInt(v[1], 10);
+				if(v >= 1 && v < 8 ) {
+					features.isOldIOSPhone = true;
+				}
 			}
 			// Detect old Android (before KitKat)
 			// due to bugs related to position:fixed
 			// http://stackoverflow.com/questions/7184573/pick-up-the-android-version-in-the-browser-by-javascript
-	    	var match = ua.match(/Android\s([0-9\.]*)/);
-	    	var androidversion =  match ? match[1] : 0;
-	    	androidversion = parseFloat(androidversion);
-	    	if(androidversion >= 1 && androidversion < 4.4 ) {
-	    		features.isOldAndroid = true;
-	    	} else if(androidversion >= 5) {
-	    		features.isNewAndroid = true; // Lollipop
-	    	}
-	    	features.isMobileOpera = /opera mini|opera mobi/i.test(ua);
+			var match = ua.match(/Android\s([0-9\.]*)/);
+			var androidversion =  match ? match[1] : 0;
+			androidversion = parseFloat(androidversion);
+			if(androidversion >= 1 && androidversion < 4.4 ) {
+				features.isOldAndroid = true;
+			} else if(androidversion >= 5) {
+				features.isNewAndroid = true; // Lollipop
+			}
+			features.isMobileOpera = /opera mini|opera mobi/i.test(ua);
 
-	    	// p.s. yes, yes, UA sniffing is bad, propose your solution for above bugs.
+			// p.s. yes, yes, UA sniffing is bad, propose your solution for above bugs.
 		
 		}
 		
@@ -256,43 +255,44 @@ var framework = {
 
 framework.detectFeatures();
 
-// Override add event listener for old versions of IE
+// Override addEventListener for old versions of IE
 if(framework.features.oldIE) {
+
 	framework.bind = function(target, type, listener, unbind) {
-		// if ( !framework.isArray(type) ) {
-		// 	type = [type];
-		// }
+		
 		type = type.split(' ');
 
 		var methodName = (unbind ? 'detach' : 'attach') + 'Event',
-			evName;
-	  	for(var i = 0; i < type.length; i++) {
-	  		evName = type[i];
+			evName,
+			_handleEv = function() {
+				listener.handleEvent.call(listener);
+			};
+
+		for(var i = 0; i < type.length; i++) {
+			evName = type[i];
 			if(evName) {
 
-				if(typeof listener == "object" && listener.handleEvent) {
+				if(typeof listener === "object" && listener.handleEvent) {
 					if(!unbind) {
 
-						listener['oldIE' + evName] = function() {
-							listener.handleEvent.call(listener);
-						};
+						listener['oldIE' + evName] = _handleEv;
 
 					} else {
 						if(!listener['oldIE' + evName]) {
 							return false;
 						}
-						
 					}
 
 					target[methodName]( 'on' + evName, listener['oldIE' + evName]);
-		        } else {
-		        	target[methodName]( 'on' + evName, listener);
-		        }
+				} else {
+					target[methodName]( 'on' + evName, listener);
+				}
 
 				
 			}
 		}
 	};
+	
 }
 
 
@@ -463,7 +463,7 @@ var _isOpen,
 	},
 	
 	_applyZoomTransform = function(styleObj,x,y,zoom) {
-		styleObj[_transformKey] = _translatePrefix + x + 'px, ' + y + 'px' + _translateSufix + ' scale(' + zoom + ')';;//'scale3d(' + zoom + ',' + zoom + ',1)';//' scale(' + zoom + ')';
+		styleObj[_transformKey] = _translatePrefix + x + 'px, ' + y + 'px' + _translateSufix + ' scale(' + zoom + ')';
 	},
 	_applyCurrentZoomPan = function() {
 		if(_currZoomElementStyle) {
@@ -539,7 +539,7 @@ var _isOpen,
 	
 
 	_mouseMoveTimeout = null,
-	_onFirstMouseMove = function(e) {
+	_onFirstMouseMove = function() {
 		// Wait until mouse move event is fired at least twice during 100ms
 		// We do this, because some mobile browsers trigger it on touchstart
 		if(_mouseMoveTimeout ) { 
@@ -670,14 +670,14 @@ var _animations = {},
 		var complete = function() {
 
 			_stopAnimation('initialZoom');
-	 		if(!out) {
-	 			_applyBgOpacity(1);
-	 			if(img) {
-	 				img.style.display = 'block';
-	 			}
-	 			framework.addClass(template, 'pswp--animated-in');
-	 			_shout('initialZoomInEnd');
-	 		}
+			if(!out) {
+				_applyBgOpacity(1);
+				if(img) {
+					img.style.display = 'block';
+				}
+				framework.addClass(template, 'pswp--animated-in');
+				_shout('initialZoom' + (out ? 'OutEnd' : 'InEnd'));
+			}
 			if(completeFn) {
 				completeFn();
 			}
@@ -691,35 +691,15 @@ var _animations = {},
 		// if bounds aren't provided, just open gallery without animation
 		if(!thumbBounds || thumbBounds.x === undefined || !duration ) {
 			_shout('initialZoom' + (out ? 'Out' : 'In') );
-			
-	 		_currZoomLevel = item.initialZoomLevel;
+
+			_currZoomLevel = item.initialZoomLevel;
 			_equalizePoints(_panOffset,  item.initialPosition );
 			_applyCurrentZoomPan();
 
-
-			// if(_options.showHideDuration) {
-			// 	if(!out) {
-			// 		complete();
-			// 	}
-			// 	// simple opacity transition
-			// 	_showOrHideTimeout = setTimeout(function() {
-			// 		if(_options.showHideOpacity) {
-			// 			template.style.opacity = out ? 0 : 1;
-			// 		}
-
-			// 		if(out) {
-			// 			_showOrHideTimeout = setTimeout(function() {
-			// 				complete();
-			// 			}, _options.showHideDuration + 20);
-			// 		}
-						
-			// 	}, out ? 15 : 50);
-			// } else {
-				// no transition
-				template.style.opacity = out ? 0 : 1;
-				_applyBgOpacity(1);
-				complete();
-			//}
+			// no transition
+			template.style.opacity = out ? 0 : 1;
+			_applyBgOpacity(1);
+			complete();
 			
 			return false;
 		}
@@ -748,7 +728,7 @@ var _animations = {},
 		
 
 		if(out && !_closedByScroll) {
-		 	framework.removeClass(template, 'pswp--animated-in');
+			framework.removeClass(template, 'pswp--animated-in');
 		}
 
 		
@@ -947,7 +927,7 @@ var publicMethods = {
 		};
 
 		// Objects that hold slides (there are only 3 in DOM)
-		_itemHolders = [
+		self.itemHolders = _itemHolders = [
 			{el:self.container.children[0] , wrap:0, index: -1},
 			{el:self.container.children[1] , wrap:0, index: -1},
 			{el:self.container.children[2] , wrap:0, index: -1}
@@ -1116,15 +1096,15 @@ var publicMethods = {
 
 		_listen('initialZoomInEnd', function() {
 			self.setContent(_itemHolders[0], _currentItemIndex-1);
-		 	self.setContent(_itemHolders[2], _currentItemIndex+1);
+			self.setContent(_itemHolders[2], _currentItemIndex+1);
 
-		 	_itemHolders[0].el.style.display = _itemHolders[2].el.style.display = 'block';
+			_itemHolders[0].el.style.display = _itemHolders[2].el.style.display = 'block';
 
-		 	if(_options.focus) {
-		 		// focus causes layout, which causes lag during animation, that's why we delay it till the initial zoom transition ends
+			if(_options.focus) {
+				// focus causes layout, which causes lag during animation, that's why we delay it till the initial zoom transition ends
 				template.focus();
-		 	}
-		 	 
+			}
+			 
 
 			_bindEvents();
 		});
@@ -1191,27 +1171,11 @@ var publicMethods = {
 		_listeners = null;
 	},
 
-	// TODO: pan via mousemove instead of drag?
-	// mouseMovePan: function(x,y) {
-	// 
-	// 	if(!isMouseMoving) {
-	// 		forceRenderMovement = true;
-	// 		isMouseMoving = true;
-	// 	}
-	// 	// 60 px is the starting coordinate
-	// 	// e.g. if width of window is 1024px, mouse move will work from 60px to 964px (1024 - 60)
-	// 	var DIST = 60;  
-	// 	var percentX = 1 - x / (_viewportSize.x - DIST*2) + DIST/(_viewportSize.x-DIST*2),
-	// 		percentY = 1 - y / (_viewportSize.y - DIST*2) + DIST/(_viewportSize.y-DIST*2);
-	// 	mouseMovePos.x = (_currPanBounds.min.x - _currPanBounds.max.x) * percentX - _currPanBounds.min.x;
-	// 	mouseMovePos.y = (_currPanBounds.min.y - _currPanBounds.max.y) * percentY - _currPanBounds.min.y;
-	// },
-
 	/**
 	 * Pan image to position
-	 * @param  {Number}  x     
-	 * @param  {Number}  y     
-	 * @param  {Boolean} force 	Will ignore bounds if set to true.
+	 * @param {Number} x     
+	 * @param {Number} y     
+	 * @param {Boolean} force Will ignore bounds if set to true.
 	 */
 	panTo: function(x,y,force) {
 		if(!force) {
@@ -1267,6 +1231,43 @@ var publicMethods = {
 		self.goTo( _currentItemIndex - 1);
 	},
 
+	// update current zoom/pan objects
+	updateCurrZoomItem: function(emulateSetContent) {
+		if(emulateSetContent) {
+			_shout('beforeChange', 0);
+		}
+
+		// itemHolder[1] is middle (current) item
+		if(_itemHolders[1].el.children.length) {
+			var zoomElement = _itemHolders[1].el.children[0];
+			if( framework.hasClass(zoomElement, 'pswp__zoom-wrap') ) {
+				_currZoomElementStyle = zoomElement.style;
+			} else {
+				_currZoomElementStyle = null;
+			}
+		} else {
+			_currZoomElementStyle = null;
+		}
+		
+		_currPanBounds = self.currItem.bounds;	
+		_startZoomLevel = _currZoomLevel = self.currItem.initialZoomLevel;
+
+		_panOffset.x = _currPanBounds.center.x;
+		_panOffset.y = _currPanBounds.center.y;
+
+		if(emulateSetContent) {
+			_shout('afterChange');
+		}
+	},
+
+	invalidateCurrItems: function() {
+		for(var i = 0; i < NUM_HOLDERS; i++) {
+			if( _itemHolders[i].item ) {
+				_itemHolders[i].item.needsUpdate = true;
+			}
+		}
+	},
+
 	updateCurrItem: function(beforeAnimation) {
 
 		if(_indexDiff === 0) {
@@ -1315,38 +1316,20 @@ var publicMethods = {
 			if(prevItem.initialZoomLevel !== _currZoomLevel) {
 				_calculateItemSize(prevItem , _viewportSize );
 				_applyZoomPanToItem( prevItem ); 
-
 			}
 
-		}
-
-		// itemHolder[1] is middle (current) item
-		if(_itemHolders[1].el.children.length) {
-			var zoomElement = _itemHolders[1].el.children[0];
-			if( framework.hasClass(zoomElement, 'pswp__zoom-wrap') ) {
-				_currZoomElementStyle = zoomElement.style;
-			} else {
-				_currZoomElementStyle = null;
-			}
-		} else {
-			_currZoomElementStyle = null;
 		}
 
 		// reset diff after update
 		_indexDiff = 0;
-		
-		_currPanBounds = self.currItem.bounds;	
-		_startZoomLevel = _currZoomLevel = self.currItem.initialZoomLevel;
 
-		_panOffset.x = _currPanBounds.center.x;
-		_panOffset.y = _currPanBounds.center.y;
+		self.updateCurrZoomItem();
 
 		_prevItemIndex = _currentItemIndex;
 
 		_shout('afterChange');
+		
 	},
-
-
 
 
 	updateSize: function(force) {
@@ -1367,6 +1350,8 @@ var publicMethods = {
 			template.style.height = _windowVisibleSize.y + 'px';
 		}
 
+
+
 		_viewportSize.x = self.scrollWrap.clientWidth;
 		_viewportSize.y = self.scrollWrap.clientHeight;
 
@@ -1378,14 +1363,32 @@ var publicMethods = {
 
 		_moveMainScroll(_slideSize.x * _currPositionIndex);
 
+		_shout('beforeResize'); // even may be used for example to switch image sources
+
 		// don't re-calculate size on inital size update
 		if(_containerShiftIndex !== undefined) {
-			for(var i = 0; i < NUM_HOLDERS; i++) {
-				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, _itemHolders[i].el.style);
 
-				// update zoom level on items
-				var index = _getLoopedId( _currentItemIndex - 1 + i );
-				var item = _getItemAt(index);
+			var holder,
+				item;
+
+			for(var i = 0; i < NUM_HOLDERS; i++) {
+				holder = _itemHolders[i];
+				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, holder.el.style);
+
+				// update zoom level on items and refresh source (if needsUpdate)
+				item = _getItemAt( holder.index );
+				if(item.needsUpdate) {
+					self.cleanSlide( item ); 
+
+					self.setContent( holder, holder.index );
+
+					// if "center" slide
+					if(i === 1) {
+						self.updateCurrZoomItem(true);
+					}
+
+					item.needsUpdate  = false;
+				}
 				if(item && item.container) {
 					_calculateItemSize(item, _viewportSize);
 					_applyZoomPanToItem( item );
@@ -1409,11 +1412,13 @@ var publicMethods = {
 	//Zoom current item to
 	zoomTo: function(destZoomLevel, centerPoint, speed, easingFn, updateFn) {
 		
-		// if(destZoomLevel == 'fit') {
-		// 	destZoomLevel = self.currItem.fitRatio;
-		// } else if(destZoomLevel == 'fill') {
-		// 	destZoomLevel = self.currItem.fillRatio;
-		// }
+		/*
+			if(destZoomLevel === 'fit') {
+				destZoomLevel = self.currItem.fitRatio;
+			} else if(destZoomLevel === 'fill') {
+				destZoomLevel = self.currItem.fillRatio;
+			}
+		*/
 
 		if(centerPoint) {
 			_startZoomLevel = _currZoomLevel;
@@ -1592,7 +1597,7 @@ var _gestureStartTime,
 	_getTouchPoints = function(e) {
 		// clean up previous points, without recreating array
 		while(_tempPointsArr.length > 0) {
-		    _tempPointsArr.pop();
+			_tempPointsArr.pop();
 		}
 
 		if(!_pointerEventEnabled) {
@@ -1722,65 +1727,37 @@ var _gestureStartTime,
 
 				if(newMainScrollPos !== undefined) {
 					_moveMainScroll(newMainScrollPos, true);
-
-
 					if(newMainScrollPos === _startMainScrollPos.x) {
 						_mainScrollShifted = false;
 					} else {
 						_mainScrollShifted = true;
 					}
-					
 				}
 
 				if(_currPanBounds.min.x !== _currPanBounds.max.x) {
-
 					if(newPanPos !== undefined) {
 						_panOffset.x = newPanPos;
 					} else if(!_mainScrollShifted) {
 						_panOffset.x += delta.x * panFriction;
 					}
-
-				} //else {
-				//	return true;
-				//}
+				}
 
 				return newMainScrollPos !== undefined;
 			}
 
 		}
 
-		// if(!_mainScrollAnimating) {
-		// 	_panOffset[axis] = newOffset;
-		
 		if(!_mainScrollAnimating) {
 			
 			if(!_mainScrollShifted) {
-
-				//if(_currPanBounds.min.x !== _currPanBounds.max.x && _currPanBounds.min.y !== _currPanBounds.max.y) {
-				//	_panOffset[axis] += delta[axis] * panFriction;
-				//}
-				
-
-				//if(_currPanBounds.min[axis] !== _currPanBounds.max[axis] ) {
 				if(_currZoomLevel > self.currItem.fitRatio) {
 					_panOffset[axis] += delta[axis] * panFriction;
 				
 				}
-
-				// if(_currPanBounds.min.y !== _currPanBounds.max.y ) {
-				// 	_panOffset.y += delta.y * panFriction;
-				// }
 			}
 
 			
 		}
-		
-
-		// }
-		
-		// if(axis{
-		// 	_panOffset.y = _panOffset.y + delta.y * panFriction;
-		// }
 		
 	},
 
@@ -1913,12 +1890,6 @@ var _gestureStartTime,
 				_currentPoints = touchesList;
 			}
 		}	
-
-		// if(_direction === 'h' || !_direction) {
-		// 	e.preventDefault();
-		// } else {
-
-		// }
 	},
 	// 
 	_renderMovement =  function() {
@@ -1983,7 +1954,7 @@ var _gestureStartTime,
 					var minusDiff = self.currItem.minZoom - zoomLevel;
 					var percent = 1 - minusDiff / (self.currItem.minZoom / 1.2);
 					_applyBgOpacity(percent);
-					_shout('onPinchClose', percent)
+					_shout('onPinchClose', percent);
 					_opacityChanged = true;
 				} else {
 
@@ -2039,30 +2010,11 @@ var _gestureStartTime,
 
 		} else {
 
-			// handle behavior for one point (dragging or panning)
-
-			// return if direction wasn't detected, or panning isn't possible
-			// if(!_direction || (_direction === 'v' && !_canPan())  ) {
-			// 	return;
-			// }
+			// handle behaviour for one point (dragging or panning)
 
 			if(!_direction) {
 				return;
 			}
-
-			
-
-			// var verticalSwipe = false;
-			// if(_direction === 'v') {
-			// 	if(_options.vSwipeToClose) {
-
-			// 		verticalSwipe = true;
-			// 		//return;
-			// 	} else if(!_canPan()) {
-			// 		return;
-			// 	}
-			// }
-			
 
 			if(_isFirstMove) {
 				_isFirstMove = false;
@@ -2116,35 +2068,14 @@ var _gestureStartTime,
 
 			_moved = true;
 
-			// if(verticalSwipe) {
-			// 	_panOffset.y += delta.y;
-			// 	var yOffsetDiff = Math.abs(_panOffset.y - self.currItem.initialPosition.y);
-			// 	var bgOpacity = 1 - Math.min(yOffsetDiff,450)/450;
-			// 	_shout('onVerticalDrag', bgOpacity);
-			// 	_applyBgOpacity(bgOpacity);
-			// 	//template.style.opacity = bgOpacity;
-			// 	_applyCurrentZoomPan();
-			// 	return;
-			// }
-
-			// if(_mainScrollShifted) {
-			// 	_moveMainScrollBy(delta);
-			// 	return;
-			// }
-
 			_currPanBounds = self.currItem.bounds;
 			
 			var mainScrollChanged = _panOrMoveMainScroll('x', delta);
 			if(!mainScrollChanged) {
 				_panOrMoveMainScroll('y', delta);
 			}
-			//if(!_mainScrollShifted) {
 				
-				_applyCurrentZoomPan();
-			//}
-			
-
-			
+			_applyCurrentZoomPan();
 		}
 
 	},
@@ -2661,11 +2592,11 @@ var _getItemAt,
 
 				var scaleMode = _options.scaleMode;
 
-				if (scaleMode == 'orig') {
+				if (scaleMode === 'orig') {
 					zoomLevel = 1;
-				} else if (scaleMode == 'fit') {
+				} else if (scaleMode === 'fit') {
 					zoomLevel = item.fitRatio;
-				} else if (scaleMode == 'fill') {
+				} else if (scaleMode === 'fill') {
 					zoomLevel = item.fillRatio;
 				}
 
@@ -2744,18 +2675,18 @@ var _getItemAt,
 
 			if(animate) {
 				setTimeout(function() {
-				 	img.style.opacity = 1;
-				 	if(keepPlaceholder) {
-				 		setTimeout(function() {
+					img.style.opacity = 1;
+					if(keepPlaceholder) {
+						setTimeout(function() {
 							// hide image placeholder "behind"
 							if(item && item.loaded && item.placeholder) {
 								item.placeholder.style.display = 'none';
 								item.placeholder = null;
 							}
 						}, 500);
-				 	}
+					}
 					
-				 }, 50);
+				}, 50);
 			}
 		}
 	},
@@ -2782,8 +2713,7 @@ var _getItemAt,
 		img.onerror = function() {
 			item.loadError = true;
 			onComplete();
-		};
-		
+		};		
 
 		img.src = item.src;// + '?a=' + Math.random();
 
@@ -2894,7 +2824,7 @@ _registerModule('Controller', {
 
 		getItemAt: function(index) {
 			if (index >= 0) {
-				return _items[index];
+				return _items[index] !== undefined ? _items[index] : false;
 			}
 			return false;
 		},
@@ -2920,6 +2850,11 @@ _registerModule('Controller', {
 			if(_options.loop) {
 				index = _getLoopedId(index);
 			}
+
+			var prevItem = self.getItemAt(holder.index);
+			if(prevItem) {
+				prevItem.container = null;
+			}
 	
 			var item = self.getItemAt(index),
 				img;
@@ -2930,8 +2865,8 @@ _registerModule('Controller', {
 				// allow to override data
 				_shout('gettingData', index, item);
 
-//				holder.setAttribute('data-pswp-id', index);
 				holder.index = index;
+				holder.item = item;
 
 				if( _displayError(item, holder) ) {
 					item.initialPosition.x = item.initialPosition.y = 0;
@@ -2942,42 +2877,9 @@ _registerModule('Controller', {
 					_applyZoomPanToItem(item);
 					return;
 				}
-				
 
 				// base container DIV is created only once for each of 3 holders
-				var baseDiv;// = (prevItem && prevItem.container)  ? prevItem.container : framework.createEl('pswp__zoom-wrap');
-				// if(prevItem && prevItem.container) {
-				// 	baseDiv = prevItem.container;
-				// 	if(baseDiv.parentNode) {
-				// 		baseDiv.parentNode.removeChild(baseDiv);
-				// 	}
-				// 	baseDiv.innerHTML = '';
-				// 	prevItem.container = null;
-				// } else {
-				// 	baseDiv = framework.createEl('pswp__zoom-wrap');
-				// }
-				// if(!holder.wrap) {
-				// 	holder.wrap = framework.createEl('pswp__zoom-wrap');
-				// } else {
-
-				// 	holder.removeChild(holder.wrap);
-				// 	holder.wrap.innerHTML = '';
-				// }
-				baseDiv = framework.createEl('pswp__zoom-wrap');//holder.wrap;
-
-				// allow to override image source, size, etc.
-				// if(_options.assignItemData) {
-				// 	_options.assignItemData(item);
-				// }
-
-
-				// if(prevItem) {
-				// 	prevItem.container = null;
-				// 	baseDiv.parentNode.removeChild(baseDiv);
-				// 	baseDiv.innerHTML = '';
-				// }
-
-				item.container = baseDiv;
+				var baseDiv = item.container = framework.createEl('pswp__zoom-wrap'); 
 				
 				if(!item.loaded) {
 
@@ -2988,31 +2890,26 @@ _registerModule('Controller', {
 							return;
 						}
 
-						// if(!_initialZoomRunning && item.placeholder) {
-						// 	item.placeholder.style.display = 'none';
-						// }
-
-						if(!img) {
-							img = item.img;
-						}
+						
 						// Apply hw-acceleration only after image is loaded.
 						// This is webkit progressive image loading bugfix.
 						// https://bugs.webkit.org/show_bug.cgi?id=108630
 						// https://code.google.com/p/chromium/issues/detail?id=404547
-						img.style.webkitBackfaceVisibility = 'hidden';
+						item.img.style.webkitBackfaceVisibility = 'hidden';
 
 						
 
 						// check if holder hasn't changed while image was loading
 						if( holder.index === index ) {
 							if( _displayError(item, holder) ) {
+								item.img = null;
 								return;
 							}
 							if( !item.imageAppended /*_likelyTouchDevice*/ ) {
 								if(_mainScrollAnimating || _initialZoomRunning) {
-									_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:img, index:index, holder:holder});
+									_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
 								} else {
-									_appendImage(index, item, baseDiv, img, _mainScrollAnimating || _initialZoomRunning);
+									_appendImage(index, item, baseDiv, item.img, _mainScrollAnimating || _initialZoomRunning);
 								}
 							} else {
 								// remove preloader & mini-img
@@ -3024,13 +2921,10 @@ _registerModule('Controller', {
 						}
 
 						item.loadComplete = null;
+						item.img = null; // no need to store image element after it's added
 
 						_shout('imageLoadComplete', index, item);
 					};
-
-
-
-					img = item.img;
 
 					if(framework.features.transform) {
 						
@@ -3058,9 +2952,9 @@ _registerModule('Controller', {
 					if( self.allowProgressiveImg() ) {
 						// just append image
 						if(!_initialContentSet) {
-							_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:(img || item.img), index:index, holder:holder});
+							_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
 						} else {
-							_appendImage(index, item, baseDiv, (img || item.img), true, true);
+							_appendImage(index, item, baseDiv, item.img, true, true);
 						}
 					}
 					
@@ -3082,7 +2976,7 @@ _registerModule('Controller', {
 
 				if(!_initialContentSet && index === _currentItemIndex) {
 					_currZoomElementStyle = baseDiv.style;
-					_showOrHide(item, img);
+					_showOrHide(item, (img ||item.img) );
 				} else {
 					_applyZoomPanToItem(item);
 				}
@@ -3094,7 +2988,14 @@ _registerModule('Controller', {
 				holder.el.innerHTML = '';
 			}
 
-		}
+		},
+
+		cleanSlide: function( item ) {
+			if(item.img ) {
+				item.img.onload = item.img.onerror = null;
+			}
+			item.loaded = item.loading = item.img = item.imageAppended = false;
+		},
 
 
 
@@ -3106,46 +3007,6 @@ _registerModule('Controller', {
 
 
 
-// TODO: use webworker to lazy-load images?
-// 
-// 		var blob = new Blob([ ""+
-// "   onmessage = function(e) {"+
-// "		var urls = e.data,"+
-// "        	done = urls.length,"+
-// "        	onload = function () {"+
-// "            	if (--done === 0) {"+
-// "                	self.postMessage('Done!');"+
-// "                self.close();"+
-// "            	}"+
-// "        	};"+
- 
-// "    	urls.forEach(function (url) {"+
-// "        	var xhr = new XMLHttpRequest();"+
-// "        	xhr.responseType = 'blob';"+
-// "        	xhr.onload = xhr.onerror = onload;"+
-// "        	xhr.open('GET', url, true);"+
-// "        	xhr.send();"+
-// "    	});"+
-// " 	}" ]);
-
-// 		var blobURL = window.URL.createObjectURL(blob);
-
-// 		var imgs = [];
-//         for(var i = 0; i < items.length; i++) {
-//         	imgs.push(items[i].src);
-//         }
-
-// 		_worker = new Worker(blobURL);
-// 		_worker.onmessage = function(e) {
-// 		};
-// 		_worker.postMessage(imgs); 
-
-  //       for(var i = 0; i < items.length; i++) {
-  //       	var img = new Image();
-  //       	img.src = items[i].src;
-  //       }
-
-
 /*>>items-controller*/
 
 /*>>tap*/
@@ -3154,13 +3015,10 @@ _registerModule('Controller', {
 
 var tapTimer,
 	tapReleasePoint = {},
-	_dispatchTapEvent = function(origEvent, releasePoint, pointerType) {
-
-					
-	    var evt = document.createEvent( 'CustomEvent' );
-	    evt.initCustomEvent( 'pswpTap', true, true, {origEvent:origEvent, target:origEvent.target, releasePoint: releasePoint, pointerType:pointerType || 'touch'} );
-	    origEvent.target.dispatchEvent( evt );
-
+	_dispatchTapEvent = function(origEvent, releasePoint, pointerType) {		
+		var evt = document.createEvent( 'CustomEvent' );
+		evt.initCustomEvent( 'pswpTap', true, true, {origEvent:origEvent, target:origEvent.target, releasePoint: releasePoint, pointerType:pointerType || 'touch'} );
+		origEvent.target.dispatchEvent( evt );
 	};
 
 _registerModule('Tap', {
@@ -3200,7 +3058,7 @@ _registerModule('Tap', {
 						//self.onDoubleTap(p0);
 						_shout('doubleTap', p0);
 						return;
-				    }
+					}
 				}
 				
 				var clickedTagName = e.target.tagName.toLowerCase();
@@ -3262,59 +3120,60 @@ _registerModule('DesktopZoom', {
 			// https://developer.mozilla.org/en-US/docs/Web/Events/wheel
 			_wheelDelta.x = 0;
 
- 			if('deltaX' in e) {
- 				_wheelDelta.x = e.deltaX;
- 				_wheelDelta.y = e.deltaY;
- 			} else if('wheelDelta' in e) {
-        		if(e.wheelDeltaX) {
-        			_wheelDelta.x = -0.16 * e.wheelDeltaX;
-        		} 
-        		if(e.wheelDeltaY) {
-        			_wheelDelta.y = -0.16 * e.wheelDeltaY;
-        		} else {
-        			_wheelDelta.y = -0.16 * e.wheelDelta;
-        		}
-        	} else if('detail' in e) {
+			if('deltaX' in e) {
+				_wheelDelta.x = e.deltaX;
+				_wheelDelta.y = e.deltaY;
+			} else if('wheelDelta' in e) {
+				if(e.wheelDeltaX) {
+					_wheelDelta.x = -0.16 * e.wheelDeltaX;
+				} 
+				if(e.wheelDeltaY) {
+					_wheelDelta.y = -0.16 * e.wheelDeltaY;
+				} else {
+					_wheelDelta.y = -0.16 * e.wheelDelta;
+				}
+			} else if('detail' in e) {
 				_wheelDelta.y = e.detail;
-        	} else {
-        		return;
-        	}
-        
+			} else {
+				return;
+			}
+		
 
-        	// TODO: use rAF instead of mousewheel?
+			// TODO: use rAF instead of mousewheel?
 			_calculatePanBounds(_currZoomLevel, true);
 			self.panTo(_panOffset.x - _wheelDelta.x, _panOffset.y - _wheelDelta.y);
 
+			/*
+				// Experimental attempt to implement touchpad swipe gesture.
+				// Didn't work as good as expected due to enreliable deceleration speed across different touchpads.
+				// left for history
+				
+				if(!_trackpadDir) { 
+					if(!_wheelDelta.y) {
+						_trackpadDir = 'x';
+					} else {
+						if(Math.abs(_wheelDelta.y - _wheelDelta.x) > 10) {
+							_trackpadDir = _wheelDelta.y > _wheelDelta.x ? 'y' : 'x';
+						}
+					}
+				}
+				if(!_trackpadDir) {
+					return;
+				}
+				var delta = _wheelDelta[_trackpadDir];
+				if(delta && Math.abs(delta) > 10) {
+					
+					var timeDiff = _getCurrentTime() - _trackpadLastEventTime;
+					_trackpadLastEventTime = _getCurrentTime();
 
-    		// Experimental attempt to implement touchpad swipe gesture.
-    		// Didn't work as good as expected due to enreliable deceleration speed across different touchpads.
-    		// left for history
-    		// 
-    		// if(!_trackpadDir) { 
-    		// 	if(!_wheelDelta.y) {
-    		// 		_trackpadDir = 'x';
-    		// 	} else {
-    		// 		if(Math.abs(_wheelDelta.y - _wheelDelta.x) > 10) {
-        	// 			_trackpadDir = _wheelDelta.y > _wheelDelta.x ? 'y' : 'x';
-        	// 		}
-    		// 	}
-    		// }
-    		// if(!_trackpadDir) {
-    		// 	return;
-    		// }
-    		// var delta = _wheelDelta[_trackpadDir];
-    		// if(delta && Math.abs(delta) > 10) {
-    			
-        	// 	var timeDiff = _getCurrentTime() - _trackpadLastEventTime;
-        	// 	_trackpadLastEventTime = _getCurrentTime();
-
-        	// 	if(timeDiff < 200 && _trackpadSwipePrev === (delta > 0)) {
-        	// 		return;
-        	// 	}
-        		
-        	// 	_trackpadSwipePrev = (delta > 0);
-        	// 	self[_trackpadSwipePrev ? 'next' : 'prev' ]();
-    		// }
+					if(timeDiff < 200 && _trackpadSwipePrev === (delta > 0)) {
+						return;
+					}
+					
+					_trackpadSwipePrev = (delta > 0);
+					self[_trackpadSwipePrev ? 'next' : 'prev' ]();
+				}
+			*/
 		},
 		toggleDesktopZoom: function(centerPoint) {
 
@@ -3448,22 +3307,22 @@ var _historyUpdateTimeout,
 			return params;
 		}
 
-	    var vars = hash.split('&');
-	    for (var i = 0; i < vars.length; i++) {
-	    	if(!vars[i]) {
-	    		continue;
-	    	}
-	        var pair = vars[i].split('=');	
-	        if(pair.length < 2) {
-	        	continue;
-	        }		        
-	        params[pair[0]] = pair[1];
-	    }
-	    params.pid = parseInt(params.pid,10)-1;
-	    if( params.pid < 0 ) {
-	    	params.pid = 0;
-	    }
-	    return params;
+		var vars = hash.split('&');
+		for (var i = 0; i < vars.length; i++) {
+			if(!vars[i]) {
+				continue;
+			}
+			var pair = vars[i].split('=');	
+			if(pair.length < 2) {
+				continue;
+			}
+			params[pair[0]] = pair[1];
+		}
+		params.pid = parseInt(params.pid,10)-1;
+		if( params.pid < 0 ) {
+			params.pid = 0;
+		}
+		return params;
 	},
 	_updateHash = function() {
 
@@ -3549,17 +3408,17 @@ _registerModule('History', {
 				if(!_closedFromURL) {
 
 					if(_urlChangedOnce) {
-					    history.back();
+						history.back();
 					} else {
 						if(_initialHash) {
 							_windowLoc.hash = _initialHash;
 						} else {
-						    if ('pushState' in history) {
-						    	// remove hash from url without refreshing it or scrolling to top
-						    	history.pushState("", document.title, _windowLoc.pathname + _windowLoc.search);
-						    } else {
-						        _windowLoc.hash = "";
-						    }
+							if ('pushState' in history) {
+								// remove hash from url without refreshing it or scrolling to top
+								history.pushState("", document.title, _windowLoc.pathname + _windowLoc.search);
+							} else {
+								_windowLoc.hash = "";
+							}
 						}
 					}
 					
@@ -3597,10 +3456,10 @@ _registerModule('History', {
 			}
 			
 
- 			setTimeout(function() {
- 				if(_isOpen) { // hasn't destroyed yet
- 					framework.bind(window, 'hashchange', self.onHashChange);
- 				}
+			setTimeout(function() {
+				if(_isOpen) { // hasn't destroyed yet
+					framework.bind(window, 'hashchange', self.onHashChange);
+				}
 			}, 40);
 			
 		},
@@ -3642,6 +3501,6 @@ _registerModule('History', {
 
 
 /*>>history*/
-	 framework.extend(self, publicMethods); };
+	framework.extend(self, publicMethods); };
 	return PhotoSwipe;
 });
