@@ -35,6 +35,8 @@ body {
 
 }
 
+
+
 /*code {
   background: #F8F8F8;
   padding: .1em .4em;
@@ -107,6 +109,40 @@ h3 code.default {
   margin-bottom: 26px;
 }
 
+.docs-menu {
+  position: absolute;
+  width: 160px;
+  left: 0;
+  top: 106px;
+  border-top: 1px solid #CCC;
+  padding-top: 25px;
+  border-bottom: 1px solid #CCC;
+  padding-bottom: 25px;
+}
+.docs-menu a {
+  text-decoration: none;
+  width: 100%;
+}
+a.docs-logo {
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 0;
+  text-decoration: none;
+}
+.docs-menu ul {
+  list-style: none;
+  margin: 0;
+  padding:0;
+}
+.docs-menu li {
+  list-style: none;
+  margin: 0;
+  padding:0;
+}
+a.docs-menu__item--active {
+  color: #222;
+  font-weight: normal;
+}
 
 .codepen-embed {
   margin-left: -30px;
@@ -118,6 +154,9 @@ h3 code.default {
   background-color: #f8f8f8;
   height: 600px;
   
+}
+.codepen-embed--disabled {
+  height: auto;
 }
 .codepen-embed p {
   margin-bottom: 0;
@@ -390,10 +429,18 @@ p, ul.text-list {
   /*background: linear-gradient(180deg, #eee 0%,#fff 100%);*/
   padding: 132px 0;
 }
+
+
 .row {
   max-width: 800px;
   margin: 24px auto;
   padding: 0 30px;
+  position: relative;
+}
+
+.row--docs {
+  max-width: 960px;
+  padding-left: 210px;
 }
 .row--heading {
   margin-top: 0;
@@ -568,7 +615,7 @@ img.img--with_border {
   /*color: rgba(255, 255, 255, 0.8);*/
 }
 .row--modules span {
-  font-wight:bold;
+  font-wight:600;
   border-left:5px solid #FFF;
   padding-left:5px;
   margin-left:-10px;
@@ -707,9 +754,31 @@ a.demo-gallery__img--main {
   .section {
     margin-top: 132px;
   }
+
+  .row--docs {
+    max-width: 800px;
+    padding-left: 30px;
+
+  }
+  
   .section--head {
     margin-top:0;
     padding: 30px 0;
+  }
+
+  .docs {
+    margin-top: 48px;
+  }
+
+  .docs-menu {
+    position: relative;
+    left: 0;
+    top: 0;
+    border-top: 1px solid #CCC;
+    padding-top: 25px;
+    border-bottom: 1px solid #CCC;
+    padding-bottom: 25px;
+    margin: 15px 0;
   }
 
   .row--nav {
@@ -758,6 +827,9 @@ a.demo-gallery__img--main {
   }
   .section {
     margin-top: 88px;
+  }
+  .docs {
+    margin-top: 32px;
   }
   .section--head {
     margin-top:0;

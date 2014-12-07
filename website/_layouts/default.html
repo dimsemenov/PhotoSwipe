@@ -23,12 +23,13 @@
 
     <link href="https://plus.google.com/102586375605352607718" rel="publisher" />
 
+  {% if page.markdownpage == true %}
+    <link href="../site-assets/site.css?v={{site.pswpversion}}" rel="stylesheet" />
+  {% else %}
     <link href="site-assets/site.css?v={{site.pswpversion}}" rel="stylesheet" />
     <link href="dist/photoswipe.css?v={{site.pswpversion}}" rel="stylesheet" />
     <link href="dist/default-skin/default-skin.css?v={{site.pswpversion}}" rel="stylesheet" />
     
-   
-
     {% if site.url == 'local' %}
       <script>
         document.write('<script src=dist/photoswipe.js?r='+Math.random()+'><\/script>');
@@ -39,7 +40,11 @@
       <script src="dist/photoswipe-ui-default.min.js?v={{site.pswpversion}}"></script>
     {% endif %}
 
-      <script src="//use.typekit.net/snf1yod.js"></script>
+   
+  {% endif %}
+
+    
+    <script src="//use.typekit.net/snf1yod.js"></script>
     <script>try{Typekit.load();}catch(e){}</script>
 
       <!--[if lt IE 9]>
@@ -53,7 +58,17 @@
 
 
     {% if page.markdownpage == true %}
-    <div class="section docs"><div class="row">
+      
+      <div class="section docs"><div class="row row--docs">
+
+      <a class="docs-logo" href="http://photoswipe.com">PhotoSwipe</a>
+
+      <h1>{{ page.h1_title || page.title }}</h1>
+
+      {% include menu.html %}
+
+      
+
     {% else %}
     {% endif %}
 
@@ -62,6 +77,14 @@
 
 
     {% if page.markdownpage == true %}
+
+    <p style="
+        margin-top: 100px;
+        margin-bottom: 100px;
+        text-align: center;
+    "><span title="Coded">&lt;/&gt;</span> with <span title="love">&lt;3</span> in <a class="ukraine-flag" href="http://en.wikipedia.org/wiki/Ukraine" title="Ukraine"></a> by <a href="http://twitter.com/dimsemenov">@dimsemenov</a></p>
+
+
     </div></div>
 
     <script>
@@ -76,7 +99,7 @@
         document.write('<script src="//assets.codepen.io/assets/embed/ei.js"><' + '\/script>');
       }
     </script>
-
+  
 
 
     {% else %}
