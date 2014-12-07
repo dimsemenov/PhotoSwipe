@@ -453,7 +453,7 @@ _registerModule('Controller', {
 				item.img.onload = item.img.onerror = null;
 			}
 			item.loaded = item.loading = item.img = item.imageAppended = false;
-		},
+		}
 
 
 
