@@ -160,7 +160,7 @@ var _isOpen,
 	},
 	
 	_applyZoomTransform = function(styleObj,x,y,zoom) {
-		styleObj[_transformKey] = _translatePrefix + x + 'px, ' + y + 'px' + _translateSufix + ' scale(' + zoom + ')';;//'scale3d(' + zoom + ',' + zoom + ',1)';//' scale(' + zoom + ')';
+		styleObj[_transformKey] = _translatePrefix + x + 'px, ' + y + 'px' + _translateSufix + ' scale(' + zoom + ')';
 	},
 	_applyCurrentZoomPan = function() {
 		if(_currZoomElementStyle) {
@@ -236,7 +236,7 @@ var _isOpen,
 	
 
 	_mouseMoveTimeout = null,
-	_onFirstMouseMove = function(e) {
+	_onFirstMouseMove = function() {
 		// Wait until mouse move event is fired at least twice during 100ms
 		// We do this, because some mobile browsers trigger it on touchstart
 		if(_mouseMoveTimeout ) { 
@@ -367,14 +367,14 @@ var _animations = {},
 		var complete = function() {
 
 			_stopAnimation('initialZoom');
-	 		if(!out) {
-	 			_applyBgOpacity(1);
-	 			if(img) {
-	 				img.style.display = 'block';
-	 			}
-	 			framework.addClass(template, 'pswp--animated-in');
-	 			_shout('initialZoomInEnd');
-	 		}
+			if(!out) {
+				_applyBgOpacity(1);
+				if(img) {
+					img.style.display = 'block';
+				}
+				framework.addClass(template, 'pswp--animated-in');
+				_shout('initialZoom' + (out ? 'OutEnd' : 'InEnd'));
+			}
 			if(completeFn) {
 				completeFn();
 			}
@@ -388,35 +388,15 @@ var _animations = {},
 		// if bounds aren't provided, just open gallery without animation
 		if(!thumbBounds || thumbBounds.x === undefined || !duration ) {
 			_shout('initialZoom' + (out ? 'Out' : 'In') );
-			
-	 		_currZoomLevel = item.initialZoomLevel;
+
+			_currZoomLevel = item.initialZoomLevel;
 			_equalizePoints(_panOffset,  item.initialPosition );
 			_applyCurrentZoomPan();
 
-
-			// if(_options.showHideDuration) {
-			// 	if(!out) {
-			// 		complete();
-			// 	}
-			// 	// simple opacity transition
-			// 	_showOrHideTimeout = setTimeout(function() {
-			// 		if(_options.showHideOpacity) {
-			// 			template.style.opacity = out ? 0 : 1;
-			// 		}
-
-			// 		if(out) {
-			// 			_showOrHideTimeout = setTimeout(function() {
-			// 				complete();
-			// 			}, _options.showHideDuration + 20);
-			// 		}
-						
-			// 	}, out ? 15 : 50);
-			// } else {
-				// no transition
-				template.style.opacity = out ? 0 : 1;
-				_applyBgOpacity(1);
-				complete();
-			//}
+			// no transition
+			template.style.opacity = out ? 0 : 1;
+			_applyBgOpacity(1);
+			complete();
 			
 			return false;
 		}
@@ -445,7 +425,7 @@ var _animations = {},
 		
 
 		if(out && !_closedByScroll) {
-		 	framework.removeClass(template, 'pswp--animated-in');
+			framework.removeClass(template, 'pswp--animated-in');
 		}
 
 		
@@ -644,7 +624,7 @@ var publicMethods = {
 		};
 
 		// Objects that hold slides (there are only 3 in DOM)
-		_itemHolders = [
+		self.itemHolders = _itemHolders = [
 			{el:self.container.children[0] , wrap:0, index: -1},
 			{el:self.container.children[1] , wrap:0, index: -1},
 			{el:self.container.children[2] , wrap:0, index: -1}
@@ -813,15 +793,15 @@ var publicMethods = {
 
 		_listen('initialZoomInEnd', function() {
 			self.setContent(_itemHolders[0], _currentItemIndex-1);
-		 	self.setContent(_itemHolders[2], _currentItemIndex+1);
+			self.setContent(_itemHolders[2], _currentItemIndex+1);
 
-		 	_itemHolders[0].el.style.display = _itemHolders[2].el.style.display = 'block';
+			_itemHolders[0].el.style.display = _itemHolders[2].el.style.display = 'block';
 
-		 	if(_options.focus) {
-		 		// focus causes layout, which causes lag during animation, that's why we delay it till the initial zoom transition ends
+			if(_options.focus) {
+				// focus causes layout, which causes lag during animation, that's why we delay it till the initial zoom transition ends
 				template.focus();
-		 	}
-		 	 
+			}
+			 
 
 			_bindEvents();
 		});
@@ -888,27 +868,11 @@ var publicMethods = {
 		_listeners = null;
 	},
 
-	// TODO: pan via mousemove instead of drag?
-	// mouseMovePan: function(x,y) {
-	// 
-	// 	if(!isMouseMoving) {
-	// 		forceRenderMovement = true;
-	// 		isMouseMoving = true;
-	// 	}
-	// 	// 60 px is the starting coordinate
-	// 	// e.g. if width of window is 1024px, mouse move will work from 60px to 964px (1024 - 60)
-	// 	var DIST = 60;  
-	// 	var percentX = 1 - x / (_viewportSize.x - DIST*2) + DIST/(_viewportSize.x-DIST*2),
-	// 		percentY = 1 - y / (_viewportSize.y - DIST*2) + DIST/(_viewportSize.y-DIST*2);
-	// 	mouseMovePos.x = (_currPanBounds.min.x - _currPanBounds.max.x) * percentX - _currPanBounds.min.x;
-	// 	mouseMovePos.y = (_currPanBounds.min.y - _currPanBounds.max.y) * percentY - _currPanBounds.min.y;
-	// },
-
 	/**
 	 * Pan image to position
-	 * @param  {Number}  x     
-	 * @param  {Number}  y     
-	 * @param  {Boolean} force 	Will ignore bounds if set to true.
+	 * @param {Number} x     
+	 * @param {Number} y     
+	 * @param {Boolean} force Will ignore bounds if set to true.
 	 */
 	panTo: function(x,y,force) {
 		if(!force) {
@@ -964,6 +928,43 @@ var publicMethods = {
 		self.goTo( _currentItemIndex - 1);
 	},
 
+	// update current zoom/pan objects
+	updateCurrZoomItem: function(emulateSetContent) {
+		if(emulateSetContent) {
+			_shout('beforeChange', 0);
+		}
+
+		// itemHolder[1] is middle (current) item
+		if(_itemHolders[1].el.children.length) {
+			var zoomElement = _itemHolders[1].el.children[0];
+			if( framework.hasClass(zoomElement, 'pswp__zoom-wrap') ) {
+				_currZoomElementStyle = zoomElement.style;
+			} else {
+				_currZoomElementStyle = null;
+			}
+		} else {
+			_currZoomElementStyle = null;
+		}
+		
+		_currPanBounds = self.currItem.bounds;	
+		_startZoomLevel = _currZoomLevel = self.currItem.initialZoomLevel;
+
+		_panOffset.x = _currPanBounds.center.x;
+		_panOffset.y = _currPanBounds.center.y;
+
+		if(emulateSetContent) {
+			_shout('afterChange');
+		}
+	},
+
+	invalidateCurrItems: function() {
+		for(var i = 0; i < NUM_HOLDERS; i++) {
+			if( _itemHolders[i].item ) {
+				_itemHolders[i].item.needsUpdate = true;
+			}
+		}
+	},
+
 	updateCurrItem: function(beforeAnimation) {
 
 		if(_indexDiff === 0) {
@@ -1012,38 +1013,20 @@ var publicMethods = {
 			if(prevItem.initialZoomLevel !== _currZoomLevel) {
 				_calculateItemSize(prevItem , _viewportSize );
 				_applyZoomPanToItem( prevItem ); 
-
 			}
 
-		}
-
-		// itemHolder[1] is middle (current) item
-		if(_itemHolders[1].el.children.length) {
-			var zoomElement = _itemHolders[1].el.children[0];
-			if( framework.hasClass(zoomElement, 'pswp__zoom-wrap') ) {
-				_currZoomElementStyle = zoomElement.style;
-			} else {
-				_currZoomElementStyle = null;
-			}
-		} else {
-			_currZoomElementStyle = null;
 		}
 
 		// reset diff after update
 		_indexDiff = 0;
-		
-		_currPanBounds = self.currItem.bounds;	
-		_startZoomLevel = _currZoomLevel = self.currItem.initialZoomLevel;
 
-		_panOffset.x = _currPanBounds.center.x;
-		_panOffset.y = _currPanBounds.center.y;
+		self.updateCurrZoomItem();
 
 		_prevItemIndex = _currentItemIndex;
 
 		_shout('afterChange');
+		
 	},
-
-
 
 
 	updateSize: function(force) {
@@ -1064,6 +1047,8 @@ var publicMethods = {
 			template.style.height = _windowVisibleSize.y + 'px';
 		}
 
+
+
 		_viewportSize.x = self.scrollWrap.clientWidth;
 		_viewportSize.y = self.scrollWrap.clientHeight;
 
@@ -1075,14 +1060,32 @@ var publicMethods = {
 
 		_moveMainScroll(_slideSize.x * _currPositionIndex);
 
+		_shout('beforeResize'); // even may be used for example to switch image sources
+
 		// don't re-calculate size on inital size update
 		if(_containerShiftIndex !== undefined) {
-			for(var i = 0; i < NUM_HOLDERS; i++) {
-				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, _itemHolders[i].el.style);
 
-				// update zoom level on items
-				var index = _getLoopedId( _currentItemIndex - 1 + i );
-				var item = _getItemAt(index);
+			var holder,
+				item;
+
+			for(var i = 0; i < NUM_HOLDERS; i++) {
+				holder = _itemHolders[i];
+				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, holder.el.style);
+
+				// update zoom level on items and refresh source (if needsUpdate)
+				item = _getItemAt( holder.index );
+				if(item.needsUpdate) {
+					self.cleanSlide( item ); 
+
+					self.setContent( holder, holder.index );
+
+					// if "center" slide
+					if(i === 1) {
+						self.updateCurrZoomItem(true);
+					}
+
+					item.needsUpdate  = false;
+				}
 				if(item && item.container) {
 					_calculateItemSize(item, _viewportSize);
 					_applyZoomPanToItem( item );
@@ -1106,11 +1109,13 @@ var publicMethods = {
 	//Zoom current item to
 	zoomTo: function(destZoomLevel, centerPoint, speed, easingFn, updateFn) {
 		
-		// if(destZoomLevel == 'fit') {
-		// 	destZoomLevel = self.currItem.fitRatio;
-		// } else if(destZoomLevel == 'fill') {
-		// 	destZoomLevel = self.currItem.fillRatio;
-		// }
+		/*
+			if(destZoomLevel === 'fit') {
+				destZoomLevel = self.currItem.fitRatio;
+			} else if(destZoomLevel === 'fill') {
+				destZoomLevel = self.currItem.fillRatio;
+			}
+		*/
 
 		if(centerPoint) {
 			_startZoomLevel = _currZoomLevel;

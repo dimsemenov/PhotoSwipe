@@ -50,11 +50,11 @@ var _getItemAt,
 
 				var scaleMode = _options.scaleMode;
 
-				if (scaleMode == 'orig') {
+				if (scaleMode === 'orig') {
 					zoomLevel = 1;
-				} else if (scaleMode == 'fit') {
+				} else if (scaleMode === 'fit') {
 					zoomLevel = item.fitRatio;
-				} else if (scaleMode == 'fill') {
+				} else if (scaleMode === 'fill') {
 					zoomLevel = item.fillRatio;
 				}
 
@@ -133,18 +133,18 @@ var _getItemAt,
 
 			if(animate) {
 				setTimeout(function() {
-				 	img.style.opacity = 1;
-				 	if(keepPlaceholder) {
-				 		setTimeout(function() {
+					img.style.opacity = 1;
+					if(keepPlaceholder) {
+						setTimeout(function() {
 							// hide image placeholder "behind"
 							if(item && item.loaded && item.placeholder) {
 								item.placeholder.style.display = 'none';
 								item.placeholder = null;
 							}
 						}, 500);
-				 	}
+					}
 					
-				 }, 50);
+				}, 50);
 			}
 		}
 	},
@@ -171,8 +171,7 @@ var _getItemAt,
 		img.onerror = function() {
 			item.loadError = true;
 			onComplete();
-		};
-		
+		};		
 
 		img.src = item.src;// + '?a=' + Math.random();
 
@@ -283,7 +282,7 @@ _registerModule('Controller', {
 
 		getItemAt: function(index) {
 			if (index >= 0) {
-				return _items[index];
+				return _items[index] !== undefined ? _items[index] : false;
 			}
 			return false;
 		},
@@ -309,6 +308,11 @@ _registerModule('Controller', {
 			if(_options.loop) {
 				index = _getLoopedId(index);
 			}
+
+			var prevItem = self.getItemAt(holder.index);
+			if(prevItem) {
+				prevItem.container = null;
+			}
 	
 			var item = self.getItemAt(index),
 				img;
@@ -319,8 +323,8 @@ _registerModule('Controller', {
 				// allow to override data
 				_shout('gettingData', index, item);
 
-//				holder.setAttribute('data-pswp-id', index);
 				holder.index = index;
+				holder.item = item;
 
 				if( _displayError(item, holder) ) {
 					item.initialPosition.x = item.initialPosition.y = 0;
@@ -331,42 +335,9 @@ _registerModule('Controller', {
 					_applyZoomPanToItem(item);
 					return;
 				}
-				
 
 				// base container DIV is created only once for each of 3 holders
-				var baseDiv;// = (prevItem && prevItem.container)  ? prevItem.container : framework.createEl('pswp__zoom-wrap');
-				// if(prevItem && prevItem.container) {
-				// 	baseDiv = prevItem.container;
-				// 	if(baseDiv.parentNode) {
-				// 		baseDiv.parentNode.removeChild(baseDiv);
-				// 	}
-				// 	baseDiv.innerHTML = '';
-				// 	prevItem.container = null;
-				// } else {
-				// 	baseDiv = framework.createEl('pswp__zoom-wrap');
-				// }
-				// if(!holder.wrap) {
-				// 	holder.wrap = framework.createEl('pswp__zoom-wrap');
-				// } else {
-
-				// 	holder.removeChild(holder.wrap);
-				// 	holder.wrap.innerHTML = '';
-				// }
-				baseDiv = framework.createEl('pswp__zoom-wrap');//holder.wrap;
-
-				// allow to override image source, size, etc.
-				// if(_options.assignItemData) {
-				// 	_options.assignItemData(item);
-				// }
-
-
-				// if(prevItem) {
-				// 	prevItem.container = null;
-				// 	baseDiv.parentNode.removeChild(baseDiv);
-				// 	baseDiv.innerHTML = '';
-				// }
-
-				item.container = baseDiv;
+				var baseDiv = item.container = framework.createEl('pswp__zoom-wrap'); 
 				
 				if(!item.loaded) {
 
@@ -377,31 +348,26 @@ _registerModule('Controller', {
 							return;
 						}
 
-						// if(!_initialZoomRunning && item.placeholder) {
-						// 	item.placeholder.style.display = 'none';
-						// }
-
-						if(!img) {
-							img = item.img;
-						}
+						
 						// Apply hw-acceleration only after image is loaded.
 						// This is webkit progressive image loading bugfix.
 						// https://bugs.webkit.org/show_bug.cgi?id=108630
 						// https://code.google.com/p/chromium/issues/detail?id=404547
-						img.style.webkitBackfaceVisibility = 'hidden';
+						item.img.style.webkitBackfaceVisibility = 'hidden';
 
 						
 
 						// check if holder hasn't changed while image was loading
 						if( holder.index === index ) {
 							if( _displayError(item, holder) ) {
+								item.img = null;
 								return;
 							}
 							if( !item.imageAppended /*_likelyTouchDevice*/ ) {
 								if(_mainScrollAnimating || _initialZoomRunning) {
-									_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:img, index:index, holder:holder});
+									_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
 								} else {
-									_appendImage(index, item, baseDiv, img, _mainScrollAnimating || _initialZoomRunning);
+									_appendImage(index, item, baseDiv, item.img, _mainScrollAnimating || _initialZoomRunning);
 								}
 							} else {
 								// remove preloader & mini-img
@@ -413,13 +379,10 @@ _registerModule('Controller', {
 						}
 
 						item.loadComplete = null;
+						item.img = null; // no need to store image element after it's added
 
 						_shout('imageLoadComplete', index, item);
 					};
-
-
-
-					img = item.img;
 
 					if(framework.features.transform) {
 						
@@ -447,9 +410,9 @@ _registerModule('Controller', {
 					if( self.allowProgressiveImg() ) {
 						// just append image
 						if(!_initialContentSet) {
-							_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:(img || item.img), index:index, holder:holder});
+							_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
 						} else {
-							_appendImage(index, item, baseDiv, (img || item.img), true, true);
+							_appendImage(index, item, baseDiv, item.img, true, true);
 						}
 					}
 					
@@ -471,7 +434,7 @@ _registerModule('Controller', {
 
 				if(!_initialContentSet && index === _currentItemIndex) {
 					_currZoomElementStyle = baseDiv.style;
-					_showOrHide(item, img);
+					_showOrHide(item, (img ||item.img) );
 				} else {
 					_applyZoomPanToItem(item);
 				}
@@ -483,7 +446,14 @@ _registerModule('Controller', {
 				holder.el.innerHTML = '';
 			}
 
-		}
+		},
+
+		cleanSlide: function( item ) {
+			if(item.img ) {
+				item.img.onload = item.img.onerror = null;
+			}
+			item.loaded = item.loading = item.img = item.imageAppended = false;
+		},
 
 
 
@@ -493,43 +463,3 @@ _registerModule('Controller', {
 	}
 });
 
-
-
-// TODO: use webworker to lazy-load images?
-// 
-// 		var blob = new Blob([ ""+
-// "   onmessage = function(e) {"+
-// "		var urls = e.data,"+
-// "        	done = urls.length,"+
-// "        	onload = function () {"+
-// "            	if (--done === 0) {"+
-// "                	self.postMessage('Done!');"+
-// "                self.close();"+
-// "            	}"+
-// "        	};"+
- 
-// "    	urls.forEach(function (url) {"+
-// "        	var xhr = new XMLHttpRequest();"+
-// "        	xhr.responseType = 'blob';"+
-// "        	xhr.onload = xhr.onerror = onload;"+
-// "        	xhr.open('GET', url, true);"+
-// "        	xhr.send();"+
-// "    	});"+
-// " 	}" ]);
-
-// 		var blobURL = window.URL.createObjectURL(blob);
-
-// 		var imgs = [];
-//         for(var i = 0; i < items.length; i++) {
-//         	imgs.push(items[i].src);
-//         }
-
-// 		_worker = new Worker(blobURL);
-// 		_worker.onmessage = function(e) {
-// 		};
-// 		_worker.postMessage(imgs); 
-
-  //       for(var i = 0; i < items.length; i++) {
-  //       	var img = new Image();
-  //       	img.src = items[i].src;
-  //       }
