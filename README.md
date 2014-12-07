@@ -1,4 +1,6 @@
-# PhotoSwipe Repository
+# PhotoSwipe Repository 
+
+[![Build Status](https://travis-ci.org/dimsemenov/PhotoSwipe.png)](https://travis-ci.org/dimsemenov/PhotoSwipe)
 
 JavaScript image gallery for mobile and desktop. 
 
