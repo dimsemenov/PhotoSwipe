@@ -119,7 +119,7 @@ var _gestureStartTime,
 	_getTouchPoints = function(e) {
 		// clean up previous points, without recreating array
 		while(_tempPointsArr.length > 0) {
-		    _tempPointsArr.pop();
+			_tempPointsArr.pop();
 		}
 
 		if(!_pointerEventEnabled) {
@@ -249,65 +249,37 @@ var _gestureStartTime,
 
 				if(newMainScrollPos !== undefined) {
 					_moveMainScroll(newMainScrollPos, true);
-
-
 					if(newMainScrollPos === _startMainScrollPos.x) {
 						_mainScrollShifted = false;
 					} else {
 						_mainScrollShifted = true;
 					}
-					
 				}
 
 				if(_currPanBounds.min.x !== _currPanBounds.max.x) {
-
 					if(newPanPos !== undefined) {
 						_panOffset.x = newPanPos;
 					} else if(!_mainScrollShifted) {
 						_panOffset.x += delta.x * panFriction;
 					}
-
-				} //else {
-				//	return true;
-				//}
+				}
 
 				return newMainScrollPos !== undefined;
 			}
 
 		}
 
-		// if(!_mainScrollAnimating) {
-		// 	_panOffset[axis] = newOffset;
-		
 		if(!_mainScrollAnimating) {
 			
 			if(!_mainScrollShifted) {
-
-				//if(_currPanBounds.min.x !== _currPanBounds.max.x && _currPanBounds.min.y !== _currPanBounds.max.y) {
-				//	_panOffset[axis] += delta[axis] * panFriction;
-				//}
-				
-
-				//if(_currPanBounds.min[axis] !== _currPanBounds.max[axis] ) {
 				if(_currZoomLevel > self.currItem.fitRatio) {
 					_panOffset[axis] += delta[axis] * panFriction;
 				
 				}
-
-				// if(_currPanBounds.min.y !== _currPanBounds.max.y ) {
-				// 	_panOffset.y += delta.y * panFriction;
-				// }
 			}
 
 			
 		}
-		
-
-		// }
-		
-		// if(axis{
-		// 	_panOffset.y = _panOffset.y + delta.y * panFriction;
-		// }
 		
 	},
 
@@ -440,12 +412,6 @@ var _gestureStartTime,
 				_currentPoints = touchesList;
 			}
 		}	
-
-		// if(_direction === 'h' || !_direction) {
-		// 	e.preventDefault();
-		// } else {
-
-		// }
 	},
 	// 
 	_renderMovement =  function() {
@@ -510,7 +476,7 @@ var _gestureStartTime,
 					var minusDiff = self.currItem.minZoom - zoomLevel;
 					var percent = 1 - minusDiff / (self.currItem.minZoom / 1.2);
 					_applyBgOpacity(percent);
-					_shout('onPinchClose', percent)
+					_shout('onPinchClose', percent);
 					_opacityChanged = true;
 				} else {
 
@@ -566,30 +532,11 @@ var _gestureStartTime,
 
 		} else {
 
-			// handle behavior for one point (dragging or panning)
-
-			// return if direction wasn't detected, or panning isn't possible
-			// if(!_direction || (_direction === 'v' && !_canPan())  ) {
-			// 	return;
-			// }
+			// handle behaviour for one point (dragging or panning)
 
 			if(!_direction) {
 				return;
 			}
-
-			
-
-			// var verticalSwipe = false;
-			// if(_direction === 'v') {
-			// 	if(_options.vSwipeToClose) {
-
-			// 		verticalSwipe = true;
-			// 		//return;
-			// 	} else if(!_canPan()) {
-			// 		return;
-			// 	}
-			// }
-			
 
 			if(_isFirstMove) {
 				_isFirstMove = false;
@@ -643,35 +590,14 @@ var _gestureStartTime,
 
 			_moved = true;
 
-			// if(verticalSwipe) {
-			// 	_panOffset.y += delta.y;
-			// 	var yOffsetDiff = Math.abs(_panOffset.y - self.currItem.initialPosition.y);
-			// 	var bgOpacity = 1 - Math.min(yOffsetDiff,450)/450;
-			// 	_shout('onVerticalDrag', bgOpacity);
-			// 	_applyBgOpacity(bgOpacity);
-			// 	//template.style.opacity = bgOpacity;
-			// 	_applyCurrentZoomPan();
-			// 	return;
-			// }
-
-			// if(_mainScrollShifted) {
-			// 	_moveMainScrollBy(delta);
-			// 	return;
-			// }
-
 			_currPanBounds = self.currItem.bounds;
 			
 			var mainScrollChanged = _panOrMoveMainScroll('x', delta);
 			if(!mainScrollChanged) {
 				_panOrMoveMainScroll('y', delta);
 			}
-			//if(!_mainScrollShifted) {
 				
-				_applyCurrentZoomPan();
-			//}
-			
-
-			
+			_applyCurrentZoomPan();
 		}
 
 	},

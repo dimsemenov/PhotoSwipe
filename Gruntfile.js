@@ -11,18 +11,18 @@ module.exports = function(grunt) {
   'use strict';
 
   var jekyllConfig = "isLocal : false \r\n"+
-"permalink: /:title/ \r\n"+
-"exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile', 'changelog.md', 'compiler.jar', 'private', 'photoswipe.sublime-project', 'photoswipe.sublime-workspace', '.htaccess'] \r\n"+
-"auto: true \r\n"+
-"pswpversion: <%= pkg.version %> \r\n"+
+      "permalink: /:title/ \r\n"+
+      "exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile', 'changelog.md', 'compiler.jar', 'private', 'photoswipe.sublime-project', 'photoswipe.sublime-workspace', '.htaccess'] \r\n"+
+      "auto: true \r\n"+
+      "pswpversion: <%= pkg.version %> \r\n"+
 
-"markdown: redcarpet \r\n"+
-"kramdown: \r\n"+
-"  input: GFM \r\n";
+      "markdown: redcarpet \r\n"+
+      "kramdown: \r\n"+
+      "  input: GFM \r\n";
   
   var awsDefaults = {};
   if( grunt.file.exists('./aws-keys.json') ) {
-    awsDefaults = grunt.file.readJSON('./aws-keys.json')
+    awsDefaults = grunt.file.readJSON('./aws-keys.json');
   }
 
 
@@ -59,7 +59,8 @@ module.exports = function(grunt) {
     jshint: {
       all: [
         'Gruntfile.js',
-        'src/js/*.js'
+        'dist/photoswipe.js',
+        'dist/photoswipe-ui-default.js'
       ],
       options: {
         jshintrc: '.jshintrc'
@@ -70,25 +71,12 @@ module.exports = function(grunt) {
       all: {
         src: [
           'framework-bridge',
-
           'core',
           'down-move-up-handlers',
-          // 'ie-low',
           'items-controller',
           'tap',
           'desktop-zoom',
-          'history',
-
-          
-
-         /* 'inline',
-          'ajax',
-          'image',
-          'zoom',
-          'iframe',
-          'gallery',
-          'retina',
-          'fastclick' */
+          'history'
         ],
         basePath: 'src/js/',
         dest: 'dist/photoswipe.js',
@@ -125,7 +113,7 @@ module.exports = function(grunt) {
         files: [
           {src: ['dist/**'], dest: 'website/'}
         ]
-      },
+      }
 
     },
 
@@ -144,7 +132,7 @@ module.exports = function(grunt) {
 
     watch: { // for development run 'grunt watch'
       jekyll: {
-        files: ['website/**'],
+        files: ['website/**', 'website/documentation/**', '_includes/**'],
         tasks: ['jekyll:dev', 'copy:dev']
       },
       files: ['src/**'],
@@ -252,7 +240,7 @@ module.exports = function(grunt) {
     });
 
 
-    newContents+= "\t framework.extend(self, publicMethods); };\n"
+    newContents+= "\tframework.extend(self, publicMethods); };\n";
     newContents+= "\treturn PhotoSwipe;\n";
     newContents+= "});";
 

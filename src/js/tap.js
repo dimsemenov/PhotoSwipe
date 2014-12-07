@@ -3,13 +3,10 @@
 
 var tapTimer,
 	tapReleasePoint = {},
-	_dispatchTapEvent = function(origEvent, releasePoint, pointerType) {
-
-					
-	    var evt = document.createEvent( 'CustomEvent' );
-	    evt.initCustomEvent( 'pswpTap', true, true, {origEvent:origEvent, target:origEvent.target, releasePoint: releasePoint, pointerType:pointerType || 'touch'} );
-	    origEvent.target.dispatchEvent( evt );
-
+	_dispatchTapEvent = function(origEvent, releasePoint, pointerType) {		
+		var evt = document.createEvent( 'CustomEvent' );
+		evt.initCustomEvent( 'pswpTap', true, true, {origEvent:origEvent, target:origEvent.target, releasePoint: releasePoint, pointerType:pointerType || 'touch'} );
+		origEvent.target.dispatchEvent( evt );
 	};
 
 _registerModule('Tap', {
@@ -49,7 +46,7 @@ _registerModule('Tap', {
 						//self.onDoubleTap(p0);
 						_shout('doubleTap', p0);
 						return;
-				    }
+					}
 				}
 				
 				var clickedTagName = e.target.tagName.toLowerCase();

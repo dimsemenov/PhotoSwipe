@@ -40,22 +40,22 @@ var _historyUpdateTimeout,
 			return params;
 		}
 
-	    var vars = hash.split('&');
-	    for (var i = 0; i < vars.length; i++) {
-	    	if(!vars[i]) {
-	    		continue;
-	    	}
-	        var pair = vars[i].split('=');	
-	        if(pair.length < 2) {
-	        	continue;
-	        }		        
-	        params[pair[0]] = pair[1];
-	    }
-	    params.pid = parseInt(params.pid,10)-1;
-	    if( params.pid < 0 ) {
-	    	params.pid = 0;
-	    }
-	    return params;
+		var vars = hash.split('&');
+		for (var i = 0; i < vars.length; i++) {
+			if(!vars[i]) {
+				continue;
+			}
+			var pair = vars[i].split('=');	
+			if(pair.length < 2) {
+				continue;
+			}
+			params[pair[0]] = pair[1];
+		}
+		params.pid = parseInt(params.pid,10)-1;
+		if( params.pid < 0 ) {
+			params.pid = 0;
+		}
+		return params;
 	},
 	_updateHash = function() {
 
@@ -141,17 +141,17 @@ _registerModule('History', {
 				if(!_closedFromURL) {
 
 					if(_urlChangedOnce) {
-					    history.back();
+						history.back();
 					} else {
 						if(_initialHash) {
 							_windowLoc.hash = _initialHash;
 						} else {
-						    if ('pushState' in history) {
-						    	// remove hash from url without refreshing it or scrolling to top
-						    	history.pushState("", document.title, _windowLoc.pathname + _windowLoc.search);
-						    } else {
-						        _windowLoc.hash = "";
-						    }
+							if ('pushState' in history) {
+								// remove hash from url without refreshing it or scrolling to top
+								history.pushState("", document.title, _windowLoc.pathname + _windowLoc.search);
+							} else {
+								_windowLoc.hash = "";
+							}
 						}
 					}
 					
@@ -189,10 +189,10 @@ _registerModule('History', {
 			}
 			
 
- 			setTimeout(function() {
- 				if(_isOpen) { // hasn't destroyed yet
- 					framework.bind(window, 'hashchange', self.onHashChange);
- 				}
+			setTimeout(function() {
+				if(_isOpen) { // hasn't destroyed yet
+					framework.bind(window, 'hashchange', self.onHashChange);
+				}
 			}, 40);
 			
 		},

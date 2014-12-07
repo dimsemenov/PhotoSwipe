@@ -9,7 +9,6 @@ var framework = {
 	features: null,
 	
 	bind: function(target, type, listener, unbind) {
-
 		var methodName = (unbind ? 'remove' : 'add') + 'EventListener';
 		type = type.split(' ');
 		for(var i = 0; i < type.length; i++) {
@@ -17,7 +16,6 @@ var framework = {
 				target[methodName]( type[i], listener, false);
 			}
 		}
-			
 	},
 	isArray: function(obj) {
 		return (obj instanceof Array);
@@ -38,7 +36,7 @@ var framework = {
 	},
 	removeClass: function(el, className) {
 		var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
-     	el.className = el.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); 
+		el.className = el.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); 
 	},
 	addClass: function(el, className) {
 		if( !framework.hasClass(el,className) ) {
@@ -58,20 +56,21 @@ var framework = {
 		}
 		return -1;
 	},
-	// getOffset: function(el) {
-	// 	// http://stackoverflow.com/a/11396681/331460
-	//     var bodyRect = document.body.getBoundingClientRect(),
- //    		elemRect = el.getBoundingClientRect();
-
-	//     return { x: elemRect.left - bodyRect.left, y: elemRect.top - bodyRect.top };
-	// },
+	/*
+		getOffset: function(el) {
+			// http://stackoverflow.com/a/11396681/331460
+			var bodyRect = document.body.getBoundingClientRect(),
+			elemRect = el.getBoundingClientRect();
+			return { x: elemRect.left - bodyRect.left, y: elemRect.top - bodyRect.top };
+		},
+	*/
 	extend: function(o1, o2, preventOverwrite) {
 		for (var prop in o2) {
 			if (o2.hasOwnProperty(prop)) {
 				if(preventOverwrite && o1.hasOwnProperty(prop)) {
 					continue;
 				}
-			    o1[prop] = o2[prop];
+				o1[prop] = o2[prop];
 			}
 		}
 	},
@@ -89,26 +88,26 @@ var framework = {
 				return --k * k * k + 1;
 			}
 		}
-		// elastic: {
-		// 	out: function ( k ) {
+		/*
+			elastic: {
+				out: function ( k ) {
 
-		// 		var s, a = 0.1, p = 0.4;
-		// 		if ( k === 0 ) return 0;
-		// 		if ( k === 1 ) return 1;
-		// 		if ( !a || a < 1 ) { a = 1; s = p / 4; }
-		// 		else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
-		// 		return ( a * Math.pow( 2, - 10 * k) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) + 1 );
+					var s, a = 0.1, p = 0.4;
+					if ( k === 0 ) return 0;
+					if ( k === 1 ) return 1;
+					if ( !a || a < 1 ) { a = 1; s = p / 4; }
+					else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
+					return ( a * Math.pow( 2, - 10 * k) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) + 1 );
 
-		// 	},
-		// },
-		// back: {
-		// 	out: function ( k ) {
-
-		// 		var s = 1.70158;
-		// 		return --k * k * ( ( s + 1 ) * k + s ) + 1;
-
-		// 	}
-		// }
+				},
+			},
+			back: {
+				out: function ( k ) {
+					var s = 1.70158;
+					return --k * k * ( ( s + 1 ) * k + s ) + 1;
+				}
+			}
+		*/
 	},
 
 	/**
@@ -116,10 +115,10 @@ var framework = {
 	 * @return {object}
 	 * 
 	 * {
-	 * 	raf : request animation frame function
-	 * 	caf : cancel animation frame function
-	 * 	transfrom : transform property key (with vendor), or null if not supported
-	 * 	oldIE : IE8 or below
+	 *  raf : request animation frame function
+	 *  caf : cancel animation frame function
+	 *  transfrom : transform property key (with vendor), or null if not supported
+	 *  oldIE : IE8 or below
 	 * }
 	 * 
 	 */
@@ -155,26 +154,26 @@ var framework = {
 			// This detection is made because of buggy top/bottom toolbars that don't trigger window.resize event when appear.
 			// For more info refer to _isFixedPosition variable in core.js
 			if (/iP(hone|od)/.test(navigator.platform)) {
-			    var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
-			    v = parseInt(v[1], 10);
-			    if(v >= 1 && v < 8 ) {
-			    	features.isOldIOSPhone = true;
-			    }
+				var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+				v = parseInt(v[1], 10);
+				if(v >= 1 && v < 8 ) {
+					features.isOldIOSPhone = true;
+				}
 			}
 			// Detect old Android (before KitKat)
 			// due to bugs related to position:fixed
 			// http://stackoverflow.com/questions/7184573/pick-up-the-android-version-in-the-browser-by-javascript
-	    	var match = ua.match(/Android\s([0-9\.]*)/);
-	    	var androidversion =  match ? match[1] : 0;
-	    	androidversion = parseFloat(androidversion);
-	    	if(androidversion >= 1 && androidversion < 4.4 ) {
-	    		features.isOldAndroid = true;
-	    	} else if(androidversion >= 5) {
-	    		features.isNewAndroid = true; // Lollipop
-	    	}
-	    	features.isMobileOpera = /opera mini|opera mobi/i.test(ua);
+			var match = ua.match(/Android\s([0-9\.]*)/);
+			var androidversion =  match ? match[1] : 0;
+			androidversion = parseFloat(androidversion);
+			if(androidversion >= 1 && androidversion < 4.4 ) {
+				features.isOldAndroid = true;
+			} else if(androidversion >= 5) {
+				features.isNewAndroid = true; // Lollipop
+			}
+			features.isMobileOpera = /opera mini|opera mobi/i.test(ua);
 
-	    	// p.s. yes, yes, UA sniffing is bad, propose your solution for above bugs.
+			// p.s. yes, yes, UA sniffing is bad, propose your solution for above bugs.
 		
 		}
 		
@@ -239,43 +238,44 @@ var framework = {
 
 framework.detectFeatures();
 
-// Override add event listener for old versions of IE
+// Override addEventListener for old versions of IE
 if(framework.features.oldIE) {
+
 	framework.bind = function(target, type, listener, unbind) {
-		// if ( !framework.isArray(type) ) {
-		// 	type = [type];
-		// }
+		
 		type = type.split(' ');
 
 		var methodName = (unbind ? 'detach' : 'attach') + 'Event',
-			evName;
-	  	for(var i = 0; i < type.length; i++) {
-	  		evName = type[i];
+			evName,
+			_handleEv = function() {
+				listener.handleEvent.call(listener);
+			};
+
+		for(var i = 0; i < type.length; i++) {
+			evName = type[i];
 			if(evName) {
 
-				if(typeof listener == "object" && listener.handleEvent) {
+				if(typeof listener === "object" && listener.handleEvent) {
 					if(!unbind) {
 
-						listener['oldIE' + evName] = function() {
-							listener.handleEvent.call(listener);
-						};
+						listener['oldIE' + evName] = _handleEv;
 
 					} else {
 						if(!listener['oldIE' + evName]) {
 							return false;
 						}
-						
 					}
 
 					target[methodName]( 'on' + evName, listener['oldIE' + evName]);
-		        } else {
-		        	target[methodName]( 'on' + evName, listener);
-		        }
+				} else {
+					target[methodName]( 'on' + evName, listener);
+				}
 
 				
 			}
 		}
 	};
+	
 }
 
 

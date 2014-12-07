@@ -25,59 +25,60 @@ _registerModule('DesktopZoom', {
 			// https://developer.mozilla.org/en-US/docs/Web/Events/wheel
 			_wheelDelta.x = 0;
 
- 			if('deltaX' in e) {
- 				_wheelDelta.x = e.deltaX;
- 				_wheelDelta.y = e.deltaY;
- 			} else if('wheelDelta' in e) {
-        		if(e.wheelDeltaX) {
-        			_wheelDelta.x = -0.16 * e.wheelDeltaX;
-        		} 
-        		if(e.wheelDeltaY) {
-        			_wheelDelta.y = -0.16 * e.wheelDeltaY;
-        		} else {
-        			_wheelDelta.y = -0.16 * e.wheelDelta;
-        		}
-        	} else if('detail' in e) {
+			if('deltaX' in e) {
+				_wheelDelta.x = e.deltaX;
+				_wheelDelta.y = e.deltaY;
+			} else if('wheelDelta' in e) {
+				if(e.wheelDeltaX) {
+					_wheelDelta.x = -0.16 * e.wheelDeltaX;
+				} 
+				if(e.wheelDeltaY) {
+					_wheelDelta.y = -0.16 * e.wheelDeltaY;
+				} else {
+					_wheelDelta.y = -0.16 * e.wheelDelta;
+				}
+			} else if('detail' in e) {
 				_wheelDelta.y = e.detail;
-        	} else {
-        		return;
-        	}
-        
+			} else {
+				return;
+			}
+		
 
-        	// TODO: use rAF instead of mousewheel?
+			// TODO: use rAF instead of mousewheel?
 			_calculatePanBounds(_currZoomLevel, true);
 			self.panTo(_panOffset.x - _wheelDelta.x, _panOffset.y - _wheelDelta.y);
 
+			/*
+				// Experimental attempt to implement touchpad swipe gesture.
+				// Didn't work as good as expected due to enreliable deceleration speed across different touchpads.
+				// left for history
+				
+				if(!_trackpadDir) { 
+					if(!_wheelDelta.y) {
+						_trackpadDir = 'x';
+					} else {
+						if(Math.abs(_wheelDelta.y - _wheelDelta.x) > 10) {
+							_trackpadDir = _wheelDelta.y > _wheelDelta.x ? 'y' : 'x';
+						}
+					}
+				}
+				if(!_trackpadDir) {
+					return;
+				}
+				var delta = _wheelDelta[_trackpadDir];
+				if(delta && Math.abs(delta) > 10) {
+					
+					var timeDiff = _getCurrentTime() - _trackpadLastEventTime;
+					_trackpadLastEventTime = _getCurrentTime();
 
-    		// Experimental attempt to implement touchpad swipe gesture.
-    		// Didn't work as good as expected due to enreliable deceleration speed across different touchpads.
-    		// left for history
-    		// 
-    		// if(!_trackpadDir) { 
-    		// 	if(!_wheelDelta.y) {
-    		// 		_trackpadDir = 'x';
-    		// 	} else {
-    		// 		if(Math.abs(_wheelDelta.y - _wheelDelta.x) > 10) {
-        	// 			_trackpadDir = _wheelDelta.y > _wheelDelta.x ? 'y' : 'x';
-        	// 		}
-    		// 	}
-    		// }
-    		// if(!_trackpadDir) {
-    		// 	return;
-    		// }
-    		// var delta = _wheelDelta[_trackpadDir];
-    		// if(delta && Math.abs(delta) > 10) {
-    			
-        	// 	var timeDiff = _getCurrentTime() - _trackpadLastEventTime;
-        	// 	_trackpadLastEventTime = _getCurrentTime();
-
-        	// 	if(timeDiff < 200 && _trackpadSwipePrev === (delta > 0)) {
-        	// 		return;
-        	// 	}
-        		
-        	// 	_trackpadSwipePrev = (delta > 0);
-        	// 	self[_trackpadSwipePrev ? 'next' : 'prev' ]();
-    		// }
+					if(timeDiff < 200 && _trackpadSwipePrev === (delta > 0)) {
+						return;
+					}
+					
+					_trackpadSwipePrev = (delta > 0);
+					self[_trackpadSwipePrev ? 'next' : 'prev' ]();
+				}
+			*/
 		},
 		toggleDesktopZoom: function(centerPoint) {
 
