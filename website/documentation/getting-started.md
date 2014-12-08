@@ -21,7 +21,7 @@ markdownpage: true
 First things that you should know before you start:
 
 - PhotoSwipe is made simple and fast for end users, not for developers. It aint simple jQuery plugin, at least basic JavaScript knowledge is required to install.
-- PhotoSwipe requires to define image dimensions. If your app is unable to retrieve them - consider using some other script.
+- PhotoSwipe requires predefined image dimensions. If your app is unable to retrieve them - consider using some other script.
 - If you use PhotoSwipe on non-responsive website &ndash; controls will be scaled on mobile (as whole page is scaled). So you'll need to implement custom controls (e.g. single large close button in top right corner).
 - All code in documentation is pure Vanilla JS and supports IE 8 and above. If your website or app uses some JavaScript framework (like jQuery or MooTools), or you don't need to support old browsers – feel free to simplify code.
 - If you have some question - [ask it through StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe). If you need some feature or have some idea on how PhotoSwipe can be improved - post it on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas). If you've found a bug - [open issue on GitHub](https://github.com/dimsemenov/PhotoSwipe/issues).
@@ -255,7 +255,7 @@ yourPhotoSwipeInstance.items.push({
 
 Currently, you can not dynamically modify image of current slide, and two nearby slides, but this feature is planned.
 
-### How to build array of slides from list of links
+## <a class="anchor" name="dom-to-slide-objects"></a> How to build array of slides from list of links
 
 For example, you have a list of links/thumbnails that looks like this:
 
@@ -462,7 +462,7 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 };
 
 // execute above function
-initPhotoSwipeFromDOM('.your-gallery-selector');
+initPhotoSwipeFromDOM('.my-gallery');
 ```
 
 Example on CodePen (`focus` & `history` options are disabled due to embed issues):
