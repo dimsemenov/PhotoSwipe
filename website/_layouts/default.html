@@ -5,10 +5,6 @@
     <meta charset="utf-8">
 
     <title>{{ page.title }}</title>
-    
-    <link rel="shortcut icon" href="test/favicon.ico" type="image/x-icon" />
-    <link rel="icon apple-touch-icon" href="test/apple-touch-icon-144x144.png" sizes="144x144" type="image/png">
-
 
     <meta name="description" content="{{page.description}}">
     <meta name="viewport" content="width = device-width, initial-scale = 1.0"> 
@@ -24,8 +20,11 @@
     <link href="https://plus.google.com/102586375605352607718" rel="publisher" />
 
   {% if page.markdownpage == true %}
-    <link href="../site-assets/site.css?v={{site.pswpversion}}" rel="stylesheet" />
+    <link rel="icon apple-touch-icon" href="../test/apple-touch-icon-144x144.png" sizes="144x144" type="image/png">
+    <link href="../site-assets/site.css?v=web-{{site.pswpversion}}" rel="stylesheet" />
+    
   {% else %}
+    <link rel="icon apple-touch-icon" href="test/apple-touch-icon-144x144.png" sizes="144x144" type="image/png">
     <link href="site-assets/site.css?v={{site.pswpversion}}" rel="stylesheet" />
     <link href="dist/photoswipe.css?v={{site.pswpversion}}" rel="stylesheet" />
     <link href="dist/default-skin/default-skin.css?v={{site.pswpversion}}" rel="stylesheet" />
