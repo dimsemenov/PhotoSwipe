@@ -108,13 +108,13 @@ gallery.listen('gettingData', function(index, item) {
 
 	// Set image source & size based on real viewport width
 	if( useLargeImages ) {
-		item.src = item.o.src;
-		item.w = item.o.w;
-		item.h = item.o.h;
+		item.src = item.originalImage.src;
+		item.w = item.originalImage.w;
+		item.h = item.originalImage.h;
 	} else {
-		item.src = item.m.src;
-		item.w = item.m.w;
-		item.h = item.m.h;
+		item.src = item.mediumImage.src;
+		item.w = item.mediumImage.w;
+		item.h = item.mediumImage.h;
 	}
 
 	// It doesn't really matter what will you do here, 
@@ -133,7 +133,7 @@ gallery.init();
 - You are not obliged to use structure of slide object that looks exactly like above (with `mediumImage` and `largeImage` objects). For example, you may store size of image directly in image filename (`/path/to/large-image-600x500.jpg`) and than parse size in `gettingData` event. Only `item.src`, `item.w`, and `item.h` properties are read by PhotoSwipe and only after `gettingData` event is fired.
 - The larger image, the less smooth animations will look.
 - Try to avoid serving images just based on devicePixelRatio or just based on viewport size, always combine both.
-
+- Feel free to use `srcset` on thumbnails that open PhotoSwipe.
 
 
 
