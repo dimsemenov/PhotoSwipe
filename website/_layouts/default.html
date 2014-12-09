@@ -21,13 +21,13 @@
 
   {% if page.markdownpage == true %}
     <link rel="icon apple-touch-icon" href="../test/apple-touch-icon-144x144.png" sizes="144x144" type="image/png">
-    <link href="../site-assets/site.css?v=web-{{site.pswpversion}}" rel="stylesheet" />
+    <link href="../site-assets/site.css?v=web-{{site.pswpversion}}-{{site.siteversion}}" rel="stylesheet" />
     
   {% else %}
     <link rel="icon apple-touch-icon" href="test/apple-touch-icon-144x144.png" sizes="144x144" type="image/png">
-    <link href="site-assets/site.css?v={{site.pswpversion}}" rel="stylesheet" />
-    <link href="dist/photoswipe.css?v={{site.pswpversion}}" rel="stylesheet" />
-    <link href="dist/default-skin/default-skin.css?v={{site.pswpversion}}" rel="stylesheet" />
+    <link href="site-assets/site.css?v={{site.pswpversion}}-{{site.siteversion}}" rel="stylesheet" />
+    <link href="dist/photoswipe.css?v={{site.pswpversion}}-{{site.siteversion}}" rel="stylesheet" />
+    <link href="dist/default-skin/default-skin.css?v={{site.pswpversion}}-{{site.siteversion}}" rel="stylesheet" />
     
     {% if site.url == 'local' %}
       <script>
@@ -35,8 +35,8 @@
         document.write('<script src=dist/photoswipe-ui-default.js?r='+Math.random()+'><\/script>');
       </script>  
     {% else %}
-      <script src="dist/photoswipe.min.js?v={{site.pswpversion}}"></script>
-      <script src="dist/photoswipe-ui-default.min.js?v={{site.pswpversion}}"></script>
+      <script src="dist/photoswipe.min.js?v={{site.pswpversion}}-{{site.siteversion}}"></script>
+      <script src="dist/photoswipe-ui-default.min.js?v={{site.pswpversion}}-{{site.siteversion}}"></script>
     {% endif %}
 
    
