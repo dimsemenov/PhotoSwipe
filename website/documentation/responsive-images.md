@@ -20,8 +20,6 @@ markdownpage: true
 
 PhotoSwipe does not support `<picture>` or `srcset`, as it requires defined image dimensions and uses lazy-loading. But as images are loaded dynamically, it's quite easy to switch sources, even in old browsers that don't support `srcset`.
 
-Dimensions are used for progressive loading, placeholder, initial zoom-in transition, paning/zooming and other features. If you can not retrieve image dimensions, you can not use PhotoSwipe, at least for now. If you don't have any place to store dimensions, consider storing them directly in filename of image. API of most web services (Facebook, 500px, Instagram, Flickr, Twitter, etc.) allows to retrieve image size. 
-
 Let's assume that you have just "medium" images and "original" ("large") images. First of, you need to store path and size of image in slide object, for example like so:
 
 ```javascript
