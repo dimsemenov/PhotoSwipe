@@ -6,6 +6,8 @@
 
 @import "main-settings";
 
+// note that PhotoSwipe uses Autoprefixer, so vendor prefixed are added automatically when needed
+
 // pswp = photoswipe
 .pswp {
 	display: none;
@@ -24,11 +26,12 @@
 	-webkit-backface-visibility: hidden;
 	outline: none;
 
-	* {
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;
+	@if $pswp__box-sizing-border-box == true {
+		* {
+			box-sizing: border-box;
+		}
 	}
+	
 
 	img {
 		max-width: none;
