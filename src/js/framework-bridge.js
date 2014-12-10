@@ -155,10 +155,13 @@ var framework = {
 			// For more info refer to _isFixedPosition variable in core.js
 			if (/iP(hone|od)/.test(navigator.platform)) {
 				var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
-				v = parseInt(v[1], 10);
-				if(v >= 1 && v < 8 ) {
-					features.isOldIOSPhone = true;
+				if(v && v.length > 0) {
+					v = parseInt(v[1], 10);
+					if(v >= 1 && v < 8 ) {
+						features.isOldIOSPhone = true;
+					}
 				}
+				
 			}
 			// Detect old Android (before KitKat)
 			// due to bugs related to position:fixed
