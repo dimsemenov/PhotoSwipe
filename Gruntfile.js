@@ -56,6 +56,16 @@ module.exports = function(grunt) {
       }
     },
 
+    // https://github.com/nDmitry/grunt-autoprefixer
+    autoprefixer: { 
+      options: {
+        browsers: ['last 3 versions', 'android 3', 'ie 9', 'ios 6', 'bb 10']
+      },
+      no_dest: {
+        src: ['dist/photoswipe.css', 'dist/default-skin/default-skin.css']
+      }
+    },
+
     jshint: {
       all: [
         'Gruntfile.js',
@@ -130,13 +140,15 @@ module.exports = function(grunt) {
       }
     },
 
+
+
     watch: { // for development run 'grunt watch'
       jekyll: {
         files: ['website/**', 'website/documentation/**', '_includes/**'],
         tasks: ['jekyll:dev', 'copy:dev']
       },
       files: ['src/**'],
-      tasks: [ 'sass', 'pswpbuild', 'copy:dev', 'uglify']
+      tasks: [ 'sass', 'autoprefixer', 'pswpbuild', 'copy:dev', 'uglify']
     },
 
 
@@ -263,16 +275,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-autoprefixer');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-jekyll');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-aws-s3');
 
   // Default task.
-  grunt.registerTask('default', ['sass', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
+  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
 
-  grunt.registerTask('production', ['sass', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
-  grunt.registerTask('nosite', ['sass', 'pswpbuild', 'uglify']);
+  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
+  grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify']);
   grunt.registerTask('hint', ['jshint']);
   grunt.registerTask('awsupload', ['aws_s3']);
 

@@ -40,7 +40,6 @@
 	opacity: 0;
 	position:relative;
 
-	-webkit-transition: opacity 0.25s ease-out; 
 	transition: opacity 0.25s ease-out; 
 	will-change: opacity;
 }
@@ -64,11 +63,9 @@
 	.pswp__preloader--active {
 		opacity: 1;
 		.pswp__preloader__icn {
-			-webkit-animation: clockwise 500ms linear infinite;
 			animation: clockwise 500ms linear infinite;
 		}
 		.pswp__preloader__donut {
-			-webkit-animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
 			animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
 		}
 	}
@@ -119,18 +116,9 @@
 
 }
 
-@-webkit-keyframes clockwise {
-  0% { -webkit-transform: rotate(0deg) }
-  100% { -webkit-transform: rotate(360deg) }
-}
 @keyframes clockwise {
   0% { transform: rotate(0deg) }
   100% { transform: rotate(360deg) }
-}
-@-webkit-keyframes donut-rotate {
-  0% { -webkit-transform: rotate(0) }
-  50% { -webkit-transform: rotate(-140deg) }
-  100% { -webkit-transform: rotate(0) }
 }
 @keyframes donut-rotate {
   0% { transform: rotate(0) }
@@ -170,12 +158,13 @@
 	outline: none;
 	padding: 0;
 	margin: 0;
-	-webkit-box-shadow: none;
-	box-shadow: none;
+
+	
 	float: right;
 	opacity: 0.75;
-	-webkit-transition: opacity 0.25s;
+
 	transition: opacity 0.25s;
+	box-shadow: none;
 
 	&:focus,
 	&:hover {
@@ -191,7 +180,6 @@
 	}
 }
 .pswp--animated-in .pswp__button  {
-	-webkit-transition: opacity 0.25s;
 	transition: opacity 0.25s;
 }
 
@@ -238,10 +226,10 @@
 	z-index: 1450;
 	opacity: 0;
 
-	-webkit-transition: opacity 0.25s ease-out;
 	transition: opacity 0.25s ease-out;
 
 	will-change: opacity;
+
 	-webkit-backface-visibility: hidden;
 }
 .pswp__share-modal--hidden {
@@ -268,16 +256,15 @@
 	display: block;
 	width: auto;
 	right: 44px;
-	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
 
-	-webkit-transform: translateY(6px);
 	transform: translateY(6px);
 
-	-webkit-transition: -webkit-transform 0.25s;
 	transition: transform 0.25s;
 
 	will-change: transform;
+
 	-webkit-backface-visibility: hidden;
 
 	a {
@@ -299,7 +286,6 @@
 .pswp__share-modal--fade-in {
 	opacity: 1;
 	.pswp__share-tooltip {
-		-webkit-transform: translateY(0);
 		transform: translateY(0);
 	}
 }
@@ -504,7 +490,7 @@ a.pswp__share--download {
 .pswp--has_mouse .pswp__button--arrow--left,
 .pswp--has_mouse .pswp__button--arrow--right{
 	will-change:opacity;
-	-webkit-transition: opacity $pswp__controls-transition-duration cubic-bezier(.4,0,.22,1);
+
 	transition: opacity $pswp__controls-transition-duration cubic-bezier(.4,0,.22,1);
 }
 
