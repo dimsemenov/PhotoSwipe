@@ -2,7 +2,7 @@
 
 layout: default
 
-title: PhotoSwipe Documentation - Getting Started
+title: "PhotoSwipe Documentation: Getting Started"
 
 h1_title: Getting Started
 
@@ -500,7 +500,7 @@ PhotoSwipe is in beta, please report bugs through [GitHub](https://github.com/di
 
 To get notified about updates follow [@photoswipe on Twitter](https://github.com/dimsemenov/PhotoSwipe) and star/watch project on [GitHub](https://github.com/dimsemenov/PhotoSwipe).
 
-If you think that something should be improved in this documentation page, feel free to [suggest an edit on GitHub](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/basics.md).
+If you think that something should be improved in this documentation page, feel free to [suggest an edit on GitHub](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md).
 
 <iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>
 
