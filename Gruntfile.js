@@ -148,7 +148,7 @@ module.exports = function(grunt) {
         tasks: ['jekyll:dev', 'copy:dev']
       },
       files: ['src/**'],
-      tasks: [ 'sass', 'autoprefixer', 'pswpbuild', 'copy:dev', 'uglify']
+      tasks: [ 'sass', 'autoprefixer', 'pswpbuild', 'copy:dev', 'svgmin', 'uglify']
     },
 
 
