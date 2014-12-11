@@ -240,6 +240,10 @@
     .pswp__share-tooltip a:hover {
       text-decoration: none;
       color: black; }
+      .pswp__share-tooltip a:hover:first-child {
+        border-radius: 2px 2px 0 0; }
+      .pswp__share-tooltip a:hover:last-child {
+        border-radius: 0 0 2px 2px; }
 
 .pswp__share-modal--fade-in {
   opacity: 1; }
