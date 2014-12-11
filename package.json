@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "grunt": "~0.4.0",
+    "grunt-autoprefixer": "^2.0.0",
     "grunt-aws-s3": "^0.9.4",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-concat": "~0.1.2",
