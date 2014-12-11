@@ -161,6 +161,14 @@ module.exports = function(grunt) {
       }
     },
 
+    svgmin: {
+      dist: {
+        files: {
+          'dist/default-skin/default-skin.svg': 'dist/default-skin/default-skin.svg'
+        }
+      }
+    },
+
     //,
     // aws: grunt.file.readJSON('aws-keys.json'), // Read the file
     
@@ -280,11 +288,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jekyll');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-aws-s3');
+  grunt.loadNpmTasks('grunt-svgmin');
 
   // Default task.
-  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
+  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'svgmin', 'jekyll:dev']);
 
-  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
+  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'svgmin', 'jekyll:production']);
   grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify']);
   grunt.registerTask('hint', ['jshint']);
   grunt.registerTask('awsupload', ['aws_s3']);
