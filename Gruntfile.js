@@ -15,7 +15,7 @@ module.exports = function(grunt) {
       "exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile', 'changelog.md', 'compiler.jar', 'private', 'photoswipe.sublime-project', 'photoswipe.sublime-workspace', '.htaccess'] \r\n"+
       "auto: true \r\n"+
       "pswpversion: <%= pkg.version %> \r\n"+
-      "siteversion: 1.0.1 \r\n"+
+      "siteversion: 1.0.2 \r\n"+
       "markdown: redcarpet \r\n"+
       "kramdown: \r\n"+
       "  input: GFM \r\n";
@@ -148,7 +148,7 @@ module.exports = function(grunt) {
         tasks: ['jekyll:dev', 'copy:dev']
       },
       files: ['src/**'],
-      tasks: [ 'sass', 'autoprefixer', 'pswpbuild', 'copy:dev', 'uglify']
+      tasks: [ 'sass', 'autoprefixer', 'pswpbuild', 'copy:dev', 'svgmin', 'uglify']
     },
 
 
@@ -157,6 +157,14 @@ module.exports = function(grunt) {
       compress: {
         files: {
           "website/site-assets/all.min.css": ["website/site-assets/site.css", "website/dist/photoswipe.css"]
+        }
+      }
+    },
+
+    svgmin: {
+      dist: {
+        files: {
+          'dist/default-skin/default-skin.svg': 'dist/default-skin/default-skin.svg'
         }
       }
     },
@@ -280,11 +288,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jekyll');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-aws-s3');
+  grunt.loadNpmTasks('grunt-svgmin');
 
   // Default task.
-  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
+  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'svgmin', 'jekyll:dev']);
 
-  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
+  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'svgmin', 'jekyll:production']);
   grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify']);
   grunt.registerTask('hint', ['jshint']);
   grunt.registerTask('awsupload', ['aws_s3']);

@@ -2,7 +2,7 @@
 
 layout: default
 
-title: PhotoSwipe Documentation - Getting Started
+title: "PhotoSwipe Documentation: Getting Started"
 
 h1_title: Getting Started
 
@@ -257,22 +257,25 @@ Currently, you can not dynamically modify image of current slide, and two nearby
 
 ## <a class="anchor" name="dom-to-slide-objects"></a> How to build array of slides from list of links
 
-For example, you have a list of links/thumbnails that looks like this:
+For example, you have a list of links/thumbnails that looks like this ([more info about markup of gallery](seo.html)):
 
 ```html
-<div class="my-gallery">
+<div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
 
-    <a href="path/to/image1.jpg" data-size="1600x1600">
-    	<img src="path/to/thumbnail-image1.jpg" />
-    	<figure>This is dummy caption 1.</figure>
-    </a>
+	<figure itemscope itemtype="http://schema.org/ImageObject">
+		<a href="large-image.jpg" itemprop="contentUrl" data-size="600x400">
+		    <img src="small-image.jpg" itemprop="thumbnail" alt="Image description" />
+		</a>
+		<figcaption itemprop="caption description">Image caption</figcaption>
+	</figure>
 
-    <a href="path/to/image2.jpg" data-size="1600x1600">
-    	<img src="path/to/thumbnail-image2.jpg" />
-    	<figure>This is dummy caption 2.</figure>
-    </a>
-	
-	<!-- etc. -->
+	<figure itemscope itemtype="http://schema.org/ImageObject">
+		<a href="large-image.jpg" itemprop="contentUrl" data-size="600x400">
+		    <img src="small-image.jpg" itemprop="thumbnail" alt="Image description" />
+		</a>
+		<figcaption itemprop="caption description">Image caption</figcaption>
+	</figure>
+
 
 </div>
  ```
@@ -290,165 +293,176 @@ Here is pure Vanilla JS implementation with IE8 support:
 ```javascript
 var initPhotoSwipeFromDOM = function(gallerySelector) {
 
-	// parse slide data (url, title, size ...) from DOM elements (links)
+	// parse slide data (url, title, size ...) from DOM elements 
+	// (children of gallerySelector)
 	var parseThumbnailElements = function(el) {
-	    var thumbElements = el.childNodes,
-	        numNodes = thumbElements.length,
-	        items = [],
-	        el,
-	        childElements,
-	        thumbnailEl,
-	        size,
-	        item;
+		var thumbElements = el.childNodes,
+			numNodes = thumbElements.length,
+			items = [],
+			figureEl,
+			linkEl,
+			size,
+			item;
 
-	    for(var i = 0; i < numNodes; i++) {
-	        el = thumbElements[i];
+		for(var i = 0; i < numNodes; i++) {
 
-	        // include only element nodes 
-	        if(el.nodeType !== 1) {
-	          continue;
-	        }
+			figureEl = thumbElements[i]; // <figure> element
 
-	        childElements = el.children;
+			// include only element nodes 
+			if(figureEl.nodeType !== 1) {
+				continue;
+			}
 
-	        size = el.getAttribute('data-size').split('x');
+			linkEl = figureEl.children[0]; // <a> element
+			
+			size = linkEl.getAttribute('data-size').split('x');
 
-	        // create slide object
-	        item = {
-	          src: el.getAttribute('href'),
-	          w: parseInt(size[0], 10),
-	          h: parseInt(size[1], 10)
-	        };
+			// create slide object
+			item = {
+				src: linkEl.getAttribute('href'),
+				w: parseInt(size[0], 10),
+				h: parseInt(size[1], 10)
+			};
 
-	        item.el = el; // save link to element for getThumbBoundsFn
+			
 
-	        if(childElements.length > 0) {
-	          item.msrc = childElements[0].getAttribute('src'); // thumbnail url
-	          if(childElements.length > 1) {
-	              item.title = childElements[1].innerHTML; // caption (contents of figure)
-	          }
-	        }
+			if(figureEl.children.length > 1) {
+				// <figcaption> content
+				item.title = figureEl.children[1].innerHTML; 
+			}
+ 
+			if(linkEl.children.length > 0) {
+				// <img> thumbnail element, retrieving thumbnail url
+				item.msrc = linkEl.children[0].getAttribute('src');
+			} 
+		   
+			item.el = figureEl; // save link to element for getThumbBoundsFn
+			items.push(item);
+		}
 
-	        items.push(item);
-	    }
-
-	    return items;
+		return items;
 	};
 
 	// find nearest parent element
 	var closest = function closest(el, fn) {
-	    return el && ( fn(el) ? el : closest(el.parentNode, fn) );
+		return el && ( fn(el) ? el : closest(el.parentNode, fn) );
 	};
 
 	// triggers when user clicks on thumbnail
 	var onThumbnailsClick = function(e) {
-	    e = e || window.event;
-	    e.preventDefault ? e.preventDefault() : e.returnValue = false;
+		e = e || window.event;
+		e.preventDefault ? e.preventDefault() : e.returnValue = false;
 
-	    var eTarget = e.target || e.srcElement;
+		var eTarget = e.target || e.srcElement;
 
-	    var clickedListItem = closest(eTarget, function(el) {
-	        return el.tagName === 'A';
-	    });
+		// find root element of slide
+		var clickedListItem = closest(eTarget, function(el) {
+			return el.tagName === 'FIGURE';
+		});
 
-	    if(!clickedListItem) {
-	        return;
-	    }
+		if(!clickedListItem) {
+			return;
+		}
 
-	    var clickedGallery = clickedListItem.parentNode;
+		// find index of clicked item by looping through all child nodes
+		// alternatively, you may define index via data- attribute
+		var clickedGallery = clickedListItem.parentNode,
+			childNodes = clickedListItem.parentNode.childNodes,
+			numChildNodes = childNodes.length,
+			nodeIndex = 0,
+			index;
 
-	    var childNodes = clickedListItem.parentNode.childNodes,
-	        numChildNodes = childNodes.length,
-	        nodeIndex = 0,
-	        index;
+		for (var i = 0; i < numChildNodes; i++) {
+			if(childNodes[i].nodeType !== 1) { 
+				continue; 
+			}
 
-	    for (var i = 0; i < numChildNodes; i++) {
-	        if(childNodes[i].nodeType !== 1) { 
-	            continue; 
-	        }
+			if(childNodes[i] === clickedListItem) {
+				index = nodeIndex;
+				break;
+			}
+			nodeIndex++;
+		}
 
-	        if(childNodes[i] === clickedListItem) {
-	            index = nodeIndex;
-	            break;
-	        }
-	        nodeIndex++;
-	    }
 
-	    if(index >= 0) {
-	        openPhotoSwipe( index, clickedGallery );
-	    }
-	    return false;
+
+		if(index >= 0) {
+			// open PhotoSwipe if valid index found
+			openPhotoSwipe( index, clickedGallery );
+		}
+		return false;
 	};
 
 	// parse picture index and gallery index from URL (#&pid=1&gid=2)
 	var photoswipeParseHash = function() {
 		var hash = window.location.hash.substring(1),
-	    params = {};
+		params = {};
 
-	    if(hash.length < 5) {
-	        return params;
-	    }
+		if(hash.length < 5) {
+			return params;
+		}
 
-	    var vars = hash.split('&');
-	    for (var i = 0; i < vars.length; i++) {
-	        if(!vars[i]) {
-	            continue;
-	        }
-	        var pair = vars[i].split('=');  
-	        if(pair.length < 2) {
-	            continue;
-	        }           
-	        params[pair[0]] = pair[1];
-	    }
+		var vars = hash.split('&');
+		for (var i = 0; i < vars.length; i++) {
+			if(!vars[i]) {
+				continue;
+			}
+			var pair = vars[i].split('=');  
+			if(pair.length < 2) {
+				continue;
+			}           
+			params[pair[0]] = pair[1];
+		}
 
-	    if(params.gid) {
-	    	params.gid = parseInt(params.gid, 10);
-	    }
+		if(params.gid) {
+			params.gid = parseInt(params.gid, 10);
+		}
 
-	    if(!params.hasOwnProperty('pid')) {
-	        return params;
-	    }
-	    params.pid = parseInt(params.pid, 10);
-	    return params;
+		if(!params.hasOwnProperty('pid')) {
+			return params;
+		}
+		params.pid = parseInt(params.pid, 10);
+		return params;
 	};
 
 	var openPhotoSwipe = function(index, galleryElement, disableAnimation) {
-	    var pswpElement = document.querySelectorAll('.pswp')[0],
-	        gallery,
-	        options,
-	        items;
+		var pswpElement = document.querySelectorAll('.pswp')[0],
+			gallery,
+			options,
+			items;
 
 		items = parseThumbnailElements(galleryElement);
 
-	    // define options (if needed)
-	    options = {
-	        index: index,
+		// define options (if needed)
+		options = {
+			index: index,
 
 			// define gallery index (for URL)
-	        galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+			galleryUID: galleryElement.getAttribute('data-pswp-uid'),
 
-	        getThumbBoundsFn: function(index) {
-	            // See Options -> getThumbBoundsFn section of docs for more info
-	            var thumbnail = items[index].el.children[0],
-	                pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
-	                rect = thumbnail.getBoundingClientRect(); 
+			getThumbBoundsFn: function(index) {
+				// See Options -> getThumbBoundsFn section of documentation for more info
+				var thumbnail = items[index].el.getElementsByTagName('img')[0], // find thumbnail
+					pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+					rect = thumbnail.getBoundingClientRect(); 
 
-	            return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
-	        }
+				return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
+			}
 
-	    };
+		};
 
-	    if(disableAnimation) {
-	        options.showAnimationDuration = 0;
-	    }
+		if(disableAnimation) {
+			options.showAnimationDuration = 0;
+		}
 
-	    // Pass data to PhotoSwipe and initialize it
-	    gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
-	    gallery.init();
+		// Pass data to PhotoSwipe and initialize it
+		gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+		gallery.init();
 	};
 
 	// loop through all gallery elements and bind events
 	var galleryElements = document.querySelectorAll( gallerySelector );
+
 	for(var i = 0, l = galleryElements.length; i < l; i++) {
 		galleryElements[i].setAttribute('data-pswp-uid', i+1);
 		galleryElements[i].onclick = onThumbnailsClick;
@@ -465,6 +479,7 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 initPhotoSwipeFromDOM('.my-gallery');
 ```
 
+
 Example on CodePen (`focus` & `history` options are disabled due to embed issues):
 
 <div class="codepen-embed">
@@ -473,14 +488,19 @@ Example on CodePen (`focus` & `history` options are disabled due to embed issues
 	</p>
 </div>
 
+Tip: you may download example from CodePen to play with it locally (`Edit on CodePen` -> `Share` -> `Export .zip`).
+
+- Note that IE8 doesn't support HTML5 `figure` and `figcaption` elements, you may include [html5shiv](https://github.com/aFarkas/html5shiv), or [add support manually](http://www.nickyeoman.com/blog/html/118-html5-tags-in-ie8).
+- If you're using markup that differs from this example, you'll need to edit function `parseThumbnailElements`. 
+- If you're not experienced in pure JavaScript and don't know how to parse DOM, refer to [QuirksMode](http://quirksmode.org/dom/core/#gettingelements) and [documentation on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element.getElementsByTagName).
 
 ## About
 
-PhotoSwipe is in beta, more detailed documentation coming soon. For now please report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask qustions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
+PhotoSwipe is in beta, please report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask qustions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
 
 To get notified about updates follow [@photoswipe on Twitter](https://github.com/dimsemenov/PhotoSwipe) and star/watch project on [GitHub](https://github.com/dimsemenov/PhotoSwipe).
 
-If you think that something should be improved in this documentation page, feel free to [suggest an edit on GitHub](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/basics.md).
+If you think that something should be improved in this documentation page, feel free to [suggest an edit on GitHub](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md).
 
 <iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>
 

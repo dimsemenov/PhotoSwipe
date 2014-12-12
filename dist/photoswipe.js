@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.0 - 2014-12-10
+/*! PhotoSwipe - v4.0.0 - 2014-12-11
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 (function (root, factory) { 
@@ -517,7 +517,7 @@ var _isOpen,
 		}
 	},
 	_bindEvents = function() {
-		framework.bind(document, 'keydown keyup', self);
+		framework.bind(document, 'keydown', self);
 
 		if(!_options.mouseUsed) {
 			framework.bind(document, 'mousemove', _onFirstMouseMove);
@@ -530,7 +530,7 @@ var _isOpen,
 	_unbindEvents = function() {
 		framework.unbind(window, 'resize', self);
 		framework.unbind(window, 'scroll', _globalEventHandlers.scroll);
-		framework.unbind(document, 'keydown keyup', self);
+		framework.unbind(document, 'keydown', self);
 		framework.unbind(document, 'mousemove', _onFirstMouseMove);
 
 		if(_isDragging) {
@@ -990,6 +990,7 @@ var publicMethods = {
 		}
 		
 		// Setup events
+		var keydownAction;
 		_globalEventHandlers = {
 			resize: self.updateSize,
 			scroll: function() {
@@ -1006,17 +1007,28 @@ var publicMethods = {
 					
 				}
 			},
-			keyup: function(e) {
-				if(_options.escKey && e.keyCode === 27) { // esc key
-					self.close();
-				}
-			},
 			keydown: function(e) {
-				if(_options.arrowKeys) {
+				keydownAction = '';
+				if(_options.escKey && e.keyCode === 27) { 
+					keydownAction = 'close';
+				} else if(_options.arrowKeys) {
 					if(e.keyCode === 37) {
-						self.prev();
-					} else if(e.keyCode === 39) {
-						self.next();
+						keydownAction = 'prev';
+					} else if(e.keyCode === 39) { 
+						keydownAction = 'next';
+					}
+				}
+
+				if(keydownAction) {
+					// don't do anything if special key pressed to prevent from overriding default browser actions
+					// e.g. in Chrome on Mac cmd+arrow-left returns to previous page
+					if( !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey ) {
+						if(e.preventDefault) {
+							e.preventDefault();
+						} else {
+							e.returnValue = false;
+						} 
+						self[keydownAction]();
 					}
 				}
 			}
