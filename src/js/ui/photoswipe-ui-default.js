@@ -80,10 +80,7 @@ var PhotoSwipeUI_Default =
 
 
 
-
 	var _onControlsTap = function(e) {
-
-
 			if(_blockControlsTap) {
 				return true;
 			}
@@ -111,9 +108,13 @@ var PhotoSwipeUI_Default =
 					e.stopPropagation();
 				}
 				_blockControlsTap = true;
+
+				// Some versions of Android don't prevent ghost click event when preventDefault() was called on touchstart and/or touchend.
+				// This happens on v4.3, 4.2, 4.1, older versions strangely work correctly, but just in case we add delay on all of them)	
+				var tapDelay = framework.features.isOldAndroid ? 600 : 30;
 				_blockControlsTapTimeout = setTimeout(function() {
 					_blockControlsTap = false;
-				}, 30 );
+				}, tapDelay);
 			}
 
 		},

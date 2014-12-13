@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.0 - 2014-12-11
+/*! PhotoSwipe - v4.0.0 - 2014-12-14
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 (function (root, factory) { 
@@ -186,15 +186,16 @@ var framework = {
 			var match = ua.match(/Android\s([0-9\.]*)/);
 			var androidversion =  match ? match[1] : 0;
 			androidversion = parseFloat(androidversion);
-			if(androidversion >= 1 && androidversion < 4.4 ) {
-				features.isOldAndroid = true;
-			} else if(androidversion >= 5) {
-				features.isNewAndroid = true; // Lollipop
-			}
+			if(androidversion >= 1 ) {
+				if(androidversion < 4.4) {
+					features.isOldAndroid = true; // for fixed position bug & performance
+				}
+				features.androidVersion = androidversion; // for touchend bug
+			}	
 			features.isMobileOpera = /opera mini|opera mobi/i.test(ua);
 
 			// p.s. yes, yes, UA sniffing is bad, propose your solution for above bugs.
-		
+
 		}
 		
 
@@ -1046,7 +1047,7 @@ var publicMethods = {
 		// Bind mouse events on device with detected hardware touch support, in case it supports multiple types of input.
 		if(_features.touch) {
 			_downEvents += ' mousedown';
-			_upMoveEvents += 'mousemove mouseup';
+			_upMoveEvents += ' mousemove mouseup';
 			_globalEventHandlers.mousedown = _globalEventHandlers[_dragStartEvent];
 			_globalEventHandlers.mousemove = _globalEventHandlers[_dragMoveEvent];
 			_globalEventHandlers.mouseup = _globalEventHandlers[_dragEndEvent];
@@ -1525,6 +1526,8 @@ var _gestureStartTime,
 
 	_verticalDragInitiated,
 
+	_oldAndroidTouchEndTimeout,
+
 	_isDragging, // at least one pointer is down
 	_isMultitouch, // at least two _pointers are down
 	_zoomStarted, // zoom level changed during zoom gesture
@@ -1547,6 +1550,7 @@ var _gestureStartTime,
 	_opacityChanged,
 	_bgOpacity,
 	_wasOverInitialZoom,
+
 
 	_calculatePointsDistance = function(p1, p2) {
 		_tempPoint.x = Math.abs( p1.x - p2.x );
@@ -1776,12 +1780,10 @@ var _gestureStartTime,
 		
 	},
 
-
 	/**
 	 * Pointerdown/touchstart/mousedown handler
 	 */
 	_onDragStart = function(e) {
-
 
 		if(_initialZoomRunning) {
 			e.preventDefault();
@@ -1790,6 +1792,9 @@ var _gestureStartTime,
 
 
 
+		if(_oldAndroidTouchEndTimeout && e.type === 'mousedown') {
+			return;
+		}
 
 		if(_preventDefaultEventBehavior(e, true)) {
 			e.preventDefault();
@@ -2099,7 +2104,25 @@ var _gestureStartTime,
 	 * Pointerup/pointercancel/touchend/touchcancel/mouseup event handler
 	 */
 	_onDragRelease = function(e) {
-		
+
+		if(_features.isOldAndroid ) {
+
+			if(_oldAndroidTouchEndTimeout && e.type === 'mouseup') {
+				return;
+			}
+
+			// on Android (v4.1, 4.2, 4.3 & possibly older) ghost mousedown/up event isn't preventable via e.preventDefault
+			// which causes fake mousedown event
+			// so we block mousedown/up for 600ms
+			if( e.type.indexOf('touch') > -1 ) {
+				clearTimeout(_oldAndroidTouchEndTimeout);
+				_oldAndroidTouchEndTimeout = setTimeout(function() {
+					_oldAndroidTouchEndTimeout = 0;
+				}, 600);
+			}
+			
+		}
+
 		_shout('pointerUp');
 
 		if(_preventDefaultEventBehavior(e, false)) {
