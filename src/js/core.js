@@ -740,7 +740,7 @@ var publicMethods = {
 		// Bind mouse events on device with detected hardware touch support, in case it supports multiple types of input.
 		if(_features.touch) {
 			_downEvents += ' mousedown';
-			_upMoveEvents += 'mousemove mouseup';
+			_upMoveEvents += ' mousemove mouseup';
 			_globalEventHandlers.mousedown = _globalEventHandlers[_dragStartEvent];
 			_globalEventHandlers.mousemove = _globalEventHandlers[_dragMoveEvent];
 			_globalEventHandlers.mouseup = _globalEventHandlers[_dragEndEvent];

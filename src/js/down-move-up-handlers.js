@@ -32,6 +32,8 @@ var _gestureStartTime,
 
 	_verticalDragInitiated,
 
+	_oldAndroidTouchEndTimeout,
+
 	_isDragging, // at least one pointer is down
 	_isMultitouch, // at least two _pointers are down
 	_zoomStarted, // zoom level changed during zoom gesture
@@ -54,6 +56,7 @@ var _gestureStartTime,
 	_opacityChanged,
 	_bgOpacity,
 	_wasOverInitialZoom,
+
 
 	_calculatePointsDistance = function(p1, p2) {
 		_tempPoint.x = Math.abs( p1.x - p2.x );
@@ -283,12 +286,10 @@ var _gestureStartTime,
 		
 	},
 
-
 	/**
 	 * Pointerdown/touchstart/mousedown handler
 	 */
 	_onDragStart = function(e) {
-
 
 		if(_initialZoomRunning) {
 			e.preventDefault();
@@ -297,6 +298,9 @@ var _gestureStartTime,
 
 
 
+		if(_oldAndroidTouchEndTimeout && e.type === 'mousedown') {
+			return;
+		}
 
 		if(_preventDefaultEventBehavior(e, true)) {
 			e.preventDefault();
@@ -606,7 +610,25 @@ var _gestureStartTime,
 	 * Pointerup/pointercancel/touchend/touchcancel/mouseup event handler
 	 */
 	_onDragRelease = function(e) {
-		
+
+		if(_features.isOldAndroid ) {
+
+			if(_oldAndroidTouchEndTimeout && e.type === 'mouseup') {
+				return;
+			}
+
+			// on Android (v4.1, 4.2, 4.3 & possibly older) ghost mousedown/up event isn't preventable via e.preventDefault
+			// which causes fake mousedown event
+			// so we block mousedown/up for 600ms
+			if( e.type.indexOf('touch') > -1 ) {
+				clearTimeout(_oldAndroidTouchEndTimeout);
+				_oldAndroidTouchEndTimeout = setTimeout(function() {
+					_oldAndroidTouchEndTimeout = 0;
+				}, 600);
+			}
+			
+		}
+
 		_shout('pointerUp');
 
 		if(_preventDefaultEventBehavior(e, false)) {

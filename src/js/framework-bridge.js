@@ -169,15 +169,16 @@ var framework = {
 			var match = ua.match(/Android\s([0-9\.]*)/);
 			var androidversion =  match ? match[1] : 0;
 			androidversion = parseFloat(androidversion);
-			if(androidversion >= 1 && androidversion < 4.4 ) {
-				features.isOldAndroid = true;
-			} else if(androidversion >= 5) {
-				features.isNewAndroid = true; // Lollipop
-			}
+			if(androidversion >= 1 ) {
+				if(androidversion < 4.4) {
+					features.isOldAndroid = true; // for fixed position bug & performance
+				}
+				features.androidVersion = androidversion; // for touchend bug
+			}	
 			features.isMobileOpera = /opera mini|opera mobi/i.test(ua);
 
 			// p.s. yes, yes, UA sniffing is bad, propose your solution for above bugs.
-		
+
 		}
 		
 
