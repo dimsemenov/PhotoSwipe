@@ -51,10 +51,9 @@
 .pswp__preloader--active {
 	opacity: 1;
 	.pswp__preloader__icn {
-		background: url(preloader.gif) 0 0 no-repeat;
+		background: url(#{$pswp__assets-path}preloader.gif) 0 0 no-repeat;
 	}
 }
-
 
 
 .pswp--css_animation {
@@ -188,7 +187,7 @@
 .pswp__button,
 .pswp__button--arrow--left:before,
 .pswp__button--arrow--right:before {
-	background: url(default-skin.png) 0 0 no-repeat;
+	background: url(#{$pswp__assets-path}default-skin.png) 0 0 no-repeat;
 	background-size: 264px 88px;
 	width: 44px;
 	height: 44px;
@@ -198,7 +197,7 @@
     .pswp--svg .pswp__button,
     .pswp--svg .pswp__button--arrow--left:before,
 	.pswp--svg .pswp__button--arrow--right:before  {
-        background-image: url(default-skin.svg);
+        background-image: url(#{$pswp__assets-path}default-skin.svg);
     }
     .pswp--svg .pswp__button--arrow--left,
 	.pswp--svg .pswp__button--arrow--right {
