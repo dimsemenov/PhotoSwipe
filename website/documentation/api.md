@@ -209,6 +209,19 @@ pswp.listen('initialZoomOut', function() { });
 // After PhotoSwipe is closed
 // clean up your stuff here
 pswp.listen('destroy', function() { });
+
+// PhotoSwipe has a special event called pswpTap.
+// It's dispatched using default JavaScript event model.
+// So you can, for example, call stopPropagation on it.
+// pswp.framework.bind - is a shorthand for addEventListener
+pswp.framework.bind( pswp.scrollWrap /* bind on any element of gallery */, 'pswpTap', function(e) {
+    console.log('tap', e, e.detail);
+    // e.detail.origEvent  // original event that finished tap (e.g. mouseup or touchend)
+    // e.detail.target // e.target of original event
+    // e.detail.releasePoint // object with x/y coordinates of tap
+    // e.detail.pointerType // mouse, touch, or pen
+});
+
 ```
 
 Some method or property is missing? Know how this page can be improved? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
