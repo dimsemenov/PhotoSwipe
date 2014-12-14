@@ -132,6 +132,19 @@
 	transition: transform $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
 }
 
+.pswp__bg {
+	will-change:opacity;
+	transition: opacity $pswp__controls-transition-duration cubic-bezier(.4,0,.22,1);
+}
+
+.pswp--animated-in {
+	.pswp__bg,
+	.pswp__zoom-wrap {
+		-webkit-transition: none;
+		transition: none;
+	}
+}
+
 .pswp__container,
 .pswp__zoom-wrap {
 	-webkit-backface-visibility: hidden;

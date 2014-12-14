@@ -493,22 +493,12 @@ a.pswp__share--download {
 	visibility: hidden;
 }
 
-.pswp__bg,
 .pswp__caption,
 .pswp__top-bar,
 .pswp--has_mouse .pswp__button--arrow--left,
 .pswp--has_mouse .pswp__button--arrow--right{
 	will-change:opacity;
-
 	transition: opacity $pswp__controls-transition-duration cubic-bezier(.4,0,.22,1);
-}
-
-.pswp--animated-in {
-	.pswp__bg,
-	.pswp__zoom-wrap {
-		-webkit-transition: none;
-		transition: none;
-	}
 }
 
 .pswp--has_mouse {
