@@ -95,6 +95,15 @@
   -webkit-transition: -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
           transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1); }
 
+.pswp__bg {
+  will-change: opacity;
+  -webkit-transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1);
+          transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+
+.pswp--animated-in .pswp__bg, .pswp--animated-in .pswp__zoom-wrap {
+  -webkit-transition: none;
+  transition: none; }
+
 .pswp__container, .pswp__zoom-wrap {
   -webkit-backface-visibility: hidden;
   will-change: transform; }

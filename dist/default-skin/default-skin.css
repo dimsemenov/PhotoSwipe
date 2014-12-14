@@ -398,14 +398,10 @@ a.pswp__share--download:hover {
 .pswp__caption--fake {
   visibility: hidden; }
 
-.pswp__bg, .pswp__caption, .pswp__top-bar, .pswp--has_mouse .pswp__button--arrow--left, .pswp--has_mouse .pswp__button--arrow--right {
+.pswp__caption, .pswp__top-bar, .pswp--has_mouse .pswp__button--arrow--left, .pswp--has_mouse .pswp__button--arrow--right {
   will-change: opacity;
   -webkit-transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1);
           transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
-
-.pswp--animated-in .pswp__bg, .pswp--animated-in .pswp__zoom-wrap {
-  -webkit-transition: none;
-  transition: none; }
 
 .pswp--has_mouse .pswp__button--arrow--left, .pswp--has_mouse .pswp__button--arrow--right {
   visibility: visible; }
