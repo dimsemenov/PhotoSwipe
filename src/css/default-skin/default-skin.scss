@@ -11,7 +11,7 @@
 	-webkit-font-smoothing: auto;
 	visibility: visible;
 	opacity: 1;
-	z-index: 1050;
+	z-index: $pswp__root-z-index + 50;
 }
 
 .pswp__top-bar {
@@ -36,8 +36,6 @@
 	left:50%;
 	margin-left: -22px;
 
-	z-index: 20;
-	
 	opacity: 0;
 	position:relative;
 
@@ -224,7 +222,7 @@
 	left: 0;
 	padding: 10px;
 	position: absolute;
-	z-index: 1450;
+	z-index: $pswp__root-z-index + 100;
 	opacity: 0;
 
 	transition: opacity 0.25s ease-out;
@@ -249,7 +247,7 @@
 // }
 
 .pswp__share-tooltip {
-	z-index: 1550;
+	z-index: $pswp__root-z-index + 120;
 	position: absolute;
 	background: #FFF;
 	top: 56px;

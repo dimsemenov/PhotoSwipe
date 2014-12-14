@@ -19,7 +19,7 @@
 	overflow: hidden;
 	-ms-touch-action: none;
 	touch-action: none;
-	z-index: 500;
+	z-index: $pswp__root-z-index;
 	-webkit-text-size-adjust: 100%;
 
 	// create separate layer, to avoid pain on window.onscroll
