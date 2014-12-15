@@ -6,7 +6,7 @@
   -webkit-font-smoothing: auto;
   visibility: visible;
   opacity: 1;
-  z-index: 1050; }
+  z-index: 1550; }
 
 .pswp__top-bar {
   position: absolute;
@@ -26,7 +26,6 @@
   top: 0;
   left: 50%;
   margin-left: -22px;
-  z-index: 20;
   opacity: 0;
   position: relative;
   -webkit-transition: opacity 0.25s ease-out;
@@ -202,7 +201,7 @@
   left: 0;
   padding: 10px;
   position: absolute;
-  z-index: 1450;
+  z-index: 1600;
   opacity: 0;
   -webkit-transition: opacity 0.25s ease-out;
           transition: opacity 0.25s ease-out;
@@ -213,7 +212,7 @@
   display: none; }
 
 .pswp__share-tooltip {
-  z-index: 1550;
+  z-index: 1620;
   position: absolute;
   background: white;
   top: 56px;
