@@ -216,7 +216,7 @@ module.exports = function(grunt) {
       "\tif (typeof define === 'function' && define.amd) {\n" +
         "\t\tdefine(factory);\n" +
       "\t} else if (typeof exports === 'object') {\n" +
-        "\t\tmodule.exports = factory;\n" +
+        "\t\tmodule.exports = factory();\n" +
       "\t} else {\n" +
         "\t\troot.PhotoSwipe = factory();\n" +
       "\t}\n" +
