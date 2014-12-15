@@ -4,7 +4,7 @@
 
 JavaScript image gallery for mobile and desktop. 
 
-- [Documentation and getting started guide](http://photoswipe.com/documentation.html).
+- [Documentation and getting started guide](http://photoswipe.com/documentation/getting-started.html).
 - [Demo and plugin home page](http://photoswipe.com).
 
 Optionally, install via Bower: `bower install photoswipe`.
