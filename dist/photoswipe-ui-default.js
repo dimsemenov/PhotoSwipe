@@ -1,4 +1,4 @@
-/*! PhotoSwipe Default UI - 4.0.0 - 2014-12-14
+/*! PhotoSwipe Default UI - 4.0.0 - 2014-12-16
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 /**
@@ -11,7 +11,7 @@
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
 	} else if (typeof exports === 'object') {
-		module.exports = factory;
+		module.exports = factory();
 	} else {
 		root.PhotoSwipeUI_Default = factory();
 	}
