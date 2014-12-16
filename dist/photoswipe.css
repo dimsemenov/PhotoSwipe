@@ -55,7 +55,7 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background: black;
+  background: #000;
   opacity: 0;
   -webkit-backface-visibility: hidden;
   will-change: opacity; }
@@ -127,7 +127,7 @@
   -webkit-backface-visibility: hidden; }
 
 .pswp__img--placeholder--blank {
-  background: #222222; }
+  background: #222; }
 
 .pswp--ie .pswp__img {
   width: 100%;
