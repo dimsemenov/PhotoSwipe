@@ -259,7 +259,7 @@ var _isOpen,
 	},
 
 	// Return true if offset is out of the bounds
-	_isOutOfBounds = function(axis, destPanBounds, destPanOffset, destZoomLevel) {
+	_modifyDestPanOffset = function(axis, destPanBounds, destPanOffset, destZoomLevel) {
 		if(destZoomLevel === self.currItem.initialZoomLevel) {
 			destPanOffset[axis] = self.currItem.initialPosition[axis];
 			return true;
@@ -1139,8 +1139,8 @@ var publicMethods = {
 		var destPanBounds = _calculatePanBounds(destZoomLevel, false),
 			destPanOffset = {};
 
-		_isOutOfBounds('x', destPanBounds, destPanOffset, destZoomLevel),
-		_isOutOfBounds('y', destPanBounds, destPanOffset, destZoomLevel);
+		_modifyDestPanOffset('x', destPanBounds, destPanOffset, destZoomLevel);
+		_modifyDestPanOffset('y', destPanBounds, destPanOffset, destZoomLevel);
 
 		var initialZoomLevel = _currZoomLevel;
 		var initialPanOffset = {
