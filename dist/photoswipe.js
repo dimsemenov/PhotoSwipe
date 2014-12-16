@@ -2944,7 +2944,7 @@ _registerModule('Controller', {
 								return;
 							}
 							if( !item.imageAppended /*_likelyTouchDevice*/ ) {
-								if(_mainScrollAnimating || _initialZoomRunning) {
+								if(_features.transform && (_mainScrollAnimating || _initialZoomRunning) ) {
 									_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
 								} else {
 									_appendImage(index, item, baseDiv, item.img, _mainScrollAnimating || _initialZoomRunning);
@@ -2989,7 +2989,7 @@ _registerModule('Controller', {
 
 					if( self.allowProgressiveImg() ) {
 						// just append image
-						if(!_initialContentSet) {
+						if(!_initialContentSet && _features.transform) {
 							_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
 						} else {
 							_appendImage(index, item, baseDiv, item.img, true, true);
