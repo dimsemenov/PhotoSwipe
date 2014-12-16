@@ -25,11 +25,8 @@ module.exports = function(grunt) {
     awsDefaults = grunt.file.readJSON('./aws-keys.json');
   }
 
-
-
-  // Project configuration.
   grunt.initConfig({
-    // Metadata.
+
     pkg: grunt.file.readJSON('photoswipe.json'),
 
     banner: '/*! PhotoSwipe - v<%= pkg.version %> - ' +
@@ -95,18 +92,24 @@ module.exports = function(grunt) {
         defaultUIBanner: '<%= defaultUIBanner %>'
       }
     },
+
     jekyll: {
       dev: {
-        src: 'website',
-        dest: '_site',
-        url: 'local',
-        raw: jekyllConfig + "url: local"
+        options: {
+          src: 'website',
+          dest: '_site',
+          url: 'local',
+          raw: jekyllConfig + "url: local"
+        }
+        
       },
       production: {
-        src: 'website',
-        dest: '_production',
-        url: 'production',
-        raw: jekyllConfig + "url: production"
+        options: {
+          src: 'website',
+          dest: '_production',
+          url: 'production',
+          raw: jekyllConfig + "url: production"
+        }
       }
     },
 
@@ -140,18 +143,14 @@ module.exports = function(grunt) {
       }
     },
 
-
-
     watch: { // for development run 'grunt watch'
       jekyll: {
         files: ['website/**', 'website/documentation/**', '_includes/**'],
         tasks: ['jekyll:dev', 'copy:dev']
       },
       files: ['src/**'],
-      tasks: [ 'sass', 'autoprefixer', 'pswpbuild', 'copy:dev', 'svgmin', 'uglify']
+      tasks: [ 'sass', 'autoprefixer', 'pswpbuild', 'copy:dev', 'uglify']
     },
-
-
 
     cssmin: {
       compress: {
@@ -164,14 +163,11 @@ module.exports = function(grunt) {
     svgmin: {
       dist: {
         files: {
-          'dist/default-skin/default-skin.svg': 'dist/default-skin/default-skin.svg'
+          'src/css/default-skin/default-skin.svg': 'src/css/default-skin/default-skin.svg'
         }
       }
     },
 
-    //,
-    // aws: grunt.file.readJSON('aws-keys.json'), // Read the file
-    
     aws_s3: {
       options: {
         accessKeyId: awsDefaults ? awsDefaults.AWSAccessKeyId : '', // Use the variables
@@ -182,19 +178,10 @@ module.exports = function(grunt) {
       },
       main: {
         options: {
-          bucket: 'photoswipe',//,
-          params: {
-            //ContentEncoding: 'gzip' // applies to all the files!
-          }
-          // mime: {
-          //   'dist/assets/production/LICENCE': 'text/plain'
-          // }
+          bucket: 'photoswipe'
         },
         files: [
-
           { expand: true, cwd: 'dist/', src: ['**'], dest: 'pswp/dist/', params: {CacheControl: 'max-age=86400'} }
-
-
         ]
       }
     }
@@ -209,8 +196,7 @@ module.exports = function(grunt) {
     var files = this.data.src,
         includes = grunt.option('pswp-exclude'),
         basePath = this.data.basePath,
-        newContents = this.data.banner;// + ";(function(w) {\n\t\"use strict\";\n";
-
+        newContents = this.data.banner;
 
     newContents += "(function (root, factory) { \n"+
       "\tif (typeof define === 'function' && define.amd) {\n" +
@@ -224,9 +210,6 @@ module.exports = function(grunt) {
       "\t'use strict';\n"+
       "\tvar PhotoSwipe = function(template, UiClass, items, options){\n";
       
-
-
-
 
     if(includes) {
       includes = includes.split(/[\s,]+/); // 'a,b,c' => ['a','b','c']
@@ -275,7 +258,6 @@ module.exports = function(grunt) {
 
 
 
-
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -291,9 +273,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-svgmin');
 
   // Default task.
-  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'svgmin', 'jekyll:dev']);
+  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
 
-  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'svgmin', 'jekyll:production']);
+  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
   grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify']);
   grunt.registerTask('hint', ['jshint']);
   grunt.registerTask('awsupload', ['aws_s3']);
