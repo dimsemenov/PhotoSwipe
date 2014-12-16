@@ -1,6 +1,9 @@
 # PhotoSwipe Repository 
 
-[![Build Status](https://travis-ci.org/dimsemenov/PhotoSwipe.png)](https://travis-ci.org/dimsemenov/PhotoSwipe)
+[![Build Status](https://travis-ci.org/dimsemenov/PhotoSwipe.svg)](https://travis-ci.org/dimsemenov/PhotoSwipe) 
+[![devDependency Status](https://david-dm.org/dimsemenov/PhotoSwipe/dev-status.svg)](https://david-dm.org/dimsemenov/PhotoSwipe#info=devDependencies)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dimsemenov/PhotoSwipe?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 
 JavaScript image gallery for mobile and desktop. 
 
