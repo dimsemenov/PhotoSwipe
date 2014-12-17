@@ -21,6 +21,8 @@ Optionally, install via Bower: `bower install photoswipe`.
 
 ## Plugins or extensions
 
+- [Kokeh CMS plugin](https://github.com/DanielMuller/koken-plugin-photoswipe).
+
 Wrote a plugin for some CMS? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I'll post link to it here.
 
 ## Build 
