@@ -16,6 +16,9 @@ var _historyUpdateTimeout,
 	_closedFromURL,
 	_urlChangedOnce,
 	_windowLoc,
+
+	_supportsPushState,
+
 	_getHash = function() {
 		return _windowLoc.hash.substring(1);
 	},
@@ -84,13 +87,25 @@ var _historyUpdateTimeout,
 			if(_windowLoc.hash.indexOf(newHash) === -1) {
 				_urlChangedOnce = true;
 			}
-			_windowLoc.hash = newHash;
 			// first time - add new hisory record, then just replace
-		} else {
-			var newURL = _windowLoc.href.split('#')[0] + '#' +  newHash;
-
-			_windowLoc.replace( newURL );
 		}
+
+		var newURL = _windowLoc.href.split('#')[0] + '#' +  newHash;
+
+		if( _supportsPushState ) {
+
+			if('#' + newHash !== window.location.hash) {
+				history[_historyChanged ? 'replaceState' : 'pushState']('', document.title, newURL);
+			}
+
+		} else {
+			if(_historyChanged) {
+				_windowLoc.replace( newURL );
+			} else {
+				_windowLoc.hash = newHash;
+			}
+		}
+		
 		
 
 		_historyChanged = true;
@@ -122,6 +137,7 @@ _registerModule('History', {
 			_closedFromURL = false;
 			_historyChanged = false;
 			_initialHash = _getHash();
+			_supportsPushState = ('pushState' in history);
 
 
 			if(_initialHash.indexOf('gid=') > -1) {
@@ -143,12 +159,14 @@ _registerModule('History', {
 					if(_urlChangedOnce) {
 						history.back();
 					} else {
+
 						if(_initialHash) {
 							_windowLoc.hash = _initialHash;
 						} else {
-							if ('pushState' in history) {
+							if (_supportsPushState) {
+
 								// remove hash from url without refreshing it or scrolling to top
-								history.pushState("", document.title, _windowLoc.pathname + _windowLoc.search);
+								history.pushState("", document.title,  _windowLoc.pathname + _windowLoc.search );
 							} else {
 								_windowLoc.hash = "";
 							}
@@ -199,11 +217,13 @@ _registerModule('History', {
 		onHashChange: function() {
 
 			if(_getHash() === _initialHash) {
+
 				_closedFromURL = true;
 				self.close();
 				return;
 			}
 			if(!_hashChangedByScript) {
+
 				_hashChangedByHistory = true;
 				self.goTo( _parseItemIndexFromURL().pid );
 				_hashChangedByHistory = false;
