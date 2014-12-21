@@ -194,6 +194,19 @@ Function that should return total number of items in gallery. By default it retu
 
 Will set focus on PhotoSwipe element after it's open.
 
+### `isClickableElement` <code class="default">function</code>
+
+Default value:
+
+```javascript
+isClickableElement: function(el) {
+	return el.tagName === 'A';
+}
+```
+
+Function should check if the element (`el`) is clickable. If it is &ndash; PhotoSwipe will not call `preventDefault` and `click` event will pass through. Function should be as light is possible, at it's performed multiple times on drag start and drag release.
+
+
 
 
 ## Default UI Options

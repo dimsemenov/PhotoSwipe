@@ -229,7 +229,7 @@ _registerModule('Controller', {
 			index = _getLoopedId(index);
 			var item = _getItemAt(index);
 
-			if(!item || item.loaded || item.loading) {
+			if(!item || !item.src || item.loaded || item.loading) {
 				return;
 			}
 
@@ -356,7 +356,11 @@ _registerModule('Controller', {
 			
 
 			if(!item.src && item.html) {
-				baseDiv.innerHTML = item.html;
+				if(item.html.tagName) {
+					baseDiv.appendChild(item.html);
+				} else {
+					baseDiv.innerHTML = item.html;
+				}
 			}
 
 			_checkForError(item);
