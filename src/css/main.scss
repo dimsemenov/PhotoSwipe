@@ -22,7 +22,7 @@
 	z-index: $pswp__root-z-index;
 	-webkit-text-size-adjust: 100%;
 
-	// create separate layer, to avoid pain on window.onscroll
+	// create separate layer, to avoid paint on window.onscroll
 	-webkit-backface-visibility: hidden;
 	outline: none;
 
@@ -39,7 +39,7 @@
 }
 
 .pswp--animate_opacity {
-	opacity: 0;
+	opacity: 0.001;
 	will-change:opacity;
 	transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
 }

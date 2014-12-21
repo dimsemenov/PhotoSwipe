@@ -418,6 +418,7 @@ var _animations = {},
 				template.style.webkitBackfaceVisibility = 'hidden';
 				//template.style.webkitTransition = 'opacity 0.3s linear';
 			}
+			self[fadeEverything ? 'template' : 'bg'].style.opacity = 0.001;
 			_applyCurrentZoomPan();
 		}
 
