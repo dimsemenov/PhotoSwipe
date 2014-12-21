@@ -7,16 +7,17 @@
 JavaScript image gallery for mobile and desktop. 
 
 - [Documentation and getting started guide](http://photoswipe.com/documentation/getting-started.html).
-- [Demo and plugin home page](http://photoswipe.com).
+- [Demo and script home page](http://photoswipe.com).
 
 Optionally, install via Bower: `bower install photoswipe`.
 
+
 ## Location of files
 
-- Generated popup JS, CSS files, SVG & PNG sprites are in the `dist/` folder.
-- Source files are in the `src/` folder.
-- Files for the website (examples & documentation) are in the `website/` folder.
-- The documentation page itself is in `website/documentation.md`.
+- Generated PhotoSwipe JS, CSS files, SVG & PNG sprites are in the [dist/](https://github.com/dimsemenov/PhotoSwipe/tree/master/dist) folder.
+- Source files are in the [src/](https://github.com/dimsemenov/PhotoSwipe/tree/master/src) folder.
+- Files for the website (demo & documentation) are in the [website/](https://github.com/dimsemenov/PhotoSwipe/tree/master/website) folder.
+- The documentation itself is in [website/documentation/](https://github.com/dimsemenov/PhotoSwipe/tree/master/website/documentation).
 
 ## Plugins or extensions
 
@@ -43,7 +44,8 @@ To compile PhotoSwipe by yourself, first make sure that you have [Node.js](http:
 Optionally:
 
 - Run `grunt watch` to automatically rebuild files when you change files in `src/` or in `website/`.
-- If you don’t have and don’t want to install Jekyll, run `grunt nosite` to just build the JS and CSS files related to popup in `dist/`.
+- Run `grunt nosite` to just build the JS and CSS files (output is folder `dist/`).
+- Run `grunt pswpbuild` to build just JS files. Param `--pswp-exclude` allows to exclude modules, for example `grunt pswpbuild --pswp-exclude=history` will exclude history module.
 
 ## Using PhotoSwipe?
 
@@ -57,4 +59,6 @@ Attribution is not required, but much appreciated, especially if you’re making
 
 ## About
 
-The script was created by [Code Computerlove](http://www.codecomputerlove.com/), a digital agency in Manchester. In March 2014, it [passed](https://twitter.com/PhotoSwipe/status/444134042787930113) on development to [Dmitry Semenov](http://twitter.com/dimsemenov).
+PhotoSwipe 4.0+ is developed by [Dmitry Semenov](http://twitter.com/dimsemenov). But initially script was created in 2011 by [Code Computerlove](http://www.codecomputerlove.com/), a digital agency in Manchester, they [passed](https://twitter.com/PhotoSwipe/status/444134042787930113) on development in March 2014. You can view [source and documentation](https://github.com/dimsemenov/PhotoSwipe/tree/v3.0.3) of old PhotoSwipe (<4.0) in history of this repo.
+
+
