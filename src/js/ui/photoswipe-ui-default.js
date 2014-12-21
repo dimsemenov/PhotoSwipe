@@ -358,7 +358,7 @@ var PhotoSwipeUI_Default =
 			if(pswp.getZoomLevel() !== initialZoomLevel) {
 				pswp.zoomTo(initialZoomLevel, point, 333);
 			} else {
-				pswp.zoomTo(pswp.currItem.doubleTapZoom, point, 333);
+				pswp.zoomTo( initialZoomLevel < 0.7 ? 1 : 1.5, point, 333);
 			}
 
 		});
