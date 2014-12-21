@@ -1,4 +1,4 @@
-/*! PhotoSwipe Default UI - 4.0.1 - 2014-12-16
+/*! PhotoSwipe Default UI - 4.0.2 - 2014-12-21
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 /**
@@ -361,7 +361,7 @@ var PhotoSwipeUI_Default =
 			if(pswp.getZoomLevel() !== initialZoomLevel) {
 				pswp.zoomTo(initialZoomLevel, point, 333);
 			} else {
-				pswp.zoomTo(pswp.currItem.doubleTapZoom, point, 333);
+				pswp.zoomTo( initialZoomLevel < 0.7 ? 1 : 1.5, point, 333);
 			}
 
 		});

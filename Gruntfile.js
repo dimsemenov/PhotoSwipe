@@ -15,7 +15,7 @@ module.exports = function(grunt) {
       "exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile', 'changelog.md', 'compiler.jar', 'private', 'photoswipe.sublime-project', 'photoswipe.sublime-workspace', '.htaccess'] \r\n"+
       "auto: true \r\n"+
       "pswpversion: <%= pkg.version %> \r\n"+
-      "siteversion: 1.0.2 \r\n"+
+      "siteversion: 1.0.3 \r\n"+
       "markdown: redcarpet \r\n"+
       "kramdown: \r\n"+
       "  input: GFM \r\n";
