@@ -496,9 +496,7 @@ Tip: you may download example from CodePen to play with it locally (`Edit on Cod
 
 ## About
 
-PhotoSwipe is in beta, please report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask qustions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
-
-To get notified about updates follow [@photoswipe on Twitter](https://github.com/dimsemenov/PhotoSwipe) and star/watch project on [GitHub](https://github.com/dimsemenov/PhotoSwipe).
+PhotoSwipe is in beta, please [keep script updated](faq.html#keep-updated), report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask qustions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
 
 If you think that something should be improved in this documentation page, feel free to [suggest an edit on GitHub](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md).
 

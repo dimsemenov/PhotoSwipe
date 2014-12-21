@@ -110,9 +110,6 @@ pswp.getCurrentIndex();
 // current zoom level
 pswp.getZoomLevel();
 
-// current zoom level
-pswp.getZoomLevel();
-
 // one (or more) pointer is used
 pswp.isDragging();
 

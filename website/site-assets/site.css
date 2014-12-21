@@ -87,7 +87,9 @@ h3 code.default {
 }
 
 .docs p {
-  margin-bottom: 26px;
+  margin: 0;
+  padding-bottom: 12px;
+  padding-top: 12px;
 }
 .docs h1 {
   margin-bottom: 32px;
@@ -99,14 +101,23 @@ h3 code.default {
   text-decoration: underline;
 }
 .docs h2 {
-  margin-top: 32px;
+  margin: 0;
+  margin: 36px 0 12px;
 }
 .docs h3 {
-  margin-top: 26px;
+  margin: 0;
+  margin: 24px 0 8px 0;
+  font-size: 22px;
+  line-height: 28px;
 }
 .docs ul,
 .docs ol {
-  margin-bottom: 26px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.docs li {
+  margin: 0;
+  padding: 4px 0;
 }
 
 .docs-menu {
