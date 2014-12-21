@@ -39,6 +39,10 @@ var _options = {
 	mainScrollEndFriction: 0.35,
 	panEndFriction: 0.35,
 
+	isClickableElement: function(el) {
+        return el.tagName === 'A';
+    },
+
 	// not fully implemented yet
 	scaleMode: 'fit', // TODO
 	modal: true, // TODO
@@ -168,7 +172,9 @@ var _isOpen,
 		}
 	},
 	_applyZoomPanToItem = function(item) {
-		_applyZoomTransform(item.container.style, item.initialPosition.x, item.initialPosition.y, item.initialZoomLevel);
+		if(item.container) {
+			_applyZoomTransform(item.container.style, item.initialPosition.x, item.initialPosition.y, item.initialZoomLevel);
+		}
 	},
 	_setTranslateX = function(x, elStyle) {
 		elStyle[_transformKey] = _translatePrefix + x + 'px, 0px' + _translateSufix;
@@ -213,6 +219,12 @@ var _isOpen,
 	_bindEvents = function() {
 		framework.bind(document, 'keydown', self);
 
+		if(_features.transform) {
+			// don't bind click event in browsers that don't support transform (mostly IE8)
+			framework.bind(self.scrollWrap, 'click', self);
+		}
+		
+
 		if(!_options.mouseUsed) {
 			framework.bind(document, 'mousemove', _onFirstMouseMove);
 		}
@@ -226,6 +238,10 @@ var _isOpen,
 		framework.unbind(window, 'scroll', _globalEventHandlers.scroll);
 		framework.unbind(document, 'keydown', self);
 		framework.unbind(document, 'mousemove', _onFirstMouseMove);
+
+		if(_features.transform) {
+			framework.unbind(self.scrollWrap, 'click', self);
+		}
 
 		if(_isDragging) {
 			framework.unbind(window, _upMoveEvents, self);
@@ -374,7 +390,11 @@ var _animations = {},
 				}
 				framework.addClass(template, 'pswp--animated-in');
 				_shout('initialZoom' + (out ? 'OutEnd' : 'InEnd'));
+			} else {
+				self.template.removeAttribute('style');
+				self.bg.removeAttribute('style');
 			}
+
 			if(completeFn) {
 				completeFn();
 			}
@@ -401,7 +421,8 @@ var _animations = {},
 			return false;
 		}
 
-
+		var closeWithRaf = _closedByScroll;
+		var fadeEverything = !self.currItem.src || self.currItem.loadError || _options.showHideOpacity;
 		
 		// apply hw-acceleration to image
 		if(item.miniImg) {
@@ -413,22 +434,25 @@ var _animations = {},
 			_panOffset.x = thumbBounds.x;
 			_panOffset.y = thumbBounds.y - _initalWindowScrollY;
 
-			if(_options.showHideOpacity) {
-				template.style.opacity = 0.001;
-				template.style.webkitBackfaceVisibility = 'hidden';
-				//template.style.webkitTransition = 'opacity 0.3s linear';
-			}
 			self[fadeEverything ? 'template' : 'bg'].style.opacity = 0.001;
 			_applyCurrentZoomPan();
 		}
 
 		_registerStartAnimation('initialZoom');
 		
-
-		if(out && !_closedByScroll) {
+		if(out && !closeWithRaf) {
 			framework.removeClass(template, 'pswp--animated-in');
 		}
 
+		if(fadeEverything) {
+			if(out) {
+				framework[ (closeWithRaf ? 'remove' : 'add') + 'Class' ](template, 'pswp--animate_opacity');
+			} else {
+				setTimeout(function() {
+					framework.addClass(template, 'pswp--animate_opacity');
+				}, 30);
+			}
+		}
 		
 		_showOrHideTimeout = setTimeout(function() {
 
@@ -444,7 +468,7 @@ var _animations = {},
 				_applyCurrentZoomPan();
 				_applyBgOpacity(1);
 
-				if(_options.showHideOpacity) {
+				if(fadeEverything) {
 					template.style.opacity = 1;
 				} else {
 					_applyBgOpacity(1);
@@ -472,9 +496,6 @@ var _animations = {},
 							_currZoomLevel = destZoomLevel;
 							_panOffset.x = thumbBounds.x;
 							_panOffset.y = thumbBounds.y  - scrollY;
-							if(_closedByScroll) {
-								complete();
-							}
 						} else {
 							_currZoomLevel = (destZoomLevel - initialZoomLevel) * now + initialZoomLevel;
 							_panOffset.x = (thumbBounds.x - initialPanOffset.x) * now + initialPanOffset.x;
@@ -482,17 +503,15 @@ var _animations = {},
 						}
 						
 						_applyCurrentZoomPan();
-						if(_options.showHideOpacity) {
+						if(fadeEverything) {
 							template.style.opacity = 1 - now;
 						} else {
 							_applyBgOpacity( initalBgOpacity - now * initalBgOpacity );
 						}
-
-						//_applyBgOpacity( initalBgOpacity - now * initalBgOpacity );
 					};
 
-				if(_closedByScroll) {
-					_animateProp('initialZoom', 0, 1, duration, framework.easing.cubic.out/*sine.inOut*/, onUpdate);
+				if(closeWithRaf) {
+					_animateProp('initialZoom', 0, 1, duration, framework.easing.cubic.out, onUpdate, complete);
 				} else {
 					onUpdate(1);
 					_showOrHideTimeout = setTimeout(complete, duration + 20);
@@ -694,7 +713,6 @@ var publicMethods = {
 
 				// "close" on scroll works only on desktop devices, or when mouse is used
 				if(_options.closeOnScroll && _isOpen && (!self.likelyTouchDevice || _options.mouseUsed) ) { 
-
 					if(Math.abs(framework.getScrollY() - _initalWindowScrollY) > 2) { // if scrolled for more than 2px
 						_closedByScroll = true;
 						self.close();
@@ -726,12 +744,22 @@ var publicMethods = {
 						self[keydownAction]();
 					}
 				}
+			},
+			click: function(e) {
+				
+				// don't allow click event to pass through when triggering after drag or some other gesture
+				if(_moved || _zoomStarted || _mainScrollAnimating || _verticalDragInitiated) {
+					e.preventDefault();
+					e.stopPropagation();
+				}
+
+
 			}
 		};
+
 		_globalEventHandlers[_dragStartEvent] = _onDragStart;
 		_globalEventHandlers[_dragMoveEvent] = _onDragMove;
 		_globalEventHandlers[_dragEndEvent] = _onDragRelease; // the Kraken
-
 
 		if(_dragCancelEvent) {
 			_globalEventHandlers[_dragCancelEvent] = _globalEventHandlers[_dragEndEvent];
@@ -1040,6 +1068,7 @@ var publicMethods = {
 		_shout('afterChange');
 		
 	},
+
 
 
 	updateSize: function(force) {

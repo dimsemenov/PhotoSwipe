@@ -80,10 +80,17 @@ var _gestureStartTime,
 	_canPan = function() {
 		return !(_options.scaleMode === 'fit' && _currZoomLevel ===  self.currItem.initialZoomLevel);
 	},
-	_preventObj = {},
-	_preventDefaultEventBehavior = function(e, isDown) {
+	
+	// find the closest parent DOM element
+	_closestElement = function(el, fn) {
+		// don't search elements above pswp__scroll-wrap
+	    return (el && (el.className.indexOf('pswp__scroll-wrap') === -1) ) && ( fn(el) ? el : _closestElement(el.parentNode, fn) );
+	},
 
-		_preventObj.prevent = e.target.tagName !== 'A';
+	_preventObj = {},
+	_preventDefaultEventBehaviour = function(e, isDown) {
+	    _preventObj.prevent = !_closestElement(e.target, _options.isClickableElement);
+
 		_shout('preventDragEvent', e, isDown, _preventObj);
 		return _preventObj.prevent;
 
@@ -291,18 +298,25 @@ var _gestureStartTime,
 	 */
 	_onDragStart = function(e) {
 
+		// Allow dragging only via left mouse button.
+		// As this handler is not added in IE8 - we ignore e.which
+		// 
+		// http://www.quirksmode.org/js/events_properties.html
+		// https://developer.mozilla.org/en-US/docs/Web/API/event.button
+		if(e.type === 'mousedown' && e.button > 0  ) {
+			return;
+		}
+
 		if(_initialZoomRunning) {
 			e.preventDefault();
 			return;
 		}
 
-
-
 		if(_oldAndroidTouchEndTimeout && e.type === 'mousedown') {
 			return;
 		}
 
-		if(_preventDefaultEventBehavior(e, true)) {
+		if(_preventDefaultEventBehaviour(e, true)) {
 			e.preventDefault();
 		}
 
@@ -631,7 +645,7 @@ var _gestureStartTime,
 
 		_shout('pointerUp');
 
-		if(_preventDefaultEventBehavior(e, false)) {
+		if(_preventDefaultEventBehaviour(e, false)) {
 			e.preventDefault();
 		}
 
@@ -1061,7 +1075,7 @@ var _gestureStartTime,
 			initialOpacity = _bgOpacity;
 
 		if(_opacityChanged && !_isZoomingIn && !_wasOverInitialZoom && _currZoomLevel < self.currItem.minZoom) {
-			_closedByScroll = true;
+			//_closedByScroll = true;
 			self.close();
 			return true;
 		}
