@@ -26,7 +26,7 @@ var _getItemAt,
 	_initialIsLoop,
 	_calculateItemSize = function(item, viewportSize, zoomLevel) {
 
-		if (item.src) {
+		if (item.src && !item.loadError) {
 			var isInitial = !zoomLevel;
 			
 			if(isInitial) {
@@ -63,11 +63,10 @@ var _getItemAt,
 				}
 				item.initialZoomLevel = zoomLevel;
 				item.maxZoom = 2;
-				item.doubleTapZoom = zoomLevel * 2 > 1 ? zoomLevel * 2 : 1;
 				item.minZoom = zoomLevel;
 				
 				if(!item.bounds) {
-					item.bounds = { center:{}, max:{}, min:{} }; // reuse bounds object
+					item.bounds = _getZeroBounds(); // reuse bounds object
 				}
 
 				
@@ -103,9 +102,14 @@ var _getItemAt,
 
 			return bounds;
 		} else {
-			// has no img TODO
-		} 
+			item.w = item.h = 0;
+			item.initialZoomLevel = item.maxZoom = item.minZoom = item.fitRatio = item.fillRatio = 1;
+			item.bounds = _getZeroBounds();
+			item.initialPosition = item.bounds.center;
 
+			// if it's not image, we return zero bounds (content is not zoomable)
+			return item.bounds || _getZeroBounds();
+		}
 		return false;
 	},
 
@@ -114,6 +118,10 @@ var _getItemAt,
 
 	_appendImage = function(index, item, baseDiv, img, preventAnimation, keepPlaceholder) {
 		var animate;
+
+		if(item.loadError) {
+			return;
+		}
 
 		// fade in loaded image only when current holder is active, or might be visible
 		if(!preventAnimation && (_likelyTouchDevice || _options.alwaysFadeIn) && (index === _currentItemIndex || self.isMainScrollAnimating() || (self.isDragging() && !self.isZooming()) ) ) {
@@ -177,11 +185,24 @@ var _getItemAt,
 
 		return img;
 	},
-	_displayError = function(item, holder) {
-		if(item.loadError) {
-			holder.el.innerHTML = _options.errorMsg.replace('%url%',  item.src );
+	_checkForError = function(item, cleanUp) {
+		if(item.src && item.loadError && item.container) {
+
+			if(cleanUp) {
+				item.container.innerHTML = '';
+			}
+
+			item.container.innerHTML = _options.errorMsg.replace('%url%',  item.src );
 			return true;
+			
 		}
+	},
+	_getZeroBounds = function() {
+		return {
+			center:{x:0,y:0}, 
+			max:{x:0,y:0}, 
+			min:{x:0,y:0}
+		};
 	},
 	_appendImagesPool = function() {
 
@@ -318,133 +339,134 @@ _registerModule('Controller', {
 				img;
 
 			
-			if(item) {
+			if(!item) {
+				holder.el.innerHTML = '';
+				return;
+			}
 
-				// allow to override data
-				_shout('gettingData', index, item);
+			// allow to override data
+			_shout('gettingData', index, item);
 
-				holder.index = index;
-				holder.item = item;
+			holder.index = index;
+			holder.item = item;
 
-				if( _displayError(item, holder) ) {
-					item.initialPosition.x = item.initialPosition.y = 0;
-					item.initialZoomLevel = item.maxZoom = item.minZoom = 1;
-					_currZoomElementStyle = null;
-					item.w = 50;
-					item.h = 50;
-					_applyZoomPanToItem(item);
-					return;
-				}
+			// base container DIV is created only once for each of 3 holders
+			var baseDiv = item.container = framework.createEl('pswp__zoom-wrap'); 
 
-				// base container DIV is created only once for each of 3 holders
-				var baseDiv = item.container = framework.createEl('pswp__zoom-wrap'); 
-				
-				if(!item.loaded) {
+			
 
-					item.loadComplete = function(item) {
+			if(!item.src && item.html) {
+				baseDiv.innerHTML = item.html;
+			}
 
-						// gallery closed before image finished loading
-						if(!_isOpen) {
+			_checkForError(item);
+			
+			
+			if(item.src && !item.loadError && !item.loaded) {
+
+				item.loadComplete = function(item) {
+
+					// gallery closed before image finished loading
+					if(!_isOpen) {
+						return;
+					}
+
+					
+					// Apply hw-acceleration only after image is loaded.
+					// This is webkit progressive image loading bugfix.
+					// https://bugs.webkit.org/show_bug.cgi?id=108630
+					// https://code.google.com/p/chromium/issues/detail?id=404547
+					item.img.style.webkitBackfaceVisibility = 'hidden';
+
+					
+
+					// check if holder hasn't changed while image was loading
+					if( holder.index === index ) {
+						if( _checkForError(item, true) ) {
+							item.loadComplete = item.img = null;
+							_calculateItemSize(item, _viewportSize);
+							_applyZoomPanToItem(item);
+							if(holder.index === _currentItemIndex) {
+								
+								// recalculate dimensions
+								self.updateCurrZoomItem();
+								//_currZoomLevel = ite m.initialZoomLevel
+							}
 							return;
 						}
-
-						
-						// Apply hw-acceleration only after image is loaded.
-						// This is webkit progressive image loading bugfix.
-						// https://bugs.webkit.org/show_bug.cgi?id=108630
-						// https://code.google.com/p/chromium/issues/detail?id=404547
-						item.img.style.webkitBackfaceVisibility = 'hidden';
-
-						
-
-						// check if holder hasn't changed while image was loading
-						if( holder.index === index ) {
-							if( _displayError(item, holder) ) {
-								item.img = null;
-								return;
-							}
-							if( !item.imageAppended /*_likelyTouchDevice*/ ) {
-								if(_features.transform && (_mainScrollAnimating || _initialZoomRunning) ) {
-									_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
-								} else {
-									_appendImage(index, item, baseDiv, item.img, _mainScrollAnimating || _initialZoomRunning);
-								}
+						if( !item.imageAppended /*_likelyTouchDevice*/ ) {
+							if(_features.transform && (_mainScrollAnimating || _initialZoomRunning) ) {
+								_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
 							} else {
-								// remove preloader & mini-img
-								if(!_initialZoomRunning && item.placeholder) {
-									item.placeholder.style.display = 'none';
-									item.placeholder = null;
-								}
+								_appendImage(index, item, baseDiv, item.img, _mainScrollAnimating || _initialZoomRunning);
+							}
+						} else {
+							// remove preloader & mini-img
+							if(!_initialZoomRunning && item.placeholder) {
+								item.placeholder.style.display = 'none';
+								item.placeholder = null;
 							}
 						}
-
-						item.loadComplete = null;
-						item.img = null; // no need to store image element after it's added
-
-						_shout('imageLoadComplete', index, item);
-					};
-
-					if(framework.features.transform) {
-						
-						var placeholder = framework.createEl('pswp__img pswp__img--placeholder' + (item.msrc ? '' : ' pswp__img--placeholder--blank') , item.msrc ? 'img' : '');
-						if(item.msrc) {
-							placeholder.src = item.msrc;
-						}
-						
-						placeholder.style.width = item.w + 'px';
-						placeholder.style.height = item.h + 'px';
-
-						baseDiv.appendChild(placeholder);
-						item.placeholder = placeholder;
-
-					}
-					
-
-					
-
-					if(!item.loading) {
-						_preloadImage(item);
 					}
 
+					item.loadComplete = null;
+					item.img = null; // no need to store image element after it's added
 
-					if( self.allowProgressiveImg() ) {
-						// just append image
-						if(!_initialContentSet && _features.transform) {
-							_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
-						} else {
-							_appendImage(index, item, baseDiv, item.img, true, true);
-						}
+					_shout('imageLoadComplete', index, item);
+				};
+
+				if(framework.features.transform) {
+					
+					var placeholder = framework.createEl('pswp__img pswp__img--placeholder' + (item.msrc ? '' : ' pswp__img--placeholder--blank') , item.msrc ? 'img' : '');
+					if(item.msrc) {
+						placeholder.src = item.msrc;
 					}
 					
-					
+					placeholder.style.width = item.w + 'px';
+					placeholder.style.height = item.h + 'px';
 
-					
-					
-				} else {
-					// image object is created every time, due to bugs of image loading & delay when switching images
-					img = framework.createEl('pswp__img', 'img');
-					img.style.webkitBackfaceVisibility = 'hidden';
-					img.style.opacity = 1;
-					img.src = item.src;
-					_appendImage(index, item, baseDiv, img, true);
+					baseDiv.appendChild(placeholder);
+					item.placeholder = placeholder;
+
 				}
 				
-				_calculateItemSize(item, _viewportSize);
+
 				
 
-				if(!_initialContentSet && index === _currentItemIndex) {
-					_currZoomElementStyle = baseDiv.style;
-					_showOrHide(item, (img ||item.img) );
-				} else {
-					_applyZoomPanToItem(item);
+				if(!item.loading) {
+					_preloadImage(item);
+				}
+
+
+				if( self.allowProgressiveImg() ) {
+					// just append image
+					if(!_initialContentSet && _features.transform) {
+						_imagesToAppendPool.push({item:item, baseDiv:baseDiv, img:item.img, index:index, holder:holder});
+					} else {
+						_appendImage(index, item, baseDiv, item.img, true, true);
+					}
 				}
 				
-				holder.el.innerHTML = '';
-				holder.el.appendChild(baseDiv);
-
-			} else {
-				holder.el.innerHTML = '';
+			} else if(item.src && !item.loadError) {
+				// image object is created every time, due to bugs of image loading & delay when switching images
+				img = framework.createEl('pswp__img', 'img');
+				img.style.webkitBackfaceVisibility = 'hidden';
+				img.style.opacity = 1;
+				img.src = item.src;
+				_appendImage(index, item, baseDiv, img, true);
 			}
+			
+			_calculateItemSize(item, _viewportSize);
+
+			if(!_initialContentSet && index === _currentItemIndex) {
+				_currZoomElementStyle = baseDiv.style;
+				_showOrHide(item, (img ||item.img) );
+			} else {
+				_applyZoomPanToItem(item);
+			}
+			
+			holder.el.innerHTML = '';
+			holder.el.appendChild(baseDiv);
 
 		},
 
