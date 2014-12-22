@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.2 - 2014-12-21
+/*! PhotoSwipe - v4.0.2 - 2014-12-22
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 (function (root, factory) { 
@@ -1607,8 +1607,20 @@ var _gestureStartTime,
 	
 	// find the closest parent DOM element
 	_closestElement = function(el, fn) {
-		// don't search elements above pswp__scroll-wrap
-	    return (el && (el.className.indexOf('pswp__scroll-wrap') === -1) ) && ( fn(el) ? el : _closestElement(el.parentNode, fn) );
+	  	if(!el) {
+	  		return false;
+	  	}
+
+	  	// don't search elements above pswp__scroll-wrap
+	  	if(el.className && el.className.indexOf('pswp__scroll-wrap') > -1 ) {
+	  		return false;
+	  	}
+
+	  	if( fn(el) ) {
+	  		return el;
+	  	}
+
+	  	return _closestElement(el.parentNode, fn);
 	},
 
 	_preventObj = {},
