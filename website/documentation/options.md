@@ -23,16 +23,18 @@ Options are added in key-value pairs and passed as an argument to `PhotoSwipe` c
 ```javascript
 var options = {
 	index: 3,
-	escKey: false;
+	escKey: false
 };
 var gallery = new PhotoSwipe( someElement, PhotoSwipeUI_Default, someItems, options);
 gallery.init();
 
-// Note that options object that you pass is cloned, 
-// access it via "gallery.options".
-// For example, to dynamically change escKey:
-pswp.options.escKey = false;
-// Code: "options.escKey = false;" will not work
+// Note that options object is cloned during the initialization.
+// But you can access it via `gallery.options`.
+// For example, to dynamically change `escKey`:
+gallery.options.escKey = false;
+
+// `options.escKey = false` will not work
+
 ```
 
 
@@ -74,7 +76,7 @@ getThumbBoundsFn: function(index) {
 }
 ```
 
-If dimensions of your small thumbnail don't match dimensions of large image, consider enabling zoom+fade transition. You can do this by adding option `showHideOpacity:true` (try adding it to [above CodePen](http://codepen.io/dimsemenov/pen/NPGOob/) to test how it looks). Or disable transition entirely by adding `hideAnimationDuration:0, showAnimationDuration:0`.
+If dimensions of your small thumbnail don't match dimensions of large image, consider enabling zoom+fade transition. You can do this by adding option `showHideOpacity:true` (try adding it to [above CodePen](http://codepen.io/dimsemenov/pen/NPGOob/) to test how it looks). Or disable transition entirely by adding `hideAnimationDuration:0, showAnimationDuration:0`. [More info about this in FAQ](faq.html#different-thumbnail-dimensions).
 
 If you want to "hide" small thumbnail during the animation use `opacity:0`, not `visibility:hidden` or `display:none`. Don't force Paint and Layout at the beginning of animation to avoid lag.
 
@@ -96,7 +98,8 @@ Besides this JS option, you need also to change transition duration in PhotoSwip
 }
 ```
 
-If you use Sass, you can just edit value of variable `$pswp__show-hide-transition-duration` in `_main-settings.scss`.
+If you're using Sass, you just need to change transition-duration variables in [_main-settings.scss](https://github.com/dimsemenov/PhotoSwipe/blob/master/src/css/_main-settings.scss).
+
 
 ### `hideAnimationDuration` <code class="default">integer</code> <code class="default">333</code>
 
@@ -148,7 +151,7 @@ Close gallery when dragging vertically and when image is not zoomed. Always `fal
 
 ### `mouseUsed` <code class="default">boolean</code> <code class="default">false</code>
 
-Option allow you to predefine if mouse is used or not. Some PhotoSwipe feature depend on it, for example default UI left/right arrows will be displayed only after mouse is used. If set to `false`, PhotoSwipe will start detecting when mouse is used by itself, `mouseUsed` event triggers when mouse is found.
+Option allows you to predefine if mouse was used or not. Some PhotoSwipe feature depend on it, for example default UI left/right arrows will be displayed only after mouse is used. If set to `false`, PhotoSwipe will start detecting when mouse is used by itself, `mouseUsed` event triggers when mouse is found.
 
 
 ### `escKey` <code class="default">boolean</code> <code class="default">true</code>
@@ -171,9 +174,15 @@ If set to `false` disables history module (back button to close gallery, unique 
 Gallery unique ID. Used by History module when forming URL. For example, second picture of gallery with UID 1 will have URL: `http://example.com/#&gid=1&pid=2`.
 
 
-### `errorMsg` <code class="default">string</code> <code class="default"><div class="pswp__error-msg"><a href="%url%" target="_blank">The image</a> could not be loaded.</div></code>
+### `errorMsg` <code class="default">string</code>
 
-Error message when image was not loaded. `%url%` will be replace by URL of image.
+Error message when image was not loaded. `%url%` will be replaced by URL of image.
+
+Default value:
+
+```html
+<div class="pswp__error-msg"><a href="%url%" target="_blank">The image</a> could not be loaded.</div>
+```
 
 
 ### `preload` <code class="default">array</code> <code class="default">[1,1]</code>
@@ -204,7 +213,7 @@ isClickableElement: function(el) {
 }
 ```
 
-Function should check if the element (`el`) is clickable. If it is &ndash; PhotoSwipe will not call `preventDefault` and `click` event will pass through. Function should be as light is possible, at it's performed multiple times on drag start and drag release.
+Function should check if the element (`el`) is clickable. If it is &ndash; PhotoSwipe will not call `preventDefault` and `click` event will pass through. Function should be as light is possible, as it's executed multiple times on drag start and drag release.
 
 
 
@@ -214,7 +223,7 @@ Function should check if the element (`el`) is clickable. If it is &ndash; Photo
 Options of `PhotoSwipeUI_Default` (`dist/ui/photoswipe-ui-default.js`).
 
 ```javascript
-// size of top & bottom bars in pixels,
+// Size of top & bottom bars in pixels,
 // "bottom" parameter can be 'auto' (will calculate height of caption)
 // option applies only when mouse is used, 
 // or width of screen is more than 1200px
@@ -222,11 +231,11 @@ Options of `PhotoSwipeUI_Default` (`dist/ui/photoswipe-ui-default.js`).
 // (Also refer to `parseVerticalMargin` event)
 barsSize: {top:44, bottom:'auto'}, 
 
-
-
-
-// Part of element classes click on which should close the PhotoSwipe.
-// In HTML code class should start with pswp__, e.g.: pswp__item, pswp__caption
+// Element classes click on which should close the PhotoSwipe.
+// In HTML markup, class should always start with "pswp__", e.g.: "pswp__item", "pswp__caption".
+// 
+// "pswp__ui--over-close" class will be added to root element of UI when mouse is over one of these elements
+// By default it's used to highlight the close button.
 closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'], 
 
 // Adds class pswp__ui--idle to pswp__ui element when mouse isn't moving for 4000ms
@@ -238,12 +247,12 @@ timeToIdleOutside: 1000,
 // Delay until loading indicator is displayed
 loadingIndicatorDelay: 1000,
 
-// Function that should parse 
+// Function builds caption markup
 addCaptionHTMLFn: function(item, captionEl, isFake) {
-	// item - slide object
+	// item      - slide object
 	// captionEl - caption DOM element
-	// isFake  - true when content is added to fake caption container
-	// 			(used to get size of next/prev caption)
+	// isFake    - true when content is added to fake caption container
+	// 			   (used to get size of next or previous caption)
 	
 	if(!item.title) {
 		captionEl.children[0].innerHTML = '';
@@ -263,17 +272,19 @@ counterEl: true,
 arrowEl: true,
 preloaderEl: true,
 
-// Tap on image should close it
+// Tap on sliding area should close gallery
 tapToClose: false,
 
 // Tap should toggle visibility of controls
 tapToToggleControls: true,
 
-// variables for URL:
-// {{url}} (url to current page)
-// {{text}} (title)
-// {{image_url}} (image url)
-// {{raw_image_url}} (not encoded image url)
+// Share buttons
+// 
+// Available variables for URL:
+// {{url}}             - url to current page
+// {{text}}            - title
+// {{image_url}}       - encoded image url
+// {{raw_image_url}}   - raw image url
 shareButtons: [
 	{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
 	{id:'twitter', label:'Tweet', url:'https://twitter.com/intent/tweet?text={{text}}&url={{url}}'},
@@ -285,5 +296,8 @@ shareButtons: [
 indexIndicatorSep: ' / '
 ```
 
-Know how this page can be improved? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
+Know how this page can be improved? Found typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
+
+<iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>
+
 

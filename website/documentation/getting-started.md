@@ -31,7 +31,7 @@ First things that you should know before you start:
 
 ### <a name="init-include-files"></a>Step 1: include JS and CSS files
 
-You can find them in [dist/](https://github.com/dimsemenov/PhotoSwipe/tree/master/dist) folder of [GitHub](https://github.com/dimsemenov/PhotoSwipe) repository. Sass and uncompiled JS files are in folder [src/](https://github.com/dimsemenov/PhotoSwipe/tree/master/src).
+You can find them in [dist/](https://github.com/dimsemenov/PhotoSwipe/tree/master/dist) folder of [GitHub](https://github.com/dimsemenov/PhotoSwipe) repository. Sass and uncompiled JS files are in folder [src/](https://github.com/dimsemenov/PhotoSwipe/tree/master/src). I recommend to use Sass if you're planning to modify existing styles, as code there is structured and commented.
 
 ```html
 <!-- Core CSS file -->
@@ -71,7 +71,7 @@ And also, you can install it via Bower (`bower install photoswipe`).
 
 ### <a name="init-add-pswp-to-dom"></a>Step 2: add PhotoSwipe (.pswp) element to DOM 
 
-You can add HTML code dynamically (directly before the initialization), or have in HTML of page initially (like it's done on demo page). This code can be appended anywhere, but ideally before the closing `</body>`. You may reuse it across multiple galleries (as long as you use same UI class).
+You can add HTML code dynamically (directly before the initialization), or have it in page initially (like it's done on demo page). This code can be appended anywhere, but ideally before the closing `</body>`. You may reuse it across multiple galleries (as long as you use same UI class).
 
 ```html
 <!-- Root element of PhotoSwipe. Must have class pswp. -->
@@ -94,9 +94,9 @@ You can add HTML code dynamically (directly before the initialization), or have 
 		</div>
 
 		<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-	    <div class="pswp__ui pswp__ui--hidden">
+		<div class="pswp__ui pswp__ui--hidden">
 
-	        <div class="pswp__top-bar">
+			<div class="pswp__top-bar">
 
 				<!--  Controls are self-explanatory. Order can be changed. -->
 				
@@ -119,7 +119,7 @@ You can add HTML code dynamically (directly before the initialization), or have 
 					  </div>
 					</div>
 				</div>
-	        </div>
+			</div>
 
 	        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
 				<div class="pswp__share-tooltip"></div> 
@@ -135,9 +135,9 @@ You can add HTML code dynamically (directly before the initialization), or have 
 				<div class="pswp__caption__center"></div>
 			</div>
 
-	      </div>
-
 	    </div>
+
+	</div>
 
 </div>
 
@@ -146,7 +146,7 @@ You can add HTML code dynamically (directly before the initialization), or have 
 
 Order of `pswp__bg`, `pswp__scroll-wrap`, `pswp__container` and `pswp__item` elements should not be changed.
 
-You might ask, why PhotoSwipe doesn't add this code automatically via JS, reason is simple &ndash; just to save file size, in case if you need some modification of this code.
+You might ask, why PhotoSwipe doesn't add this code automatically via JS, reason is simple &ndash; just to save file size, in case if you need some modification of layout.
 
 ### Step 3: initialize
 
@@ -199,7 +199,9 @@ At the end you should get something like this:
 
 ## Creating an Array of Slide Objects
 
-Each object in array should contain data about slide, it can be anything that you wish to display in PhotoSwipe - path to image, caption HTML string, number of shares, comments, etc.
+Each object in the array should contain data about slide, it can be anything that you wish to display in PhotoSwipe - path to image, caption string, number of shares, comments, etc.
+
+By default PhotoSwipe uses just 5 properties: `src` (path to image), `w` (image width), `h` (image height), `msrc` (path to small image placeholder, large image will be loaded on top), 'html' (custom HTML, [more about it](custom-html-in-slides.html)). 
 
 During the navigation PhotoSwipe adds its own properties to this object (like `minZoom` or `loaded`).
 
@@ -216,7 +218,9 @@ var slides = [
 		msrc: 'path/to/small-image.jpg', // small image placeholder,
 						// main (large) image loads on top of it,
 						// if you skip this parameter - grey rectangle will be displayed,
-						// try to use this property only when small image was loaded before
+						// try to define this property only when small image was loaded before
+
+
 
 		title: 'Image Caption'  // used by Default PhotoSwipe UI
 								// if you skip it, there won't be any caption
@@ -253,11 +257,12 @@ yourPhotoSwipeInstance.items.push({
 }); 
 ```
 
-Currently, you can not dynamically modify image of current slide, and two nearby slides, but this feature is planned.
+Also, you may dynamically define slide object properties directly before PhotoSwipe reads them, use `gettingData` event (more info in [API section of docs](api.html)). For example, this technique can be used to [serve different images](responsive-images.html) for different screen sizes.
+
 
 ## <a class="anchor" name="dom-to-slide-objects"></a> How to build array of slides from list of links
 
-For example, you have a list of links/thumbnails that looks like this ([more info about markup of gallery](seo.html)):
+Let's assume that you have a list of links/thumbnails that looks like this ([more info about markup of gallery](seo.html)):
 
 ```html
 <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
@@ -282,9 +287,9 @@ For example, you have a list of links/thumbnails that looks like this ([more inf
 
 ... and you want click on thumbnail to open PhotoSwipe with large image (like it's done on demo page). All you need to do is:
 
-1. Bind click event to links.
-2. After user clicked on one of thumbnail, find its index.
-3. Create an array of slide objects from DOM elements – loop through all links and retrieve `href` attribute (large image url), `data-size` attribute (its size), `src` of thumbnail, and contents of `figure` element (caption content).
+1. Bind click event to links/thumbnails.
+2. After user clicked on on thumbnail, find its index.
+3. Create an array of slide objects from DOM elements – loop through all links and retrieve `href` attribute (large image url), `data-size` attribute (its size), `src` of thumbnail, and contents of caption.
 
 PhotoSwipe doesn't really care how will you do this. If you use framework like jQuery or MooTools, or if you don't need to support IE8, code can be simplified dramatically.
 
@@ -498,7 +503,8 @@ Tip: you may download example from CodePen to play with it locally (`Edit on Cod
 
 PhotoSwipe is in beta, please [keep script updated](faq.html#keep-updated), report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask qustions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
 
-If you think that something should be improved in this documentation page, feel free to [suggest an edit on GitHub](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md).
+Know how this page can be improved? Found typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md)
+
 
 <iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>
 
