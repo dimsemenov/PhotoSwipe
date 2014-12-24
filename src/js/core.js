@@ -567,7 +567,7 @@ var publicMethods = {
 
 		self.framework = framework; // basic function
 		self.template = template; // root DOM element of PhotoSwipe
-		self.bg = template.children[0];
+		self.bg = framework.getChildByClass(template, 'pswp__bg');
 
 		_initalClassName = template.className;
 		_isOpen = true;
@@ -578,8 +578,9 @@ var publicMethods = {
 		_transformKey = _features.transform;
 		_oldIE = _features.oldIE;
 		
-		self.scrollWrap = template.children[1];
-		self.container = self.scrollWrap.children[0];
+		self.scrollWrap = framework.getChildByClass(template, 'pswp__scroll-wrap');
+		self.container = framework.getChildByClass(self.scrollWrap, 'pswp__container');
+
 		_containerStyle = self.container.style; // for fast access
 
 

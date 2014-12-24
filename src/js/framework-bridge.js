@@ -47,6 +47,16 @@ var framework = {
 		return el.className && new RegExp('(^|\\s)' + className + '(\\s|$)').test(el.className);
 	},
 
+	getChildByClass: function(parentEl, childClassName) {
+		var node = parentEl.firstChild;
+		while(node) {
+			if( framework.hasClass(node, childClassName) ) {
+				return node;
+			}
+			node = node.nextSibling;
+		}
+	},
+
 	arraySearch: function(array, value, key) {
 		var i = array.length;
 		while(i--) {
