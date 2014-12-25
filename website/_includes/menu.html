@@ -61,16 +61,13 @@
 </div>
 <script>
 (function() {
-
-	// And this kids, is what lazy JS developers do when they need a menu in Jekyll
+	// And this, kids, is what lazy JS developers do when they need a menu in Jekyll
 	var menuEls = document.getElementById('docs-menu-list').children,
 		el,
 		currUrl = window.location.href;
 	for(var i = 0, l = menuEls.length; i < l; i++) {
 		el = menuEls[i].children[0];
-		console.log(currUrl, el.href);
 		if( currUrl.indexOf( el.href ) > -1 ) {
-			console.log('IN', el);
 			el.className += 'docs-menu__item--active';
 		}
 	}

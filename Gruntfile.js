@@ -12,7 +12,10 @@ module.exports = function(grunt) {
 
   var jekyllConfig = "isLocal : false \r\n"+
       "permalink: /:title/ \r\n"+
-      "exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile', 'changelog.md', 'compiler.jar', 'private', 'photoswipe.sublime-project', 'photoswipe.sublime-workspace', '.htaccess'] \r\n"+
+      "exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile'," +
+                "'changelog.md', 'compiler.jar', 'private', '.htaccess'," + 
+                "'photoswipe.sublime-project', 'photoswipe.sublime-workspace'] \r\n"+
+
       "auto: true \r\n"+
       "pswpversion: <%= pkg.version %> \r\n"+
       "siteversion: 1.0.3 \r\n"+
@@ -79,7 +82,8 @@ module.exports = function(grunt) {
         src: [
           'framework-bridge',
           'core',
-          'down-move-up-handlers',
+          'gestures',
+          'show-hide-transition',
           'items-controller',
           'tap',
           'desktop-zoom',

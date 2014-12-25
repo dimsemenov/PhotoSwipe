@@ -1,4 +1,4 @@
-/*! PhotoSwipe Default UI - 4.0.2 - 2014-12-22
+/*! PhotoSwipe Default UI - 4.0.2 - 2014-12-25
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 /**
@@ -23,6 +23,7 @@
 
 var PhotoSwipeUI_Default =
  function(pswp, framework) {
+
 	var ui = this;
 	var _overlayUIUpdated = false,
 		_controlsVisible = true,
@@ -36,6 +37,7 @@ var PhotoSwipeUI_Default =
 		_shareModalHidden = true,
 		_initalCloseOnScrollValue,
 		_isIdle,
+		_listen,
 
 		_loadingIndicator,
 		_loadingIndicatorHidden,
@@ -72,7 +74,8 @@ var PhotoSwipeUI_Default =
 			shareButtons: [
 				{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
 				{id:'twitter', label:'Tweet', url:'https://twitter.com/intent/tweet?text={{text}}&url={{url}}'},
-				{id:'pinterest', label:'Pin it', url:'http://www.pinterest.com/pin/create/button/?url={{url}}&media={{image_url}}&description={{text}}'},
+				{id:'pinterest', label:'Pin it', url:'http://www.pinterest.com/pin/create/button/'+
+													'?url={{url}}&media={{image_url}}&description={{text}}'},
 				{id:'download', label:'Download image', url:'{{raw_image_url}}', download:true}
 			],
 			indexIndicatorSep: ' / '
@@ -112,8 +115,12 @@ var PhotoSwipeUI_Default =
 				}
 				_blockControlsTap = true;
 
-				// Some versions of Android don't prevent ghost click event when preventDefault() was called on touchstart and/or touchend.
-				// This happens on v4.3, 4.2, 4.1, older versions strangely work correctly, but just in case we add delay on all of them)	
+				// Some versions of Android don't prevent ghost click event 
+				// when preventDefault() was called on touchstart and/or touchend.
+				// 
+				// This happens on v4.3, 4.2, 4.1, 
+				// older versions strangely work correctly, 
+				// but just in case we add delay on all of them)	
 				var tapDelay = framework.features.isOldAndroid ? 600 : 30;
 				_blockControlsTapTimeout = setTimeout(function() {
 					_blockControlsTap = false;
@@ -162,12 +169,10 @@ var PhotoSwipeUI_Default =
 				return true;
 			}
 
-			//if( !pswp.options.mouseUsed ) {
-			//	target.setAttribute('target', '_self');
-			//	return true;
-			//}
+			window.open(target.href, 'pswp_share', 'scrollbars=yes,resizable=yes,toolbar=no,'+
+										'location=yes,width=550,height=420,top=100,left=' + 
+										(window.screen ? Math.round(screen.width / 2 - 275) : 100)  );
 
-			window.open(target.href, "pswp_share", "scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=550,height=420,top=100,left=" + (window.screen ? Math.round(screen.width / 2 - 275) : 100)  );
 			if(!_shareModalHidden) {
 				_toggleShareModal();
 			}
@@ -189,7 +194,10 @@ var PhotoSwipeUI_Default =
 									.replace('{{raw_image_url}}', pswp.currItem.src || '' )
 									.replace('{{text}}', encodeURIComponent(pswp.currItem.title || '') );
 
-				shareButtonOut += '<a href="' + shareURL + '" target="_blank" class="pswp__share--' + shareButtonData.id + '"' + (shareButtonData.download ? 'download' : '') + '>' + shareButtonData.label + '</a>';
+				shareButtonOut += '<a href="' + shareURL + '" target="_blank" '+
+									'class="pswp__share--' + shareButtonData.id + '"' +
+									(shareButtonData.download ? 'download' : '') + '>' + 
+									shareButtonData.label + '</a>';
 			}
 			_shareModal.children[0].innerHTML = shareButtonOut;
 			_shareModal.children[0].onclick = _openWindowPopup;
@@ -215,19 +223,146 @@ var PhotoSwipeUI_Default =
 		_onMouseLeaveWindow = function(e) {
 			e = e ? e : window.event;
 			var from = e.relatedTarget || e.toElement;
-			if (!from || from.nodeName === "HTML") {
+			if (!from || from.nodeName === 'HTML') {
 				clearTimeout(_idleTimer);
 				_idleTimer = setTimeout(function() {
 					ui.setIdle(true);
 				}, pswp.options.timeToIdleOutside);
 			}
 		},
-		_toggleLoadingIndicator = function(hide) {
+		_setupFullscreenAPI = function() {
+			if(pswp.options.fullscreenEl) {
+				if(!_fullscrenAPI) {
+					_fullscrenAPI = ui.getFullscreenAPI();
+				}
+				if(_fullscrenAPI) {
+					framework.bind(document, _fullscrenAPI.eventK, ui.updateFullscreen);
+					ui.updateFullscreen();
+					framework.addClass(pswp.template, 'pswp--supports-fs');
+				} else {
+					framework.removeClass(pswp.template, 'pswp--supports-fs');
+				}
+			}
+		},
+		_setupLoadingIndicator = function() {
+			// Setup loading indicator
+			if(pswp.options.preloaderEl) {
+			
+				_toggleLoadingIndicator(true);
 
-			if( /*pswp.likelyTouchDevice*/ _loadingIndicatorHidden !== hide ) {
+				_listen('beforeChange', function() {
+
+					clearTimeout(_loadingIndicatorTimeout);
+
+					// display loading indicator with delay
+					_loadingIndicatorTimeout = setTimeout(function() {
+
+						if(pswp.currItem && pswp.currItem.loading) {
+
+							if( !pswp.allowProgressiveImg() || (pswp.currItem.img && !pswp.currItem.img.naturalWidth)  ) {
+								// show preloader if progressive loading is not enabled, 
+								// or image width is not defined yet (because of slow connection)
+								_toggleLoadingIndicator(false); 
+								// items-controller.js function allowProgressiveImg
+							}
+							
+						} else {
+							_toggleLoadingIndicator(true); // hide preloader
+						}
+
+					}, pswp.options.loadingIndicatorDelay);
+					
+				});
+				_listen('imageLoadComplete', function(index, item) {
+					if(pswp.currItem === item) {
+						_toggleLoadingIndicator(true);
+					}
+				});
+
+			}
+		},
+		_toggleLoadingIndicator = function(hide) {
+			if( _loadingIndicatorHidden !== hide ) {
 				framework[ (hide ? 'remove' : 'add') + 'Class' ](_loadingIndicator, 'pswp__preloader--active');
 				_loadingIndicatorHidden = hide;
 			}
+		},
+		_applyNavBarGaps = function(item) {
+			var gap = item.vGap;
+
+			if( _fitControlsInViewport() ) {
+				
+				var bars = pswp.options.barsSize; 
+				if(pswp.options.captionEl && bars.bottom === 'auto') {
+					if(!_fakeCaptionContainer) {
+						_fakeCaptionContainer = framework.createEl('pswp__caption pswp__caption--fake');
+						_fakeCaptionContainer.appendChild( framework.createEl('pswp__caption__center') );
+						_controls.insertBefore(_fakeCaptionContainer, _captionContainer);
+						framework.addClass(_controls, 'pswp__ui--fit');
+					}
+					if( pswp.options.addCaptionHTMLFn(item, _fakeCaptionContainer, true) ) {
+
+						var captionSize = _fakeCaptionContainer.clientHeight;
+						gap.bottom = parseInt(captionSize,10) || 44;
+					} else {
+						gap.bottom = bars.top; // if no caption, set size of bottom gap to size of top
+					}
+				} else {
+					gap.bottom = bars.bottom;
+				}
+				
+				// height of top bar is static, no need to calculate it
+				gap.top = bars.top;
+			} else {
+				gap.top = gap.bottom = 0;
+			}
+		},
+		_setupIdle = function() {
+			// Hide controls when mouse is used
+			if(pswp.options.timeToIdle) {
+				_listen('mouseUsed', function() {
+					
+					framework.bind(document, 'mousemove', _onIdleMouseMove);
+					framework.bind(document, 'mouseout', _onMouseLeaveWindow);
+
+					_idleInterval = setInterval(function() {
+						_idleIncrement++;
+						if(_idleIncrement === 2) {
+							ui.setIdle(true);
+						}
+					}, pswp.options.timeToIdle / 2);
+				});
+			}
+		},
+		_setupHidingControlsDuringGestures = function() {
+
+			// Hide controls on vertical drag
+			_listen('onVerticalDrag', function(now) {
+				if(_controlsVisible && now < 0.95) {
+					ui.hideControls();
+				} else if(!_controlsVisible && now >= 0.95) {
+					ui.showControls();
+				}
+			});
+
+			// Hide controls when pinching to close
+			var pinchControlsHidden;
+			_listen('onPinchClose' , function(now) {
+				if(_controlsVisible && now < 0.9) {
+					ui.hideControls();
+					pinchControlsHidden = true;
+				} else if(pinchControlsHidden && !_controlsVisible && now > 0.9) {
+					ui.showControls();
+				}
+			});
+
+			_listen('zoomGestureEnded', function() {
+				pinchControlsHidden = false;
+				if(pinchControlsHidden && !_controlsVisible) {
+					ui.showControls();
+				}
+			});
+
 		};
 
 
@@ -308,52 +443,69 @@ var PhotoSwipeUI_Default =
 
 	];
 
+	var _setupUIElements = function() {
+		var item,
+			classAttr,
+			uiElement;
+
+		var loopThroughChildElements = function(sChildren) {
+			if(!sChildren) {
+				return;
+			}
+
+			var l = sChildren.length;
+			for(var i = 0; i < l; i++) {
+				item = sChildren[i];
+				classAttr = item.className;
+
+				for(var a = 0; a < _uiElements.length; a++) {
+					uiElement = _uiElements[a];
+
+					if(classAttr.indexOf('pswp__' + uiElement.name) > -1  ) {
+
+						if( pswp.options[uiElement.option] ) { // if element is not disabled from options
+							
+							framework.removeClass(item, 'pswp__element--disabled');
+							if(uiElement.onInit) {
+								uiElement.onInit(item);
+							}
+							
+							//item.style.display = 'block';
+						} else {
+							framework.addClass(item, 'pswp__element--disabled');
+							//item.style.display = 'none';
+						}
+					}
+				}
+			}
+		};
+		loopThroughChildElements(_controls.children);
+
+		var topBar =  framework.getChildByClass(_controls, 'pswp__top-bar');
+		if(topBar) {
+			loopThroughChildElements( topBar.children );
+		}
+	};
 
 
 	
 
 	ui.init = function() {
 
-		// extend objects
+		// extend options
 		framework.extend(pswp.options, _options, true);
 
 		// find pswp__ui element
-		_controls = pswp.scrollWrap.children[1];
+		_controls = framework.getChildByClass(pswp.scrollWrap, 'pswp__ui');
 
-		var _listen = pswp.listen;
+		// make local link
+		_listen = pswp.listen;
 
-		
-		// Hide controls on vertical drag
-		_listen('onVerticalDrag', function(now) {
-			if(_controlsVisible && now < 0.95) {
-				ui.hideControls();
-			} else if(!_controlsVisible && now >= 0.95) {
-				ui.showControls();
-			}
-		});
 
-		// Hide controls when pinching to close
-		var pinchControlsHidden;
-		_listen('onPinchClose' , function(now) {
-			if(_controlsVisible && now < 0.9) {
-				ui.hideControls();
-				pinchControlsHidden = true;
-			} else if(pinchControlsHidden && !_controlsVisible && now > 0.9) {
-				ui.showControls();
-			}
-		});
-		_listen('zoomGestureEnded', function() {
-			pinchControlsHidden = false;
-			if(pinchControlsHidden && !_controlsVisible) {
-				ui.showControls();
-			}
-			
-		});
-
+		_setupHidingControlsDuringGestures();
 
 		// update controls when slides change
 		_listen('beforeChange', ui.update);
-
 
 		// toggle zoom on double-tap
 		_listen('doubleTap', function(point) {
@@ -363,36 +515,19 @@ var PhotoSwipeUI_Default =
 			} else {
 				pswp.zoomTo( initialZoomLevel < 0.7 ? 1 : 1.5, point, 333);
 			}
-
 		});
-
-		
-		
-
-		// Hide controls when mouse is used
-		if(pswp.options.timeToIdle) {
-			_listen('mouseUsed', function() {
-				
-				framework.bind(document, 'mousemove', _onIdleMouseMove);
-				framework.bind(document, 'mouseout', _onMouseLeaveWindow);
-
-				_idleInterval = setInterval(function() {
-					_idleIncrement++;
-					if(_idleIncrement === 2) {
-						ui.setIdle(true);
-					}
-				}, pswp.options.timeToIdle / 2);
-			});
-		}
 
 		// Allow text selection in caption
 		_listen('preventDragEvent', function(e, isDown, preventObj) {
 			var t = e.target || e.srcElement;
-			if(t && t.className && e.type.indexOf('mouse') > -1 && ( t.className.indexOf('__caption') > 0 || (/(SMALL|STRONG|EM)/i).test(t.tagName) ) ) {
+			if(
+				t && 
+				t.className && e.type.indexOf('mouse') > -1 && 
+				( t.className.indexOf('__caption') > 0 || (/(SMALL|STRONG|EM)/i).test(t.tagName) ) 
+			) {
 				preventObj.prevent = false;
 			}
 		});
-
 
 		// bind events for UI
 		_listen('bindEvents', function() {
@@ -432,7 +567,6 @@ var PhotoSwipeUI_Default =
 
 		// clean up things when gallery is destroyed
 		_listen('destroy', function() {
-
 			if(pswp.options.captionEl) {
 				if(_fakeCaptionContainer) {
 					_controls.removeChild(_fakeCaptionContainer);
@@ -446,7 +580,6 @@ var PhotoSwipeUI_Default =
 			framework.removeClass(_controls, 'pswp__ui--over-close');
 			framework.addClass( _controls, 'pswp__ui--hidden');
 			ui.setIdle(false);
-
 		});
 		
 
@@ -462,138 +595,19 @@ var PhotoSwipeUI_Default =
 			framework.addClass( _controls, 'pswp__ui--hidden');
 		});
 
+		_listen('parseVerticalMargin', _applyNavBarGaps);
 		
-
-		_listen('parseVerticalMargin', function(item) {
-			var gap = item.vGap;
-
-
-			if( _fitControlsInViewport() /* !pswp.likelyTouchDevice || pswp.options.mouseUsed || screen.width > 1200 */ /* pswp.viewportSize.y > 800 */) {
-				
-				var bars = pswp.options.barsSize; 
-				if(pswp.options.captionEl && bars.bottom === 'auto') {
-					if(!_fakeCaptionContainer) {
-						_fakeCaptionContainer = framework.createEl('pswp__caption pswp__caption--fake');
-						_fakeCaptionContainer.appendChild( framework.createEl('pswp__caption__center') );
-						_controls.insertBefore(_fakeCaptionContainer, _captionContainer);
-						framework.addClass(_controls, 'pswp__ui--fit');
-					}
-					if( pswp.options.addCaptionHTMLFn(item, _fakeCaptionContainer, true) ) {
-
-						var captionSize = _fakeCaptionContainer.clientHeight;
-						gap.bottom = parseInt(captionSize,10) || 44;
-					} else {
-						gap.bottom = bars.top; // if no caption, set size of bottom gap to size of top
-					}
-				} else {
-					gap.bottom = bars.bottom;
-				}
-				
-				// height of top bar is static, no need to calculate it
-				gap.top = bars.top;
-			} else {
-				gap.top = gap.bottom = 0;
-			}
-		});
-
-
-
-		var item,
-			classAttr,
-			uiElement;
-
-
-		var loopThroughChildElements = function(sChildren) {
-			var l = sChildren.length;
-			for(var i = 0; i < l; i++) {
-				item = sChildren[i];
-				classAttr = item.className;
-
-				for(var a = 0; a < _uiElements.length; a++) {
-					uiElement = _uiElements[a];
-
-					
-						if(classAttr.indexOf('pswp__' + uiElement.name) > -1  ) {
-
-							if( pswp.options[uiElement.option] ) { // if element is not disabled from options
-								
-								framework.removeClass(item, 'pswp__element--disabled');
-								if(uiElement.onInit) {
-									uiElement.onInit(item);
-								}
-								
-								//item.style.display = 'block';
-							} else {
-								framework.addClass(item, 'pswp__element--disabled');
-								//item.style.display = 'none';
-							}
-
-							
-
-						}
-				}
-			}
-		};
-		loopThroughChildElements(_controls.children);
-		loopThroughChildElements(_controls.children[0].children);
-		
+		_setupUIElements();
 
 		if(pswp.options.shareEl && _shareButton && _shareModal) {
 			_shareModalHidden = true;
 		}
 
+		_setupIdle();
 
-		if(pswp.options.fullscreenEl) {
-			if(!_fullscrenAPI) {
-				_fullscrenAPI = ui.getFullscreenAPI();
-			}
-			if(_fullscrenAPI) {
-				framework.bind(document, _fullscrenAPI.eventK, ui.updateFullscreen);
-				ui.updateFullscreen();
-				framework.addClass(pswp.template, 'pswp--supports-fs');
-			} else {
-				framework.removeClass(pswp.template, 'pswp--supports-fs');
-			}
-		}
+		_setupFullscreenAPI();
 
-
-		// Setup loading indicator
-		if(pswp.options.preloaderEl) {
-		
-			_toggleLoadingIndicator(true);
-
-			_listen('beforeChange', function() {
-
-				clearTimeout(_loadingIndicatorTimeout);
-
-				// display loading indicator with delay
-				_loadingIndicatorTimeout = setTimeout(function() {
-
-					if(pswp.currItem && pswp.currItem.loading) {
-
-						if( !pswp.allowProgressiveImg() || (pswp.currItem.img && !pswp.currItem.img.naturalWidth)  ) {
-							_toggleLoadingIndicator(false); // show preloader if progressive loading is not enabled, or image width is not defined yet (because of slow connection)
-							// items-controller.js function allowProgressiveImg
-						}
-						
-					} else {
-						_toggleLoadingIndicator(true); // hide preloader
-					}
-
-				}, pswp.options.loadingIndicatorDelay);
-				
-			});
-			_listen('imageLoadComplete', function(index, item) {
-				if(pswp.currItem === item) {
-					_toggleLoadingIndicator(true);
-				}
-			});
-
-		}
-
-
-
-
+		_setupLoadingIndicator();
 	};
 
 	ui.setIdle = function(isIdle) {
@@ -623,26 +637,26 @@ var PhotoSwipeUI_Default =
 			_overlayUIUpdated = false;
 		}
 	};
+
 	ui.updateFullscreen = function() {
 		framework[ (_fullscrenAPI.isFullscreen() ? 'add' : 'remove') + 'Class' ](pswp.template, 'pswp--fs');
 	};
+
 	ui.updateIndexIndicator = function() {
 		if(pswp.options.counterEl) {
-			// +1, because human-friendly index starts from one.
-			_indexIndicator.innerHTML = (pswp.getCurrentIndex()+1) + pswp.options.indexIndicatorSep + pswp.options.getNumItemsFn();
+			_indexIndicator.innerHTML = (pswp.getCurrentIndex()+1) + 
+										pswp.options.indexIndicatorSep + 
+										pswp.options.getNumItemsFn();
 		}
-		
 	};
 	
 	ui.onGlobalTap = function(e) {
 		e = e || window.event;
 		var target = e.target || e.srcElement;
 
-
 		if(_blockControlsTap) {
 			return;
 		}
-
 
 		if(e.detail && e.detail.pointerType === 'mouse') {
 
@@ -677,20 +691,13 @@ var PhotoSwipeUI_Default =
 			}
 			
 		}
-
-
 	};
 	ui.onMouseOver = function(e) {
 		e = e || window.event;
 		var target = e.target || e.srcElement;
 
-		// apply class when mouse is over an element that should close the gallery
-		if(_hasCloseClass(target)) {
-			framework.addClass(_controls, 'pswp__ui--over-close');
-		} else {
-			framework.removeClass(_controls, 'pswp__ui--over-close');
-		}
-
+		// add class when mouse is over an element that should close the gallery
+		framework[ (_hasCloseClass(target) ? 'add' : 'remove') + 'Class'](_controls, 'pswp__ui--over-close');
 	};
 
 	ui.hideControls = function() {
