@@ -1,4 +1,16 @@
-/* Hisotry module (back button to close gallery, unique URL for each slide) */
+/**
+ *
+ * history.js:
+ *
+ * - Back button to close gallery.
+ * 
+ * - Unique URL for each slide: example.com/&pid=1&gid=3
+ *   (where PID is picture index, and GID and gallery index)
+ *   
+ * - Switch URL when slides change.
+ * 
+ */
+
 
 var _historyDefaultOptions = {
 	history: true,
@@ -166,9 +178,9 @@ _registerModule('History', {
 							if (_supportsPushState) {
 
 								// remove hash from url without refreshing it or scrolling to top
-								history.pushState("", document.title,  _windowLoc.pathname + _windowLoc.search );
+								history.pushState('', document.title,  _windowLoc.pathname + _windowLoc.search );
 							} else {
-								_windowLoc.hash = "";
+								_windowLoc.hash = '';
 							}
 						}
 					}

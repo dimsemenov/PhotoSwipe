@@ -14,26 +14,20 @@ var _gestureStartTime,
 	p = {}, // first point
 	p2 = {}, // second point (for zoom gesture)
 	delta = {},
-
-
 	_currPoint = {},
 	_startPoint = {},
-
 	_currPointers = [],
 	_startMainScrollPos = {},
-
 	_releaseAnimData,
-
 	_posPoints = [], // array of points during dragging, used to determine type of gesture
-
-	_isZoomingIn,
-
 	_tempPoint = {},
 
+	_isZoomingIn,
 	_verticalDragInitiated,
-
 	_oldAndroidTouchEndTimeout,
-
+	_currZoomedItemIndex = 0,
+	_centerPoint = _getEmptyPoint(),
+	_lastReleaseTime = 0,
 	_isDragging, // at least one pointer is down
 	_isMultitouch, // at least two _pointers are down
 	_zoomStarted, // zoom level changed during zoom gesture
@@ -51,20 +45,22 @@ var _gestureStartTime,
 	_midZoomPoint = _getEmptyPoint(),
 	_currCenterPoint = _getEmptyPoint(),
 	_direction,
-	_offset,
 	_isFirstMove,
 	_opacityChanged,
 	_bgOpacity,
 	_wasOverInitialZoom,
 
-
+	_isEqualPoints = function(p1, p2) {
+		return p1.x === p2.x && p1.y === p2.y;
+	},
+	_isNearbyPoints = function(touch0, touch1) {
+		return Math.abs(touch0.x - touch1.x) < DOUBLE_TAP_RADIUS && Math.abs(touch0.y - touch1.y) < DOUBLE_TAP_RADIUS;
+	},
 	_calculatePointsDistance = function(p1, p2) {
 		_tempPoint.x = Math.abs( p1.x - p2.x );
 		_tempPoint.y = Math.abs( p1.y - p2.y );
 		return Math.sqrt(_tempPoint.x * _tempPoint.x + _tempPoint.y * _tempPoint.y);
 	},
-
-
 	_stopDragUpdateLoop = function() {
 		if(_dragAnimFrame) {
 			_cancelAF(_dragAnimFrame);
@@ -178,37 +174,27 @@ var _gestureStartTime,
 
 	_panOrMoveMainScroll = function(axis, delta) {
 
-
-		var panFriction;
-		
-		var overDiff = 0;
-		var newOffset = _panOffset[axis] + delta[axis];
-		var startOverDiff;
-		var dir = delta[axis] > 0;
-
-
-		var newMainScrollPosition = _mainScrollPos.x + delta.x;
-		var mainScrollDiff = _mainScrollPos.x - _startMainScrollPos.x;
-
-
+		var panFriction,
+			overDiff = 0,
+			newOffset = _panOffset[axis] + delta[axis],
+			startOverDiff,
+			dir = delta[axis] > 0,
+			newMainScrollPosition = _mainScrollPos.x + delta.x,
+			mainScrollDiff = _mainScrollPos.x - _startMainScrollPos.x,
+			newPanPos,
+			newMainScrollPos;
 
 		// calculate fdistance over the bounds and friction
 		if(newOffset > _currPanBounds.min[axis] || newOffset < _currPanBounds.max[axis]) {
 			panFriction = _options.panEndFriction;
-			//  Linear increasing of friction, so at 1/4 of viewport it's at max value. Looks not as nice as was expected. Left for history.
-			//	panFriction = (1 - (_panOffset[axis] + delta[axis] + panBounds.min[axis]) / (_viewportSize[axis] / 4) );
+			// Linear increasing of friction, so at 1/4 of viewport it's at max value. 
+			// Looks not as nice as was expected. Left for history.
+			// panFriction = (1 - (_panOffset[axis] + delta[axis] + panBounds.min[axis]) / (_viewportSize[axis] / 4) );
 		} else {
 			panFriction = 1;
 		}
-	
 		
 		newOffset = _panOffset[axis] + delta[axis] * panFriction;
-
-		
-		
-		var newPanPos;
-		var newMainScrollPos;
-
 
 		// move main scroll or start panning
 		if(_options.allowPanToNext || _currZoomLevel === self.currItem.initialZoomLevel) {
@@ -305,9 +291,7 @@ var _gestureStartTime,
 		
 	},
 
-	/**
-	 * Pointerdown/touchstart/mousedown handler
-	 */
+	// Pointerdown/touchstart/mousedown handler
 	_onDragStart = function(e) {
 
 		// Allow dragging only via left mouse button.
@@ -361,7 +345,15 @@ var _gestureStartTime,
 			_isDragging = _isFirstMove = true;
 			framework.bind(window, _upMoveEvents, self);
 
-			_isZoomingIn = _wasOverInitialZoom = _opacityChanged = _verticalDragInitiated = _mainScrollShifted = _moved = _isMultitouch = _zoomStarted = false;
+			_isZoomingIn = 
+				_wasOverInitialZoom = 
+				_opacityChanged = 
+				_verticalDragInitiated = 
+				_mainScrollShifted = 
+				_moved = 
+				_isMultitouch = 
+				_zoomStarted = false;
+
 			_direction = null;
 
 			_shout('firstTouchStart', startPointsList);
@@ -413,9 +405,8 @@ var _gestureStartTime,
 
 
 	},
-	/**
-	 * Pointermove/touchmove/mousemove handler
-	 */
+
+	// Pointermove/touchmove/mousemove handler
 	_onDragMove = function(e) {
 
 		e.preventDefault();
@@ -461,16 +452,12 @@ var _gestureStartTime,
 		delta.x = p.x - _currPoint.x;
 		delta.y = p.y - _currPoint.y;
 
-
-
 		if(_isZooming && numPoints > 1) {
 			// Handle behaviour for more than 1 point
-
 
 			_currPoint.x = p.x;
 			_currPoint.y = p.y;
 		
-
 			// check if one of two points changed
 			if( !delta.x && !delta.y && _isEqualPoints(_currentPoints[1], p2) ) {
 				return;
@@ -484,13 +471,10 @@ var _gestureStartTime,
 				_shout('zoomGestureStarted');
 			}
 			
-
-
 			// Distance between two points
 			var pointsDistance = _calculatePointsDistance(p,p2);
 
 			var zoomLevel = _calculateZoomLevel(pointsDistance);
-
 
 			// slightly over the of initial zoom level
 			if(zoomLevel > self.currItem.initialZoomLevel + self.currItem.initialZoomLevel / 15) {
@@ -505,35 +489,29 @@ var _gestureStartTime,
 					// fade out background if zooming out
 					var minusDiff = self.currItem.minZoom - zoomLevel;
 					var percent = 1 - minusDiff / (self.currItem.minZoom / 1.2);
+
 					_applyBgOpacity(percent);
 					_shout('onPinchClose', percent);
 					_opacityChanged = true;
 				} else {
-
-					// 0.35 - extra zoom level below the min. E.g. if min is x1, real min will be 1 - 0.35 = 0.65
-					zoomFriction = (self.currItem.minZoom - zoomLevel) / (self.currItem.minZoom /*0.35*/);
+					zoomFriction = (self.currItem.minZoom - zoomLevel) / (self.currItem.minZoom);
 					if(zoomFriction > 1) {
 						zoomFriction = 1;
 					}
 					zoomLevel = self.currItem.minZoom - (zoomFriction) * (self.currItem.minZoom / 3);
-					
 				}
 				
 			} else if ( zoomLevel > self.currItem.maxZoom ) {
 				// 1.5 - extra zoom level above the max. E.g. if max is x6, real max 6 + 1.5 = 7.5
-				zoomFriction = (zoomLevel - self.currItem.maxZoom) / ( self.currItem.minZoom * 6 /* 1.5 */ );
+				zoomFriction = (zoomLevel - self.currItem.maxZoom) / ( self.currItem.minZoom * 6 );
 				if(zoomFriction > 1) {
 					zoomFriction = 1;
 				}
 				zoomLevel = self.currItem.maxZoom + (zoomFriction) * (self.currItem.minZoom);
 			}
 
-			if(zoomFriction !== 1) {
-
-				if(zoomFriction < 0) {
-					zoomFriction = 0;
-				}
-
+			if(zoomFriction < 0) {
+				zoomFriction = 0;
 			}
 
 			// distance between touch points after friction is applied
@@ -542,10 +520,6 @@ var _gestureStartTime,
 			// _centerPoint - The point in the middle of two pointers
 			_findCenterOfPoints(p, p2, _centerPoint);
 		
-
-
-
-
 			// paning with two pointers pressed
 			_currPanDist.x += _centerPoint.x - _currCenterPoint.x;
 			_currPanDist.y += _centerPoint.y - _currCenterPoint.y;
@@ -555,9 +529,7 @@ var _gestureStartTime,
 			_panOffset.y = _calculatePanOffset('y', zoomLevel);
 
 			_isZoomingIn = zoomLevel > _currZoomLevel;
-
 			_currZoomLevel = zoomLevel;
-
 			_applyCurrentZoomPan();
 
 		} else {
@@ -571,7 +543,8 @@ var _gestureStartTime,
 			if(_isFirstMove) {
 				_isFirstMove = false;
 
-				// 
+				// subtract drag distance that was used during the detection direction  
+
 				if( Math.abs(delta.x) >= DIRECTION_CHECK_OFFSET) {
 					delta.x -= _currentPoints[0].x - _startPoint.x;
 				}
@@ -581,20 +554,13 @@ var _gestureStartTime,
 				}
 			}
 
-			
-			
-
 			_currPoint.x = p.x;
 			_currPoint.y = p.y;
-
-
 
 			// do nothing if pointers position hasn't changed
 			if(delta.x === 0 && delta.y === 0) {
 				return;
 			}
-
-			
 
 			if(_direction === 'v' && _options.closeOnVerticalDrag) {
 				if(!_canPan()) {
@@ -602,12 +568,9 @@ var _gestureStartTime,
 					_currPanDist.y += delta.y;
 					_panOffset.y += delta.y;
 
-					//var yOffset = _panOffset.y - self.currItem.initialPosition.y; // difference between initial and current position
-					var opacityRatio = _calculateVerticalDragOpacityRatio();  //1 -  Math.abs( yOffset / (_viewportSize.y / 2)  );
+					var opacityRatio = _calculateVerticalDragOpacityRatio();
 
-					//if(opacityRatio === 1) {
-						_verticalDragInitiated = true;
-					//}
+					_verticalDragInitiated = true;
 					_shout('onVerticalDrag', opacityRatio);
 
 					_applyBgOpacity(opacityRatio);
@@ -619,7 +582,6 @@ var _gestureStartTime,
 			_pushPosPoint(_getCurrentTime(), p.x, p.y);
 
 			_moved = true;
-
 			_currPanBounds = self.currItem.bounds;
 			
 			var mainScrollChanged = _panOrMoveMainScroll('x', delta);
@@ -632,9 +594,7 @@ var _gestureStartTime,
 
 	},
 	
-	/**
-	 * Pointerup/pointercancel/touchend/touchcancel/mouseup event handler
-	 */
+	// Pointerup/pointercancel/touchend/touchcancel/mouseup event handler
 	_onDragRelease = function(e) {
 
 		if(_features.isOldAndroid ) {
@@ -643,7 +603,8 @@ var _gestureStartTime,
 				return;
 			}
 
-			// on Android (v4.1, 4.2, 4.3 & possibly older) ghost mousedown/up event isn't preventable via e.preventDefault
+			// on Android (v4.1, 4.2, 4.3 & possibly older) 
+			// ghost mousedown/up event isn't preventable via e.preventDefault,
 			// which causes fake mousedown event
 			// so we block mousedown/up for 600ms
 			if( e.type.indexOf('touch') > -1 ) {
@@ -665,25 +626,25 @@ var _gestureStartTime,
 
 		if(_pointerEventEnabled) {
 			var pointerIndex = framework.arraySearch(_currPointers, e.pointerId, 'id');
+			
 			if(pointerIndex > -1) {
 				releasePoint = _currPointers.splice(pointerIndex, 1)[0];
 
 				if(navigator.pointerEnabled) {
 					releasePoint.type = e.pointerType || 'mouse';
 				} else {
-
 					var MSPOINTER_TYPES = {
-						4: 'mouse', /* event.MSPOINTER_TYPE_MOUSE */
-						2: 'touch', /* event.MSPOINTER_TYPE_TOUCH */
-						3: 'pen' /* event.MSPOINTER_TYPE_PEN */
+						4: 'mouse', // event.MSPOINTER_TYPE_MOUSE
+						2: 'touch', // event.MSPOINTER_TYPE_TOUCH 
+						3: 'pen' // event.MSPOINTER_TYPE_PEN
 					};
 					releasePoint.type = MSPOINTER_TYPES[e.pointerType];
+
 					if(!releasePoint.type) {
 						releasePoint.type = e.pointerType || 'mouse';
 					}
-					
 				}
-				
+
 			}
 		}
 
@@ -691,12 +652,9 @@ var _gestureStartTime,
 			gestureType,
 			numPoints = touchList.length;
 
-
 		if(e.type === 'mouseup') {
 			numPoints = 0;
 		}
-
-
 
 		// Do nothing if there were 3 touch points or more
 		if(numPoints === 2) {
@@ -719,10 +677,9 @@ var _gestureStartTime,
 					releasePoint = {x: e.changedTouches[0].pageX, y: e.changedTouches[0].pageY, type:'touch'};
 				}		
 			}
+
 			_shout('touchRelease', e, releasePoint);
 		}
-		
-	
 
 		// Difference in time between releasing of two last touch points (zoom gesture)
 		var releaseTimeDiff = -1;
@@ -749,12 +706,8 @@ var _gestureStartTime,
 			gestureType = 'swipe';
 		}
 
-
-
-
 		if(_isZooming && numPoints < 2) {
 			_isZooming = false;
-
 
 			// Only second point released
 			if(numPoints === 1) {
@@ -762,8 +715,6 @@ var _gestureStartTime,
 			}
 			_shout('zoomGestureEnded');
 		}
-
-
 
 		_currentPoints = null;
 		if(!_moved && !_zoomStarted && !_mainScrollAnimating && !_verticalDragInitiated) {
@@ -788,13 +739,10 @@ var _gestureStartTime,
 			if(opacityRatio < 0.6) {
 				self.close();
 			} else {
-				//_panOffset.y = self.currItem.initialPosition.y;
-				//animateProp('verticalDrag', _mainScrollPos.x, animateToX, finishAnimDuration, framework.easing.cubic.out);
-				
 				var initalPanY = _panOffset.y,
 					initialBgOpacity = _bgOpacity;
 
-				_animateProp('verticalDrag', 0, 1,/*_panOffset.y, self.currItem.initialPosition.y,*/ 300, framework.easing.cubic.out, function(now) {
+				_animateProp('verticalDrag', 0, 1, 300, framework.easing.cubic.out, function(now) {
 					
 					_panOffset.y = (self.currItem.initialPosition.y - initalPanY) * now + initalPanY;
 
@@ -805,8 +753,6 @@ var _gestureStartTime,
 				_shout('onVerticalDrag', 1);
 			}
 
-
-			
 			return;
 		}
 
@@ -820,12 +766,10 @@ var _gestureStartTime,
 			gestureType = 'zoomPointerUp';
 		}
 
-
 		// prevent zoom/pan animation when main scroll animation runs
 		if(_mainScrollAnimating) {
 			return;
 		}
-
 		
 		// Complete simple zoom gesture (reset zoom level if it's out of the bounds)  
 		if(gestureType !== 'swipe') {
@@ -840,11 +784,8 @@ var _gestureStartTime,
 	},
 
 
-	/**
-	 * Returns object with data & functions for drag release
-	 * It's created only once and then reused
-	 * @return {Object}
-	 */
+	// Returns object with data about gesture
+	// It's created only once and then reused
 	_initDragReleaseAnimationData  = function() {
 		// temp local vars
 		var lastFlickDuration,
@@ -902,13 +843,20 @@ var _gestureStartTime,
 						s.slowDownRatio[axis] = 0.7;
 						s.slowDownRatioReverse[axis] = 1 - s.slowDownRatio[axis];
 						if(s.speedDecelerationRatioAbs[axis] < 0.05) {
+
 							s.lastFlickSpeed[axis] = 0;
 							s.backAnimStarted[axis] = true;
-							_animateProp('bounceZoomPan'+axis,_panOffset[axis], s.backAnimDestination[axis], speed || 300, framework.easing.sine.out, function(pos) {
-								_panOffset[axis] = pos;
-								_applyCurrentZoomPan();
-							});
-							
+
+							_animateProp('bounceZoomPan'+axis,_panOffset[axis], 
+								s.backAnimDestination[axis], 
+								speed || 300, 
+								framework.easing.sine.out, 
+								function(pos) {
+									_panOffset[axis] = pos;
+									_applyCurrentZoomPan();
+								}
+							);
+
 						}
 					}
 				}
@@ -917,7 +865,10 @@ var _gestureStartTime,
 			// Reduces the speed by slowDownRatio (per 10ms)
 			calculateAnimOffset: function(axis) {
 				if(!s.backAnimStarted[axis]) {
-					s.speedDecelerationRatio[axis] = s.speedDecelerationRatio[axis] * (s.slowDownRatio[axis] + s.slowDownRatioReverse[axis] - s.slowDownRatioReverse[axis] * s.timeDiff / 10);
+					s.speedDecelerationRatio[axis] = s.speedDecelerationRatio[axis] * (s.slowDownRatio[axis] + 
+												s.slowDownRatioReverse[axis] - 
+												s.slowDownRatioReverse[axis] * s.timeDiff / 10);
+
 					s.speedDecelerationRatioAbs[axis] = Math.abs(s.lastFlickSpeed[axis] * s.speedDecelerationRatio[axis]);
 					s.distanceOffset[axis] = s.lastFlickSpeed[axis] * s.speedDecelerationRatio[axis] * s.timeDiff;
 					_panOffset[axis] += s.distanceOffset[axis];
@@ -989,14 +940,18 @@ var _gestureStartTime,
 		var itemsDiff;
 
 		if(gestureType === 'swipe') {
-			var totalShiftDist = _currPoint.x - _startPoint.x; 
+			var totalShiftDist = _currPoint.x - _startPoint.x,
+				isFastLastFlick = _releaseAnimData.lastFlickDist.x < 10;
 
-			// if container is shifted for more than MIN_SWIPE_DISTANCE, and last flick gesture was in right direction
-			if(totalShiftDist > MIN_SWIPE_DISTANCE && (_releaseAnimData.lastFlickDist.x < 10 || _releaseAnimData.lastFlickOffset.x > 20)  ) {
+			// if container is shifted for more than MIN_SWIPE_DISTANCE, 
+			// and last flick gesture was in right direction
+			if(totalShiftDist > MIN_SWIPE_DISTANCE && 
+				(isFastLastFlick || _releaseAnimData.lastFlickOffset.x > 20) ) {
 				// go to prev item
 				itemsDiff = -1;
-			} else if(totalShiftDist < -MIN_SWIPE_DISTANCE && (_releaseAnimData.lastFlickDist.x < 10 || _releaseAnimData.lastFlickOffset.x < -20) ) {
-
+			} else if(totalShiftDist < -MIN_SWIPE_DISTANCE && 
+				(isFastLastFlick || _releaseAnimData.lastFlickOffset.x < -20) ) {
+				// go to next item
 				itemsDiff = 1;
 			}
 		}
@@ -1031,9 +986,13 @@ var _gestureStartTime,
 
 
 		if(!itemChanged && animateToX > _mainScrollPos.x !== _releaseAnimData.lastFlickSpeed.x > 0) {
-			finishAnimDuration = 333; // return to current speed (e.g. when dragging from slide #0 to #-1)
+			// "return to current" duration, e.g. when dragging from slide 0 to -1
+			finishAnimDuration = 333; 
 		} else {
-			finishAnimDuration = Math.abs(_releaseAnimData.lastFlickSpeed.x) > 0 ? animateToDist / Math.abs(_releaseAnimData.lastFlickSpeed.x) : 333;
+			finishAnimDuration = Math.abs(_releaseAnimData.lastFlickSpeed.x) > 0 ? 
+									animateToDist / Math.abs(_releaseAnimData.lastFlickSpeed.x) : 
+									333;
+
 			finishAnimDuration = Math.min(finishAnimDuration, 400);
 			finishAnimDuration = Math.max(finishAnimDuration, 250);
 		}
@@ -1043,9 +1002,6 @@ var _gestureStartTime,
 		}
 		
 		_mainScrollAnimating = true;
-
-
-
 
 		_animateProp('mainScroll', _mainScrollPos.x, animateToX, finishAnimDuration, framework.easing.cubic.out, 
 			_moveMainScroll,
@@ -1062,7 +1018,6 @@ var _gestureStartTime,
 			}
 		);
 
-
 		if(itemChanged) {
 			self.updateCurrItem(true);
 		}
@@ -1070,9 +1025,11 @@ var _gestureStartTime,
 		return itemChanged;
 	},
 
-	/**
-	 * Resets zoom if it's out of bounds
-	 */
+	_calculateZoomLevel = function(touchesDistance) {
+		return  1 / _startPointsDistance * touchesDistance * _startZoomLevel;
+	},
+
+	// Resets zoom if it's out of bounds
 	_completeZoomGesture = function() {
 		var destZoomLevel = _currZoomLevel;
 
@@ -1099,9 +1056,80 @@ var _gestureStartTime,
 
 			};
 		}
-		
 
 		self.zoomTo(destZoomLevel, 0, 300,  framework.easing.cubic.out, onUpdate);
 		return true;
 	};
 
+
+_registerModule('Gestures', {
+	publicMethods: {
+
+		initGestures: function() {
+
+			// helper function that builds touch/pointer/mouse events
+			var addEventNames = function(pref, down, move, up, cancel) {
+				_dragStartEvent = pref + down;
+				_dragMoveEvent = pref + move;
+				_dragEndEvent = pref + up;
+				if(cancel) {
+					_dragCancelEvent = pref + cancel;
+				} else {
+					_dragCancelEvent = '';
+				}
+			};
+
+			_pointerEventEnabled = _features.pointerEvent;
+			if(_pointerEventEnabled && _features.touch) {
+				// we don't need touch events, if browser supports pointer events
+				_features.touch = false;
+			}
+
+			if(_pointerEventEnabled) {
+				if(navigator.pointerEnabled) {
+					addEventNames('pointer', 'down', 'move', 'up', 'cancel');
+				} else {
+					// IE10 pointer events are case-sensitive
+					addEventNames('MSPointer', 'Down', 'Move', 'Up', 'Cancel');
+				}
+			} else if(_features.touch) {
+				addEventNames('touch', 'start', 'move', 'end', 'cancel');
+				_likelyTouchDevice = true;
+			} else {
+				addEventNames('mouse', 'down', 'move', 'up');	
+			}
+
+			_upMoveEvents = _dragMoveEvent + ' ' + _dragEndEvent  + ' ' +  _dragCancelEvent;
+			_downEvents = _dragStartEvent;
+
+			if(_pointerEventEnabled && !_likelyTouchDevice) {
+				_likelyTouchDevice = (navigator.maxTouchPoints > 1) || (navigator.msMaxTouchPoints > 1);
+			}
+			// make variable public
+			self.likelyTouchDevice = _likelyTouchDevice; 
+			
+			_globalEventHandlers[_dragStartEvent] = _onDragStart;
+			_globalEventHandlers[_dragMoveEvent] = _onDragMove;
+			_globalEventHandlers[_dragEndEvent] = _onDragRelease; // the Kraken
+
+			if(_dragCancelEvent) {
+				_globalEventHandlers[_dragCancelEvent] = _globalEventHandlers[_dragEndEvent];
+			}
+
+			// Bind mouse events on device with detected hardware touch support, in case it supports multiple types of input.
+			if(_features.touch) {
+				_downEvents += ' mousedown';
+				_upMoveEvents += ' mousemove mouseup';
+				_globalEventHandlers.mousedown = _globalEventHandlers[_dragStartEvent];
+				_globalEventHandlers.mousemove = _globalEventHandlers[_dragMoveEvent];
+				_globalEventHandlers.mouseup = _globalEventHandlers[_dragEndEvent];
+			}
+
+			if(!_likelyTouchDevice) {
+				// don't allow pan to next slide from zoomed state on Desktop
+				_options.allowPanToNext = false;
+			}
+		}
+
+	}
+});

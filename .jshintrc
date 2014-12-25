@@ -1,5 +1,5 @@
 {
-  "curly": false,
+  "curly": true,
   "eqeqeq": true,
   "immed": true,
   "latedef": true,
@@ -11,6 +11,12 @@
   "boss": true,
   "eqnull": true,
   "browser": true,
+  "expr": true,
+  "onevar": true,
+  "trailing": true,
+  "undef": true,
+  "unused": true,
+  "maxlen": 130,
 
   "predef": [
     "define",

@@ -7,7 +7,6 @@
  */
 var framework = {
 	features: null,
-	
 	bind: function(target, type, listener, unbind) {
 		var methodName = (unbind ? 'remove' : 'add') + 'EventListener';
 		type = type.split(' ');
@@ -46,7 +45,6 @@ var framework = {
 	hasClass: function(el, className) {
 		return el.className && new RegExp('(^|\\s)' + className + '(\\s|$)').test(el.className);
 	},
-
 	getChildByClass: function(parentEl, childClassName) {
 		var node = parentEl.firstChild;
 		while(node) {
@@ -56,7 +54,6 @@ var framework = {
 			node = node.nextSibling;
 		}
 	},
-
 	arraySearch: function(array, value, key) {
 		var i = array.length;
 		while(i--) {
@@ -66,14 +63,6 @@ var framework = {
 		}
 		return -1;
 	},
-	/*
-		getOffset: function(el) {
-			// http://stackoverflow.com/a/11396681/331460
-			var bodyRect = document.body.getBoundingClientRect(),
-			elemRect = el.getBoundingClientRect();
-			return { x: elemRect.left - bodyRect.left, y: elemRect.top - bodyRect.top };
-		},
-	*/
 	extend: function(o1, o2, preventOverwrite) {
 		for (var prop in o2) {
 			if (o2.hasOwnProperty(prop)) {
@@ -151,18 +140,22 @@ var framework = {
 			features.caf = window.cancelAnimationFrame;
 		}
 
-
 		features.pointerEvent = navigator.pointerEnabled || navigator.msPointerEnabled;
 
-
-
-		if(!features.pointerEvent) { // fix false-positive detection of old Android (IE11 ua string contains "Android 4.0")
+		// fix false-positive detection of old Android in new IE
+		// (IE11 ua string contains "Android 4.0")
+		
+		if(!features.pointerEvent) { 
 
 			var ua = navigator.userAgent;
+
 			// Detect if device is iPhone or iPod and if it's older than iOS 8
 			// http://stackoverflow.com/a/14223920
-			// This detection is made because of buggy top/bottom toolbars that don't trigger window.resize event when appear.
+			// 
+			// This detection is made because of buggy top/bottom toolbars
+			// that don't trigger window.resize event.
 			// For more info refer to _isFixedPosition variable in core.js
+
 			if (/iP(hone|od)/.test(navigator.platform)) {
 				var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
 				if(v && v.length > 0) {
@@ -171,11 +164,12 @@ var framework = {
 						features.isOldIOSPhone = true;
 					}
 				}
-				
 			}
+
 			// Detect old Android (before KitKat)
 			// due to bugs related to position:fixed
 			// http://stackoverflow.com/questions/7184573/pick-up-the-android-version-in-the-browser-by-javascript
+			
 			var match = ua.match(/Android\s([0-9\.]*)/);
 			var androidversion =  match ? match[1] : 0;
 			androidversion = parseFloat(androidversion);
@@ -188,14 +182,8 @@ var framework = {
 			features.isMobileOpera = /opera mini|opera mobi/i.test(ua);
 
 			// p.s. yes, yes, UA sniffing is bad, propose your solution for above bugs.
-
 		}
 		
-
-
-
-
-
 		var styleChecks = ['transform', 'perspective', 'animationName'],
 			vendors = ['', 'webkit','Moz','ms','O'],
 			styleCheckItem,
@@ -208,7 +196,9 @@ var framework = {
 				styleCheckItem = styleChecks[a];
 
 				// uppercase first letter of property name, if vendor is present
-				styleName = vendor + (vendor ? styleCheckItem.charAt(0).toUpperCase() + styleCheckItem.slice(1) : styleCheckItem);
+				styleName = vendor + (vendor ? 
+										styleCheckItem.charAt(0).toUpperCase() + styleCheckItem.slice(1) : 
+										styleCheckItem);
 			
 				if(!features[styleCheckItem] && styleName in helperStyle ) {
 					features[styleCheckItem] = styleName;
@@ -219,15 +209,12 @@ var framework = {
 				vendor = vendor.toLowerCase();
 				features.raf = window[vendor+'RequestAnimationFrame'];
 				if(features.raf) {
-					features.caf = window[vendor+'CancelAnimationFrame'] || window[vendor+'CancelRequestAnimationFrame'];
+					features.caf = window[vendor+'CancelAnimationFrame'] || 
+									window[vendor+'CancelRequestAnimationFrame'];
 				}
 			}
-			
 		}
 			
-
-
-
 		if(!features.raf) {
 			var lastTime = 0;
 			features.raf = function(fn) {
@@ -241,12 +228,12 @@ var framework = {
 		}
 
 		// Detect SVG support
-		features.svg = !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
+		features.svg = !!document.createElementNS && 
+						!!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
 
 		framework.features = features;
 
 		return features;
-
 	}
 };
 
@@ -269,11 +256,9 @@ if(framework.features.oldIE) {
 			evName = type[i];
 			if(evName) {
 
-				if(typeof listener === "object" && listener.handleEvent) {
+				if(typeof listener === 'object' && listener.handleEvent) {
 					if(!unbind) {
-
 						listener['oldIE' + evName] = _handleEv;
-
 					} else {
 						if(!listener['oldIE' + evName]) {
 							return false;
@@ -285,11 +270,8 @@ if(framework.features.oldIE) {
 					target[methodName]( 'on' + evName, listener);
 				}
 
-				
 			}
 		}
 	};
 	
 }
-
-

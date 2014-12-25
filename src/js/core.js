@@ -1,10 +1,6 @@
 //function(template, UiClass, items, options)
 
-/* Core module. Contains swipe and pinch-zoom logic. */
-
-
 var self = this;
-
 
 /**
  * Static vars, don't change unless you know what you're doing.
@@ -16,29 +12,22 @@ var DOUBLE_TAP_RADIUS = 25,
  * Options
  */
 var _options = {
-	allowPanToNext:true, // Allow navigation to next/prev item when current item is zoomed (using swipe gesture). Option is always false on non-touch devices.
-	spacing: 0.12, // Spacing ratio between slides (during swipe). For example, 0.12 will render as a 12% of sliding viewport.
+	allowPanToNext:true,
+	spacing: 0.12,
 	bgOpacity: 1,
-	
 	mouseUsed: false,
 	loop: true,
 	pinchToClose: true,
-
 	closeOnScroll: true,
 	closeOnVerticalDrag: true,
-
 	hideAnimationDuration: 333,
 	showAnimationDuration: 333,
 	showHideOpacity: false,
-
 	focus: true,
-	
 	escKey: true,
 	arrowKeys: true,
-
 	mainScrollEndFriction: 0.35,
 	panEndFriction: 0.35,
-
 	isClickableElement: function(el) {
         return el.tagName === 'A';
     },
@@ -51,12 +40,13 @@ var _options = {
 framework.extend(_options, options);
 
 
-
 /**
  * Private helper variables & functions
  */
 
-var _getEmptyPoint = function() { return {x:0,y:0}; };
+var _getEmptyPoint = function() { 
+		return {x:0,y:0}; 
+	};
 
 var _isOpen,
 	_isDestroying,
@@ -64,40 +54,25 @@ var _isOpen,
 	_currentItemIndex,
 	_containerStyle,
 	_containerShiftIndex,
-	_lastReleaseTime = 0,
 	_currPanDist = _getEmptyPoint(),
 	_startPanOffset = _getEmptyPoint(),
 	_panOffset = _getEmptyPoint(),
-	_centerPoint = _getEmptyPoint(),
-
 	_upMoveEvents, // drag move, drag end & drag cancel events array
 	_downEvents, // drag start events array
 	_globalEventHandlers,
-
-	
 	_viewportSize = {},
-	
 	_currZoomLevel,
 	_startZoomLevel,
-
 	_translatePrefix,
 	_translateSufix,
-
 	_updateSizeInterval,
-
-	
-	
 	_currPositionIndex = 0,
-	_currZoomedItemIndex = 0,
+	_offset,
 	_slideSize = _getEmptyPoint(), // size of slide area, including spacing
-	
-
 	_scrollChanged,
-	
 	_itemHolders,
 	_prevItemIndex,
 	_indexDiff = 0, // difference of indexes since last content update
-	
 	_dragStartEvent,
 	_dragMoveEvent,
 	_dragEndEvent,
@@ -107,7 +82,6 @@ var _isOpen,
 	_isFixedPosition = true,
 	_likelyTouchDevice,
 	_modules = [],
-	
 	_requestAF,
 	_cancelAF,
 	_initalClassName,
@@ -132,7 +106,6 @@ var _isOpen,
 		}
 		return index;
 	},
-
 	
 	// Micro bind/trigger
 	_listeners = {},
@@ -173,17 +146,20 @@ var _isOpen,
 	},
 	_applyZoomPanToItem = function(item) {
 		if(item.container) {
-			_applyZoomTransform(item.container.style, item.initialPosition.x, item.initialPosition.y, item.initialZoomLevel);
+			_applyZoomTransform(item.container.style, 
+								item.initialPosition.x, 
+								item.initialPosition.y, 
+								item.initialZoomLevel);
 		}
 	},
 	_setTranslateX = function(x, elStyle) {
 		elStyle[_transformKey] = _translatePrefix + x + 'px, 0px' + _translateSufix;
 	},
-
 	_moveMainScroll = function(x, dragging) {
 
 		if(!_options.loop && dragging) {
-			var newSlideIndexOffset = _currentItemIndex + (_slideSize.x * _currPositionIndex - x)/_slideSize.x; // if of current item during scroll (float)
+			// if of current item during scroll (float)
+			var newSlideIndexOffset = _currentItemIndex + (_slideSize.x * _currPositionIndex - x)/_slideSize.x; 
 			var delta = Math.round(x - _mainScrollPos.x);
 
 			if( (newSlideIndexOffset < 0 && delta > 0) || 
@@ -195,20 +171,11 @@ var _isOpen,
 		_mainScrollPos.x = x;
 		_setTranslateX(x, _containerStyle);
 	},
-	
-	_calculateZoomLevel = function(touchesDistance) {
-		return  1 / _startPointsDistance * touchesDistance * _startZoomLevel;
-	},
 	_calculatePanOffset = function(axis, zoomLevel) {
 		var m = _midZoomPoint[axis] - _offset[axis];
 		return _startPanOffset[axis] + _currPanDist[axis] + m - m * ( zoomLevel / _startZoomLevel );
 	},
-	_isEqualPoints = function(p1, p2) {
-		return p1.x === p2.x && p1.y === p2.y;
-	},
-	_isNearbyPoints = function(touch0, touch1) {
-		return (Math.abs(touch0.x - touch1.x) < DOUBLE_TAP_RADIUS && Math.abs(touch0.y - touch1.y) < DOUBLE_TAP_RADIUS);
-	},
+	
 	_equalizePoints = function(p1, p2) {
 		p1.x = p2.x;
 		p1.y = p2.y;
@@ -216,6 +183,22 @@ var _isOpen,
 			p1.id = p2.id;
 		}
 	},
+
+	_mouseMoveTimeout = null,
+	_onFirstMouseMove = function() {
+		// Wait until mouse move event is fired at least twice during 100ms
+		// We do this, because some mobile browsers trigger it on touchstart
+		if(_mouseMoveTimeout ) { 
+			framework.unbind(document, 'mousemove', _onFirstMouseMove);
+			framework.addClass(template, 'pswp--has_mouse');
+			_options.mouseUsed = true;
+			_shout('mouseUsed');
+		}
+		_mouseMoveTimeout = setTimeout(function() {
+			_mouseMoveTimeout = null;
+		}, 100);
+	},
+
 	_bindEvents = function() {
 		framework.bind(document, 'keydown', self);
 
@@ -233,6 +216,7 @@ var _isOpen,
 
 		_shout('bindEvents');
 	},
+
 	_unbindEvents = function() {
 		framework.unbind(window, 'resize', self);
 		framework.unbind(window, 'scroll', _globalEventHandlers.scroll);
@@ -248,22 +232,6 @@ var _isOpen,
 		}
 
 		_shout('unbindEvents');
-	},
-	
-
-	_mouseMoveTimeout = null,
-	_onFirstMouseMove = function() {
-		// Wait until mouse move event is fired at least twice during 100ms
-		// We do this, because some mobile browsers trigger it on touchstart
-		if(_mouseMoveTimeout ) { 
-			framework.unbind(document, 'mousemove', _onFirstMouseMove);
-			framework.addClass(template, 'pswp--has_mouse');
-			_options.mouseUsed = true;
-			_shout('mouseUsed');
-		}
-		_mouseMoveTimeout = setTimeout(function() {
-			_mouseMoveTimeout = null;
-		}, 100);
 	},
 	
 	_calculatePanBounds = function(zoomLevel, update) {
@@ -291,7 +259,108 @@ var _isOpen,
 			}
 		}
 		return false;
+	},
+
+	_setupTransforms = function() {
+
+		if(_transformKey) {
+			// setup 3d transforms
+			var allow3dTransform = _features.perspective && !_likelyTouchDevice;
+			_translatePrefix = 'translate' + (allow3dTransform ? '3d(' : '(');
+			_translateSufix = _features.perspective ? ', 0px)' : ')';	
+			return;
+		}
+
+		// Override zoom/pan/move functions in case old browser is used (most likely IE)
+		// (so they use left/top/width/height, instead of CSS transform)
+	
+		_transformKey = 'left';
+		framework.addClass(template, 'pswp--ie');
+
+		_setTranslateX = function(x, elStyle) {
+			elStyle.left = x + 'px';
+		};
+		_applyZoomPanToItem = function(item) {
+
+			var s = item.container.style,
+				w = item.fitRatio * item.w,
+				h = item.fitRatio * item.h;
+
+			s.width = w + 'px';
+			s.height = h + 'px';
+			s.left = item.initialPosition.x + 'px';
+			s.top = item.initialPosition.y + 'px';
+
+		};
+		_applyCurrentZoomPan = function() {
+			if(_currZoomElementStyle) {
+				var s = _currZoomElementStyle;
+				var item = self.currItem;
+
+				var w = item.fitRatio * item.w;
+				var h = item.fitRatio * item.h;
+
+				s.width = w + 'px';
+				s.height = h + 'px';
+
+
+				s.left = _panOffset.x + 'px';
+				s.top = _panOffset.y + 'px';
+			}
+			
+		};
+	},
+
+	_onKeyDown = function(e) {
+		var keydownAction = '';
+		if(_options.escKey && e.keyCode === 27) { 
+			keydownAction = 'close';
+		} else if(_options.arrowKeys) {
+			if(e.keyCode === 37) {
+				keydownAction = 'prev';
+			} else if(e.keyCode === 39) { 
+				keydownAction = 'next';
+			}
+		}
+
+		if(keydownAction) {
+			// don't do anything if special key pressed to prevent from overriding default browser actions
+			// e.g. in Chrome on Mac cmd+arrow-left returns to previous page
+			if( !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey ) {
+				if(e.preventDefault) {
+					e.preventDefault();
+				} else {
+					e.returnValue = false;
+				} 
+				self[keydownAction]();
+			}
+		}
+	},
+
+	_onGlobalClick = function(e) {
+		if(!e) {
+			return;
+		}
+
+		// don't allow click event to pass through when triggering after drag or some other gesture
+		if(_moved || _zoomStarted || _mainScrollAnimating || _verticalDragInitiated) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	},
+
+	_onPageScroll = function() {
+		_scrollChanged = true;
+		// "close" on scroll works only on desktop devices, or when mouse is used
+		if(_options.closeOnScroll && _isOpen && (!self.likelyTouchDevice || _options.mouseUsed) ) { 
+			// if scrolled for more than 2px
+			if(Math.abs(framework.getScrollY() - _initalWindowScrollY) > 2) { 
+				_closedByScroll = true;
+				self.close();
+			}
+		}
 	};
+	
 
 
 	
@@ -353,178 +422,6 @@ var _animations = {},
 			}
 		};
 		animloop();
-	},
-
-
-
-
-	_showOrHideTimeout,
-	/**
-	 * Function manages open/close transitions of gallery
-	 */
-	_showOrHide = function(item, img, out, completeFn) {
-
-		if(_showOrHideTimeout) {
-			clearTimeout(_showOrHideTimeout);
-		}
-
-		_initialZoomRunning = true;
-		_initialContentSet = true;
-		
-		var thumbBounds; // dimensions of small thumbnail ({x:,y:,w:}), height is optional, as calculated based on large image
-		if(item.initialLayout) {
-			thumbBounds = item.initialLayout;
-			item.initialLayout = null;
-		} else {
-			thumbBounds = _options.getThumbBoundsFn && _options.getThumbBoundsFn(_currentItemIndex);
-		}
-
-
-		var complete = function() {
-
-			_stopAnimation('initialZoom');
-			if(!out) {
-				_applyBgOpacity(1);
-				if(img) {
-					img.style.display = 'block';
-				}
-				framework.addClass(template, 'pswp--animated-in');
-				_shout('initialZoom' + (out ? 'OutEnd' : 'InEnd'));
-			} else {
-				self.template.removeAttribute('style');
-				self.bg.removeAttribute('style');
-			}
-
-			if(completeFn) {
-				completeFn();
-			}
-			_initialZoomRunning = false;
-		};
-
-		var duration = out ? _options.hideAnimationDuration : _options.showAnimationDuration;
-
-
-
-		// if bounds aren't provided, just open gallery without animation
-		if(!thumbBounds || thumbBounds.x === undefined || !duration ) {
-			_shout('initialZoom' + (out ? 'Out' : 'In') );
-
-			_currZoomLevel = item.initialZoomLevel;
-			_equalizePoints(_panOffset,  item.initialPosition );
-			_applyCurrentZoomPan();
-
-			// no transition
-			template.style.opacity = out ? 0 : 1;
-			_applyBgOpacity(1);
-			complete();
-			
-			return false;
-		}
-
-		var closeWithRaf = _closedByScroll;
-		var fadeEverything = !self.currItem.src || self.currItem.loadError || _options.showHideOpacity;
-		
-		// apply hw-acceleration to image
-		if(item.miniImg) {
-			item.miniImg.style.webkitBackfaceVisibility = 'hidden';
-		}
-
-		if(!out) {
-			_currZoomLevel = thumbBounds.w / item.w;
-			_panOffset.x = thumbBounds.x;
-			_panOffset.y = thumbBounds.y - _initalWindowScrollY;
-
-			self[fadeEverything ? 'template' : 'bg'].style.opacity = 0.001;
-			_applyCurrentZoomPan();
-		}
-
-		_registerStartAnimation('initialZoom');
-		
-		if(out && !closeWithRaf) {
-			framework.removeClass(template, 'pswp--animated-in');
-		}
-
-		if(fadeEverything) {
-			if(out) {
-				framework[ (closeWithRaf ? 'remove' : 'add') + 'Class' ](template, 'pswp--animate_opacity');
-			} else {
-				setTimeout(function() {
-					framework.addClass(template, 'pswp--animate_opacity');
-				}, 30);
-			}
-		}
-		
-		_showOrHideTimeout = setTimeout(function() {
-
-			_shout('initialZoom' + (out ? 'Out' : 'In') );
-			
-
-			if(!out) {
-
-				// "in" animation always uses CSS transitions (instead of rAF)
-				// CSS transition works faster here, as we may also want to animate other things, like ui on top of sliding area, which can be animated just via CSS
-				_currZoomLevel = item.initialZoomLevel;
-				_equalizePoints(_panOffset,  item.initialPosition );
-				_applyCurrentZoomPan();
-				_applyBgOpacity(1);
-
-				if(fadeEverything) {
-					template.style.opacity = 1;
-				} else {
-					_applyBgOpacity(1);
-				}
-
-				_showOrHideTimeout = setTimeout(complete, duration + 20);
-			} else {
-
-				// "out" animation uses rAF only when PhotoSwipe is closed by browser scroll, to recalculate position
-				var destZoomLevel = thumbBounds.w / item.w,
-					initialPanOffset = {
-						x: _panOffset.x,
-						y: _panOffset.y
-					},
-					initialZoomLevel = _currZoomLevel,
-					scrollY = _initalWindowScrollY,
-					initalBgOpacity = _bgOpacity,
-					onUpdate = function(now) {
-						if(_scrollChanged) {
-							scrollY = framework.getScrollY();
-							_scrollChanged = false;
-						}
-						
-						if(now === 1) {
-							_currZoomLevel = destZoomLevel;
-							_panOffset.x = thumbBounds.x;
-							_panOffset.y = thumbBounds.y  - scrollY;
-						} else {
-							_currZoomLevel = (destZoomLevel - initialZoomLevel) * now + initialZoomLevel;
-							_panOffset.x = (thumbBounds.x - initialPanOffset.x) * now + initialPanOffset.x;
-							_panOffset.y = (thumbBounds.y - scrollY - initialPanOffset.y) * now + initialPanOffset.y;
-						}
-						
-						_applyCurrentZoomPan();
-						if(fadeEverything) {
-							template.style.opacity = 1 - now;
-						} else {
-							_applyBgOpacity( initalBgOpacity - now * initalBgOpacity );
-						}
-					};
-
-				if(closeWithRaf) {
-					_animateProp('initialZoom', 0, 1, duration, framework.easing.cubic.out, onUpdate, complete);
-				} else {
-					onUpdate(1);
-					_showOrHideTimeout = setTimeout(complete, duration + 20);
-				}
-			}
-		
-		}, out ? 25 : 90); // Main purpose of this delay is to give browser time to paint and
-				// create composite layers of PhotoSwipe UI parts (background, controls, caption, arrows).
-				// Which avoids lag at the beginning of scale transition.
-	
-	
-
-		return true;
 	};
 	
 
@@ -560,8 +457,10 @@ var publicMethods = {
 	},
 
 	init: function() {
-		if(_isOpen || _isDestroying) return;
 
+		if(_isOpen || _isDestroying) {
+			return;
+		}
 
 		var i;
 
@@ -583,67 +482,6 @@ var publicMethods = {
 
 		_containerStyle = self.container.style; // for fast access
 
-
-		if(!_transformKey) {
-			// Override zoom/pan/move functions in case old browser is used (most likely IE)
-			
-			_transformKey = 'left';
-			framework.addClass(template, 'pswp--ie');
-
-			_setTranslateX = function(x, elStyle) {
-				elStyle.left = x + 'px';
-			};
-			_applyZoomPanToItem = function(item) {
-
-				var s = item.container.style,
-					w = item.fitRatio * item.w,
-					h = item.fitRatio * item.h;
-
-				s.width = w + 'px';
-				s.height = h + 'px';
-				s.left = item.initialPosition.x + 'px';
-				s.top = item.initialPosition.y + 'px';
-
-			};
-			_applyCurrentZoomPan = function() {
-				if(_currZoomElementStyle) {
-					
-					var s = _currZoomElementStyle;
-					var item = self.currItem;
-
-
-					var w = item.fitRatio * item.w;
-					var h = item.fitRatio * item.h;
-
-					s.width = w + 'px';
-					s.height = h + 'px';
-
-
-					s.left = _panOffset.x + 'px';
-					s.top = _panOffset.y + 'px';
-				}
-				
-			};
-		} else {
-			// setup 3d transforms
-			var allow3dTransform = _features.perspective && !_likelyTouchDevice;
-			_translatePrefix = 'translate' + (allow3dTransform ? '3d(' : '(');
-			_translateSufix = _features.perspective ? ', 0px)' : ')';			
-		}
-
-
-		// helper function that builds touch/pointer/mouse events
-		var addEventNames = function(pref, down, move, up, cancel) {
-			_dragStartEvent = pref + down;
-			_dragMoveEvent = pref + move;
-			_dragEndEvent = pref + up;
-			if(cancel) {
-				_dragCancelEvent = pref + cancel;
-			} else {
-				_dragCancelEvent = '';
-			}
-		};
-
 		// Objects that hold slides (there are only 3 in DOM)
 		self.itemHolders = _itemHolders = [
 			{el:self.container.children[0] , wrap:0, index: -1},
@@ -654,126 +492,32 @@ var publicMethods = {
 		// hide nearby item holders until initial zoom animation finishes (to avoid extra Paints)
 		_itemHolders[0].el.style.display = _itemHolders[2].el.style.display = 'none';
 
+		_setupTransforms();
 
+		// Setup global events
+		_globalEventHandlers = {
+			resize: self.updateSize,
+			scroll: _onPageScroll,
+			keydown: _onKeyDown,
+			click: _onGlobalClick
+		};
 
-		_pointerEventEnabled = _features.pointerEvent;
-		if(_pointerEventEnabled && _features.touch) {
-			// we don't need touch events, if browser supports pointer events
-			_features.touch = false;
-		}
-		
-		if(_pointerEventEnabled) {
-			if(navigator.pointerEnabled) {
-				addEventNames( 'pointer', 'down', 'move', 'up', 'cancel' );
-			} else {
-				// IE10 pointer events are case-sensitive
-				addEventNames( 'MSPointer', 'Down', 'Move', 'Up', 'Cancel');
-			}
-		} else if(_features.touch) {
-			addEventNames('touch', 'start', 'move', 'end', 'cancel');
-			_likelyTouchDevice = true;
-		} else {
-			addEventNames('mouse', 'down', 'move', 'up');	
-		}
-
-		_upMoveEvents = _dragMoveEvent + ' ' + _dragEndEvent  + ' ' +  _dragCancelEvent;
-		_downEvents = _dragStartEvent;
-
-		if(_pointerEventEnabled && !_likelyTouchDevice) {
-			_likelyTouchDevice = (navigator.maxTouchPoints > 1) || (navigator.msMaxTouchPoints > 1);
-		}
-		self.likelyTouchDevice = _likelyTouchDevice; // make variable public
-		
-		// disable show/hide effects on old browsers that don't support CSS animations or transforms (like IE8-9), 
+		// disable show/hide effects on old browsers that don't support CSS animations or transforms, 
 		// old IOS, Android and Opera mobile. Blackberry seems to work fine, even older models.
-		if(!_features.animationName || !_features.transform || _features.isOldIOSPhone || _features.isOldAndroid || _features.isMobileOpera ) {
+		var oldPhone = _features.isOldIOSPhone || _features.isOldAndroid || _features.isMobileOpera;
+		if(!_features.animationName || !_features.transform || oldPhone) {
 			_options.showAnimationDuration = _options.hideAnimationDuration = 0;
 		}
 
+		// init modules
 		for(i = 0; i < _modules.length; i++) {
 			self['init' + _modules[i]]();
 		}
 		
+		// init
 		if(UiClass) {
 			var ui = self.ui = new UiClass(self, framework);
 			ui.init();
-		}
-
-		if(!_likelyTouchDevice) {
-			// don't allow pan to next slide from zoomed state on Desktop
-			_options.allowPanToNext = false;
-		}
-		
-		// Setup events
-		var keydownAction;
-		_globalEventHandlers = {
-			resize: self.updateSize,
-			scroll: function() {
-
-				_scrollChanged = true;
-
-				// "close" on scroll works only on desktop devices, or when mouse is used
-				if(_options.closeOnScroll && _isOpen && (!self.likelyTouchDevice || _options.mouseUsed) ) { 
-					if(Math.abs(framework.getScrollY() - _initalWindowScrollY) > 2) { // if scrolled for more than 2px
-						_closedByScroll = true;
-						self.close();
-					}
-					
-				}
-			},
-			keydown: function(e) {
-				keydownAction = '';
-				if(_options.escKey && e.keyCode === 27) { 
-					keydownAction = 'close';
-				} else if(_options.arrowKeys) {
-					if(e.keyCode === 37) {
-						keydownAction = 'prev';
-					} else if(e.keyCode === 39) { 
-						keydownAction = 'next';
-					}
-				}
-
-				if(keydownAction) {
-					// don't do anything if special key pressed to prevent from overriding default browser actions
-					// e.g. in Chrome on Mac cmd+arrow-left returns to previous page
-					if( !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey ) {
-						if(e.preventDefault) {
-							e.preventDefault();
-						} else {
-							e.returnValue = false;
-						} 
-						self[keydownAction]();
-					}
-				}
-			},
-			click: function(e) {
-				
-				// don't allow click event to pass through when triggering after drag or some other gesture
-				if(_moved || _zoomStarted || _mainScrollAnimating || _verticalDragInitiated) {
-					e.preventDefault();
-					e.stopPropagation();
-				}
-
-
-			}
-		};
-
-		_globalEventHandlers[_dragStartEvent] = _onDragStart;
-		_globalEventHandlers[_dragMoveEvent] = _onDragMove;
-		_globalEventHandlers[_dragEndEvent] = _onDragRelease; // the Kraken
-
-		if(_dragCancelEvent) {
-			_globalEventHandlers[_dragCancelEvent] = _globalEventHandlers[_dragEndEvent];
-		}
-
-
-		// Bind mouse events on device with detected hardware touch support, in case it supports multiple types of input.
-		if(_features.touch) {
-			_downEvents += ' mousedown';
-			_upMoveEvents += ' mousemove mouseup';
-			_globalEventHandlers.mousedown = _globalEventHandlers[_dragStartEvent];
-			_globalEventHandlers.mousemove = _globalEventHandlers[_dragMoveEvent];
-			_globalEventHandlers.mouseup = _globalEventHandlers[_dragEndEvent];
 		}
 
 		_shout('firstUpdate');
@@ -818,7 +562,6 @@ var publicMethods = {
 		framework.addClass(template, rootClasses);
 
 		self.updateSize();
-		
 
 		// initial update
 		_containerShiftIndex = -1;
@@ -826,8 +569,6 @@ var publicMethods = {
 		for(i = 0; i < NUM_HOLDERS; i++) {
 			_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, _itemHolders[i].el.style);
 		}
-
-
 
 		if(!_oldIE) {
 			framework.bind(self.scrollWrap, _downEvents, self); // no dragging for old IE
@@ -840,7 +581,9 @@ var publicMethods = {
 			_itemHolders[0].el.style.display = _itemHolders[2].el.style.display = 'block';
 
 			if(_options.focus) {
-				// focus causes layout, which causes lag during animation, that's why we delay it till the initial zoom transition ends
+				// focus causes layout, 
+				// which causes lag during the animation, 
+				// that's why we delay it untill the initial zoom transition ends
 				template.focus();
 			}
 			 
@@ -848,6 +591,7 @@ var publicMethods = {
 			_bindEvents();
 		});
 
+		// set content for center slide (first time)
 		self.setContent(_itemHolders[1], _currentItemIndex);
 		
 		self.updateCurrItem();
@@ -855,10 +599,16 @@ var publicMethods = {
 		_shout('afterInit');
 
 		if(!_isFixedPosition) {
-			// On all versions of iOS lower than 8.0, we check size of viewport every second
-			// This is done to detect when Safari top & bottom bars appear, as this action doesn't trigger any events (like resize). 
+
+			// On all versions of iOS lower than 8.0, we check size of viewport every second.
+			// 
+			// This is done to detect when Safari top & bottom bars appear, 
+			// as this action doesn't trigger any events (like resize). 
+			// 
 			// On iOS8 they fixed this.
+			// 
 			// 10 Nov 2014: iOS 7 usage ~40%. iOS 8 usage 56%.
+			
 			_updateSizeInterval = setInterval(function() {
 				if(!_numAnimations && !_isDragging && !_isZooming && (_currZoomLevel === self.currItem.initialZoomLevel)  ) {
 					self.updateSize();
@@ -871,7 +621,9 @@ var publicMethods = {
 
 	// Closes the gallery, then destroy it
 	close: function() {
-		if(!_isOpen) return;
+		if(!_isOpen) {
+			return;
+		}
 
 		_isOpen = false;
 		_isDestroying = true;
@@ -1207,7 +959,3 @@ var publicMethods = {
 
 
 };
-
-
-
-
