@@ -20,9 +20,14 @@ markdownpage: true
 
 ## Animations
 
-- Don't do anything during animations that can cause Paint or Layout. Don't append new elements to DOM. Don't change `display` or `visibility`. Don't breath. You can only change `transform` and `opacity`. Delay all your changes after animation ends &ndash; use events: `beforeChange` (slide switched), `initialZoomInEnd` (initial zoom in animation ended) and `initialZoomOutEnd` (initial zoom out animation ended). 
-- Animation performance dramatically depends on size of image. The smaller image - the smoothier animation. So don't be lazy and [serve responsive images](responsive-images.html).
+- Animation performance dramatically depends on size of image. The smaller image &ndash; the smoothier animation. So don't be lazy and [serve responsive images](responsive-images.html), or at least don't serve images larger than 1200x1200 for phones.
+- Don't do anything during the animations that can cause Paint or Layout. Don't append new elements to DOM. Don't change `display` or `visibility`. Don't breath. You can only change `transform` and `opacity`. Delay all your changes after animation ends &ndash; use events: `beforeChange` (slide switched), `initialZoomInEnd` (initial zoom in animation ended) and `initialZoomOutEnd` (initial zoom out animation ended).
 - Try to avoid complex `:hover` and `:active` effects on thumbnails that open PhotoSwipe if you have zoom-in/out animation enabled (apply first rule). 
+- Make sure that you don't have complex styles on UI over PhotoSwipe sliding area. For example `text-shadow` on caption text can cause issues.
+
+If you followed above steps and performance of your gallery differs from [PhotoSwipe home page](http://photoswipe.com), start isolating PhotoSwipe on page by excluding all JS/CSS/HTML code not related to it. Make sure that you don't have any kind of banner rotators that continiously run some animation behind the PhotoSwipe. 
+
+If it doesn't work fast even after you isolated PhotoSwipe &ndash; open an [issue on GitHub](https://github.com/dimsemenov/PhotoSwipe/issues) and provide link to [reduced test case](http://css-tricks.com/reduced-test-cases/).
 
 ## Including Files
 
@@ -31,3 +36,5 @@ markdownpage: true
 - Combine JS, minify and combine CSS files.
 
 Know how this page can be improved? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
+
+<iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>

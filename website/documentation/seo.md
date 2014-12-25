@@ -106,7 +106,7 @@ In all above cases `large-image.jpg` will be perfectly indexed. The caption elem
 - Even though search engines index direct link to image file quite well, having a separate HTML page for each image (with descriptive title and description) is better.
 - Feel free to use `srcset` or `<picture>` for thumbnails.
 
-Know how this page can be improved? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/seo.md)
+Know how this page can be improved? Found a grammatical mistake? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/seo.md)
 
 
 

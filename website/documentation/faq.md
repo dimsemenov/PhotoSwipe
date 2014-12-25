@@ -23,14 +23,14 @@ markdownpage: true
 Each time PhotoSwipe gets an update - [GitHub releases](https://github.com/dimsemenov/PhotoSwipe/releases) page is updated with details. 
 Releases page has an [Atom feed](https://github.com/dimsemenov/PhotoSwipe/releases.atom), you may setup email notifications when feed is updated [using IFTTT](https://ifttt.com/recipes/230902-photoswipe-update-notification).
 
-Also you may join my [email newsletter](http://dimsemenov.com/subscribe.html) (sent 3-4 times a year), follow [@PhotoSwipe on Twitter](http://twitter.com/photoswipe), and star/watch [PhotoSwipe on GitHub](https://github.com/dimsemenov/PhotoSwipe/).
+Also you may join my [email newsletter](http://dimsemenov.com/subscribe.html?i=pswp) (sent 3-4 times a year), follow [@PhotoSwipe on Twitter](http://twitter.com/photoswipe), and star/watch [PhotoSwipe on GitHub](https://github.com/dimsemenov/PhotoSwipe/).
 
 It's very important to keep PhotoSwipe updated, especially during the beta period.
 
 
 ### When WordPress plugin will be released?
 
-Plugin is under development and will be released in early-mid 2015. You may [subscribe here](http://dimsemenov.com/subscribe.html) to get notified.
+Plugin is under development and will be released in early-mid 2015. You may [subscribe here](http://dimsemenov.com/subscribe.html?i=pswp-wp) to get notified.
 
 
 ### <a name="image-size"></a> I'm unable to predefine image size, what to do?
@@ -55,6 +55,10 @@ I'll try to explain why this is not implemented yet. There are two ways to make 
 1. Animate `clip` property. But [it forces Paint](http://csstriggers.com/#clip) each time, which makes animations jerky.
 2. Wrap image that expands with two divs that have `overflow:hidden` and reposition them via `transform:translate` during the animation so they clip it at right parts. This method does not force Paint or Layout, but requires two additional elements in markup of each slide. Test prototype showed that it works smooth only on high-end mobile devices (like Nexus 5 with Chrome). Maybe some day I'll implement it.
 
+### My captions are large, can I add scroll to them?
+
+See [issue #657](https://github.com/dimsemenov/PhotoSwipe/issues/657).
+
 
 ## Known issues
 
@@ -72,7 +76,7 @@ In most of cases, it can happen in iPhone or in old Android phones (before KitKa
 
 
 
-Know how this page can be improved? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
+Know how this page can be improved? Found a grammatical mistake? [Please suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
 
 <iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>
 

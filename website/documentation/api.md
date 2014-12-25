@@ -31,11 +31,12 @@ var photoswipeInstance = new PhotoSwipe( /* ... */ );
 ```javascript
 var pswp = new PhotoSwipe( /* ... */ );
 
-// Intialise gallery (open it)
+// Intialise and open gallery
+// (you can bind events before this method)
 pswp.init();
 
-
-// Go to slide by index (int)
+// Go to slide by index
+// @param {int} `index`
 pswp.goTo(index);
 
 // Go to next slide
@@ -44,37 +45,44 @@ pswp.next();
 // Go to previous slide
 pswp.prev();
 
-// Update size of gallery.
-// Has one parameter, if you set it to "true", 
-// it'll force update size
-// (even if viewport size hasn't changed) 
+// Update gallery size
+// @param  {boolean} `force` If you set it to `true`, 
+// 							size of gallery will be updated 
+// 							even if viewport size hasn't changed.
 pswp.updateSize(force);
 
-// close gallery
+// Close gallery
 pswp.close();
 
-// destroy gallery
-// function is automatically called after close()
+// Destroy gallery,
+// automatically called after close() 
 pswp.destroy()
 
-// Zoom current item to (optionally with animation)
-// @param  {number} destZoomLevel Destination scale number. 1 - original.  pswp.currItem.fitRatio - image will fit into viewport.
-// @param  {object} centerPoint   Object of x and y coordinates, relative to viewport.
-// @param  {int}    speed         Animation duration. Can be 0.
-// @param  {function} easingFn    Optional easing function.
-// @param  {function} updateFn    Optional function that will run.
+// Zoom current slide to (optionally with animation)
+// @param  {number}   `destZoomLevel` Destination scale number. 1 - original.  
+// 								     pswp.currItem.fitRatio - image will fit into viewport.
+// @param  {object}   `centerPoint`   Object of x and y coordinates, relative to viewport.
+// @param  {int}      `speed`         Animation duration. Can be 0.
+// @param  {function} `easingFn`      Easing function (optional). Set to false to use default easing.
+// @param  {function} `updateFn`      Function will be called on each update frame. (optional)
 //
-// For example: 
-// pswp.zoomTo(2, {x:pswp.viewportSize.x/2,y:pswp.viewportSize.y/2}, 2000);
-// (will 2x zoom to center of image)
+// Example below will 2x zoom to center of slide:
+// pswp.zoomTo(2, {x:pswp.viewportSize.x/2,y:pswp.viewportSize.y/2}, 2000, false, function(now) {
+// 		
+// });
+pswp.zoomTo(destZoomLevel, centerPoint, speed, easingFn, updateFn);
+
+// Apply zoom and pan to current slide
 // 
-pswp.zoomTo(destZoomLevel, centerPoint, speed);
-
-
-// Apply zoom and pan to current image
-// e.g. pswp.applyZoomPan(1, 0, 0) will
-// zoom current image to original size
+// @param   {number} `zoomLevel`
+// @param   {int}    `panX`
+// @param   {int}    `panY`
+// 
+// For example: `pswp.applyZoomPan(1, 0, 0)`
+// will zoom current image to original size
 // and will place it in top left corner
+// 
+// 
 pswp.applyZoomPan(zoomLevel, panX, panY);
 ```
 
@@ -107,7 +115,7 @@ pswp.container
 // current item index (int)
 pswp.getCurrentIndex();
 
-// current zoom level
+// current zoom level (number)
 pswp.getZoomLevel();
 
 // one (or more) pointer is used
@@ -116,7 +124,7 @@ pswp.isDragging();
 // two (or more) pointers are used
 pswp.isZooming();
 
-// when transition between slides runs (after swipe)
+// `true` when transition between is running (after swipe)
 pswp.isMainScrollAnimating();
 ```
 
@@ -127,10 +135,12 @@ PhotoSwipe uses very simple Event/Messaging system. It has two methods `shout` (
 ```javascript
 var pswp = new PhotoSwipe(/* ... */);
 
+// Listen for "helloWorld" event
 pswp.listen('helloWorld', function(name) {
 	alert('Name is: ' + name);
 });
 
+// Trigger "helloWorld" event
 pswp.shout('helloWorld', 'John' /* you may pass more arguments */);
 ```
 
@@ -138,35 +148,32 @@ Available events:
 
 ```javascript
 
-// Before slides change. 
+// Before slides change
+// (before content is changed, but after navigation)
 // Update UI here (like "1 of X" indicator)
 pswp.listen('beforeChange', function() { });
 
 // After slides change
+// (after content changed)
 pswp.listen('afterChange', function() { });
 
 // Image loaded
-pswp.listen('imageLoadComplete', function(index, item) { });
-
-
-// allow you to call preventDefault of down and up events
-pswp.listen('preventDragEvent', function(e, isDown, preventObj) {
-	// e - original event
-	// isDown - true = drag start, false = drag release
-
-	// This line will force e.preventDefault() on:
-	// touchstart/mousedown/pointerdown events
-	// as well as on:
-	// touchend/mouseup/pointerup events
-	preventObj.prevent = true;
+pswp.listen('imageLoadComplete', function(index, item) { 
+	// index - index of slide that was loaded
+	// item - slide object
 });
 
-// Viewport size is changed
+// Viewport size changed
 pswp.listen('resize', function() { });
 
-// Triggers when PhotoSwipe "reads" slide object data
-// use it to dynamically change properties, e.g.:
+// Triggers when PhotoSwipe "reads" slide object data,
+// which happens before content is set, or before lazy-loading is initiated.
+// Use it to dynamically change properties
 pswp.listen('gettingData', function(index, item) {
+	// index - index of slide that was loaded
+	// item - slide object
+
+	// e.g. change path to image based on `something`
 	if( something ) {
 		item.src = item.something;
 	} else {
@@ -174,14 +181,21 @@ pswp.listen('gettingData', function(index, item) {
 	}
 });
 
-// Mouse was used (trigger only once)
+// Mouse was used (triggers only once)
 pswp.listen('mouseUsed', function() { });
 
-// Opening zoom in animation
+
+// Opening zoom in animation starting
 pswp.listen('initialZoomIn', function() { });
 
 // Opening zoom in animation finished
 pswp.listen('initialZoomInEnd', function() { });
+
+// Closing zoom out animation started
+pswp.listen('initialZoomOut', function() { });
+
+// Closing zoom out animation finished
+pswp.listen('initialZoomOutEnd', function() { });
 
 
 // Allows overriding vertical margin for individual items
@@ -193,18 +207,15 @@ pswp.listen('parseVerticalMargin', function(item) {
 	gap.bottom = 100; // and 100px gap from the bottom
 })
 
-
 // Gallery starts closing
 pswp.listen('close', function() { });
 
 // Gallery unbinds events
+// (triggers before closing animation)
 pswp.listen('unbindEvents', function() { });
 
-// Closing zoom out animation
-pswp.listen('initialZoomOut', function() { });
-
-// After PhotoSwipe is closed
-// clean up your stuff here
+// After gallery is closed and closing animation finished.
+// Clean up your stuff here.
 pswp.listen('destroy', function() { });
 
 // PhotoSwipe has a special event called pswpTap.
@@ -219,7 +230,18 @@ pswp.framework.bind( pswp.scrollWrap /* bind on any element of gallery */, 'pswp
     // e.detail.pointerType // mouse, touch, or pen
 });
 
+// Allow to call preventDefault on down and up events
+pswp.listen('preventDragEvent', function(e, isDown, preventObj) {
+	// e - original event
+	// isDown - true = drag start, false = drag release
+
+	// Line below will force e.preventDefault() on:
+	// touchstart/mousedown/pointerdown events
+	// as well as on:
+	// touchend/mouseup/pointerup events
+	preventObj.prevent = true;
+});
 ```
 
-Some method or property is missing? Know how this page can be improved? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
+Some method or property is missing? Found a grammatical mistake? Know how this page can be improved? [Please suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
 
