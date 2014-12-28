@@ -1,4 +1,4 @@
-/*! PhotoSwipe Default UI - 4.0.2 - 2014-12-25
+/*! PhotoSwipe Default UI - 4.0.2 - 2014-12-28
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 /**
@@ -23,6 +23,7 @@
 
 var PhotoSwipeUI_Default =
  function(pswp, framework) {
+
 
 	var ui = this;
 	var _overlayUIUpdated = false,
@@ -513,7 +514,7 @@ var PhotoSwipeUI_Default =
 			if(pswp.getZoomLevel() !== initialZoomLevel) {
 				pswp.zoomTo(initialZoomLevel, point, 333);
 			} else {
-				pswp.zoomTo( initialZoomLevel < 0.7 ? 1 : 1.5, point, 333);
+				pswp.zoomTo(pswp.options.getDoubleTapZoom(false, pswp.currItem), point, 333);
 			}
 		});
 
@@ -557,7 +558,7 @@ var PhotoSwipeUI_Default =
 			if(_fullscrenAPI) {
 				framework.unbind(document, _fullscrenAPI.eventK, ui.updateFullscreen);
 				if(_fullscrenAPI.isFullscreen()) {
-					_options.hideAnimationDuration = 0;
+					pswp.options.hideAnimationDuration = 0;
 					_fullscrenAPI.exit();
 				}
 				_fullscrenAPI = null;

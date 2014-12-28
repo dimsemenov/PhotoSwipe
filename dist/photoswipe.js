@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.2 - 2014-12-25
+/*! PhotoSwipe - v4.0.2 - 2014-12-28
 * http://photoswipe.com
 * Copyright (c) 2014 Dmitry Semenov; */
 (function (root, factory) { 
@@ -328,6 +328,13 @@ var _options = {
 	panEndFriction: 0.35,
 	isClickableElement: function(el) {
         return el.tagName === 'A';
+    },
+    getDoubleTapZoom: function(isMouseClick, item) {
+    	if(isMouseClick) {
+    		return 1;
+    	} else {
+    		return item.initialZoomLevel < 0.7 ? 1 : 1.5;
+    	}
     },
 
 	// not fully implemented yet
@@ -3294,11 +3301,13 @@ _registerModule('DesktopZoom', {
 
 		toggleDesktopZoom: function(centerPoint) {
 			centerPoint = centerPoint || {x:_viewportSize.x/2, y:_viewportSize.y/2 + _initalWindowScrollY };
-			var zoomOut = _currZoomLevel === 1;
+
+			var doubleTapZoomLevel = _options.getDoubleTapZoom(true, self.currItem);
+			var zoomOut = _currZoomLevel === doubleTapZoomLevel;
 			
 			self.mouseZoomedIn = !zoomOut;
 
-			self.zoomTo(zoomOut ? self.currItem.initialZoomLevel : 1, centerPoint, 333);
+			self.zoomTo(zoomOut ? self.currItem.initialZoomLevel : doubleTapZoomLevel, centerPoint, 333);
 			framework[ (!zoomOut ? 'add' : 'remove') + 'Class'](template, 'pswp--zoomed-in');
 		}
 
