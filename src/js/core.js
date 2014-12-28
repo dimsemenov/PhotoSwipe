@@ -31,6 +31,13 @@ var _options = {
 	isClickableElement: function(el) {
         return el.tagName === 'A';
     },
+    getDoubleTapZoom: function(isMouseClick, item) {
+    	if(isMouseClick) {
+    		return 1;
+    	} else {
+    		return item.initialZoomLevel < 0.7 ? 1 : 1.5;
+    	}
+    },
 
 	// not fully implemented yet
 	scaleMode: 'fit', // TODO

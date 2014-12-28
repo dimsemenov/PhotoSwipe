@@ -126,11 +126,13 @@ _registerModule('DesktopZoom', {
 
 		toggleDesktopZoom: function(centerPoint) {
 			centerPoint = centerPoint || {x:_viewportSize.x/2, y:_viewportSize.y/2 + _initalWindowScrollY };
-			var zoomOut = _currZoomLevel === 1;
+
+			var doubleTapZoomLevel = _options.getDoubleTapZoom(true, self.currItem);
+			var zoomOut = _currZoomLevel === doubleTapZoomLevel;
 			
 			self.mouseZoomedIn = !zoomOut;
 
-			self.zoomTo(zoomOut ? self.currItem.initialZoomLevel : 1, centerPoint, 333);
+			self.zoomTo(zoomOut ? self.currItem.initialZoomLevel : doubleTapZoomLevel, centerPoint, 333);
 			framework[ (!zoomOut ? 'add' : 'remove') + 'Class'](template, 'pswp--zoomed-in');
 		}
 

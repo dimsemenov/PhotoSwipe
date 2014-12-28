@@ -127,6 +127,47 @@ Spacing ratio between slides. For example, `0.12` will render as a 12% of slidin
 Allow swipe navigation to next/prev item when current item is zoomed. Option is always `false` on devices that don't have hardware touch support.
 
 
+### `getDoubleTapZoom` <code class="default">function</code>
+
+Function should return zoom level to which image will be zoomed after double-tap gesture, or when user clicks on zoom icon, or mouse-click on image itself. If you return `1` image will be zoomed to its original size.
+
+Default value:
+
+```javascript
+getDoubleTapZoom: function(isMouseClick, item) {
+
+	// isMouseClick          - true if mouse, false if double-tap
+	// item                  - slide object that is zoomed, usually current
+	// item.initialZoomLevel - initial scale ratio of image
+	// 						   e.g. if viewport is 700px and image is 1400px,
+	// 						   		initialZoomLevel will be 0.5
+
+	if(isMouseClick) {
+
+		// is mouse click on image or zoom icon
+		
+		// zoom to original
+		return 1;
+
+		// e.g. for 1400px image:
+		// 0.5 - zooms to 700px
+		// 2   - zooms to 2800px
+		
+	} else {
+
+		// is double-tap
+		
+		// zoom to original if initial zoom is less than 0.7x,
+		// otherwise to 1.5x, to make sure that double-tap gesture always zooms image
+		return item.initialZoomLevel < 0.7 ? 1 : 1.5;
+	}
+}
+```
+
+Function is called each time zoom-in animation is initiated. So feel free to return different values for different images based on their size or screen DPI.
+
+
+
 ### `loop` <code class="default">boolean</code> <code class="default">true</code>
 
 Loop slides when using swipe gesture. If set to `true` you'll be able to swipe from last to first image. Option is always `false` when there are less than 3 slides.
