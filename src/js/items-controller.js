@@ -325,8 +325,10 @@ _registerModule('Controller', {
 
 		setContent: function(holder, index) {
 
-			if(_options.loop) {
-				index = _getLoopedId(index);
+			if(_options.loop) {		
+				looped_index = _getLoopedId(index);
+				if (index !== looped_index) _shout('loopedOver');
+				index = looped_index;
 			}
 
 			var prevItem = self.getItemAt(holder.index);
