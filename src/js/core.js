@@ -705,7 +705,9 @@ var publicMethods = {
 
 	goTo: function(index) {
 
-		index = _getLoopedId(index);
+		looped_index = _getLoopedId(index);
+		if (index !== looped_index) _shout('loopedOver');
+		index = looped_index;
 
 		var diff = index - _currentItemIndex;
 		_indexDiff = diff;
