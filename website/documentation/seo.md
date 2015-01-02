@@ -73,7 +73,7 @@ You can go further and use [Schema.org markup for image gallery](http://schema.o
 </div>
 ```
 
-If you don't want thumbnails to be visible on page, e.g. you have 50 images in gallery and you show just first 3 thumbnails + link "view all images (50)", you definately should use [Schema.org markup](http://schema.org/ImageGallery) and you should have all 50 links (with at least `alt` attributes) in DOM (you may hide them with `display:none`). Example:
+If you don't want thumbnails to be visible on page, e.g. you have 50 images in gallery and you show just first 3 thumbnails + link "view all images (50)", you definitely should use [Schema.org markup](http://schema.org/ImageGallery) and you should have all 50 links (with at least `alt` attributes) in DOM (you may hide them with `display:none`). Example:
 
 ```html
 <div itemscope itemtype="http://schema.org/ImageGallery">
