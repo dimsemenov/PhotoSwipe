@@ -383,6 +383,9 @@ a.pswp__share--download:hover {
 .pswp__ui--hidden .pswp__top-bar, .pswp__ui--hidden .pswp__caption, .pswp__ui--hidden .pswp__button--arrow--left, .pswp__ui--hidden .pswp__button--arrow--right {
   opacity: 0.001; }
 
+.pswp__ui--one-slide .pswp__button--arrow--left, .pswp__ui--one-slide .pswp__button--arrow--right, .pswp__ui--one-slide .pswp__counter {
+  display: none; }
+
 .pswp__element--disabled {
   display: none !important; }
 
