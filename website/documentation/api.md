@@ -93,6 +93,9 @@ pswp.applyZoomPan(zoomLevel, panX, panY);
 // current slide object
 pswp.currItem
 
+// items array (slides, images)
+pswp.items
+
 // size of sliding viewport
 pswp.viewportSize
 
@@ -109,11 +112,18 @@ pswp.bg
 // container element (pswp__container)
 pswp.container
 
+// options
+pswp.options
+
+
 
 // Even though methods below aren't technically properties, we list them here:
 
 // current item index (int)
 pswp.getCurrentIndex();
+
+// total number of items
+pswp.options.getNumItemsFn()
 
 // current zoom level (number)
 pswp.getZoomLevel();
@@ -260,5 +270,33 @@ pswp.listen('shareLinkClick', function(e, target) {
 
 ```
 
-Some method or property is missing? Found a grammatical mistake? Know how this page can be improved? [Please suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
+## Adding slides dynamically
+
+To add, or edit, or remove slides after PhotoSwipe is opened you just need to modify `items` array. For example you can push new slide object like so:
+
+```javascript
+pswp.items.push({
+    src: "path/to/image.jpg", 
+    w:1200,
+    h:500 
+});
+```
+
+If you changed slide that is CURRENT, NEXT or PREVIOUS (which you should try to avoid) &ndash; you need to call method that will update their content:
+
+```javascript
+// sets a flag that slides should be updated
+pswp.invalidateCurrItems();
+// updates the content of slides
+pswp.updateSize(true);
+```
+
+Otherwise, you don't need to do anything else. Except, maybe, calling `pswp.ui.update()` if you want some parts of default UI to update (e.g. "1 of X" counter). Also note:
+
+- You can't reassign whole array, you can only modify it (e.g. use `splice` to remove elements).
+- If you're going to remove current slide &ndash; call `goTo` method before.
+- There must be at least one slide.
+- This technique is used to [serve responsive images](responsive-images.html).
+
+Some method or property is missing? Found a grammatical mistake? Know how this page can be improved? [Please suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/api.md)
 

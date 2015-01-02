@@ -246,18 +246,7 @@ var slides = [
 ];
 ```
 
-You can dynamically add more slides to this array (after PhotoSwipe is opened), e.g.:
-
-```javascript
-// just push item to array
-yourPhotoSwipeInstance.items.push({
-    src: "path/to/image.jpg", 
-    w:1200,
-    h:500 
-}); 
-```
-
-Also, you may dynamically define slide object properties directly before PhotoSwipe reads them, use `gettingData` event (more info in [API section of docs](api.html)). For example, this technique can be used to [serve different images](responsive-images.html) for different screen sizes.
+You may dynamically define slide object properties directly before PhotoSwipe reads them, use `gettingData` event (more info in [API section of docs](api.html)). For example, this technique can be used to [serve different images](responsive-images.html) for different screen sizes.
 
 
 ## <a class="anchor" name="dom-to-slide-objects"></a> How to build array of slides from list of links
