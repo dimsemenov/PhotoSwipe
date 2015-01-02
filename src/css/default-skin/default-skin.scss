@@ -548,6 +548,15 @@ a.pswp__share--download {
 	}
 }
 
+// pswp__ui--one-slide class is added when there is just one item in gallery
+.pswp__ui--one-slide {
+	.pswp__button--arrow--left,
+	.pswp__button--arrow--right,
+	.pswp__counter {
+		display: none;
+	}
+}
+
 .pswp__element--disabled {
 	display: none !important;
 }

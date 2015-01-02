@@ -40,6 +40,8 @@ var PhotoSwipeUI_Default =
 		_loadingIndicatorHidden,
 		_loadingIndicatorTimeout,
 
+		_galleryHasOneSlide,
+
 		_options,
 		_defaultUIOptions = {
 			barsSize: {top:44, bottom:'auto'},
@@ -139,9 +141,22 @@ var PhotoSwipeUI_Default =
 		_fitControlsInViewport = function() {
 			return !pswp.likelyTouchDevice || _options.mouseUsed || screen.width > 1200;
 		},
+		_togglePswpClass = function(el, cName, add) {
+			framework[ (add ? 'add' : 'remove') + 'Class' ](el, 'pswp__' + cName);
+		},
 
+		// add class when there is just one item in the gallery
+		// (by default it hides left/right arrows and 1ofX counter)
+		_countNumItems = function() {
+			var hasOneSlide = (_options.getNumItemsFn() === 1);
+
+			if(hasOneSlide !== _galleryHasOneSlide) {
+				_togglePswpClass(_controls, 'ui--one-slide', hasOneSlide);
+				_galleryHasOneSlide = hasOneSlide;
+			}
+		},
 		_toggleShareModalClass = function() {
-			framework[ (_shareModalHidden ? 'add' : 'remove') + 'Class'](_shareModal, 'pswp__share-modal--hidden');
+			_togglePswpClass(_shareModal, 'share-modal--hidden', _shareModalHidden);
 		},
 		_toggleShareModal = function() {
 
@@ -307,7 +322,7 @@ var PhotoSwipeUI_Default =
 		},
 		_toggleLoadingIndicator = function(hide) {
 			if( _loadingIndicatorHidden !== hide ) {
-				framework[ (hide ? 'remove' : 'add') + 'Class' ](_loadingIndicator, 'pswp__preloader--active');
+				_togglePswpClass(_loadingIndicator, 'preloader--active', !hide);
 				_loadingIndicatorHidden = hide;
 			}
 		},
@@ -630,6 +645,8 @@ var PhotoSwipeUI_Default =
 			_shareModalHidden = true;
 		}
 
+		_countNumItems();
+
 		_setupIdle();
 
 		_setupFullscreenAPI();
@@ -639,7 +656,7 @@ var PhotoSwipeUI_Default =
 
 	ui.setIdle = function(isIdle) {
 		_isIdle = isIdle;
-		framework[ (isIdle ? 'add' : 'remove') + 'Class' ](_controls, 'pswp__ui--idle');
+		_togglePswpClass(_controls, 'ui--idle', isIdle);
 	};
 
 	ui.update = function() {
@@ -651,11 +668,7 @@ var PhotoSwipeUI_Default =
 			if(_options.captionEl) {
 				_options.addCaptionHTMLFn(pswp.currItem, _captionContainer);
 
-				if(!pswp.currItem.title) {
-					framework.addClass(_captionContainer, 'pswp__caption--empty');
-				} else {
-					framework.removeClass(_captionContainer, 'pswp__caption--empty');
-				}
+				_togglePswpClass(_captionContainer, 'caption--empty', !pswp.currItem.title);
 			}
 
 			_overlayUIUpdated = true;
@@ -663,10 +676,12 @@ var PhotoSwipeUI_Default =
 		} else {
 			_overlayUIUpdated = false;
 		}
+
+		_countNumItems();
 	};
 
 	ui.updateFullscreen = function() {
-		framework[ (_fullscrenAPI.isFullscreen() ? 'add' : 'remove') + 'Class' ](pswp.template, 'pswp--fs');
+		_togglePswpClass(pswp.template, 'fs', _fullscrenAPI.isFullscreen());
 	};
 
 	ui.updateIndexIndicator = function() {
@@ -724,7 +739,7 @@ var PhotoSwipeUI_Default =
 		var target = e.target || e.srcElement;
 
 		// add class when mouse is over an element that should close the gallery
-		framework[ (_hasCloseClass(target) ? 'add' : 'remove') + 'Class'](_controls, 'pswp__ui--over-close');
+		_togglePswpClass(_controls, 'ui--over-close', _hasCloseClass(target));
 	};
 
 	ui.hideControls = function() {
