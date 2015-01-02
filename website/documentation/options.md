@@ -319,6 +319,10 @@ tapToClose: false,
 // Tap should toggle visibility of controls
 tapToToggleControls: true,
 
+// Separator for "1 of X" counter
+indexIndicatorSep: ' / ',
+
+
 // Share buttons
 // 
 // Available variables for URL:
@@ -333,8 +337,31 @@ shareButtons: [
 	{id:'download', label:'Download image', url:'{{raw_image_url}}', download:true}
 ],
 
-// Separator for "1 of X" counter
-indexIndicatorSep: ' / '
+// Next 3 functions return data for share links
+// 
+// functions are triggered after click on button that opens share modal,
+// which means that data should be about current (active) slide
+getImageURLForShare: function( shareButtonData ) {
+	// `shareButtonData` - object from shareButtons array
+	// 
+	// `pswp` is the gallery instance object,
+	// you should define it by yourself
+	// 
+	return pswp.currItem.src || '';
+},
+getPageURLForShare: function( shareButtonData ) {
+	return window.location.href;
+},
+getTextForShare: function( shareButtonData ) {
+	return pswp.currItem.title || '';
+},
+
+// Parse output of share links
+parseShareButtonOut: function(shareButtonData, shareButtonOut) {
+	// `shareButtonData` - object from shareButtons array
+	// `shareButtonOut` - raw string of share link element
+	return shareButtonOut;
+}
 ```
 
 Know how this page can be improved? Found typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)

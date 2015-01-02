@@ -75,6 +75,16 @@ var PhotoSwipeUI_Default =
 													'?url={{url}}&media={{image_url}}&description={{text}}'},
 				{id:'download', label:'Download image', url:'{{raw_image_url}}', download:true}
 			],
+			getImageURLForShare: function( /* shareButtonData */ ) {
+				return pswp.currItem.src || '';
+			},
+			getPageURLForShare: function( /* shareButtonData */ ) {
+				return window.location.href;
+			},
+			getTextForShare: function( /* shareButtonData */ ) {
+				return pswp.currItem.title || '';
+			},
+				
 			indexIndicatorSep: ' / '
 
 		},
@@ -183,20 +193,31 @@ var PhotoSwipeUI_Default =
 		_updateShareURLs = function() {
 			var shareButtonOut = '',
 				shareButtonData,
-				shareURL;
+				shareURL,
+				image_url,
+				page_url,
+				share_text;
 
-			for(var i = 0; i < pswp.options.shareButtons.length; i++) {
-				shareButtonData = pswp.options.shareButtons[i];
+			for(var i = 0; i < _options.shareButtons.length; i++) {
+				shareButtonData = _options.shareButtons[i];
 
-				shareURL = shareButtonData.url.replace('{{url}}', encodeURIComponent(window.location.href) )
-									.replace('{{image_url}}', encodeURIComponent(pswp.currItem.src || '') )
-									.replace('{{raw_image_url}}', pswp.currItem.src || '' )
-									.replace('{{text}}', encodeURIComponent(pswp.currItem.title || '') );
+				image_url = _options.getImageURLForShare(shareButtonData);
+				page_url = _options.getPageURLForShare(shareButtonData);
+				share_text = _options.getTextForShare(shareButtonData);
+
+				shareURL = shareButtonData.url.replace('{{url}}', encodeURIComponent(page_url) )
+									.replace('{{image_url}}', encodeURIComponent(image_url) )
+									.replace('{{raw_image_url}}', image_url )
+									.replace('{{text}}', encodeURIComponent(share_text) );
 
 				shareButtonOut += '<a href="' + shareURL + '" target="_blank" '+
 									'class="pswp__share--' + shareButtonData.id + '"' +
 									(shareButtonData.download ? 'download' : '') + '>' + 
 									shareButtonData.label + '</a>';
+
+				if(_options.parseShareButtonOut) {
+					shareButtonOut = _options.parseShareButtonOut(shareButtonData, shareButtonOut);
+				}
 			}
 			_shareModal.children[0].innerHTML = shareButtonOut;
 			_shareModal.children[0].onclick = _openWindowPopup;
