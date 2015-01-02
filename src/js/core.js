@@ -868,18 +868,22 @@ var publicMethods = {
 		if(_containerShiftIndex !== undefined) {
 
 			var holder,
-				item;
+				item,
+				hIndex;
 
 			for(var i = 0; i < NUM_HOLDERS; i++) {
 				holder = _itemHolders[i];
 				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, holder.el.style);
 
-				// update zoom level on items and refresh source (if needsUpdate)
-				item = _getItemAt( holder.index );
-				if(item.needsUpdate) {
-					self.cleanSlide( item ); 
+				hIndex = holder.index === -1 ? (_currentItemIndex+i-1) : holder.index;
 
-					self.setContent( holder, holder.index );
+				// update zoom level on items and refresh source (if needsUpdate)
+				item = _getItemAt( hIndex );
+
+				if(item.needsUpdate) {
+
+					self.cleanSlide( item ); 
+					self.setContent( holder, hIndex );
 
 					// if "center" slide
 					if(i === 1) {
@@ -887,6 +891,9 @@ var publicMethods = {
 					}
 
 					item.needsUpdate  = false;
+				} else if(holder.index === -1 && hIndex >= 0) {
+					// add content first time
+					self.setContent( holder, hIndex );
 				}
 				if(item && item.container) {
 					_calculateItemSize(item, _viewportSize);
