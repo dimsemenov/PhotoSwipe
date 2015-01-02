@@ -158,6 +158,8 @@ var PhotoSwipeUI_Default =
 			e = e || window.event;
 			var target = e.target || e.srcElement;
 
+			pswp.shout('shareLinkClick', e, target);
+
 			if(!target.href) {
 				return false;
 			}

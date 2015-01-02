@@ -241,6 +241,23 @@ pswp.listen('preventDragEvent', function(e, isDown, preventObj) {
 	// touchend/mouseup/pointerup events
 	preventObj.prevent = true;
 });
+
+
+
+// Default UI events
+// -------------------------
+
+// Share link clicked
+pswp.listen('shareLinkClick', function(e, target) { 
+	// e - original click event
+	// target - link that was clicked
+
+	// If `target` has `href` attribute and 
+	// does not have `download` attribute - 
+	// share modal window will popup
+});
+
+
 ```
 
 Some method or property is missing? Found a grammatical mistake? Know how this page can be improved? [Please suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
