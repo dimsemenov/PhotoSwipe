@@ -91,6 +91,9 @@ _registerModule('DesktopZoom', {
 		handleMouseWheel: function(e) {
 
 			if(_currZoomLevel <= self.currItem.fitRatio) {
+				if(!_options.closeOnScroll) {
+					e.preventDefault();
+				}
 				return true;
 			}
 
