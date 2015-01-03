@@ -190,6 +190,10 @@ var _isOpen,
 			p1.id = p2.id;
 		}
 	},
+	_roundPoint = function(p) {
+		p.x = Math.round(p.x);
+		p.y = Math.round(p.y);
+	},
 
 	_mouseMoveTimeout = null,
 	_onFirstMouseMove = function() {
@@ -944,6 +948,8 @@ var publicMethods = {
 			x: _panOffset.x,
 			y: _panOffset.y
 		};
+
+		_roundPoint(destPanOffset);
 
 		//_startZoomLevel = destZoomLevel;
 		var onUpdate = function(now) {

@@ -587,9 +587,11 @@ var _gestureStartTime,
 			var mainScrollChanged = _panOrMoveMainScroll('x', delta);
 			if(!mainScrollChanged) {
 				_panOrMoveMainScroll('y', delta);
+
+				_roundPoint(_panOffset);
+				_applyCurrentZoomPan();
 			}
-				
-			_applyCurrentZoomPan();
+
 		}
 
 	},
@@ -872,6 +874,7 @@ var _gestureStartTime,
 					s.speedDecelerationRatioAbs[axis] = Math.abs(s.lastFlickSpeed[axis] * s.speedDecelerationRatio[axis]);
 					s.distanceOffset[axis] = s.lastFlickSpeed[axis] * s.speedDecelerationRatio[axis] * s.timeDiff;
 					_panOffset[axis] += s.distanceOffset[axis];
+
 				}
 			},
 
@@ -893,6 +896,12 @@ var _gestureStartTime,
 
 
 					if (s.speedDecelerationRatioAbs.x < 0.05 && s.speedDecelerationRatioAbs.y < 0.05) {
+
+						// round pan position
+						_panOffset.x = Math.round(_panOffset.x);
+						_panOffset.y = Math.round(_panOffset.y);
+						_applyCurrentZoomPan();
+						
 						_stopAnimation('zoomPan');
 						return;
 					}
