@@ -488,6 +488,10 @@ var _isOpen,
 			p1.id = p2.id;
 		}
 	},
+	_roundPoint = function(p) {
+		p.x = Math.round(p.x);
+		p.y = Math.round(p.y);
+	},
 
 	_mouseMoveTimeout = null,
 	_onFirstMouseMove = function() {
@@ -1243,6 +1247,8 @@ var publicMethods = {
 			y: _panOffset.y
 		};
 
+		_roundPoint(destPanOffset);
+
 		//_startZoomLevel = destZoomLevel;
 		var onUpdate = function(now) {
 			if(now === 1) {
@@ -1864,9 +1870,11 @@ var _gestureStartTime,
 			var mainScrollChanged = _panOrMoveMainScroll('x', delta);
 			if(!mainScrollChanged) {
 				_panOrMoveMainScroll('y', delta);
+
+				_roundPoint(_panOffset);
+				_applyCurrentZoomPan();
 			}
-				
-			_applyCurrentZoomPan();
+
 		}
 
 	},
@@ -2149,6 +2157,7 @@ var _gestureStartTime,
 					s.speedDecelerationRatioAbs[axis] = Math.abs(s.lastFlickSpeed[axis] * s.speedDecelerationRatio[axis]);
 					s.distanceOffset[axis] = s.lastFlickSpeed[axis] * s.speedDecelerationRatio[axis] * s.timeDiff;
 					_panOffset[axis] += s.distanceOffset[axis];
+
 				}
 			},
 
@@ -2170,6 +2179,12 @@ var _gestureStartTime,
 
 
 					if (s.speedDecelerationRatioAbs.x < 0.05 && s.speedDecelerationRatioAbs.y < 0.05) {
+
+						// round pan position
+						_panOffset.x = Math.round(_panOffset.x);
+						_panOffset.y = Math.round(_panOffset.y);
+						_applyCurrentZoomPan();
+						
 						_stopAnimation('zoomPan');
 						return;
 					}
