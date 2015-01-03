@@ -18,7 +18,7 @@ module.exports = function(grunt) {
 
       "auto: true \r\n"+
       "pswpversion: <%= pkg.version %> \r\n"+
-      "siteversion: 1.0.3 \r\n"+
+      "siteversion: 1.0.4 \r\n"+
       "markdown: redcarpet \r\n"+
       "kramdown: \r\n"+
       "  input: GFM \r\n";
