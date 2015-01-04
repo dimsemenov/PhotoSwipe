@@ -72,7 +72,7 @@ var _getItemAt,
 				var vRatio = _tempPanAreaSize.y / item.h;
 
 				item.fitRatio = hRatio < vRatio ? hRatio : vRatio;
-				item.fillRatio = hRatio > vRatio ? hRatio : vRatio;
+				//item.fillRatio = hRatio > vRatio ? hRatio : vRatio;
 
 				var scaleMode = _options.scaleMode;
 
@@ -80,19 +80,17 @@ var _getItemAt,
 					zoomLevel = 1;
 				} else if (scaleMode === 'fit') {
 					zoomLevel = item.fitRatio;
-				} else if (scaleMode === 'fill') {
-					zoomLevel = item.fillRatio;
 				}
 
 				if (zoomLevel > 1) {
 					zoomLevel = 1;
 				}
+
 				item.initialZoomLevel = zoomLevel;
-				item.maxZoom = 2;
-				item.minZoom = zoomLevel;
 				
 				if(!item.bounds) {
-					item.bounds = _getZeroBounds(); // reuse bounds object
+					// reuse bounds object
+					item.bounds = _getZeroBounds(); 
 				}
 			}
 
@@ -109,7 +107,7 @@ var _getItemAt,
 			return item.bounds;
 		} else {
 			item.w = item.h = 0;
-			item.initialZoomLevel = item.maxZoom = item.minZoom = item.fitRatio = item.fillRatio = 1;
+			item.initialZoomLevel = item.fitRatio = 1;
 			item.bounds = _getZeroBounds();
 			item.initialPosition = item.bounds.center;
 

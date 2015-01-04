@@ -482,32 +482,35 @@ var _gestureStartTime,
 			}
 
 			// Apply the friction if zoom level is out of the bounds
-			var zoomFriction = 1;
-			if ( zoomLevel < self.currItem.minZoom ) {
+			var zoomFriction = 1,
+				minZoomLevel = _getMinZoomLevel(),
+				maxZoomLevel = _getMaxZoomLevel();
+
+			if ( zoomLevel < minZoomLevel ) {
 				
 				if(_options.pinchToClose && !_wasOverInitialZoom && _startZoomLevel <= self.currItem.initialZoomLevel) {
 					// fade out background if zooming out
-					var minusDiff = self.currItem.minZoom - zoomLevel;
-					var percent = 1 - minusDiff / (self.currItem.minZoom / 1.2);
+					var minusDiff = minZoomLevel - zoomLevel;
+					var percent = 1 - minusDiff / (minZoomLevel / 1.2);
 
 					_applyBgOpacity(percent);
 					_shout('onPinchClose', percent);
 					_opacityChanged = true;
 				} else {
-					zoomFriction = (self.currItem.minZoom - zoomLevel) / (self.currItem.minZoom);
+					zoomFriction = (minZoomLevel - zoomLevel) / minZoomLevel;
 					if(zoomFriction > 1) {
 						zoomFriction = 1;
 					}
-					zoomLevel = self.currItem.minZoom - (zoomFriction) * (self.currItem.minZoom / 3);
+					zoomLevel = minZoomLevel - zoomFriction * (minZoomLevel / 3);
 				}
 				
-			} else if ( zoomLevel > self.currItem.maxZoom ) {
+			} else if ( zoomLevel > maxZoomLevel ) {
 				// 1.5 - extra zoom level above the max. E.g. if max is x6, real max 6 + 1.5 = 7.5
-				zoomFriction = (zoomLevel - self.currItem.maxZoom) / ( self.currItem.minZoom * 6 );
+				zoomFriction = (zoomLevel - maxZoomLevel) / ( minZoomLevel * 6 );
 				if(zoomFriction > 1) {
 					zoomFriction = 1;
 				}
-				zoomLevel = self.currItem.maxZoom + (zoomFriction) * (self.currItem.minZoom);
+				zoomLevel = maxZoomLevel + zoomFriction * minZoomLevel;
 			}
 
 			if(zoomFriction < 0) {
@@ -1040,19 +1043,21 @@ var _gestureStartTime,
 
 	// Resets zoom if it's out of bounds
 	_completeZoomGesture = function() {
-		var destZoomLevel = _currZoomLevel;
+		var destZoomLevel = _currZoomLevel,
+			minZoomLevel = _getMinZoomLevel(),
+			maxZoomLevel = _getMaxZoomLevel();
 
-		if ( _currZoomLevel < self.currItem.minZoom ) {
-			destZoomLevel = self.currItem.minZoom;
-		} else if ( _currZoomLevel > self.currItem.maxZoom ) {
-			destZoomLevel = self.currItem.maxZoom;
+		if ( _currZoomLevel < minZoomLevel ) {
+			destZoomLevel = minZoomLevel;
+		} else if ( _currZoomLevel > maxZoomLevel ) {
+			destZoomLevel = maxZoomLevel;
 		}
 
 		var destOpacity = 1,
 			onUpdate,
 			initialOpacity = _bgOpacity;
 
-		if(_opacityChanged && !_isZoomingIn && !_wasOverInitialZoom && _currZoomLevel < self.currItem.minZoom) {
+		if(_opacityChanged && !_isZoomingIn && !_wasOverInitialZoom && _currZoomLevel < minZoomLevel) {
 			//_closedByScroll = true;
 			self.close();
 			return true;

@@ -38,6 +38,7 @@ var _options = {
     		return item.initialZoomLevel < 0.7 ? 1 : 1.5;
     	}
     },
+    maxSpreadZoom: 2,
 
 	// not fully implemented yet
 	scaleMode: 'fit', // TODO
@@ -251,6 +252,19 @@ var _isOpen,
 			_currPanBounds = bounds;
 		}
 		return bounds;
+	},
+	
+	_getMinZoomLevel = function(item) {
+		if(!item) {
+			item = self.currItem;
+		}
+		return item.initialZoomLevel;
+	},
+	_getMaxZoomLevel = function(item) {
+		if(!item) {
+			item = self.currItem;
+		}
+		return item.w > 0 ? _options.maxSpreadZoom : 1;
 	},
 
 	// Return true if offset is out of the bounds
