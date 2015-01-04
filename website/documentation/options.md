@@ -127,6 +127,11 @@ Spacing ratio between slides. For example, `0.12` will render as a 12% of slidin
 Allow swipe navigation to next/prev item when current item is zoomed. Option is always `false` on devices that don't have hardware touch support.
 
 
+### `maxSpreadZoom` <code class="default">number</code> <code class="default">2</code>
+
+Maximum zoom level when performing spread (zoom) gesture. `2` means that image can be zoomed 2x from original size. Try to avoid huge values here, as too big image may cause memory issues on mobile (especially on iOS).
+
+
 ### `getDoubleTapZoom` <code class="default">function</code>
 
 Function should return zoom level to which image will be zoomed after double-tap gesture, or when user clicks on zoom icon, or mouse-click on image itself. If you return `1` image will be zoomed to its original size.
@@ -165,6 +170,7 @@ getDoubleTapZoom: function(isMouseClick, item) {
 ```
 
 Function is called each time zoom-in animation is initiated. So feel free to return different values for different images based on their size or screen DPI.
+
 
 
 
