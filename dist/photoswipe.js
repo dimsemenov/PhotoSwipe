@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.3 - 2015-01-04
+/*! PhotoSwipe - v4.0.3 - 2015-01-05
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 (function (root, factory) { 
@@ -372,6 +372,7 @@ var _isOpen,
 	_translatePrefix,
 	_translateSufix,
 	_updateSizeInterval,
+	_itemsNeedUpdate,
 	_currPositionIndex = 0,
 	_offset,
 	_slideSize = _getEmptyPoint(), // size of slide area, including spacing
@@ -1074,7 +1075,9 @@ var publicMethods = {
 		}
 	},
 
+
 	invalidateCurrItems: function() {
+		_itemsNeedUpdate = true;
 		for(var i = 0; i < NUM_HOLDERS; i++) {
 			if( _itemHolders[i].item ) {
 				_itemHolders[i].item.needsUpdate = true;
@@ -1191,22 +1194,28 @@ var publicMethods = {
 				holder = _itemHolders[i];
 				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, holder.el.style);
 
-				hIndex = holder.index === -1 ? (_currentItemIndex+i-1) : holder.index;
+				hIndex = _getLoopedId(_currentItemIndex+i-1);
 
 				// update zoom level on items and refresh source (if needsUpdate)
 				item = _getItemAt( hIndex );
 
-				if(item.needsUpdate) {
+				// re-render gallery item if `needsUpdate`,
+				// or doesn't have `bounds` (entirely new slide object)
+				if(_itemsNeedUpdate || item.needsUpdate || !item.bounds) {
 
-					self.cleanSlide( item ); 
+					if(item) {
+						self.cleanSlide( item );
+					}
+					
 					self.setContent( holder, hIndex );
 
 					// if "center" slide
 					if(i === 1) {
+						self.currItem = item;
 						self.updateCurrZoomItem(true);
 					}
 
-					item.needsUpdate  = false;
+					item.needsUpdate = false;
 				} else if(holder.index === -1 && hIndex >= 0) {
 					// add content first time
 					self.setContent( holder, hIndex );
@@ -1217,6 +1226,7 @@ var publicMethods = {
 				}
 				
 			}
+			_itemsNeedUpdate = false;
 		}	
 
 		_startZoomLevel = _currZoomLevel = self.currItem.initialZoomLevel;
