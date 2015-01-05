@@ -67,11 +67,13 @@ See [issue #657](https://github.com/dimsemenov/PhotoSwipe/issues/657).
 iOS Safari has a bug that freezes GIF images that are shifted outside of the window (or outside of element with `overflow:hidden`). My recommendatiuon is to avoid using animated GIFs in PhotoSwipe at all, as they slow down animation performance in any mobile browser. But if you really need to use it, refer to [this hack](https://github.com/dimsemenov/PhotoSwipe/issues/662#issuecomment-66420874).
 
 
-### Mobile browser crashes when opening PhotoSwipe
+### <a name="mobile-crash"></a> Mobile browser crashes when opening PhotoSwipe
 
-In most of cases, it can happen in iPhone or in old Android phones (before KitKat) with low memory limit. The #1 reason of crash is too big images (usually >2000px), avoid images larger than 1200px for an average 800x600 phone. Crash can also occur if you open PhotoSwipe during some process on your page (this can be initial page load/render, or some complex animation on page), try to delay PhotoSwipe initialization until page is rendered (18-300ms after document.ready), especially if you're opening large images.
+Mostly, it can happen on mobile devices with low memory limit &ndash; iOS Safari, default browser in old Android (before KitKat). The most common reason of crash is too big images (usually larger than 2000x1500px). PhotoSwipe applies hardware-acceleration on images, which consumes more memory than regular image on page, so when you run out of limit browser starts lagging or even crashes.
 
+So [serve responsive images](responsive-images.html), or at least don't serve huge images. Ideally, for an average 900x600 phone you should serve 1200px wide image. Note that if everything works smoothly in iOS Simulator, it doesn't mean that crash won't occure on real device. 
 
+In much more rare cases crash can occur if you open PhotoSwipe during some process on your page (this can be initial page load/render, or some complex animation on page), try to delay PhotoSwipe initialization until page is rendered (18-300ms after document.ready), especially if you are displaying large images.
 
 
 
