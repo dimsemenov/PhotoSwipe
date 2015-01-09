@@ -272,7 +272,7 @@ pswp.listen('shareLinkClick', function(e, target) {
 
 ## Adding slides dynamically
 
-To add, or edit, or remove slides after PhotoSwipe is opened you just need to modify `items` array. For example you can push new slide object like so:
+To add, edit, or remove slides after PhotoSwipe is opened, you just need to modify the `items` array. For example, you can push new slide objects into the `items` array:
 
 ```javascript
 pswp.items.push({
