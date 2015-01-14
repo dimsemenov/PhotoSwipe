@@ -68,7 +68,7 @@ getThumbBoundsFn: function(index) {
 	var rect = thumbnail.getBoundingClientRect(); 
 	
 	// w = width
-	return {x:rect.left, y:rect.top + pageYScroll, w:rect.height};
+	return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
 
 
 	// Good guide on how to get element coordinates:
