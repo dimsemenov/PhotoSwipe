@@ -31,7 +31,7 @@ var photoswipeInstance = new PhotoSwipe( /* ... */ );
 ```javascript
 var pswp = new PhotoSwipe( /* ... */ );
 
-// Intialise and open gallery
+// Initialize and open gallery
 // (you can bind events before this method)
 pswp.init();
 
@@ -39,15 +39,15 @@ pswp.init();
 // @param {int} `index`
 pswp.goTo(index);
 
-// Go to next slide
+// Go to the next slide
 pswp.next();
 
-// Go to previous slide
+// Go to the previous slide
 pswp.prev();
 
 // Update gallery size
 // @param  {boolean} `force` If you set it to `true`, 
-// 							size of gallery will be updated 
+// 							size of the gallery will be updated 
 // 							even if viewport size hasn't changed.
 pswp.updateSize(force);
 
@@ -72,15 +72,15 @@ pswp.destroy()
 // });
 pswp.zoomTo(destZoomLevel, centerPoint, speed, easingFn, updateFn);
 
-// Apply zoom and pan to current slide
+// Apply zoom and pan to the current slide
 // 
 // @param   {number} `zoomLevel`
 // @param   {int}    `panX`
 // @param   {int}    `panY`
 // 
 // For example: `pswp.applyZoomPan(1, 0, 0)`
-// will zoom current image to original size
-// and will place it in top left corner
+// will zoom current image to the original size
+// and will place it on top left corner
 // 
 // 
 pswp.applyZoomPan(zoomLevel, panX, panY);
@@ -159,7 +159,7 @@ Available events:
 ```javascript
 
 // Before slides change
-// (before content is changed, but after navigation)
+// (before the content is changed, but after navigation)
 // Update UI here (like "1 of X" indicator)
 pswp.listen('beforeChange', function() { });
 
@@ -169,7 +169,7 @@ pswp.listen('afterChange', function() { });
 
 // Image loaded
 pswp.listen('imageLoadComplete', function(index, item) { 
-	// index - index of slide that was loaded
+	// index - index of a slide that was loaded
 	// item - slide object
 });
 
@@ -180,10 +180,10 @@ pswp.listen('resize', function() { });
 // which happens before content is set, or before lazy-loading is initiated.
 // Use it to dynamically change properties
 pswp.listen('gettingData', function(index, item) {
-	// index - index of slide that was loaded
+	// index - index of a slide that was loaded
 	// item - slide object
 
-	// e.g. change path to image based on `something`
+	// e.g. change path to the image based on `something`
 	if( something ) {
 		item.src = item.something;
 	} else {

@@ -18,7 +18,7 @@ markdownpage: true
 
 ---
 
-Options are added in key-value pairs and passed as an argument to `PhotoSwipe` contructor, e.g.:
+Options are added in key-value pairs and passed as an argument to `PhotoSwipe` constructor, e.g.:
 
 ```javascript
 var options = {
@@ -46,11 +46,11 @@ Start slide index. `0` is the first slide.
 
 ### `getThumbBoundsFn` <code class="default">function</code> <code class="default">undefined</code>
 
-Function should return object with coordinates from which initial zoom-in animation will start (or zoom-out animation will end). 
+Function should return an object with coordinates from which initial zoom-in animation will start (or zoom-out animation will end). 
 
-Object should contain three properties: `x` (X position, relative to document), `y` (Y position, relative to document), `w` (width of element). Height will be calculated automatically based on size of large image. For example if you return `{x:0,y:0,w:50}` zoom animation will start in top left corner of your page.
+Object should contain three properties: `x` (X position, relative to document), `y` (Y position, relative to document), `w` (width of the element). Height will be calculated automatically based on size of large image. For example if you return `{x:0,y:0,w:50}` zoom animation will start in top left corner of your page.
 
-Function has one argument - `index` of item that is opening or closing.
+Function has one argument - `index` of the item that is opening or closing.
 
 Example that calculates position of thumbnail: 
 
@@ -78,7 +78,7 @@ getThumbBoundsFn: function(index) {
 
 If dimensions of your small thumbnail don't match dimensions of large image, consider enabling zoom+fade transition. You can do this by adding option `showHideOpacity:true` (try adding it to [above CodePen](http://codepen.io/dimsemenov/pen/NPGOob/) to test how it looks). Or disable transition entirely by adding `hideAnimationDuration:0, showAnimationDuration:0`. [More info about this in FAQ](faq.html#different-thumbnail-dimensions).
 
-If you want to "hide" small thumbnail during the animation use `opacity:0`, not `visibility:hidden` or `display:none`. Don't force Paint and Layout at the beginning of animation to avoid lag.
+If you want to "hide" small thumbnail during the animation use `opacity:0`, not `visibility:hidden` or `display:none`. Don't force Paint and Layout at the beginning of the animation to avoid lag.
 
 
 ### `showAnimationDuration` <code class="default">integer</code> <code class="default">333</code>
@@ -103,7 +103,7 @@ If you're using Sass, you just need to change transition-duration variables in [
 
 ### `hideAnimationDuration` <code class="default">integer</code> <code class="default">333</code>
 
-The same as previous option, just for closing (zoom-out) transition. After PhotoSwipe is opened `pswp--open` class will be added to root element, you may use it to apply different transition duration in CSS.
+The same as the previous option, just for closing (zoom-out) transition. After PhotoSwipe is opened `pswp--open` class will be added to the root element, you may use it to apply different transition duration in CSS.
 
 
 ### `showHideOpacity` <code class="default">boolean</code> <code class="default">false</code>
@@ -370,7 +370,7 @@ parseShareButtonOut: function(shareButtonData, shareButtonOut) {
 }
 ```
 
-Know how this page can be improved? Found typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
+Know how this page can be improved? Found a typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
 
 <iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>
 

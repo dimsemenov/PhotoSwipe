@@ -20,24 +20,24 @@ markdownpage: true
 
 First things that you should know before you start:
 
-- PhotoSwipe is made simple and fast for end users, not for developers. It aint simple jQuery plugin, at least basic JavaScript knowledge is required to install.
+- PhotoSwipe is made simple and fast for end users, not for developers. It ain't simple jQuery plugin, at least basic JavaScript knowledge is required to install.
 - PhotoSwipe requires predefined image dimensions. If your app is unable to retrieve them - consider using some other script. [More about this](faq.html#image-size).
-- If you use PhotoSwipe on non-responsive website &ndash; controls will be scaled on mobile (as whole page is scaled). So you'll need to implement custom controls (e.g. single large close button in top right corner).
-- All code in documentation is pure Vanilla JS and supports IE 8 and above. If your website or app uses some JavaScript framework (like jQuery or MooTools), or you don't need to support old browsers – feel free to simplify code.
+- If you use PhotoSwipe on non-responsive website &ndash; controls will be scaled on mobile (as the whole page is scaled). So you'll need to implement custom controls (e.g. single large close button in top right corner).
+- All code in the documentation is pure Vanilla JS and supports IE 8 and above. If your website or app uses some JavaScript framework (like jQuery or MooTools) or you don't need to support old browsers – feel free to simplify the code.
 - Avoid serving big images (larger than 2000x1500px) for mobile, as they will dramatically reduce animation performance and can cause crash (especially on iOS Safari). Possible solutions: [serve responsive images](responsive-images.html), or open image on a separate page, or use libraries that support image tiling (like [Leaflet](http://leafletjs.com/)). [More info in FAQ](faq.html#mobile-crash).
 
 ## Initialization
 
 ### <a name="init-include-files"></a>Step 1: include JS and CSS files
 
-You can find them in [dist/](https://github.com/dimsemenov/PhotoSwipe/tree/master/dist) folder of [GitHub](https://github.com/dimsemenov/PhotoSwipe) repository. Sass and uncompiled JS files are in folder [src/](https://github.com/dimsemenov/PhotoSwipe/tree/master/src). I recommend to use Sass if you're planning to modify existing styles, as code there is structured and commented.
+You can find them in [dist/](https://github.com/dimsemenov/PhotoSwipe/tree/master/dist) folder of [GitHub](https://github.com/dimsemenov/PhotoSwipe) repository. Sass and uncompiled JS files are in folder [src/](https://github.com/dimsemenov/PhotoSwipe/tree/master/src). I recommend using Sass if you're planning to modify existing styles, as code there is structured and commented.
 
 ```html
 <!-- Core CSS file -->
 <link rel="stylesheet" href="path/to/photoswipe.css"> 
 
 <!-- Skin CSS file (optional)
-	 In folder of skin CSS file there are also:
+	 In the folder of skin CSS file there are also:
 	 - .png and .svg icons sprite, 
 	 - preloader.gif (for browsers that do not support CSS animations) -->
 <link rel="stylesheet" href="path/to/default-skin/default-skin.css"> 
@@ -70,21 +70,21 @@ And also, you can install it via Bower (`bower install photoswipe`).
 
 ### <a name="init-add-pswp-to-dom"></a>Step 2: add PhotoSwipe (.pswp) element to DOM 
 
-You can add HTML code dynamically (directly before the initialization), or have it in page initially (like it's done on demo page). This code can be appended anywhere, but ideally before the closing `</body>`. You may reuse it across multiple galleries (as long as you use same UI class).
+You can add HTML code dynamically via JS (directly before the initialization), or have it in the page initially (like it's done on the demo page). This code can be appended anywhere, but ideally before the closing `</body>`. You may reuse it across multiple galleries (as long as you use same UI class).
 
 ```html
 <!-- Root element of PhotoSwipe. Must have class pswp. -->
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
 	<!-- Background of PhotoSwipe. 
-		 It's a separate element, as animating opacity is faster than rgba(). -->
+		 It's a separate element as animating opacity is faster than rgba(). -->
     <div class="pswp__bg"></div>
 
 	<!-- Slides wrapper with overflow:hidden. -->
     <div class="pswp__scroll-wrap">
 
 		<!-- Container that holds slides. 
-			PhotoSwipe keeps only 3 of them in DOM to save memory.
+			PhotoSwipe keeps only 3 of them in the DOM to save memory.
 			Don't modify these 3 pswp__item elements, data is added later on. -->
 		<div class="pswp__container">
 			<div class="pswp__item"></div>
@@ -202,7 +202,7 @@ Each object in the array should contain data about slide, it can be anything tha
 
 By default PhotoSwipe uses just 5 properties: `src` (path to image), `w` (image width), `h` (image height), `msrc` (path to small image placeholder, large image will be loaded on top), 'html' (custom HTML, [more about it](custom-html-in-slides.html)). 
 
-During the navigation PhotoSwipe adds its own properties to this object (like `minZoom` or `loaded`).
+During the navigation, PhotoSwipe adds its own properties to this object (like `minZoom` or `loaded`).
 
 ```javascript
 var slides = [
@@ -226,7 +226,7 @@ var slides = [
 								
 
 		// You may add more properties here and use them.
-		// For example, demo gallery uses "author" property, which is used in caption.
+		// For example, demo gallery uses "author" property, which is used in the caption.
 		// author: 'John Doe'
 		
 	},
@@ -248,9 +248,9 @@ var slides = [
 You may dynamically define slide object properties directly before PhotoSwipe reads them, use `gettingData` event (more info in [API section of docs](api.html)). For example, this technique can be used to [serve different images](responsive-images.html) for different screen sizes.
 
 
-## <a class="anchor" name="dom-to-slide-objects"></a> How to build array of slides from list of links
+## <a class="anchor" name="dom-to-slide-objects"></a> How to build an array of slides from a list of links
 
-Let's assume that you have a list of links/thumbnails that looks like this ([more info about markup of gallery](seo.html)):
+Let's assume that you have a list of links/thumbnails that look like this ([more info about markup of gallery](seo.html)):
 
 ```html
 <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
@@ -273,13 +273,13 @@ Let's assume that you have a list of links/thumbnails that looks like this ([mor
 </div>
  ```
 
-... and you want click on thumbnail to open PhotoSwipe with large image (like it's done on demo page). All you need to do is:
+... and you want click on the thumbnail to open PhotoSwipe with large image (like it's done on a demo page). All you need to do is:
 
 1. Bind click event to links/thumbnails.
 2. After user clicked on on thumbnail, find its index.
 3. Create an array of slide objects from DOM elements – loop through all links and retrieve `href` attribute (large image url), `data-size` attribute (its size), `src` of thumbnail, and contents of caption.
 
-PhotoSwipe doesn't really care how will you do this. If you use framework like jQuery or MooTools, or if you don't need to support IE8, code can be simplified dramatically.
+PhotoSwipe doesn't really care how will you do this. If you use frameworks like jQuery or MooTools, or if you don't need to support IE8, code can be simplified dramatically.
 
 Here is pure Vanilla JS implementation with IE8 support:
 
@@ -498,7 +498,7 @@ Tip: you may download example from CodePen to play with it locally (`Edit on Cod
 
 PhotoSwipe is in beta, please [keep script updated](faq.html#keep-updated), report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask questions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
 
-Know how this page can be improved? Found typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md)
+Know how this page can be improved? Found a typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md)
 
 
 <iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>

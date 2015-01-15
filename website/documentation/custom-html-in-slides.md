@@ -58,10 +58,10 @@ gallery.init();
 Additional important notes:
 
 - To avoid conflicts with third-party modules, slide that has `html` property, should not have `src` (image) property.
-- PhotoSwipe is designed for images, not as a scroller of text content. Use "custom HTML" feature as addition, for example for slide with related galleries, introductory slide, or advertisements BETWEEN images.
-- It's strongly not recommended to add video or audio elements using this method (including YouTube, Vimeo etc. iframes). As HTML5 video blocks touch events over it in many mobile browsers (user won't be able to swipe above it). If you really need to have video in PhotoSwipe, you may add it as modal that appears when user taps on current slide, you can dynamically create modal in DOM and append it after `.pswp__scroll-wrap` element.
+- PhotoSwipe is designed for images, not as a scroller of text content. Use "custom HTML" feature as an addition, for example for slide with related galleries, an introductory slide, or advertisements BETWEEN images.
+- It's strongly not recommended to add video or audio elements using this method (including YouTube, Vimeo etc. iframes). As HTML5 video blocks touch events over it in many mobile browsers (user won't be able to swipe it). If you really need to have video in PhotoSwipe, you may add it as modal that appears when user taps on current slide, you can dynamically create modal in DOM and append it after `.pswp__scroll-wrap` element.
 - If you have initial zoom-in/zoom-out transition enabled, PhotoSwipe will automatically disable it if current slide has `html`, simple fade transition will be used instead. 
-- By default PhotoSwipe will allow click event just on links (`<a>`) and their child elements. To change this behaviour look into `isClickableElement` option or `preventDragEvent` event.
+- By default PhotoSwipe will allow click event just on links (`<a>`) and their child elements. To change this behavior look into `isClickableElement` option or `preventDragEvent` event.
 - Zoom of HTML slides is not supported, yet. 
 
 Example:
@@ -72,7 +72,7 @@ Example:
 	</p>
 </div>
 
-Tip: you may download example from CodePen to play with it locally (`Edit on CodePen` -> `Share` -> `Export .zip`).
+Tip: you may download the example from CodePen to play with it locally (`Edit on CodePen` -> `Share` -> `Export .zip`).
 
 Know how this page can be improved? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/custom-html-in-slides.md)
 

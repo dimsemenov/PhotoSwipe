@@ -18,7 +18,7 @@ markdownpage: true
 
 ---
 
-PhotoSwipe does not force any HTML markup, you have full control. Ideally, you should have list of thumbnails that link to large image, simplest example:
+PhotoSwipe does not force any HTML markup, you have full control. Ideally, you should have a list of thumbnails that link to large image, simplest example:
 
 ```html
 <a href="large-image.jpg">
@@ -95,7 +95,7 @@ If you don't want thumbnails to be visible on page, e.g. you have 50 images in g
 </div>
 ```
 
-In all above cases `large-image.jpg` will be perfectly indexed. The caption element will be crawled even if you hide it with `display:none`, just keep text relevant, non-spammy &ndash; don't stuff it with keywords.
+In all above cases, `large-image.jpg` will be perfectly indexed. The caption element will be crawled even if you hide it with `display:none`, just keep the text relevant, non-spammy &ndash; don't stuff it with keywords.
 
 
 
@@ -103,7 +103,7 @@ In all above cases `large-image.jpg` will be perfectly indexed. The caption elem
 
 - Keep `alt` attribute short and descriptive. Leave long description for caption element.
 - You don't need to create image sitemap if you have links to images or/and valid Schema.org markup, but it can help you [track how well they are indexed](http://webmasters.stackexchange.com/a/5151).
-- Even though search engines index direct link to image file quite well, having a separate HTML page for each image (with descriptive title and description) is better.
+- Even though search engines index direct link to the image file quite well, having a separate HTML page for each image (with descriptive title and description) is better.
 - Feel free to use `srcset` or `<picture>` for thumbnails.
 
 Know how this page can be improved? Found a grammatical mistake? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/seo.md)
