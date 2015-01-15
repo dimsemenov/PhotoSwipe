@@ -278,13 +278,6 @@ Options of `PhotoSwipeUI_Default` (`dist/ui/photoswipe-ui-default.js`).
 // (Also refer to `parseVerticalMargin` event)
 barsSize: {top:44, bottom:'auto'}, 
 
-// Element classes click on which should close the PhotoSwipe.
-// In HTML markup, class should always start with "pswp__", e.g.: "pswp__item", "pswp__caption".
-// 
-// "pswp__ui--over-close" class will be added to root element of UI when mouse is over one of these elements
-// By default it's used to highlight the close button.
-closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'], 
-
 // Adds class pswp__ui--idle to pswp__ui element when mouse isn't moving for 4000ms
 timeToIdle: 4000,
 
@@ -324,6 +317,17 @@ tapToClose: false,
 
 // Tap should toggle visibility of controls
 tapToToggleControls: true,
+
+// Mouse click on image should close the gallery,
+// only when image is smaller than size of the viewport
+clickToCloseNonZoomable: true,
+
+// Element classes click on which should close the PhotoSwipe.
+// In HTML markup, class should always start with "pswp__", e.g.: "pswp__item", "pswp__caption".
+// 
+// "pswp__ui--over-close" class will be added to root element of UI when mouse is over one of these elements
+// By default it's used to highlight the close button.
+closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'], 
 
 // Separator for "1 of X" counter
 indexIndicatorSep: ' / ',

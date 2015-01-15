@@ -71,6 +71,8 @@ var PhotoSwipeUI_Default =
 			tapToClose: false,
 			tapToToggleControls: true,
 
+			clickToCloseNonZoomable: true,
+
 			shareButtons: [
 				{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
 				{id:'twitter', label:'Tweet', url:'https://twitter.com/intent/tweet?text={{text}}&url={{url}}'},
@@ -705,11 +707,14 @@ var PhotoSwipeUI_Default =
 			// close gallery if clicked outside of the image
 			if(_hasCloseClass(target)) {
 				pswp.close();
+				return;
 			}
 
 			if(framework.hasClass(target, 'pswp__img')) {
 				if(pswp.getZoomLevel() === 1 && pswp.getZoomLevel() <= pswp.currItem.fitRatio) {
-					pswp.close();
+					if(_options.clickToCloseNonZoomable) {
+						pswp.close();
+					}
 				} else {
 					pswp.toggleDesktopZoom(e.detail.releasePoint);
 				}
