@@ -107,7 +107,7 @@ var PhotoSwipeUI_Default =
 			e = e || window.event;
 
 			if(_options.timeToIdle && _options.mouseUsed && !_isIdle) {
-				// reset idle timer on click
+				// reset idle timer
 				_onIdleMouseMove();
 			}
 
@@ -682,6 +682,10 @@ var PhotoSwipeUI_Default =
 
 		} else {
 			_overlayUIUpdated = false;
+		}
+
+		if(!_shareModalHidden) {
+			_toggleShareModal();
 		}
 
 		_countNumItems();
