@@ -106,6 +106,11 @@ var PhotoSwipeUI_Default =
 
 			e = e || window.event;
 
+			if(_options.timeToIdle && _options.mouseUsed && !_isIdle) {
+				// reset idle timer on click
+				_onIdleMouseMove();
+			}
+
 
 			var target = e.target || e.srcElement,
 				uiElement,
