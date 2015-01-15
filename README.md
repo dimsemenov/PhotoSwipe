@@ -22,6 +22,7 @@ Optionally, install via Bower: `bower install photoswipe`.
 
 ## Plugins or extensions
 
+- [Eager app](https://eager.io/app/DvuKIoU8iTOt).
 - [Koken CMS plugin](https://github.com/DanielMuller/koken-plugin-photoswipe).
 
 Wrote a plugin for some CMS? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I’ll post a link to it here.
