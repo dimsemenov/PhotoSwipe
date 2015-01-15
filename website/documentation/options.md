@@ -23,7 +23,10 @@ Options are added in key-value pairs and passed as an argument to `PhotoSwipe` c
 ```javascript
 var options = {
 	index: 3,
-	escKey: false
+	escKey: false,
+
+	// ui option
+	timeToIdle: 4000
 };
 var gallery = new PhotoSwipe( someElement, PhotoSwipeUI_Default, someItems, options);
 gallery.init();
@@ -42,7 +45,7 @@ gallery.options.escKey = false;
 
 ### `index` <code class="default">integer</code> <code class="default">0</code>
 
-Start slide index. `0` is the first slide.
+Start slide index. `0` is the first slide. Must be integer, not a string.
 
 ### `getThumbBoundsFn` <code class="default">function</code> <code class="default">undefined</code>
 
@@ -267,7 +270,7 @@ Function should check if the element (`el`) is clickable. If it is &ndash; Photo
 
 ## Default UI Options
 
-Options of `PhotoSwipeUI_Default` (`dist/ui/photoswipe-ui-default.js`).
+Options for `PhotoSwipeUI_Default` (`dist/ui/photoswipe-ui-default.js`) are added the same way and to the same object as core options.
 
 ```javascript
 // Size of top & bottom bars in pixels,
