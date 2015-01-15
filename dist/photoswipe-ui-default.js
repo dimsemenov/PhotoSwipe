@@ -1,4 +1,4 @@
-/*! PhotoSwipe Default UI - 4.0.3 - 2015-01-03
+/*! PhotoSwipe Default UI - 4.0.5 - 2015-01-15
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 /**
@@ -74,6 +74,8 @@ var PhotoSwipeUI_Default =
 			tapToClose: false,
 			tapToToggleControls: true,
 
+			clickToCloseNonZoomable: true,
+
 			shareButtons: [
 				{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
 				{id:'twitter', label:'Tweet', url:'https://twitter.com/intent/tweet?text={{text}}&url={{url}}'},
@@ -106,6 +108,11 @@ var PhotoSwipeUI_Default =
 
 
 			e = e || window.event;
+
+			if(_options.timeToIdle && _options.mouseUsed && !_isIdle) {
+				// reset idle timer
+				_onIdleMouseMove();
+			}
 
 
 			var target = e.target || e.srcElement,
@@ -680,6 +687,10 @@ var PhotoSwipeUI_Default =
 			_overlayUIUpdated = false;
 		}
 
+		if(!_shareModalHidden) {
+			_toggleShareModal();
+		}
+
 		_countNumItems();
 	};
 
@@ -708,11 +719,14 @@ var PhotoSwipeUI_Default =
 			// close gallery if clicked outside of the image
 			if(_hasCloseClass(target)) {
 				pswp.close();
+				return;
 			}
 
 			if(framework.hasClass(target, 'pswp__img')) {
 				if(pswp.getZoomLevel() === 1 && pswp.getZoomLevel() <= pswp.currItem.fitRatio) {
-					pswp.close();
+					if(_options.clickToCloseNonZoomable) {
+						pswp.close();
+					}
 				} else {
 					pswp.toggleDesktopZoom(e.detail.releasePoint);
 				}
