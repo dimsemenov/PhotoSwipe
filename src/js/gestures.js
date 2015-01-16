@@ -1014,6 +1014,8 @@ var _gestureStartTime,
 		}
 		
 		_mainScrollAnimating = true;
+		
+		_shout('mainScrollAnimStart');
 
 		_animateProp('mainScroll', _mainScrollPos.x, animateToX, finishAnimDuration, framework.easing.cubic.out, 
 			_moveMainScroll,
