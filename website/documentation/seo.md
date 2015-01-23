@@ -104,6 +104,7 @@ In all above cases, `large-image.jpg` will be perfectly indexed. The caption ele
 
 - Keep `alt` attribute short and descriptive. Leave long description for caption element.
 - Feel free to use `srcset` or `<picture>` for thumbnails.
+- Twitter has a ["Gallery Card"](https://dev.twitter.com/cards/types/gallery), which allows you to display up to 4 images of gallery when page is shared via Twitter. 
 - [Google image publishing guidelines](https://support.google.com/webmasters/answer/114016).
 - Use [Google](https://developers.google.com/webmasters/structured-data/testing-tool/) or [Yandex](https://webmaster.yandex.com/microtest.xml) structured data testing tool to validate your Schema.org markup. 
 - Optimize images size and format:  
@@ -112,6 +113,7 @@ In all above cases, `large-image.jpg` will be perfectly indexed. The caption ele
 	- If you serve different images for high-DPI screens, reduce their JPEG quality to 20-40% to save file size, [good article about this](http://www.netvlies.nl/blog/design-interactie/retina-revolution). 
 - Even though search engines index direct link to the image file quite well, having a separate HTML page for each image (with descriptive title, description and comments) is better.
 - You don't need to create image sitemap if you have links to images or/and valid Schema.org markup, but it can help you [track how well they are indexed](http://webmasters.stackexchange.com/a/5151).
+
 
 
 Know how this page can be improved? [Please suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/seo.md)
