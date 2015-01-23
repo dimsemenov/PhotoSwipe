@@ -36,7 +36,7 @@ You can find them in [dist/](https://github.com/dimsemenov/PhotoSwipe/tree/maste
 <!-- Core CSS file -->
 <link rel="stylesheet" href="path/to/photoswipe.css"> 
 
-<!-- Skin CSS file (optional)
+<!-- Skin CSS file (styling of UI - buttons, caption, etc.)
 	 In the folder of skin CSS file there are also:
 	 - .png and .svg icons sprite, 
 	 - preloader.gif (for browsers that do not support CSS animations) -->
@@ -255,14 +255,14 @@ Let's assume that you have a list of links/thumbnails that look like this ([more
 ```html
 <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
 
-	<figure itemscope itemtype="http://schema.org/ImageObject">
+	<figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
 		<a href="large-image.jpg" itemprop="contentUrl" data-size="600x400">
 		    <img src="small-image.jpg" itemprop="thumbnail" alt="Image description" />
 		</a>
 		<figcaption itemprop="caption description">Image caption</figcaption>
 	</figure>
 
-	<figure itemscope itemtype="http://schema.org/ImageObject">
+	<figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
 		<a href="large-image.jpg" itemprop="contentUrl" data-size="600x400">
 		    <img src="small-image.jpg" itemprop="thumbnail" alt="Image description" />
 		</a>

@@ -18,7 +18,7 @@ markdownpage: true
 
 ---
 
-PhotoSwipe does not force any HTML markup, you have full control. Ideally, you should have a list of thumbnails that link to large image, simplest example:
+PhotoSwipe does not force any HTML markup, you have full control. Simplest markup is a list of thumbnails that link to large image, simplest example:
 
 ```html
 <a href="large-image.jpg">
@@ -39,12 +39,12 @@ If you have long caption that doesn't fit in `alt` or it just contains HTML tags
 ...
 ```
 
-You can go further and use [Schema.org markup for image gallery](http://schema.org/ImageGallery) and [Image Object](http://schema.org/ImageObject), it should look like this:
+You can go further and use [Schema.org markup for ImageGallery](http://schema.org/ImageGallery) and [ImageObject](http://schema.org/ImageObject), it should look like this:
 
 ```html
 <div itemscope itemtype="http://schema.org/ImageGallery">
 
-	<figure itemscope itemtype="http://schema.org/ImageObject">
+	<figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
 		<a href="large-image.jpg" itemprop="contentUrl">
 		    <img src="small-image.jpg" itemprop="thumbnail" alt="Image description" />
 		</a>
@@ -61,30 +61,30 @@ You can go further and use [Schema.org markup for image gallery](http://schema.o
 		</figcaption>
 	</figure>
 
-	<figure itemscope itemtype="http://schema.org/ImageObject">
+	<figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
 		<a href="large-image.jpg" itemprop="contentUrl">
 		    <img src="small-image.jpg" itemprop="thumbnail" alt="Image description" />
 		</a>
 		<figcaption itemprop="caption description">Long image description</figcaption>
 	</figure>
 
-	...
+	...x
 
 </div>
 ```
 
-If you don't want thumbnails to be visible on page, e.g. you have 50 images in gallery and you show just first 3 thumbnails + link "view all images (50)", you definitely should use [Schema.org markup](http://schema.org/ImageGallery) and you should have all 50 links (with at least `alt` attributes) in DOM (you may hide them with `display:none`). Example:
+If you don't want thumbnails to be visible on page, e.g. you have 50 images in gallery and you show just first 3 thumbnails + link "view all images (50)", you definitely should use [Schema.org markup](http://schema.org/ImageGallery) and you should have all 50 links (with text in contents of link element instead of thumbnail) in DOM (you may hide them with `display:none`). Example:
 
 ```html
 <div itemscope itemtype="http://schema.org/ImageGallery">
 
-	<figure itemscope itemtype="http://schema.org/ImageObject">
+	<figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
 		<a href="large-image-1.jpg" itemprop="contentUrl">
 		    <figcaption itemprop="caption description">Long image description 1</figcaption>
 		</a>
 	</figure>
 
-	<figure itemscope itemtype="http://schema.org/ImageObject">
+	<figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
 		<a href="large-image-2.jpg" itemprop="contentUrl">
 		    <figcaption itemprop="caption description">Long image description 2</figcaption>
 		</a>
@@ -101,12 +101,20 @@ In all above cases, `large-image.jpg` will be perfectly indexed. The caption ele
 
 ### Additional recommendations
 
-- Keep `alt` attribute short and descriptive. Leave long description for caption element.
-- You don't need to create image sitemap if you have links to images or/and valid Schema.org markup, but it can help you [track how well they are indexed](http://webmasters.stackexchange.com/a/5151).
-- Even though search engines index direct link to the image file quite well, having a separate HTML page for each image (with descriptive title and description) is better.
-- Feel free to use `srcset` or `<picture>` for thumbnails.
 
-Know how this page can be improved? Found a grammatical mistake? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/seo.md)
+- Keep `alt` attribute short and descriptive. Leave long description for caption element.
+- Feel free to use `srcset` or `<picture>` for thumbnails.
+- [Google image publishing guidelines](https://support.google.com/webmasters/answer/114016).
+- Use [Google](https://developers.google.com/webmasters/structured-data/testing-tool/) or [Yandex](https://webmaster.yandex.com/microtest.xml) structured data testing tool to validate your Schema.org markup. 
+- Optimize images size and format:  
+	- [Good guide by Ilya Grigorik](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/image-optimization).
+	- Tools: for Mac there is [ImageOptim](https://imageoptim.com/), for Windows &ndash; [FileOptimizer](http://nikkhokkho.sourceforge.net/static.php?page=FileOptimizer) or [JPEGmini](http://www.jpegmini.com/windows) (limited lite version). Also there are a bunch of server-side/command-line tools like [ImageMagick](http://www.imagemagick.org/) or [jpegtran](http://jpegclub.org/jpegtran/).
+	- If you serve different images for high-DPI screens, reduce their JPEG quality to 20-40% to save file size, [good article about this](http://www.netvlies.nl/blog/design-interactie/retina-revolution). 
+- Even though search engines index direct link to the image file quite well, having a separate HTML page for each image (with descriptive title, description and comments) is better.
+- You don't need to create image sitemap if you have links to images or/and valid Schema.org markup, but it can help you [track how well they are indexed](http://webmasters.stackexchange.com/a/5151).
+
+
+Know how this page can be improved? [Please suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/seo.md)
 
 
 
