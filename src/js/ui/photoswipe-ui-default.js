@@ -354,7 +354,7 @@ var PhotoSwipeUI_Default =
 						gap.bottom = bars.top; // if no caption, set size of bottom gap to size of top
 					}
 				} else {
-					gap.bottom = bars.bottom;
+					gap.bottom = bars.bottom === 'auto' ? 0 : bars.bottom;
 				}
 				
 				// height of top bar is static, no need to calculate it
