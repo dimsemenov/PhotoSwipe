@@ -307,7 +307,6 @@ a.pswp__share--download:hover {
   0% {
     -webkit-transform: rotate(0deg);
             transform: rotate(0deg); }
-
   100% {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg); } }
@@ -325,11 +324,9 @@ a.pswp__share--download:hover {
   0% {
     -webkit-transform: rotate(0);
             transform: rotate(0); }
-
   50% {
     -webkit-transform: rotate(-140deg);
             transform: rotate(-140deg); }
-
   100% {
     -webkit-transform: rotate(0);
             transform: rotate(0); } }
