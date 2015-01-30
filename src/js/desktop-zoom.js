@@ -124,7 +124,25 @@ _registerModule('DesktopZoom', {
 		
 			// TODO: use rAF instead of mousewheel?
 			_calculatePanBounds(_currZoomLevel, true);
-			self.panTo(_panOffset.x - _wheelDelta.x, _panOffset.y - _wheelDelta.y);
+			if (_options.mouseWheelZoom) {
+				var zoomTarget = {x:_viewportSize.x/2, y:_viewportSize.y/2 + _initalWindowScrollY };
+
+				if ('clientX' in e) {
+					zoomTarget = {
+						x: e.clientX, // what about horizontally scrolling sites?
+						y: e.clientY + _initalWindowScrollY
+					};
+				}
+
+				var deltaWheelDirection = (_wheelDelta.y) < 0 ? -1 : 1;
+				// move increment to options?
+				var deltaWheelZoom = _currZoomLevel - deltaWheelDirection * 0.5;
+				var destZoomLevel = Math.min(Math.max(1, deltaWheelZoom), _options.maxSpreadZoom);
+
+				self.zoomTo(destZoomLevel, zoomTarget, 333);
+			} else {
+				self.panTo(_panOffset.x - _wheelDelta.x, _panOffset.y - _wheelDelta.y);
+			}
 		},
 
 		toggleDesktopZoom: function(centerPoint) {

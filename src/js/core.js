@@ -39,6 +39,7 @@ var _options = {
     	}
     },
     maxSpreadZoom: 2,
+    mouseWheelZoom: false,
 
 	// not fully implemented yet
 	scaleMode: 'fit', // TODO
