@@ -134,7 +134,9 @@ _registerModule('DesktopZoom', {
 					};
 				}
 
-				var deltaWheelZoom = (_currZoomLevel - (_wheelDelta.y / 75)).toFixed(3);
+				var deltaWheelDirection = (_wheelDelta.y) < 0 ? -1 : 1;
+				// move increment to options?
+				var deltaWheelZoom = _currZoomLevel - deltaWheelDirection * 0.5;
 				var destZoomLevel = Math.min(Math.max(1, deltaWheelZoom), _options.maxSpreadZoom);
 
 				self.zoomTo(destZoomLevel, zoomTarget, 333);
