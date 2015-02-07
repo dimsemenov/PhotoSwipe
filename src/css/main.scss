@@ -18,8 +18,6 @@
 
 // pswp = photoswipe
 .pswp {
-	direction: ltr;
-	text-align: left;
 	display: none;
 	position:absolute;
 	width: 100%;
@@ -169,6 +167,8 @@
 	position: absolute;
 	width: auto;
 	height: auto;
+	top: 0;
+	left: 0;
 	transition: opacity 0.15s;
 }
 
