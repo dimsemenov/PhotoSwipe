@@ -18,6 +18,8 @@
 
 // pswp = photoswipe
 .pswp {
+	direction: ltr;
+	text-align: left;
 	display: none;
 	position:absolute;
 	width: 100%;
