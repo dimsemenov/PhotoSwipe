@@ -885,6 +885,7 @@ var publicMethods = {
 
 		_shout('beforeResize'); // even may be used for example to switch image sources
 
+
 		// don't re-calculate size on inital size update
 		if(_containerShiftIndex !== undefined) {
 
@@ -896,18 +897,20 @@ var publicMethods = {
 				holder = _itemHolders[i];
 				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, holder.el.style);
 
-				hIndex = _getLoopedId(_currentItemIndex+i-1);
+				hIndex = _currentItemIndex+i-1;
+
+				if(_options.loop && _getNumItems() > 2) {
+					hIndex = _getLoopedId(hIndex);
+				}
 
 				// update zoom level on items and refresh source (if needsUpdate)
 				item = _getItemAt( hIndex );
 
 				// re-render gallery item if `needsUpdate`,
 				// or doesn't have `bounds` (entirely new slide object)
-				if(_itemsNeedUpdate || item.needsUpdate || !item.bounds) {
+				if( item && (_itemsNeedUpdate || item.needsUpdate || !item.bounds) ) {
 
-					if(item) {
-						self.cleanSlide( item );
-					}
+					self.cleanSlide( item );
 					
 					self.setContent( holder, hIndex );
 
@@ -918,6 +921,7 @@ var publicMethods = {
 					}
 
 					item.needsUpdate = false;
+
 				} else if(holder.index === -1 && hIndex >= 0) {
 					// add content first time
 					self.setContent( holder, hIndex );
