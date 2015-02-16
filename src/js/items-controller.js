@@ -374,7 +374,9 @@ _registerModule('Controller', {
 					// This is webkit progressive image loading bugfix.
 					// https://bugs.webkit.org/show_bug.cgi?id=108630
 					// https://code.google.com/p/chromium/issues/detail?id=404547
-					item.img.style.webkitBackfaceVisibility = 'hidden';
+					if(item.img) {
+						item.img.style.webkitBackfaceVisibility = 'hidden';
+					}
 
 					// check if holder hasn't changed while image was loading
 					if(holder && holder.index === index ) {
