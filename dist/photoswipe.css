@@ -117,6 +117,8 @@
   position: absolute;
   width: auto;
   height: auto;
+  top: 0;
+  left: 0;
   -webkit-transition: opacity 0.15s;
           transition: opacity 0.15s; }
 
