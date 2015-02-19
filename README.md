@@ -20,12 +20,13 @@ Optionally, install via Bower: `bower install photoswipe`.
 - Files for the website (demo & documentation) are in the [website/](https://github.com/dimsemenov/PhotoSwipe/tree/master/website) folder.
 - The documentation itself is in [website/documentation/](https://github.com/dimsemenov/PhotoSwipe/tree/master/website/documentation).
 
-## Plugins or extensions
+## Plugins / extensions / addons
 
+- [Embed.js Addon](https://github.com/poetic/ember-cli-photoswipe).
 - [Eager app](https://eager.io/app/DvuKIoU8iTOt).
 - [Koken CMS plugin](https://github.com/DanielMuller/koken-plugin-photoswipe).
 
-Wrote a plugin for some CMS? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I’ll post a link to it here.
+Coded something useful? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I’ll post a link to it here.
 
 ## Build 
 
