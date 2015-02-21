@@ -22,7 +22,7 @@ Optionally, install via Bower: `bower install photoswipe`.
 
 ## Plugins / extensions / addons
 
-- [Embed.js Addon](https://github.com/poetic/ember-cli-photoswipe).
+- [Ember.js Addon](https://github.com/poetic/ember-cli-photoswipe).
 - [Eager app](https://eager.io/app/DvuKIoU8iTOt).
 - [Koken CMS plugin](https://github.com/DanielMuller/koken-plugin-photoswipe).
 
