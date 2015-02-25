@@ -692,7 +692,8 @@ var PhotoSwipeUI_Default =
 	};
 
 	ui.updateFullscreen = function() {
-		_togglePswpClass(pswp.template, 'fs', _fullscrenAPI.isFullscreen());
+		// toogle pswp--fs class on root element
+		framework[ (_fullscrenAPI.isFullscreen() ? 'add' : 'remove') + 'Class' ](pswp.template, 'pswp--fs');
 	};
 
 	ui.updateIndexIndicator = function() {
