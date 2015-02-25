@@ -21,7 +21,7 @@ markdownpage: true
 ## Animations
 
 - Animation performance dramatically depends on the size of an image. The smaller image &ndash; the smoother animation. So don't be lazy and [serve responsive images](responsive-images.html), or at least don't serve images larger than 1200x1200 for phones.
-- Don't do anything during the animations Dthat can cause Paint or Layout. Don't append new elements to the DOM. Don't change `display` or `visibility`. Don't breath. You can only change `transform` and `opacity`. Delay all your changes after animation ends &ndash; use events: `beforeChange` (slide switched), `initialZoomInEnd` (initial zoom in animation ended) and `initialZoomOutEnd` (initial zoom out animation ended).
+- Don't do anything during the animations that can cause Paint or Layout. Don't append new elements to the DOM. Don't change `display` or `visibility`. Don't breath. You can only change `transform` and `opacity`. Delay all your changes after animation ends &ndash; use events: `beforeChange` (slide switched), `initialZoomInEnd` (initial zoom in animation ended) and `initialZoomOutEnd` (initial zoom out animation ended).
 - Try to avoid complex `:hover` and `:active` effects on thumbnails that open PhotoSwipe if you have zoom-in/out animation enabled (apply the first rule). 
 - Make sure that you don't have complex styles on UI over PhotoSwipe sliding area. For example, `text-shadow` on caption text can cause issues.
 

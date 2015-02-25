@@ -180,12 +180,12 @@
     color: #000;
     text-decoration: none;
     font-size: 14px;
-    line-height: 18px;
-    /* round corners on the first/last list item */ }
+    line-height: 18px; }
     .pswp__share-tooltip a:hover {
       text-decoration: none;
       color: #000; }
     .pswp__share-tooltip a:first-child {
+      /* round corners on the first/last list item */
       border-radius: 2px 2px 0 0; }
     .pswp__share-tooltip a:last-child {
       border-radius: 0 0 2px 2px; }

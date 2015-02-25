@@ -16,7 +16,7 @@
   "trailing": true,
   "undef": true,
   "unused": true,
-  "maxlen": 130,
+  "maxlen": 140,
 
   "predef": [
     "define",
