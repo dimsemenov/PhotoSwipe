@@ -13,6 +13,7 @@
     "grunt-aws-s3": "^0.12.1",
     "grunt-contrib-clean": "~0.6.0",
     "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-cssmin": "^0.12.1",
     "grunt-contrib-jshint": "~0.11.0",
     "grunt-contrib-uglify": "~0.7.0",

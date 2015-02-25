@@ -123,12 +123,12 @@ module.exports = function(grunt) {
           {src: ['src/css/default-skin/default-skin.svg'], dest: 'dist/default-skin/default-skin.svg'},
           {src: ['src/css/default-skin/default-skin.png'], dest: 'dist/default-skin/default-skin.png'},
           {src: ['src/css/default-skin/preloader.gif'], dest: 'dist/default-skin/preloader.gif'},
-          {src: ['dist/**'], dest: '_site/'}
+          {expand: true, src: ['dist/**'], dest: '_site/'}
         ]
       },
       main: {
         files: [
-          {src: ['dist/**'], dest: 'website/'}
+          {expand: true, src: ['dist/**'], dest: 'website/'}
         ]
       }
 
