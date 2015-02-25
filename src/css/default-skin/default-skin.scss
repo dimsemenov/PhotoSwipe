@@ -1,36 +1,32 @@
 /*! PhotoSwipe Default UI CSS by Dmitry Semenov | photoswipe.com | MIT license */
 
+/*
 
+	Contents:
 
-// --------------------------------------------------
-//
-// Contents:
-// 
-// 1. Buttons
-// 2. Share modal and links
-// 3. Index indicator ("1 of X" counter)
-// 4. Caption
-// 5. Loading indicator
-// 6. Additional styles (root element, top bar, idle state, hidden state, etc.)
-// 
-// Additional notes:
-// 
-// - PhotoSwipe uses Autoprefixer, so vendor prefixed are added automatically when needed.
-// 
-// --------------------------------------------------
+	1. Buttons
+	2. Share modal and links
+	3. Index indicator ("1 of X" counter)
+	4. Caption
+	5. Loading indicator
+	6. Additional styles (root element, top bar, idle state, hidden state, etc.)
+
+*/
+
+// PhotoSwipe uses Autoprefixer, so vendor prefixed are added automatically when needed.
 
 
 
 @import "../main-settings";
 
 
-// --------------------------------------------------
-// 
-// 1. Buttons
-// 
-// --------------------------------------------------
+/*
+	
+	1. Buttons
 
-// <button> css reset
+ */
+
+/* <button> css reset */
 .pswp__button {
 	width: 44px;
 	height: 44px;
@@ -64,7 +60,7 @@
 	}
 }
 
-// pswp__ui--over-close class it added when mouse is over element that should close gallery
+/* pswp__ui--over-close class it added when mouse is over element that should close gallery */
 .pswp__ui--over-close .pswp__button--close {
 	opacity: 1;
 }
@@ -80,7 +76,7 @@
 
 @media (-webkit-min-device-pixel-ratio: 1.1),  (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
 
-	// Serve SVG sprite if browser supports SVG and resolution is more than 105dpi
+	/* Serve SVG sprite if browser supports SVG and resolution is more than 105dpi */
     .pswp--svg .pswp__button,
     .pswp--svg .pswp__button--arrow--left:before,
 	.pswp--svg .pswp__button--arrow--right:before {
@@ -126,7 +122,7 @@
 	background-position: -132px 0;
 }
 
-// no arrows on touch screens
+/* no arrows on touch screens */
 .pswp--touch {
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right {
@@ -134,8 +130,10 @@
 	}
 }
 
-// Arrow buttons hit area
-// (icon is added to :before pseudo-element)
+/*
+	Arrow buttons hit area
+	(icon is added to :before pseudo-element)
+*/
 .pswp__button--arrow--left,
 .pswp__button--arrow--right {
 	background: none;
@@ -175,11 +173,11 @@
 }
 
 
-// --------------------------------------------------
-// 
-// 2. Share modal/popup and links
-// 
-// --------------------------------------------------
+/*
+
+	2. Share modal/popup and links
+
+ */
 
 .pswp__counter,
 .pswp__share-modal {
@@ -236,8 +234,9 @@
 			color: #000;
 		}
 
-		// round corners on first/last list item
+		
 		&:first-child {
+			/* round corners on the first/last list item */
 			border-radius: 2px 2px 0 0;
 		}
 		
@@ -255,7 +254,7 @@
 	}
 }
 
-// increase size of share links on touch devices
+/* increase size of share links on touch devices */
 .pswp--touch .pswp__share-tooltip a {
 	padding: 16px 12px;
 }
@@ -307,11 +306,11 @@ a.pswp__share--download {
 }
 
 
-// --------------------------------------------------
-// 
-// 3. Index indicator ("1 of X" counter)
-// 
-// --------------------------------------------------
+/*
+
+	3. Index indicator ("1 of X" counter)
+
+ */
 
 .pswp__counter {
 	position: absolute;
@@ -326,11 +325,11 @@ a.pswp__share--download {
 }
 
 
-// --------------------------------------------------
-// 
-// 4. Caption
-// 
-// --------------------------------------------------
+/*
+	
+	4. Caption
+
+ */
 
 .pswp__caption {
 	position: absolute;
@@ -359,18 +358,19 @@ a.pswp__share--download {
 	display: none;
 }
 
-// Fake caption element, used to calculate height of next/prev image
+/* Fake caption element, used to calculate height of next/prev image */
 .pswp__caption--fake {
 	visibility: hidden;
 }
 
 
-// --------------------------------------------------
-// 
-// 5. Loading indicator (preloader)
-// You can play with it here - http://codepen.io/dimsemenov/pen/yyBWoR
-// 
-// --------------------------------------------------
+/*
+
+	5. Loading indicator (preloader)
+
+	You can play with it here - http://codepen.io/dimsemenov/pen/yyBWoR
+
+ */
 
 .pswp__preloader {
 	width:44px;
@@ -394,7 +394,7 @@ a.pswp__share--download {
 	opacity: 1;
 
 	.pswp__preloader__icn {
-		// We use .gif in browsers that don't support CSS animation
+		/* We use .gif in browsers that don't support CSS animation */
 		background: url(#{$pswp__assets-path}preloader.gif) 0 0 no-repeat;
 	}
 }
@@ -423,9 +423,12 @@ a.pswp__share--download {
 		margin: 0;
 	}
 
-	// The idea of animating inner circle is based on Polymer ("material") loading indicator 
-	// by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html
+	
 	.pswp__preloader__cut {
+		/* 
+			The idea of animating inner circle is based on Polymer ("material") loading indicator 
+			 by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html
+		*/
 		position: relative;
 		width: 7px;
 		height: 14px;
@@ -470,13 +473,13 @@ a.pswp__share--download {
 }
 
 
-// --------------------------------------------------
-// 
-// 6. Additional styles
-// 
-// --------------------------------------------------
+/*
+	
+	6. Additional styles
 
-// root element of UI
+ */
+
+/* root element of UI */
 .pswp__ui {
 	-webkit-font-smoothing: auto;
 	visibility: visible;
@@ -484,7 +487,7 @@ a.pswp__share--download {
 	z-index: $pswp__root-z-index + 50;
 }
 
-// top black bar with buttons and "1 of X" indicator
+/* top black bar with buttons and "1 of X" indicator */
 .pswp__top-bar {
 	position: absolute;
 	left:0;
@@ -502,7 +505,7 @@ a.pswp__share--download {
 	transition: opacity $pswp__controls-transition-duration cubic-bezier(.4,0,.22,1);
 }
 
-// pswp--has_mouse class is added only when two subsequent mousemove events occur
+/* pswp--has_mouse class is added only when two subsequent mousemove events occur */
 .pswp--has_mouse {
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right {
@@ -515,7 +518,7 @@ a.pswp__share--download {
 	background-color: rgba(0,0,0,0.5);
 }
 
-// pswp__ui--fit class is added when main image "fits" between top bar and bottom bar (caption)
+/* pswp__ui--fit class is added when main image "fits" between top bar and bottom bar (caption) */
 .pswp__ui--fit {
 	.pswp__top-bar,
 	.pswp__caption {
@@ -523,8 +526,8 @@ a.pswp__share--download {
 	}
 }
 
-// pswp__ui--idle class is added when mouse isn't moving for several seconds
-// (JS option timeToIdle)
+/* pswp__ui--idle class is added when mouse isn't moving for several seconds (JS option timeToIdle) */
+	
 .pswp__ui--idle {
 	.pswp__top-bar { 
 		opacity: 0; 
@@ -536,19 +539,21 @@ a.pswp__share--download {
 	}
 }
 
-// pswp__ui--hidden class is added when controls are hidden
-// e.g. when user taps to toggle visibility of controls
+/*
+	pswp__ui--hidden class is added when controls are hidden
+	e.g. when user taps to toggle visibility of controls
+*/
 .pswp__ui--hidden {
 	.pswp__top-bar,
 	.pswp__caption,
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right {
-		// Force paint & create composition layer for controls. Paint happens 50ms before the  ma 
+		/* Force paint & create composition layer for controls. */
 		opacity: 0.001; 
 	}
 }
 
-// pswp__ui--one-slide class is added when there is just one item in gallery
+/* pswp__ui--one-slide class is added when there is just one item in gallery */
 .pswp__ui--one-slide {
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right,

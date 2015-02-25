@@ -1,22 +1,15 @@
 /*! PhotoSwipe main CSS by Dmitry Semenov | photoswipe.com | MIT license */
 
+/*
+	Styles for basic PhotoSwipe functionality (sliding area, open/close transitions)
+*/
 
-
-// --------------------------------------------------
-//
-// Styles for basic PhotoSwipe functionality (sliding area, open/close transitions)
-// 
 // PhotoSwipe uses Autoprefixer, so vendor prefixed are added automatically when needed.
-//
-// --------------------------------------------------
-
-
-
 
 @import "main-settings";
 
-
-// pswp = photoswipe
+ 
+/* pswp = photoswipe */
 .pswp {
 	display: none;
 	position:absolute;
@@ -29,7 +22,7 @@
 	touch-action: none;
 	z-index: $pswp__root-z-index;
 	-webkit-text-size-adjust: 100%;
-	// create separate layer, to avoid paint on window.onscroll in webkit/blink
+	/* create separate layer, to avoid paint on window.onscroll in webkit/blink */
 	-webkit-backface-visibility: hidden;
 	outline: none;
 
@@ -44,12 +37,12 @@
 	}
 }
 
-// style is added when JS option showHideOpacity is set to true
+/* style is added when JS option showHideOpacity is set to true */
 .pswp--animate_opacity {
-	// 0.001, because opacity:0 doesn't trigger Paint action, which causes lag at start of transition
+	/* 0.001, because opacity:0 doesn't trigger Paint action, which causes lag at start of transition */
 	opacity: 0.001;
 	will-change:opacity;
-	// for open/close transition
+	/* for open/close transition */
 	transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
 }
 
@@ -78,8 +71,10 @@
 	cursor: grabbing;
 }
 
-// Background is added as a separate element.
-// As animating opacity is much faster than animating rgba() background-color.
+/*
+	Background is added as a separate element.
+	As animating opacity is much faster than animating rgba() background-color.
+*/
 .pswp__bg {
 	position: absolute;
 	left: 0;
@@ -113,7 +108,7 @@
 	bottom: 0;
 }
 
-// Prevent selection and tap highlights
+/* Prevent selection and tap highlights */
 .pswp__container,
 .pswp__img {
 	-webkit-user-select: none;
@@ -130,13 +125,13 @@
 	-moz-transform-origin: left top;
 	-ms-transform-origin: left top;
 	transform-origin: left top;
-	// for open/close transition
+	/* for open/close transition */
 	transition: transform $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
 }
 
 .pswp__bg {
 	will-change: opacity;
-	// for open/close transition
+	/* for open/close transition */
 	transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
 }
 
@@ -172,14 +167,18 @@
 	transition: opacity 0.15s;
 }
 
-// stretched thumbnail or div placeholder element (see below)
-// style is added to avoid flickering in webkit/blink when layers overlap
+/*
+	stretched thumbnail or div placeholder element (see below)
+	style is added to avoid flickering in webkit/blink when layers overlap
+*/
 .pswp__img--placeholder {
 	-webkit-backface-visibility: hidden;
 }
 
-// div element that matches size of large image
-// large image loads on top of it
+/*
+	div element that matches size of large image
+	large image loads on top of it
+*/
 .pswp__img--placeholder--blank {
 	background: $pswp__placeholder-color;
 }
@@ -191,8 +190,10 @@
 	top: 0;
 }
 
-// Error message appears when image is not loaded
-// (JS option errorMsg controls markup)
+/*
+	Error message appears when image is not loaded
+	(JS option errorMsg controls markup)
+*/
 .pswp__error-msg {
 	position: absolute;
 	left: 0;
