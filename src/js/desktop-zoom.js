@@ -93,6 +93,15 @@ _registerModule('DesktopZoom', {
 			if(_currZoomLevel <= self.currItem.fitRatio) {
 				if(!_options.closeOnScroll) {
 					e.preventDefault();
+				} else {
+
+					// close PhotoSwipe
+					// if browser supports transforms & scroll changed enough
+					if( _transformKey && Math.abs(e.deltaY) > 2 ) {
+						_closedByScroll = true;
+						self.close();
+					}
+
 				}
 				return true;
 			}

@@ -78,7 +78,6 @@ var _isOpen,
 	_currPositionIndex = 0,
 	_offset,
 	_slideSize = _getEmptyPoint(), // size of slide area, including spacing
-	_scrollChanged,
 	_itemHolders,
 	_prevItemIndex,
 	_indexDiff = 0, // difference of indexes since last content update
@@ -376,15 +375,7 @@ var _isOpen,
 	},
 
 	_onPageScroll = function() {
-		_scrollChanged = true;
-		// "close" on scroll works only on desktop devices, or when mouse is used
-		if(_options.closeOnScroll && _isOpen && (!self.likelyTouchDevice || _options.mouseUsed) ) { 
-			// if scrolled for more than 2px
-			if(Math.abs(framework.getScrollY() - _initalWindowScrollY) > 2) { 
-				_closedByScroll = true;
-				self.close();
-			}
-		}
+		self.setScrollOffset(0, framework.getScrollY());		
 	};
 	
 
