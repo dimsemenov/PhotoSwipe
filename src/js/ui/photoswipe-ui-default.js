@@ -691,7 +691,16 @@ var PhotoSwipeUI_Default =
 		_countNumItems();
 	};
 
-	ui.updateFullscreen = function() {
+	ui.updateFullscreen = function(e) {
+
+		if(e) {
+			// some browsers change window scroll position during the fullscreen
+			// so PhotoSwipe updates it just in case
+			setTimeout(function() {
+				pswp.setScrollOffset( 0, framework.getScrollY() );
+			}, 50);
+		}
+		
 		// toogle pswp--fs class on root element
 		framework[ (_fullscrenAPI.isFullscreen() ? 'add' : 'remove') + 'Class' ](pswp.template, 'pswp--fs');
 	};

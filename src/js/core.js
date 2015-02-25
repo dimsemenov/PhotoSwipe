@@ -475,6 +475,10 @@ var publicMethods = {
 	isZooming: function() {
 		return _isZooming;
 	},
+	setScrollOffset: function(x,y) {
+		_offset.x = x;
+		_currentWindowScrollY = _offset.y = y;
+	},
 	applyZoomPan: function(zoomLevel,panX,panY) {
 		_panOffset.x = panX;
 		_panOffset.y = panY;
@@ -947,9 +951,8 @@ var publicMethods = {
 		_shout('resize');
 	},
 	
-	//Zoom current item to
+	// Zoom current item to
 	zoomTo: function(destZoomLevel, centerPoint, speed, easingFn, updateFn) {
-		
 		/*
 			if(destZoomLevel === 'fit') {
 				destZoomLevel = self.currItem.fitRatio;
@@ -979,7 +982,7 @@ var publicMethods = {
 
 		_roundPoint(destPanOffset);
 
-		//_startZoomLevel = destZoomLevel;
+		// _startZoomLevel = destZoomLevel;
 		var onUpdate = function(now) {
 			if(now === 1) {
 				_currZoomLevel = destZoomLevel;

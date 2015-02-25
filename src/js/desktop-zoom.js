@@ -128,7 +128,7 @@ _registerModule('DesktopZoom', {
 		},
 
 		toggleDesktopZoom: function(centerPoint) {
-			centerPoint = centerPoint || {x:_viewportSize.x/2, y:_viewportSize.y/2 + _initalWindowScrollY };
+			centerPoint = centerPoint || {x:_viewportSize.x/2, y:_viewportSize.y/2 + _currentWindowScrollY };
 
 			var doubleTapZoomLevel = _options.getDoubleTapZoom(true, self.currItem);
 			var zoomOut = _currZoomLevel === doubleTapZoomLevel;
