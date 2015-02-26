@@ -372,7 +372,28 @@ h1 {
   position: relative;
   padding: 30px 0;
 }
-
+.navigation a {
+  text-decoration: none;
+  border-bottom: 1px solid #92ABCD;
+}
+a.twitter-nav-link {
+  border: 0;
+  margin: 0 0.2em;
+}
+.twitter-nav-link span {
+  border-bottom: 1px solid #92ABCD;
+}
+.twitter-nav-link:before {
+  content: '';
+  background: url('../test/twitter.svg');
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  background-size: 0.7em 0.7em;
+  background-repeat: no-repeat;
+  background-position: 0 0.1em;
+  margin-right: 0.1em;
+}
 
 
 
@@ -510,10 +531,10 @@ img.img--with_border {
 }
 
 
-.section--head h1 span {
+.section--head h1 a {
   vertical-align: super;
-  opacity: 0.6;
   font-size: 14px;
+  text-decoration: none;
 }
 
 /*p.intro {
