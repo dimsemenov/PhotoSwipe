@@ -54,14 +54,12 @@
   width: 44px;
   height: 44px; }
 
-@media (-webkit-min-device-pixel-ratio: 1.1), (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
+@media (-webkit-min-device-pixel-ratio: 1.1), (-webkit-min-device-pixel-ratio: 1.09375), (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
   /* Serve SVG sprite if browser supports SVG and resolution is more than 105dpi */
   .pswp--svg .pswp__button, .pswp--svg .pswp__button--arrow--left:before, .pswp--svg .pswp__button--arrow--right:before {
     background-image: url(default-skin.svg); }
-
   .pswp--svg .pswp__button--arrow--left, .pswp--svg .pswp__button--arrow--right {
-    background: none; }
- }
+    background: none; } }
 
 .pswp__button--close {
   background-position: 0 -44px; }
@@ -209,7 +207,7 @@ a.pswp__share--facebook:before {
   position: absolute;
   top: -12px;
   right: 15px;
-  border: 6px solid rgba(0, 0, 0, 0);
+  border: 6px solid transparent;
   border-bottom-color: #FFF;
   -webkit-pointer-events: none;
   -moz-pointer-events: none;
@@ -314,8 +312,8 @@ a.pswp__share--download:hover {
     -webkit-animation: clockwise 500ms linear infinite;
             animation: clockwise 500ms linear infinite; }
   .pswp--css_animation .pswp__preloader--active .pswp__preloader__donut {
-    -webkit-animation: donut-rotate 1000ms cubic-bezier(0.4, 0, 0.22, 1) infinite;
-            animation: donut-rotate 1000ms cubic-bezier(0.4, 0, 0.22, 1) infinite; }
+    -webkit-animation: donut-rotate 1000ms cubic-bezier(.4, 0, .22, 1) infinite;
+            animation: donut-rotate 1000ms cubic-bezier(.4, 0, .22, 1) infinite; }
 .pswp--css_animation .pswp__preloader__icn {
   background: none;
   opacity: 0.75;
@@ -355,13 +353,13 @@ a.pswp__share--download:hover {
     left: auto;
     top: auto;
     margin: 0;
-    float: right; }
- }
+    float: right; } }
 
 @-webkit-keyframes clockwise {
   0% {
     -webkit-transform: rotate(0deg);
             transform: rotate(0deg); }
+
   100% {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg); } }
@@ -379,9 +377,11 @@ a.pswp__share--download:hover {
   0% {
     -webkit-transform: rotate(0);
             transform: rotate(0); }
+
   50% {
     -webkit-transform: rotate(-140deg);
             transform: rotate(-140deg); }
+
   100% {
     -webkit-transform: rotate(0);
             transform: rotate(0); } }
@@ -422,8 +422,8 @@ a.pswp__share--download:hover {
 .pswp__caption, .pswp__top-bar, .pswp--has_mouse .pswp__button--arrow--left, .pswp--has_mouse .pswp__button--arrow--right {
   -webkit-backface-visibility: hidden;
   will-change: opacity;
-  -webkit-transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1);
-          transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+  -webkit-transition: opacity 333ms cubic-bezier(.4, 0, .22, 1);
+          transition: opacity 333ms cubic-bezier(.4, 0, .22, 1); }
 
 /* pswp--has_mouse class is added only when two subsequent mousemove events occur */
 .pswp--has_mouse .pswp__button--arrow--left, .pswp--has_mouse .pswp__button--arrow--right {

@@ -30,8 +30,8 @@
   opacity: 0.001;
   will-change: opacity;
   /* for open/close transition */
-  -webkit-transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1);
-          transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+  -webkit-transition: opacity 333ms cubic-bezier(.4, 0, .22, 1);
+          transition: opacity 333ms cubic-bezier(.4, 0, .22, 1); }
 
 .pswp--open {
   display: block; }
@@ -93,7 +93,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
       user-select: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none; }
 
 .pswp__zoom-wrap {
@@ -103,14 +103,14 @@
   -ms-transform-origin: left top;
   transform-origin: left top;
   /* for open/close transition */
-  -webkit-transition: -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
-          transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+  -webkit-transition: -webkit-transform 333ms cubic-bezier(.4, 0, .22, 1);
+          transition: transform 333ms cubic-bezier(.4, 0, .22, 1); }
 
 .pswp__bg {
   will-change: opacity;
   /* for open/close transition */
-  -webkit-transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1);
-          transition: opacity 333ms cubic-bezier(0.4, 0, 0.22, 1); }
+  -webkit-transition: opacity 333ms cubic-bezier(.4, 0, .22, 1);
+          transition: opacity 333ms cubic-bezier(.4, 0, .22, 1); }
 
 .pswp--animated-in .pswp__bg, .pswp--animated-in .pswp__zoom-wrap {
   -webkit-transition: none;
