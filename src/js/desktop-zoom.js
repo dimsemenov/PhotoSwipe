@@ -116,6 +116,10 @@ _registerModule('DesktopZoom', {
 			if('deltaX' in e) {
 				_wheelDelta.x = e.deltaX;
 				_wheelDelta.y = e.deltaY;
+
+                if(Math.abs(_wheelDelta.y) == 3) {
+                    _wheelDelta.y *= 30;
+                }
 			} else if('wheelDelta' in e) {
 				if(e.wheelDeltaX) {
 					_wheelDelta.x = -0.16 * e.wheelDeltaX;
