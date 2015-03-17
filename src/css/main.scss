@@ -93,8 +93,7 @@
 	top: 0;
 	width: 100%;
 	height: 100%;
-	-webkit-backface-visibility:hidden;
-	will-change: transform;
+	overflow:hidden;
 }
 
 .pswp__container,
