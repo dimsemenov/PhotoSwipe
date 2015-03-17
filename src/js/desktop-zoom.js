@@ -113,9 +113,15 @@ _registerModule('DesktopZoom', {
 			// https://developer.mozilla.org/en-US/docs/Web/Events/wheel
 			_wheelDelta.x = 0;
 
-			if('deltaX' in e) {
-				_wheelDelta.x = e.deltaX;
-				_wheelDelta.y = e.deltaY;
+			if('deltaX' in e) {				
+				if(e.deltaMode === 1 /* DOM_DELTA_LINE */) {
+					// 18 - average line height
+					_wheelDelta.x = e.deltaX * 18;
+					_wheelDelta.y = e.deltaY * 18;
+				} else {
+					_wheelDelta.x = e.deltaX;
+					_wheelDelta.y = e.deltaY;
+				}
 			} else if('wheelDelta' in e) {
 				if(e.wheelDeltaX) {
 					_wheelDelta.x = -0.16 * e.wheelDeltaX;
