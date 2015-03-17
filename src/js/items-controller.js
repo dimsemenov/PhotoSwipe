@@ -142,7 +142,8 @@ var _getItemAt,
 			}
 
 			item.imageAppended = true;
-
+			_setImageSize(img, item.w, item.h);
+			
 			baseDiv.appendChild(img);
 
 			if(animate) {
@@ -201,6 +202,10 @@ var _getItemAt,
 			return true;
 			
 		}
+	},
+	_setImageSize = function(img, w, h) {
+		img.style.width = w + 'px';
+		img.style.height = h + 'px';
 	},
 	_appendImagesPool = function() {
 
@@ -428,8 +433,7 @@ _registerModule('Controller', {
 						placeholder.src = item.msrc;
 					}
 					
-					placeholder.style.width = item.w + 'px';
-					placeholder.style.height = item.h + 'px';
+					_setImageSize(placeholder, item.w, item.h);
 
 					baseDiv.appendChild(placeholder);
 					item.placeholder = placeholder;
@@ -465,6 +469,7 @@ _registerModule('Controller', {
 				img.style.webkitBackfaceVisibility = 'hidden';
 				img.style.opacity = 1;
 				img.src = item.src;
+				_setImageSize(img, item.w, item.h);
 				_appendImage(index, item, baseDiv, img, true);
 			}
 			
