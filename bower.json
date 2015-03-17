@@ -8,6 +8,7 @@
   "description": "Touch-friendly image gallery for mobile and desktop. Without dependencies.",
   "main": [
     "dist/photoswipe.js",
+    "dist/photoswipe.css",
     "dist/photoswipe-ui-default.js",
     "dist/default-skin/default-skin.css",
     "dist/default-skin/default-skin.png",
