@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.6 - 2015-03-05
+/*! PhotoSwipe - v4.0.7 - 2015-03-18
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 (function (root, factory) { 
@@ -2788,7 +2788,8 @@ var _getItemAt,
 			}
 
 			item.imageAppended = true;
-
+			_setImageSize(img, item.w, item.h);
+			
 			baseDiv.appendChild(img);
 
 			if(animate) {
@@ -2848,6 +2849,10 @@ var _getItemAt,
 			
 		}
 	},
+	_setImageSize = function(img, w, h) {
+		img.style.width = w + 'px';
+		img.style.height = h + 'px';
+	},
 	_appendImagesPool = function() {
 
 		if(_imagesToAppendPool.length) {
@@ -2873,11 +2878,16 @@ _registerModule('Controller', {
 			index = _getLoopedId(index);
 			var item = _getItemAt(index);
 
-			if(!item || !item.src || item.loaded || item.loading) {
+			if(!item || item.loaded || item.loading) {
 				return;
 			}
 
 			_shout('gettingData', index, item);
+
+			if (!item.src) {
+				return;
+			}
+
 			_preloadImage(item);
 		},
 		initController: function() {
@@ -3074,8 +3084,7 @@ _registerModule('Controller', {
 						placeholder.src = item.msrc;
 					}
 					
-					placeholder.style.width = item.w + 'px';
-					placeholder.style.height = item.h + 'px';
+					_setImageSize(placeholder, item.w, item.h);
 
 					baseDiv.appendChild(placeholder);
 					item.placeholder = placeholder;
@@ -3111,6 +3120,7 @@ _registerModule('Controller', {
 				img.style.webkitBackfaceVisibility = 'hidden';
 				img.style.opacity = 1;
 				img.src = item.src;
+				_setImageSize(img, item.w, item.h);
 				_appendImage(index, item, baseDiv, img, true);
 			}
 			
@@ -3337,9 +3347,15 @@ _registerModule('DesktopZoom', {
 			// https://developer.mozilla.org/en-US/docs/Web/Events/wheel
 			_wheelDelta.x = 0;
 
-			if('deltaX' in e) {
-				_wheelDelta.x = e.deltaX;
-				_wheelDelta.y = e.deltaY;
+			if('deltaX' in e) {				
+				if(e.deltaMode === 1 /* DOM_DELTA_LINE */) {
+					// 18 - average line height
+					_wheelDelta.x = e.deltaX * 18;
+					_wheelDelta.y = e.deltaY * 18;
+				} else {
+					_wheelDelta.x = e.deltaX;
+					_wheelDelta.y = e.deltaY;
+				}
 			} else if('wheelDelta' in e) {
 				if(e.wheelDeltaX) {
 					_wheelDelta.x = -0.16 * e.wheelDeltaX;
