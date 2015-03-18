@@ -130,6 +130,7 @@ h3 code.default {
   border-bottom: 1px solid #CCC;
   padding-bottom: 25px;
 }
+
 .docs-menu a {
   text-decoration: none;
   width: 100%;
@@ -376,12 +377,17 @@ h1 {
   text-decoration: none;
   border-bottom: 1px solid #92ABCD;
 }
+
 a.twitter-nav-link {
   border: 0;
   margin: 0 0.2em;
 }
 .twitter-nav-link span {
   border-bottom: 1px solid #92ABCD;
+}
+.navigation a:hover,
+.twitter-nav-link:hover span {
+  border-bottom-color: #C00;
 }
 .twitter-nav-link:before {
   content: '';
