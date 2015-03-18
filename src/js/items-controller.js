@@ -232,11 +232,16 @@ _registerModule('Controller', {
 			index = _getLoopedId(index);
 			var item = _getItemAt(index);
 
-			if(!item || !item.src || item.loaded || item.loading) {
+			if(!item || item.loaded || item.loading) {
 				return;
 			}
 
 			_shout('gettingData', index, item);
+
+			if (!item.src) {
+				return;
+			}
+
 			_preloadImage(item);
 		},
 		initController: function() {
