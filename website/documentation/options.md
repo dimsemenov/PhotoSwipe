@@ -79,7 +79,7 @@ getThumbBoundsFn: function(index) {
 }
 ```
 
-If dimensions of your small thumbnail don't match dimensions of large image, consider enabling zoom+fade transition. You can do this by adding option `showHideOpacity:true` (try adding it to [above CodePen](http://codepen.io/dimsemenov/pen/NPGOob/) to test how it looks). Or disable transition entirely by adding `hideAnimationDuration:0, showAnimationDuration:0`. [More info about this in FAQ](faq.html#different-thumbnail-dimensions).
+If dimensions of your small thumbnail don't match dimensions of large image, consider enabling zoom+fade transition. You can do this by adding option `showHideOpacity:true` (try adding it to [above CodePen](http://codepen.io/dimsemenov/pen/ZYbPJM) to test how it looks). Or disable transition entirely by adding `hideAnimationDuration:0, showAnimationDuration:0`. [More info about this in FAQ](faq.html#different-thumbnail-dimensions).
 
 If you want to "hide" small thumbnail during the animation use `opacity:0`, not `visibility:hidden` or `display:none`. Don't force Paint and Layout at the beginning of the animation to avoid lag.
 
