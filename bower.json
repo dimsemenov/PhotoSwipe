@@ -3,7 +3,7 @@
   "version": "4.0.7",
   "homepage": "http://photoswipe.com",
   "authors": [
-    "Dmitry Semenov <diiiimaaaa@gmail.com>"
+    "Dmitry Semenov <diiiimaaaa@gmail.com> (http://dimsemenov.com)"
   ],
   "description": "Touch-friendly image gallery for mobile and desktop. Without dependencies.",
   "main": [
@@ -22,6 +22,10 @@
     "swipe",
     "touch"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dimsemenov/PhotoSwipe.git"
+  },
   "license": "MIT",
   "ignore": [
     "**/.*",

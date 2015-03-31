@@ -66,7 +66,7 @@ require([
 });
 ```
 
-And also, you can install it via Bower (`bower install photoswipe`).
+And also, you can install it via Bower (`bower install photoswipe`), or [NPM](https://www.npmjs.com/package/photoswipe) (`npm install photoswipe`).
 
 ### <a name="init-add-pswp-to-dom"></a>Step 2: add PhotoSwipe (.pswp) element to DOM 
 
@@ -200,7 +200,7 @@ At the end you should get something like this:
 
 Each object in the array should contain data about slide, it can be anything that you wish to display in PhotoSwipe - path to image, caption string, number of shares, comments, etc.
 
-By default PhotoSwipe uses just 5 properties: `src` (path to image), `w` (image width), `h` (image height), `msrc` (path to small image placeholder, large image will be loaded on top), 'html' (custom HTML, [more about it](custom-html-in-slides.html)). 
+By default PhotoSwipe uses just 5 properties: `src` (path to image), `w` (image width), `h` (image height), `msrc` (path to small image placeholder, large image will be loaded on top), `html` (custom HTML, [more about it](custom-html-in-slides.html)). 
 
 During the navigation, PhotoSwipe adds its own properties to this object (like `minZoom` or `loaded`).
 
