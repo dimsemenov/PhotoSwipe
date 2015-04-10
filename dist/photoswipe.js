@@ -316,7 +316,7 @@ var _options = {
 	mouseUsed: false,
 	loop: true,
 	pinchToClose: true,
-	closeOnScroll: true,
+	closeOnScroll: false,
 	closeOnVerticalDrag: true,
 	hideAnimationDuration: 333,
 	showAnimationDuration: 333,
@@ -3327,6 +3327,14 @@ _registerModule('DesktopZoom', {
 			if(_currZoomLevel <= self.currItem.fitRatio) {
 				if(!_options.closeOnScroll) {
 					e.preventDefault();
+					if (e.deltaY > 0) { 
+							//self.goTo( _currentItemIndex + 1);
+							self.next();
+
+						} else {
+							//self.goTo( _currentItemIndex - 1);
+							self.prev();
+						}
 				} else {
 
 					// close PhotoSwipe
