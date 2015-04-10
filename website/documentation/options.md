@@ -336,6 +336,7 @@ closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'],
 indexIndicatorSep: ' / ',
 
 
+{% raw %}
 // Share buttons
 // 
 // Available variables for URL:
@@ -349,6 +350,7 @@ shareButtons: [
 	{id:'pinterest', label:'Pin it', url:'http://www.pinterest.com/pin/create/button/?url={{url}}&media={{image_url}}&description={{text}}'},
 	{id:'download', label:'Download image', url:'{{raw_image_url}}', download:true}
 ],
+{% endraw %}
 
 // Next 3 functions return data for share links
 // 
