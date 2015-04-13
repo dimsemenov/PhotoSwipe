@@ -228,6 +228,21 @@ pswp.listen('unbindEvents', function() { });
 // Clean up your stuff here.
 pswp.listen('destroy', function() { });
 
+// Called when the page scrolls.
+// The callback is passed an offset with properties {x: number, y: number}.
+//
+// PhotoSwipe uses the offset to determine the top-left of the template,
+// which by default is the top-left of the viewport. When using modal: false,
+// you should listen to this event (before calling .init()) and modify the offset
+// with the template's getBoundingClientRect().
+//
+// Look at the "Implementing inline gallery display" FAQ section for more info.
+pswp.listen('updateScrollOffset', function(_offset) {
+    var r = gallery.template.getBoundingClientRect();
+    _offset.x += r.left;
+    _offset.y += r.top;
+});
+
 // PhotoSwipe has a special event called pswpTap.
 // It's dispatched using default JavaScript event model.
 // So you can, for example, call stopPropagation on it.
