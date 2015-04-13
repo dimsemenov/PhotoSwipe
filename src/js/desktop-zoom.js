@@ -91,13 +91,13 @@ _registerModule('DesktopZoom', {
 		handleMouseWheel: function(e) {
 
 			if(_currZoomLevel <= self.currItem.fitRatio) {
-				if(!_options.closeOnScroll) {
-					e.preventDefault();
-				} else {
+				if( _options.modal ) {
 
-					// close PhotoSwipe
-					// if browser supports transforms & scroll changed enough
-					if( _transformKey && Math.abs(e.deltaY) > 2 ) {
+					if ( !_options.closeOnScroll ) {
+						e.preventDefault();
+					} else if( _transformKey && Math.abs(e.deltaY) > 2 ) {
+						// close PhotoSwipe
+						// if browser supports transforms & scroll changed enough
 						_closedByScroll = true;
 						self.close();
 					}
@@ -106,14 +106,13 @@ _registerModule('DesktopZoom', {
 				return true;
 			}
 
-			e.preventDefault();
 			// allow just one event to fire
 			e.stopPropagation();
 
 			// https://developer.mozilla.org/en-US/docs/Web/Events/wheel
 			_wheelDelta.x = 0;
 
-			if('deltaX' in e) {				
+			if('deltaX' in e) {
 				if(e.deltaMode === 1 /* DOM_DELTA_LINE */) {
 					// 18 - average line height
 					_wheelDelta.x = e.deltaX * 18;
@@ -125,7 +124,7 @@ _registerModule('DesktopZoom', {
 			} else if('wheelDelta' in e) {
 				if(e.wheelDeltaX) {
 					_wheelDelta.x = -0.16 * e.wheelDeltaX;
-				} 
+				}
 				if(e.wheelDeltaY) {
 					_wheelDelta.y = -0.16 * e.wheelDeltaY;
 				} else {
@@ -136,14 +135,27 @@ _registerModule('DesktopZoom', {
 			} else {
 				return;
 			}
-		
-			// TODO: use rAF instead of mousewheel?
+
 			_calculatePanBounds(_currZoomLevel, true);
-			self.panTo(_panOffset.x - _wheelDelta.x, _panOffset.y - _wheelDelta.y);
+
+			var newPanX = _panOffset.x - _wheelDelta.x,
+				newPanY = _panOffset.y - _wheelDelta.y;
+
+			// only prevent scrolling in nonmodal mode when not at edges
+			if (_options.modal ||
+				(
+				newPanX <= _currPanBounds.min.x && newPanX >= _currPanBounds.max.x &&
+				newPanY <= _currPanBounds.min.y && newPanY >= _currPanBounds.max.y
+				) ) {
+				e.preventDefault();
+			}
+
+			// TODO: use rAF instead of mousewheel?
+			self.panTo(newPanX, newPanY);
 		},
 
 		toggleDesktopZoom: function(centerPoint) {
-			centerPoint = centerPoint || {x:_viewportSize.x/2, y:_viewportSize.y/2 + _currentWindowScrollY };
+			centerPoint = centerPoint || {x:_viewportSize.x/2 + _offset.x, y:_viewportSize.y/2 + _offset.y };
 
 			var doubleTapZoomLevel = _options.getDoubleTapZoom(true, self.currItem);
 			var zoomOut = _currZoomLevel === doubleTapZoomLevel;
