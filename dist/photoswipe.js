@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.7 - 2015-03-18
+/*! PhotoSwipe - v4.0.7 - 2015-04-16
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 (function (root, factory) { 
@@ -337,10 +337,10 @@ var _options = {
     	}
     },
     maxSpreadZoom: 2,
+	modal: true,
 
 	// not fully implemented yet
 	scaleMode: 'fit', // TODO
-	modal: true, // TODO
 	alwaysFadeIn: false // TODO
 };
 framework.extend(_options, options);
@@ -374,7 +374,7 @@ var _isOpen,
 	_updateSizeInterval,
 	_itemsNeedUpdate,
 	_currPositionIndex = 0,
-	_offset,
+	_offset = {},
 	_slideSize = _getEmptyPoint(), // size of slide area, including spacing
 	_itemHolders,
 	_prevItemIndex,
@@ -674,7 +674,7 @@ var _isOpen,
 		}
 	},
 
-	_onPageScroll = function() {
+	_updatePageScrollOffset = function() {
 		self.setScrollOffset(0, framework.getScrollY());		
 	};
 	
@@ -769,6 +769,7 @@ var publicMethods = {
 	setScrollOffset: function(x,y) {
 		_offset.x = x;
 		_currentWindowScrollY = _offset.y = y;
+		_shout('updateScrollOffset', _offset);
 	},
 	applyZoomPan: function(zoomLevel,panX,panY) {
 		_panOffset.x = panX;
@@ -818,7 +819,7 @@ var publicMethods = {
 		// Setup global events
 		_globalEventHandlers = {
 			resize: self.updateSize,
-			scroll: _onPageScroll,
+			scroll: _updatePageScrollOffset,
 			keydown: _onKeyDown,
 			click: _onGlobalClick
 		};
@@ -854,8 +855,8 @@ var publicMethods = {
 			_isFixedPosition = false;
 		}
 		
+		template.setAttribute('aria-hidden', 'false');
 		if(_options.modal) {
-			template.setAttribute('aria-hidden', 'false');
 			if(!_isFixedPosition) {
 				template.style.position = 'absolute';
 				template.style.top = framework.getScrollY() + 'px';
@@ -962,10 +963,8 @@ var publicMethods = {
 			clearTimeout(_showOrHideTimeout);
 		}
 		
-		if(_options.modal) {
-			template.setAttribute('aria-hidden', 'true');
-			template.className = _initalClassName;
-		}
+		template.setAttribute('aria-hidden', 'true');
+		template.className = _initalClassName;
 
 		if(_updateSizeInterval) {
 			clearInterval(_updateSizeInterval);
@@ -1149,7 +1148,7 @@ var publicMethods = {
 
 	updateSize: function(force) {
 		
-		if(!_isFixedPosition) {
+		if(!_isFixedPosition && _options.modal) {
 			var windowScrollY = framework.getScrollY();
 			if(_currentWindowScrollY !== windowScrollY) {
 				template.style.top = windowScrollY + 'px';
@@ -1170,8 +1169,7 @@ var publicMethods = {
 		_viewportSize.x = self.scrollWrap.clientWidth;
 		_viewportSize.y = self.scrollWrap.clientHeight;
 
-		
-		_offset = {x:0,y:_currentWindowScrollY};//framework.getOffset(template); 
+		_updatePageScrollOffset();
 
 		_slideSize.x = _viewportSize.x + Math.round(_viewportSize.x * _options.spacing);
 		_slideSize.y = _viewportSize.y;
@@ -1301,6 +1299,7 @@ var publicMethods = {
 
 
 };
+
 
 /*>>core*/
 
@@ -3325,13 +3324,13 @@ _registerModule('DesktopZoom', {
 		handleMouseWheel: function(e) {
 
 			if(_currZoomLevel <= self.currItem.fitRatio) {
-				if(!_options.closeOnScroll) {
-					e.preventDefault();
-				} else {
+				if( _options.modal ) {
 
-					// close PhotoSwipe
-					// if browser supports transforms & scroll changed enough
-					if( _transformKey && Math.abs(e.deltaY) > 2 ) {
+					if ( !_options.closeOnScroll ) {
+						e.preventDefault();
+					} else if( _transformKey && Math.abs(e.deltaY) > 2 ) {
+						// close PhotoSwipe
+						// if browser supports transforms & scroll changed enough
 						_closedByScroll = true;
 						self.close();
 					}
@@ -3340,14 +3339,13 @@ _registerModule('DesktopZoom', {
 				return true;
 			}
 
-			e.preventDefault();
 			// allow just one event to fire
 			e.stopPropagation();
 
 			// https://developer.mozilla.org/en-US/docs/Web/Events/wheel
 			_wheelDelta.x = 0;
 
-			if('deltaX' in e) {				
+			if('deltaX' in e) {
 				if(e.deltaMode === 1 /* DOM_DELTA_LINE */) {
 					// 18 - average line height
 					_wheelDelta.x = e.deltaX * 18;
@@ -3359,7 +3357,7 @@ _registerModule('DesktopZoom', {
 			} else if('wheelDelta' in e) {
 				if(e.wheelDeltaX) {
 					_wheelDelta.x = -0.16 * e.wheelDeltaX;
-				} 
+				}
 				if(e.wheelDeltaY) {
 					_wheelDelta.y = -0.16 * e.wheelDeltaY;
 				} else {
@@ -3370,14 +3368,27 @@ _registerModule('DesktopZoom', {
 			} else {
 				return;
 			}
-		
-			// TODO: use rAF instead of mousewheel?
+
 			_calculatePanBounds(_currZoomLevel, true);
-			self.panTo(_panOffset.x - _wheelDelta.x, _panOffset.y - _wheelDelta.y);
+
+			var newPanX = _panOffset.x - _wheelDelta.x,
+				newPanY = _panOffset.y - _wheelDelta.y;
+
+			// only prevent scrolling in nonmodal mode when not at edges
+			if (_options.modal ||
+				(
+				newPanX <= _currPanBounds.min.x && newPanX >= _currPanBounds.max.x &&
+				newPanY <= _currPanBounds.min.y && newPanY >= _currPanBounds.max.y
+				) ) {
+				e.preventDefault();
+			}
+
+			// TODO: use rAF instead of mousewheel?
+			self.panTo(newPanX, newPanY);
 		},
 
 		toggleDesktopZoom: function(centerPoint) {
-			centerPoint = centerPoint || {x:_viewportSize.x/2, y:_viewportSize.y/2 + _currentWindowScrollY };
+			centerPoint = centerPoint || {x:_viewportSize.x/2 + _offset.x, y:_viewportSize.y/2 + _offset.y };
 
 			var doubleTapZoomLevel = _options.getDoubleTapZoom(true, self.currItem);
 			var zoomOut = _currZoomLevel === doubleTapZoomLevel;
@@ -3390,6 +3401,7 @@ _registerModule('DesktopZoom', {
 
 	}
 });
+
 
 /*>>desktop-zoom*/
 

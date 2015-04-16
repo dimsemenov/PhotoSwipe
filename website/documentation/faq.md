@@ -55,28 +55,34 @@ I'll try to explain why this is not implemented yet. There are two ways to make 
 1. Animate `clip` property. But [it forces Paint](http://csstriggers.com/#clip) each time, which makes animations jerky.
 2. Wrap an image that expands with two divs that have `overflow:hidden` and reposition them via `transform:translate` during the animation so they clip it at right parts. This method does not force Paint or Layout, but requires two additional elements in markup of each slide. Test prototype showed that it works smooth only on high-end mobile devices (like Nexus 5 with Chrome). Maybe some day I'll implement it.
 
+
 ### My captions are large, can I add scroll to them?
 
 See [issue #657](https://github.com/dimsemenov/PhotoSwipe/issues/657).
 
-### <a name="inline-gallery"></a>Implementing inline gallery display
-To implement an embedded gallery that flows with the rest of your document, follow these steps:
 
-1. Put the .pswp template inside a positioned parent element.
+### <a name="inline-gallery"></a>Implementing inline gallery display
+
+Note that this is an experimental feature, for now it doesn't allow to scroll the page vertically over the gallery on mobile (as it calls `prevetDefault()` on touch events). Please report issues if you'll find any. To implement an embedded gallery that flows with the rest of your document, follow these steps:
+
+1. Put the `.pswp` template inside a positioned parent element.
 2. Set `modal: false, closeOnScroll: false` options.
 3. Modify the `getThumbBoundsFn` (if you're using it) to subtract the template parent's bounding rect.
 4. Construct the PhotoSwipe.
-5. listen for the 'updateScrollOffset' event and add the template's bounding rect to the offset.
+5. Listen for the `updateScrollOffset` event and add the template's bounding rect to the offset.
 6. `init()` the PhotoSwipe.
+
+[**Live example on CodePen &rarr;**](http://codepen.io/dimsemenov/pen/JogxWM)
 
 ```html
 <div style="position: relative;" class="parent">
     <div id="gallery" class="pswp"> ... </div>
 </div>
 ```
+
 ```javascript
 var items = [...];
-var template = document.getElementById("gallery");
+var template = document.getElementById("gallery"); // .pswp
 var options = {
     ...,
     modal: false,
