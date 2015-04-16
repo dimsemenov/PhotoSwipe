@@ -39,10 +39,10 @@ var _options = {
     	}
     },
     maxSpreadZoom: 2,
+	modal: true,
 
 	// not fully implemented yet
 	scaleMode: 'fit', // TODO
-	modal: true, // TODO
 	alwaysFadeIn: false // TODO
 };
 framework.extend(_options, options);
@@ -76,7 +76,7 @@ var _isOpen,
 	_updateSizeInterval,
 	_itemsNeedUpdate,
 	_currPositionIndex = 0,
-	_offset,
+	_offset = {},
 	_slideSize = _getEmptyPoint(), // size of slide area, including spacing
 	_itemHolders,
 	_prevItemIndex,
@@ -376,7 +376,7 @@ var _isOpen,
 		}
 	},
 
-	_onPageScroll = function() {
+	_updatePageScrollOffset = function() {
 		self.setScrollOffset(0, framework.getScrollY());		
 	};
 	
@@ -471,6 +471,7 @@ var publicMethods = {
 	setScrollOffset: function(x,y) {
 		_offset.x = x;
 		_currentWindowScrollY = _offset.y = y;
+		_shout('updateScrollOffset', _offset);
 	},
 	applyZoomPan: function(zoomLevel,panX,panY) {
 		_panOffset.x = panX;
@@ -520,7 +521,7 @@ var publicMethods = {
 		// Setup global events
 		_globalEventHandlers = {
 			resize: self.updateSize,
-			scroll: _onPageScroll,
+			scroll: _updatePageScrollOffset,
 			keydown: _onKeyDown,
 			click: _onGlobalClick
 		};
@@ -556,8 +557,8 @@ var publicMethods = {
 			_isFixedPosition = false;
 		}
 		
+		template.setAttribute('aria-hidden', 'false');
 		if(_options.modal) {
-			template.setAttribute('aria-hidden', 'false');
 			if(!_isFixedPosition) {
 				template.style.position = 'absolute';
 				template.style.top = framework.getScrollY() + 'px';
@@ -664,10 +665,8 @@ var publicMethods = {
 			clearTimeout(_showOrHideTimeout);
 		}
 		
-		if(_options.modal) {
-			template.setAttribute('aria-hidden', 'true');
-			template.className = _initalClassName;
-		}
+		template.setAttribute('aria-hidden', 'true');
+		template.className = _initalClassName;
 
 		if(_updateSizeInterval) {
 			clearInterval(_updateSizeInterval);
@@ -851,7 +850,7 @@ var publicMethods = {
 
 	updateSize: function(force) {
 		
-		if(!_isFixedPosition) {
+		if(!_isFixedPosition && _options.modal) {
 			var windowScrollY = framework.getScrollY();
 			if(_currentWindowScrollY !== windowScrollY) {
 				template.style.top = windowScrollY + 'px';
@@ -872,8 +871,7 @@ var publicMethods = {
 		_viewportSize.x = self.scrollWrap.clientWidth;
 		_viewportSize.y = self.scrollWrap.clientHeight;
 
-		
-		_offset = {x:0,y:_currentWindowScrollY};//framework.getOffset(template); 
+		_updatePageScrollOffset();
 
 		_slideSize.x = _viewportSize.x + Math.round(_viewportSize.x * _options.spacing);
 		_slideSize.y = _viewportSize.y;

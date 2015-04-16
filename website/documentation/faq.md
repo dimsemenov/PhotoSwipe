@@ -59,6 +59,47 @@ I'll try to explain why this is not implemented yet. There are two ways to make 
 
 See [issue #657](https://github.com/dimsemenov/PhotoSwipe/issues/657).
 
+### <a name="inline-gallery"></a>Implementing inline gallery display
+To implement an embedded gallery that flows with the rest of your document, follow these steps:
+
+1. Put the .pswp template inside a positioned parent element.
+2. Set `modal: false, closeOnScroll: false` options.
+3. Modify the `getThumbBoundsFn` (if you're using it) to subtract the template parent's bounding rect.
+4. Construct the PhotoSwipe.
+5. listen for the 'updateScrollOffset' event and add the template's bounding rect to the offset.
+6. `init()` the PhotoSwipe.
+
+```html
+<div style="position: relative;" class="parent">
+    <div id="gallery" class="pswp"> ... </div>
+</div>
+```
+```javascript
+var items = [...];
+var template = document.getElementById("gallery");
+var options = {
+    ...,
+    modal: false,
+    closeOnScroll: false,
+    getThumbBoundsFn: function(index) {
+        // rect was the original bounds
+        var rect = {x: ..., y: ..., w: ...},
+
+        var templateBounds = template.parentElement.getBoundingClientRect();
+        rect.x -= templateBounds.left;
+        rect.y -= templateBounds.top;
+
+        return rect;
+    }
+};
+var photoSwipe = new PhotoSwipe(template, PhotoSwipeUI_Default, items, options);
+photoSwipe.listen('updateScrollOffset', function(_offset) {
+    var r = template.getBoundingClientRect();
+    _offset.x += r.left;
+    _offset.y += r.top;
+});
+photoSwipe.init();
+```
 
 ## Known issues
 

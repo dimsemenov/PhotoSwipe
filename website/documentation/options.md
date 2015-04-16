@@ -55,6 +55,8 @@ Object should contain three properties: `x` (X position, relative to document), 
 
 Function has one argument - `index` of the item that is opening or closing.
 
+In non-modal mode, the template's position relative to the viewport should be subtracted from `x` and `y`. Look at [the FAQ](faq.html#inline-gallery) for more information.
+
 Example that calculates position of thumbnail: 
 
 ```javascript
@@ -265,8 +267,9 @@ isClickableElement: function(el) {
 
 Function should check if the element (`el`) is clickable. If it is &ndash; PhotoSwipe will not call `preventDefault` and `click` event will pass through. Function should be as light is possible, as it's executed multiple times on drag start and drag release.
 
+### `modal` <code class="default">boolean</code> <code class="default">true</code>
 
-
+Controls whether PhotoSwipe should expand to take up the entire viewport. If false, the PhotoSwipe element will take the size of the positioned parent of the template. Take a look at [the FAQ](faq.html#inline-gallery) for more information.
 
 ## Default UI Options
 
