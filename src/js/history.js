@@ -14,7 +14,13 @@
 
 var _historyDefaultOptions = {
 	history: true,
-	galleryUID: 1
+	galleryUID: 1,
+	getCurrentItemUID: function (item, index) {
+		return index + 1;
+	},
+	getCurrentItemIndex: function () {
+		return _parseItemIndexFromURL().pid;
+	}
 };
 
 var _historyUpdateTimeout,
@@ -93,7 +99,8 @@ var _historyUpdateTimeout,
 		}
 
 
-		var newHash = _initialHash + '&'  +  'gid=' + _options.galleryUID + '&' + 'pid=' + (_currentItemIndex + 1);
+		var newHash = _initialHash + '&'  +  'gid=' + _options.galleryUID + '&' + 'pid=' +
+			_options.getCurrentItemUID(self.currItem, _currentItemIndex);
 
 		if(!_historyChanged) {
 			if(_windowLoc.hash.indexOf(newHash) === -1) {
@@ -204,7 +211,7 @@ _registerModule('History', {
 				}
 			});
 			_listen('firstUpdate', function() {
-				_currentItemIndex = _parseItemIndexFromURL().pid;
+				_currentItemIndex = _options.getCurrentItemIndex();
 			});
 
 			
@@ -237,7 +244,7 @@ _registerModule('History', {
 			if(!_hashChangedByScript) {
 
 				_hashChangedByHistory = true;
-				self.goTo( _parseItemIndexFromURL().pid );
+				self.goTo( _options.getCurrentItemIndex() );
 				_hashChangedByHistory = false;
 			}
 			
