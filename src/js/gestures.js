@@ -741,7 +741,7 @@ var _gestureStartTime,
 
 			var opacityRatio = _calculateVerticalDragOpacityRatio();
 
-			if(opacityRatio < 0.6) {
+			if(opacityRatio < _options.verticalDragRange) {
 				self.close();
 			} else {
 				var initalPanY = _panOffset.y,
