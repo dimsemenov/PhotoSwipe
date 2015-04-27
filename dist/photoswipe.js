@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.0.7 - 2015-05-04
+/*! PhotoSwipe - v4.0.7 - 2015-05-15
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 (function (root, factory) { 
@@ -3423,7 +3423,13 @@ _registerModule('DesktopZoom', {
 
 var _historyDefaultOptions = {
 	history: true,
-	galleryUID: 1
+	galleryUID: 1,
+	getCurrentImageUID: function () {
+		return _currentItemIndex + 1;
+	},
+	getCurrentImageIndex: function (items) {
+		return _parseItemIndexFromURL().pid;
+	}
 };
 
 var _historyUpdateTimeout,
@@ -3502,7 +3508,7 @@ var _historyUpdateTimeout,
 		}
 
 
-		var newHash = _initialHash + '&'  +  'gid=' + _options.galleryUID + '&' + 'pid=' + (_currentItemIndex + 1);
+		var newHash = _initialHash + '&'  +  'gid=' + _options.galleryUID + '&' + 'pid=' + _options.getCurrentImageUID();
 
 		if(!_historyChanged) {
 			if(_windowLoc.hash.indexOf(newHash) === -1) {
@@ -3613,7 +3619,7 @@ _registerModule('History', {
 				}
 			});
 			_listen('firstUpdate', function() {
-				_currentItemIndex = _parseItemIndexFromURL().pid;
+				_currentItemIndex = _options.getCurrentImageIndex(self._items);
 			});
 
 			
@@ -3646,7 +3652,7 @@ _registerModule('History', {
 			if(!_hashChangedByScript) {
 
 				_hashChangedByHistory = true;
-				self.goTo( _parseItemIndexFromURL().pid );
+				self.goTo( _options.getCurrentImageIndex(self._items) );
 				_hashChangedByHistory = false;
 			}
 			
