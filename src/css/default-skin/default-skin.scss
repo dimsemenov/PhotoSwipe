@@ -382,6 +382,7 @@ a.pswp__share--download {
 	opacity: 0;
 	transition: opacity 0.25s ease-out; 
 	will-change: opacity;
+	direction: ltr;
 }
 
 .pswp__preloader__icn {
