@@ -295,7 +295,8 @@ a.pswp__share--download:hover {
   opacity: 0;
   -webkit-transition: opacity 0.25s ease-out;
           transition: opacity 0.25s ease-out;
-  will-change: opacity; }
+  will-change: opacity;
+  direction: ltr; }
 
 .pswp__preloader__icn {
   width: 20px;
