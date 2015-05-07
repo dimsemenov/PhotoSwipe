@@ -20,7 +20,7 @@ markdownpage: true
 
 PhotoSwipe does not support `<picture>` or `srcset`, as it requires defined image dimensions and uses lazy-loading. But as images are loaded dynamically, it's quite easy to switch sources, even in old browsers that don't support `srcset`.
 
-Let's assume that you have just "medium" images and "original" ("large") images. First of, you need to store path and size of the image in slide object, for example like so:
+Let's assume that you have just "medium" images and "original" ("large") images. First of all, you need to store path and size of the image in slide object, for example like so:
 
 ```javascript
 var items = [
