@@ -66,7 +66,19 @@ var _historyUpdateTimeout,
 			}
 			params[pair[0]] = pair[1];
 		}
-		params.pid = parseInt(params.pid,10)-1;
+		if (isNaN(params.pid)) {
+			// detect custom pid in hash (not numeric) and search for it among the items
+			var searchfor = params.pid;
+			params.pid = 0; // if custom pid cannot be found, fallback to the first item
+			for(var i = 0; i < _items.length; i++) {
+				if(_items[i].pid == params.pid) {
+					params.pid = i;
+					break;
+				}
+			}
+		} else {
+			params.pid = parseInt(params.pid,10)-1;
+		}
 		if( params.pid < 0 ) {
 			params.pid = 0;
 		}
@@ -93,7 +105,13 @@ var _historyUpdateTimeout,
 		}
 
 
-		var newHash = _initialHash + '&'  +  'gid=' + _options.galleryUID + '&' + 'pid=' + (_currentItemIndex + 1);
+		var pid = (_currentItemIndex + 1);
+		var item = _getItemAt( _currentItemIndex );
+		if(item.hasOwnProperty('pid')) {
+			// carry forward any custom pid assigned to the item
+			pid = item.pid;
+		}
+		var newHash = _initialHash + '&'  +  'gid=' + _options.galleryUID + '&' + 'pid=' + pid;
 
 		if(!_historyChanged) {
 			if(_windowLoc.hash.indexOf(newHash) === -1) {
