@@ -309,8 +309,15 @@ _registerModule('Controller', {
 		},
 
 
+		// Accepts zero-based index or custom pid property to search for
 		getItemAt: function(index) {
-			if (index >= 0) {
+			if (isNaN(index)) {
+				for(var i = 0; i < _items.length; i++) {
+					if(_items[i].pid == index) {
+						return _items[i];
+					}
+				}
+			} else if (index >= 0) {
 				return _items[index] !== undefined ? _items[index] : false;
 			}
 			return false;
