@@ -313,7 +313,7 @@ _registerModule('Controller', {
 		getItemAt: function(index) {
 			if (isNaN(index)) {
 				for(var i = 0; i < _items.length; i++) {
-					if(_items[i].pid == index) {
+					if(_items[i].pid === index) {
 						return _items[i];
 					}
 				}
