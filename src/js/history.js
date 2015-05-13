@@ -71,7 +71,7 @@ var _historyUpdateTimeout,
 			var searchfor = params.pid;
 			params.pid = 0; // if custom pid cannot be found, fallback to the first item
 			for(var i = 0; i < _items.length; i++) {
-				if(_items[i].pid == params.pid) {
+				if(_items[i].pid === searchfor) {
 					params.pid = i;
 					break;
 				}
