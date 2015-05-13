@@ -66,8 +66,8 @@ var _historyUpdateTimeout,
 			}
 			params[pair[0]] = pair[1];
 		}
-		if (isNaN(params.pid)) {
-			// detect custom pid in hash (not numeric) and search for it among the items
+		if(_options.galleryPIDs) {
+			// detect custom pid in hash and search for it among the items collection
 			var searchfor = params.pid;
 			params.pid = 0; // if custom pid cannot be found, fallback to the first item
 			for(var i = 0; i < _items.length; i++) {
