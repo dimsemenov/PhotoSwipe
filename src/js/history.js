@@ -18,7 +18,7 @@ var _historyDefaultOptions = {
 	getCurrentImageUID: function () {
 		return _currentItemIndex + 1;
 	},
-	getCurrentImageIndex: function (items) {
+	getCurrentImageIndex: function () {
 		return _parseItemIndexFromURL().pid;
 	}
 };
