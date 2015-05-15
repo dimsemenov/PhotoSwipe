@@ -225,6 +225,13 @@ If set to `false` disables history module (back button to close gallery, unique 
 
 Gallery unique ID. Used by History module when forming URL. For example, second picture of gallery with UID 1 will have URL: `http://example.com/#&gid=1&pid=2`.
 
+### `getCurrentItemUID` <code class="default">function</code>
+
+Function that should return a unique identifier for the current item. By default it returns the current item's numeric index.
+
+### `getCurrentItemIndex` <code class="default">function</code>
+
+Function that should return the numeric index of the current item. By default it returns the value of the PID hash parameter.
 
 ### `errorMsg` <code class="default">string</code>
 
