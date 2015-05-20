@@ -55,8 +55,8 @@ var _historyUpdateTimeout,
 			return params;
 		}
 
-		var vars = hash.split('&');
-		for (var i = 0; i < vars.length; i++) {
+		var i, vars = hash.split('&');
+		for (i = 0; i < vars.length; i++) {
 			if(!vars[i]) {
 				continue;
 			}
@@ -70,7 +70,7 @@ var _historyUpdateTimeout,
 			// detect custom pid in hash and search for it among the items collection
 			var searchfor = params.pid;
 			params.pid = 0; // if custom pid cannot be found, fallback to the first item
-			for(var i = 0; i < _items.length; i++) {
+			for(i = 0; i < _items.length; i++) {
 				if(_items[i].pid === searchfor) {
 					params.pid = i;
 					break;
