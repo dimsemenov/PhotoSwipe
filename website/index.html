@@ -17,7 +17,7 @@ buildtool: false
 	<div class="section section--head">
 
 	    <div class="row row--heading">
-			<h1>PhotoSwipe<a href="https://github.com/dimsemenov/PhotoSwipe/releases"> v4.0.7</a></h1>
+			<h1>PhotoSwipe<a href="https://github.com/dimsemenov/PhotoSwipe/releases"> v4.0.8</a></h1>
 			<p>JavaScript gallery, no dependencies.</p>
 	    </div>
 
@@ -709,14 +709,10 @@ buildtool: false
 			    	params.gid = parseInt(params.gid, 10);
 			    }
 
-			    if(!params.hasOwnProperty('pid')) {
-			        return params;
-			    }
-			    params.pid = parseInt(params.pid, 10);
 			    return params;
 			};
 
-			var openPhotoSwipe = function(index, galleryElement, disableAnimation) {
+			var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
 			    var pswpElement = document.querySelectorAll('.pswp')[0],
 			        gallery,
 			        options,
@@ -726,7 +722,6 @@ buildtool: false
 
 			    // define options (if needed)
 			    options = {
-			        index: index,
 
 			        galleryUID: galleryElement.getAttribute('data-pswp-uid'),
 
@@ -749,6 +744,31 @@ buildtool: false
 			        }
 					
 			    };
+
+
+			    if(fromURL) {
+			    	if(options.galleryPIDs) {
+			    		// parse real index when custom PIDs are used 
+			    		// http://photoswipe.com/documentation/faq.html#custom-pid-in-url
+			    		for(var j = 0; j < items.length; j++) {
+			    			if(items[j].pid == index) {
+			    				options.index = j;
+			    				break;
+			    			}
+			    		}
+				    } else {
+				    	options.index = parseInt(index, 10) - 1;
+				    }
+			    } else {
+			    	options.index = parseInt(index, 10);
+			    }
+
+			    // exit if index not found
+			    if( isNaN(options.index) ) {
+			    	return;
+			    }
+
+
 
 				var radios = document.getElementsByName('gallery-style');
 				for (var i = 0, length = radios.length; i < length; i++) {
@@ -838,8 +858,8 @@ buildtool: false
 
 			// Parse URL and open gallery if it contains #&pid=3&gid=1
 			var hashData = photoswipeParseHash();
-			if(hashData.pid > 0 && hashData.gid > 0) {
-				openPhotoSwipe( hashData.pid - 1 ,  galleryElements[ hashData.gid - 1 ], true );
+			if(hashData.pid && hashData.gid) {
+				openPhotoSwipe( hashData.pid,  galleryElements[ hashData.gid - 1 ], true, true );
 			}
 		};
 

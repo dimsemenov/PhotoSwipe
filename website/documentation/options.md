@@ -226,6 +226,34 @@ If set to `false` disables history module (back button to close gallery, unique 
 Gallery unique ID. Used by History module when forming URL. For example, second picture of gallery with UID 1 will have URL: `http://example.com/#&gid=1&pid=2`.
 
 
+### <a name="galleryPIDs"></a> `galleryPIDs` <code class="default">boolean</code> <code class="default">false</code>
+
+Enables custom IDs for each slide object that are used when forming URL. If option set set to `true`, slide objects must have `pid` (picture identifier) property that can be a string or an integer. For example:
+
+```js
+var slides = [
+	{
+		src: 'path/to/1.jpg',
+		w:500,
+		h:400,
+		pid: 'image-one'
+	},
+	{
+		src: 'path/to/2.jpg',
+		w:300,
+		h:700,
+		pid: 'image-two'
+	},
+
+	... 
+];
+```
+
+... second slide will have URL `http://example.com/#&gid=1&pid=image-two`.
+
+Read more about how to implement custom PID in [the FAQ section](faq.html#custom-pid-in-url).
+
+
 ### `errorMsg` <code class="default">string</code>
 
 Error message when image was not loaded. `%url%` will be replaced by URL of image.
