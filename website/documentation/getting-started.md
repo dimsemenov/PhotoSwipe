@@ -411,14 +411,10 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 			params.gid = parseInt(params.gid, 10);
 		}
 
-		if(!params.hasOwnProperty('pid')) {
-			return params;
-		}
-		params.pid = parseInt(params.pid, 10);
 		return params;
 	};
 
-	var openPhotoSwipe = function(index, galleryElement, disableAnimation) {
+	var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
 		var pswpElement = document.querySelectorAll('.pswp')[0],
 			gallery,
 			options,
@@ -428,7 +424,6 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 
 		// define options (if needed)
 		options = {
-			index: index,
 
 			// define gallery index (for URL)
 			galleryUID: galleryElement.getAttribute('data-pswp-uid'),
@@ -443,6 +438,30 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 			}
 
 		};
+
+		// PhotoSwipe opened from URL
+		if(fromURL) {
+	    	if(options.galleryPIDs) {
+	    		// parse real index when custom PIDs are used 
+	    		// http://photoswipe.com/documentation/faq.html#custom-pid-in-url
+	    		for(var j = 0; j < items.length; j++) {
+	    			if(items[j].pid == index) {
+	    				options.index = j;
+	    				break;
+	    			}
+	    		}
+		    } else {
+		    	// in URL indexes start from 1
+		    	options.index = parseInt(index, 10) - 1;
+		    }
+	    } else {
+	    	options.index = parseInt(index, 10);
+	    }
+
+	    // exit if index not found
+	    if( isNaN(options.index) ) {
+	    	return;
+	    }
 
 		if(disableAnimation) {
 			options.showAnimationDuration = 0;
@@ -463,8 +482,8 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 
 	// Parse URL and open gallery if it contains #&pid=3&gid=1
 	var hashData = photoswipeParseHash();
-	if(hashData.pid > 0 && hashData.gid > 0) {
-		openPhotoSwipe( hashData.pid - 1 ,  galleryElements[ hashData.gid - 1 ], true );
+	if(hashData.pid && hashData.gid) {
+		openPhotoSwipe( hashData.pid ,  galleryElements[ hashData.gid - 1 ], true, true );
 	}
 };
 
