@@ -26,7 +26,7 @@ First things that you should know before you start:
 - All code in the documentation is pure Vanilla JS and supports IE 8 and above. If your website or app uses some JavaScript framework (like jQuery or MooTools) or you don't need to support old browsers – feel free to simplify the code.
 - Avoid serving big images (larger than 2000x1500px) for mobile, as they will dramatically reduce animation performance and can cause crash (especially on iOS Safari). Possible solutions: [serve responsive images](responsive-images.html), or open image on a separate page, or use libraries that support image tiling (like [Leaflet](http://leafletjs.com/)). [More info in FAQ](faq.html#mobile-crash).
 
-## Initialization
+## <a name="initialization"></a> Initialization
 
 ### <a name="init-include-files"></a>Step 1: include JS and CSS files
 
@@ -196,7 +196,7 @@ At the end you should get something like this:
 </div>
 
 
-## Creating an Array of Slide Objects
+## <a name="creating-slide-objects-array"></a> Creating an Array of Slide Objects
 
 Each object in the array should contain data about slide, it can be anything that you wish to display in PhotoSwipe - path to image, caption string, number of shares, comments, etc.
 
