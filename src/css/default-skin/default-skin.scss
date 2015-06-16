@@ -482,6 +482,7 @@ a.pswp__share--download {
 
 /* root element of UI */
 .pswp__ui {
+	position: static;
 	-webkit-font-smoothing: auto;
 	visibility: visible;
 	opacity: 1;
