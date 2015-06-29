@@ -506,11 +506,11 @@ Tip: you may download example from CodePen to play with it locally (`Edit on Cod
 - If you're not experienced in pure JavaScript and don't know how to parse DOM, refer to [QuirksMode](http://quirksmode.org/dom/core/#gettingelements) and [documentation on MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element.getElementsByTagName).
 - Note that IE8 does not support HTML5 `<figure>` and `<figcaption>` elements, so you need to include [html5shiv](https://github.com/aFarkas/html5shiv) in `<head>` section ([cdnjs hosted version](http://cdnjs.com/libraries/html5shiv/) is used in example):
 
-```html
-<!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
-<![endif]-->
-```
+    ```html
+    <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+    ```
 
 
 ## About
