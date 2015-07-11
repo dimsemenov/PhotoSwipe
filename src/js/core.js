@@ -20,7 +20,7 @@ var _options = {
 	pinchToClose: true,
 	closeOnScroll: true,
 	closeOnVerticalDrag: true,
-	verticalDragRange: 0.6,
+	verticalDragRange: 0.75,
 	hideAnimationDuration: 333,
 	showAnimationDuration: 333,
 	showHideOpacity: false,
