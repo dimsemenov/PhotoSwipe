@@ -423,12 +423,19 @@ var _gestureStartTime,
 		if(_isDragging) {
 			var touchesList = _getTouchPoints(e);
 			if(!_direction && !_moved && !_isZooming) {
-				var diff = Math.abs(touchesList[0].x - _currPoint.x) - Math.abs(touchesList[0].y - _currPoint.y);
-				// check the direction of movement
-				if(Math.abs(diff) >= DIRECTION_CHECK_OFFSET) {
-					_direction = diff > 0 ? 'h' : 'v';
-					_currentPoints = touchesList;
+
+				if(_mainScrollPos.x !== _slideSize.x * _currPositionIndex) {
+					// if main scroll position is shifted – direction is always horizontal
+					_direction = 'h';
+				} else {
+					var diff = Math.abs(touchesList[0].x - _currPoint.x) - Math.abs(touchesList[0].y - _currPoint.y);
+					// check the direction of movement
+					if(Math.abs(diff) >= DIRECTION_CHECK_OFFSET) {
+						_direction = diff > 0 ? 'h' : 'v';
+						_currentPoints = touchesList;
+					}
 				}
+				
 			} else {
 				_currentPoints = touchesList;
 			}
@@ -567,7 +574,6 @@ var _gestureStartTime,
 
 			if(_direction === 'v' && _options.closeOnVerticalDrag) {
 				if(!_canPan()) {
-					
 					_currPanDist.y += delta.y;
 					_panOffset.y += delta.y;
 
@@ -1067,9 +1073,7 @@ var _gestureStartTime,
 
 		if(_opacityChanged) {
 			onUpdate = function(now) {
-
 				_applyBgOpacity(  (destOpacity - initialOpacity) * now + initialOpacity );
-
 			};
 		}
 
