@@ -99,6 +99,7 @@ var _isOpen,
 	_currentWindowScrollY,
 	_features,
 	_windowVisibleSize = {},
+	_renderMaxResolution = false,
 
 	// Registers PhotoSWipe module (History, Controller ...)
 	_registerModule = function(name, module) {
@@ -144,21 +145,43 @@ var _isOpen,
 		_bgOpacity = opacity;
 		self.bg.style.opacity = opacity * _options.bgOpacity;
 	},
-	
-	_applyZoomTransform = function(styleObj,x,y,zoom) {
+
+	_applyZoomTransform = function(styleObj,x,y,zoom,item) {
+		if(!_renderMaxResolution || (item && item !== self.currItem) ) {
+			zoom = zoom / (item ? item.fitRatio : self.currItem.fitRatio);	
+		}
+			
 		styleObj[_transformKey] = _translatePrefix + x + 'px, ' + y + 'px' + _translateSufix + ' scale(' + zoom + ')';
 	},
-	_applyCurrentZoomPan = function() {
+	_applyCurrentZoomPan = function( allowRenderResolution ) {
 		if(_currZoomElementStyle) {
+
+			if(allowRenderResolution) {
+				if(_currZoomLevel > self.currItem.fitRatio) {
+					if(!_renderMaxResolution) {
+						_setImageSize(self.currItem, false, true);
+						_renderMaxResolution = true;
+					}
+				} else {
+					if(_renderMaxResolution) {
+						_setImageSize(self.currItem);
+						_renderMaxResolution = false;
+					}
+				}
+			}
+			
+
 			_applyZoomTransform(_currZoomElementStyle, _panOffset.x, _panOffset.y, _currZoomLevel);
 		}
 	},
 	_applyZoomPanToItem = function(item) {
 		if(item.container) {
+
 			_applyZoomTransform(item.container.style, 
 								item.initialPosition.x, 
 								item.initialPosition.y, 
-								item.initialZoomLevel);
+								item.initialZoomLevel,
+								item);
 		}
 	},
 	_setTranslateX = function(x, elStyle) {
@@ -474,11 +497,11 @@ var publicMethods = {
 		_currentWindowScrollY = _offset.y = y;
 		_shout('updateScrollOffset', _offset);
 	},
-	applyZoomPan: function(zoomLevel,panX,panY) {
+	applyZoomPan: function(zoomLevel,panX,panY,allowRenderResolution) {
 		_panOffset.x = panX;
 		_panOffset.y = panY;
 		_currZoomLevel = zoomLevel;
-		_applyCurrentZoomPan();
+		_applyCurrentZoomPan( allowRenderResolution );
 	},
 
 	init: function() {
@@ -799,6 +822,7 @@ var publicMethods = {
 
 
 		self.currItem = _getItemAt( _currentItemIndex );
+		_renderMaxResolution = false;
 		
 		_shout('beforeChange', _indexDiff);
 
@@ -831,7 +855,8 @@ var publicMethods = {
 			var prevItem = _getItemAt(_prevItemIndex);
 			if(prevItem.initialZoomLevel !== _currZoomLevel) {
 				_calculateItemSize(prevItem , _viewportSize );
-				_applyZoomPanToItem( prevItem ); 
+				_setImageSize(prevItem);
+				_applyZoomPanToItem( prevItem ); 				
 			}
 
 		}
@@ -924,6 +949,7 @@ var publicMethods = {
 				}
 				if(item && item.container) {
 					_calculateItemSize(item, _viewportSize);
+					_setImageSize(item);
 					_applyZoomPanToItem( item );
 				}
 				
@@ -937,7 +963,7 @@ var publicMethods = {
 		if(_currPanBounds) {
 			_panOffset.x = _currPanBounds.center.x;
 			_panOffset.y = _currPanBounds.center.y;
-			_applyCurrentZoomPan();
+			_applyCurrentZoomPan( true );
 		}
 		
 		_shout('resize');
@@ -990,7 +1016,7 @@ var publicMethods = {
 				updateFn(now);
 			}
 
-			_applyCurrentZoomPan();
+			_applyCurrentZoomPan( now === 1 );
 		};
 
 		if(speed) {
