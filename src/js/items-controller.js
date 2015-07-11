@@ -127,38 +127,20 @@ var _getItemAt,
 			return;
 		}
 
-		var animate,
-			isSwiping = self.isDragging() && !self.isZooming(),
-			slideMightBeVisible = index === _currentItemIndex || self.isMainScrollAnimating() || isSwiping;
-
-		// fade in loaded image only when current holder is active, or might be visible
-		if(!preventAnimation && (_likelyTouchDevice || _options.alwaysFadeIn) && slideMightBeVisible) {
-			animate = true;
-		}
-
 		if(img) {
-			if(animate) {
-				img.style.opacity = 0;
-			}
 
 			item.imageAppended = true;
-			_setImageSize(img, item.w, item.h);
+			_setImageSize(item, img);
 			
 			baseDiv.appendChild(img);
 
-			if(animate) {
+			if(keepPlaceholder) {
 				setTimeout(function() {
-					img.style.opacity = 1;
-					if(keepPlaceholder) {
-						setTimeout(function() {
-							// hide image placeholder "behind"
-							if(item && item.loaded && item.placeholder) {
-								item.placeholder.style.display = 'none';
-								item.placeholder = null;
-							}
-						}, 500);
+					if(item && item.loaded && item.placeholder) {
+						item.placeholder.style.display = 'none';
+						item.placeholder = null;
 					}
-				}, 50);
+				}, 500);
 			}
 		}
 	},
