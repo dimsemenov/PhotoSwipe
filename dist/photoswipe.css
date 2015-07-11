@@ -136,9 +136,7 @@
   width: auto;
   height: auto;
   top: 0;
-  left: 0;
-  -webkit-transition: opacity 0.15s;
-          transition: opacity 0.15s; }
+  left: 0; }
 
 /*
 	stretched thumbnail or div placeholder element (see below)
