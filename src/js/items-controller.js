@@ -230,7 +230,7 @@ _registerModule('Controller', {
 			index = _getLoopedId(index);
 			var item = _getItemAt(index);
 
-			if(!item || item.loaded || item.loading) {
+			if(!item || ((item.loaded || item.loading) && !_itemsNeedUpdate)) {
 				return;
 			}
 
