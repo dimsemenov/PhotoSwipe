@@ -258,7 +258,7 @@ _registerModule('Controller', {
 			_listen('beforeChange', function(diff) {
 
 				var p = _options.preload,
-					isNext = diff === null ? true : (diff > 0),
+					isNext = diff === null ? true : (diff >= 0),
 					preloadBefore = Math.min(p[0], _getNumItems() ),
 					preloadAfter = Math.min(p[1], _getNumItems() ),
 					i;
