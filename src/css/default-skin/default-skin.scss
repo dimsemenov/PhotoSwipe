@@ -181,9 +181,9 @@
 
 .pswp__counter,
 .pswp__share-modal {
-	-webkit-user-select:none;
-	-moz-user-select:none;
-	user-select:none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
 }
 
 .pswp__share-modal {
@@ -203,7 +203,7 @@
 }
 
 .pswp__share-modal--hidden {
-	display:none;
+	display: none;
 }
 
 .pswp__share-tooltip {
@@ -211,7 +211,7 @@
 	position: absolute;
 	background: #FFF;
 	top: 56px;
-	border-radius:2px;
+	border-radius: 2px;
 	display: block;
 	width: auto;
 	right: 44px;
@@ -373,11 +373,11 @@ a.pswp__share--download {
  */
 
 .pswp__preloader {
-	width:44px;
-	height:44px;
+	width: 44px;
+	height: 44px;
 	position: absolute;
-	top:0;
-	left:50%;
+	top: 0;
+	left: 50%;
 	margin-left: -22px;
 	opacity: 0;
 	transition: opacity 0.25s ease-out; 
@@ -415,12 +415,12 @@ a.pswp__share--download {
 	
 	.pswp__preloader__icn {
 		background: none;
-		opacity:0.75;
+		opacity: 0.75;
 		width: 14px;
 		height: 14px;
 		position: absolute;
-		left:15px;
-		top:15px;
+		left: 15px;
+		top: 15px;
 		margin: 0;
 	}
 
@@ -448,7 +448,7 @@ a.pswp__share--download {
 		top: 0;
 		left: 0;
 		background: none;
-		margin:0;
+		margin: 0;
 	}
 }
 
@@ -456,9 +456,9 @@ a.pswp__share--download {
 	.pswp__preloader {
 		position: relative;
 		left: auto;
-		top:auto;
-		margin:0;
-		float:right;
+		top: auto;
+		margin: 0;
+		float: right;
 	}
 }
 
@@ -491,10 +491,10 @@ a.pswp__share--download {
 /* top black bar with buttons and "1 of X" indicator */
 .pswp__top-bar {
 	position: absolute;
-	left:0;
-	top:0;
+	left: 0;
+	top: 0;
 	height: 44px;
-	width:100%;
+	width: 100%;
 }
 
 .pswp__caption,
@@ -574,7 +574,6 @@ a.pswp__share--download {
 		}
 	}
 }
-
 
 
 
