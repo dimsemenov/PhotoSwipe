@@ -55,21 +55,23 @@ var _showOrHideTimeout,
 		// if bounds aren't provided, just open gallery without animation
 		if(!duration || !thumbBounds || thumbBounds.x === undefined) {
 
-			var finishWithoutAnimation = function() {
-				_shout('initialZoom' + (out ? 'Out' : 'In') );
+			_shout('initialZoom' + (out ? 'Out' : 'In') );
 
-				_currZoomLevel = item.initialZoomLevel;
-				_equalizePoints(_panOffset,  item.initialPosition );
-				_applyCurrentZoomPan();
+			_currZoomLevel = item.initialZoomLevel;
+			_equalizePoints(_panOffset,  item.initialPosition );
+			_applyCurrentZoomPan();
 
-				// no transition
-				template.style.opacity = out ? 0 : 1;
-				_applyBgOpacity(1);
+			template.style.opacity = out ? 0 : 1;
+			_applyBgOpacity(1);
 
+			if(duration) {
+				setTimeout(function() {
+					onComplete();
+				}, duration);
+			} else {
 				onComplete();
-			};
-			finishWithoutAnimation();
-			
+			}
+
 			return;
 		}
 

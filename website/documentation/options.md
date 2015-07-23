@@ -86,6 +86,13 @@ If dimensions of your small thumbnail don't match dimensions of large image, con
 If you want to "hide" small thumbnail during the animation use `opacity:0`, not `visibility:hidden` or `display:none`. Don't force Paint and Layout at the beginning of the animation to avoid lag.
 
 
+### `showHideOpacity` <code class="default">boolean</code> <code class="default">false</code>
+
+If set to `false`: background `opacity` and image `scale` will be animated (image opacity is always 1). 
+If set to `true`: root PhotoSwipe element `opacity` and image `scale` will be animated.
+
+To enable just `opacity` transition (without `scale`), do not define `getThumbBoundsFn` option.
+
 ### `showAnimationDuration` <code class="default">integer</code> <code class="default">333</code>
 
 Initial zoom-in transition duration in milliseconds. Set to `0` to disable.
@@ -109,12 +116,6 @@ If you're using Sass, you just need to change transition-duration variables in [
 ### `hideAnimationDuration` <code class="default">integer</code> <code class="default">333</code>
 
 The same as the previous option, just for closing (zoom-out) transition. After PhotoSwipe is opened `pswp--open` class will be added to the root element, you may use it to apply different transition duration in CSS.
-
-
-### `showHideOpacity` <code class="default">boolean</code> <code class="default">false</code>
-
-If set to `false` background `opacity` and image `scale` will be animated (image opacity is always 1). 
-If set to `true` root PhotoSwipe element `opacity` and image `scale` will be animated. Enable it when dimensions of your small thumbnail don't match dimensions of large image 
 
 
 ### `bgOpacity` <code class="default">number</code> <code class="default">1</code>
