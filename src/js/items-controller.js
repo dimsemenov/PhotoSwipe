@@ -230,7 +230,7 @@ _registerModule('Controller', {
 			index = _getLoopedId(index);
 			var item = _getItemAt(index);
 
-			if(!item || item.loaded || item.loading) {
+			if(!item || ((item.loaded || item.loading) && !_itemsNeedUpdate)) {
 				return;
 			}
 
@@ -258,7 +258,7 @@ _registerModule('Controller', {
 			_listen('beforeChange', function(diff) {
 
 				var p = _options.preload,
-					isNext = diff === null ? true : (diff > 0),
+					isNext = diff === null ? true : (diff >= 0),
 					preloadBefore = Math.min(p[0], _getNumItems() ),
 					preloadAfter = Math.min(p[1], _getNumItems() ),
 					i;
