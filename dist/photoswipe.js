@@ -341,8 +341,7 @@ var _options = {
 	modal: true,
 
 	// not fully implemented yet
-	scaleMode: 'fit', // TODO
-	alwaysFadeIn: false // TODO
+	scaleMode: 'fit' // TODO
 };
 framework.extend(_options, options);
 
@@ -488,12 +487,11 @@ var _isOpen,
 	_moveMainScroll = function(x, dragging) {
 
 		if(!_options.loop && dragging) {
-			// if of current item during scroll (float)
-			var newSlideIndexOffset = _currentItemIndex + (_slideSize.x * _currPositionIndex - x)/_slideSize.x; 
-			var delta = Math.round(x - _mainScrollPos.x);
+			var newSlideIndexOffset = _currentItemIndex + (_slideSize.x * _currPositionIndex - x) / _slideSize.x,
+				delta = Math.round(x - _mainScrollPos.x);
 
 			if( (newSlideIndexOffset < 0 && delta > 0) || 
-				(newSlideIndexOffset >= _getNumItems()-1 && delta < 0) ) {
+				(newSlideIndexOffset >= _getNumItems() - 1 && delta < 0) ) {
 				x = _mainScrollPos.x + delta * _options.mainScrollEndFriction;
 			} 
 		}
@@ -810,7 +808,7 @@ var publicMethods = {
 
 		var i;
 
-		self.framework = framework; // basic function
+		self.framework = framework; // basic functionality
 		self.template = template; // root DOM element of PhotoSwipe
 		self.bg = framework.getChildByClass(template, 'pswp__bg');
 
@@ -965,7 +963,7 @@ var publicMethods = {
 		framework.addClass(template, 'pswp--visible');
 	},
 
-	// Closes the gallery, then destroy it
+	// Close the gallery, then destroy it
 	close: function() {
 		if(!_isOpen) {
 			return;
@@ -976,10 +974,10 @@ var publicMethods = {
 		_shout('close');
 		_unbindEvents();
 
-		_showOrHide( self.currItem, null, true, self.destroy);
+		_showOrHide(self.currItem, null, true, self.destroy);
 	},
 
-	// destroys gallery (unbinds events, cleans up intervals and timeouts to avoid memory leaks)
+	// destroys the gallery (unbinds events, cleans up intervals and timeouts to avoid memory leaks)
 	destroy: function() {
 		_shout('destroy');
 
@@ -996,7 +994,7 @@ var publicMethods = {
 
 		framework.unbind(self.scrollWrap, _downEvents, self);
 
-		// we unbind lost event at the end, as closing animation may depend on it
+		// we unbind scroll event at the end, as closing animation may depend on it
 		framework.unbind(window, 'scroll', self);
 
 		_stopDragUpdateLoop();
@@ -1298,7 +1296,6 @@ var publicMethods = {
 
 		_roundPoint(destPanOffset);
 
-		// _startZoomLevel = destZoomLevel;
 		var onUpdate = function(now) {
 			if(now === 1) {
 				_currZoomLevel = destZoomLevel;
@@ -2548,21 +2545,23 @@ var _showOrHideTimeout,
 		// if bounds aren't provided, just open gallery without animation
 		if(!duration || !thumbBounds || thumbBounds.x === undefined) {
 
-			var finishWithoutAnimation = function() {
-				_shout('initialZoom' + (out ? 'Out' : 'In') );
+			_shout('initialZoom' + (out ? 'Out' : 'In') );
 
-				_currZoomLevel = item.initialZoomLevel;
-				_equalizePoints(_panOffset,  item.initialPosition );
-				_applyCurrentZoomPan();
+			_currZoomLevel = item.initialZoomLevel;
+			_equalizePoints(_panOffset,  item.initialPosition );
+			_applyCurrentZoomPan();
 
-				// no transition
-				template.style.opacity = out ? 0 : 1;
-				_applyBgOpacity(1);
+			template.style.opacity = out ? 0 : 1;
+			_applyBgOpacity(1);
 
+			if(duration) {
+				setTimeout(function() {
+					onComplete();
+				}, duration);
+			} else {
 				onComplete();
-			};
-			finishWithoutAnimation();
-			
+			}
+
 			return;
 		}
 
