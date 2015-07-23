@@ -20,11 +20,11 @@ markdownpage: true
 
 First things that you should know before you start:
 
-- PhotoSwipe is made simple and fast for end users, not for developers. It ain't simple jQuery plugin, at least basic JavaScript knowledge is required to install.
-- PhotoSwipe requires predefined image dimensions. If your app is unable to retrieve them - consider using some other script. [More about this](faq.html#image-size).
+- PhotoSwipe is not a simple jQuery plugin, at least basic JavaScript knowledge is required to install.
+- PhotoSwipe requires predefined image dimensions ([more about this](faq.html#image-size)).
 - If you use PhotoSwipe on non-responsive website &ndash; controls will be scaled on mobile (as the whole page is scaled). So you'll need to implement custom controls (e.g. single large close button in top right corner).
 - All code in the documentation is pure Vanilla JS and supports IE 8 and above. If your website or app uses some JavaScript framework (like jQuery or MooTools) or you don't need to support old browsers – feel free to simplify the code.
-- Avoid serving big images (larger than 2000x1500px) for mobile, as they will dramatically reduce animation performance and can cause crash (especially on iOS Safari). Possible solutions: [serve responsive images](responsive-images.html), or open image on a separate page, or use libraries that support image tiling (like [Leaflet](http://leafletjs.com/)). [More info in FAQ](faq.html#mobile-crash).
+- Avoid serving big images (larger than 2000x1500px) for mobile, as they will dramatically reduce animation performance and can cause crash (especially on iOS Safari). Possible solutions: [serve responsive images](responsive-images.html), or open image on a separate page, or use libraries that support image tiling (like [Leaflet](http://leafletjs.com/)) ([more in FAQ](faq.html#mobile-crash)).
 
 ## <a name="initialization"></a> Initialization
 
@@ -515,7 +515,7 @@ Tip: you may download example from CodePen to play with it locally (`Edit on Cod
 
 ## About
 
-PhotoSwipe is in beta, please [keep script updated](faq.html#keep-updated), report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask questions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
+Please [keep script updated](faq.html#keep-updated), report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask questions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
 
 Know how this page can be improved? Found a typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md)
 

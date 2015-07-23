@@ -104,7 +104,6 @@ In all above cases, `large-image.jpg` will be perfectly indexed. The caption ele
 
 
 - Keep `alt` attribute short and descriptive. Leave long description for caption element.
-- Twitter has a [Gallery Card](https://dev.twitter.com/cards/types/gallery), which allows you to display up to 4 images of gallery when page is shared via Twitter. 
 - [Google image publishing guidelines](https://support.google.com/webmasters/answer/114016).
 - Use [Google](https://developers.google.com/webmasters/structured-data/testing-tool/) or [Yandex](https://webmaster.yandex.com/microtest.xml) structured data testing tool to validate your Schema.org markup. 
 - High-resolution images rank better, usually 1680px on a wider side is more than enough.

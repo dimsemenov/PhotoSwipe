@@ -25,7 +25,7 @@ markdownpage: true
 Use another gallery script ([1](http://dimsemenov.com/plugins/magnific-popup/), [2](http://dimsemenov.com/plugins/royal-slider/gallery/)), or find a way:
 
 - You can read size of an image by downloading only small part of it ([PHP version](http://stackoverflow.com/questions/4635936/super-fast-getimagesize-in-php), [Ruby](https://github.com/sdsykes/fastimage), [Node.js](http://stackoverflow.com/a/20111234/331460)).
-- You can store size of an image directly in its filename and parse it on frontend during PhotoSwipe initialization. 
+- You can store size of an image directly in its filename and parse it on frontend during PhotoSwipe initialization (`gettingData` event in API section). 
 - Most CMS store size of an image in a database and have API to retrieve it.
 - Most web API (Facebook, 500px, Instagram, Flickr, Twitter, YouTube, Vimeo etc.) return a size of images.
 
@@ -34,8 +34,10 @@ Dimensions are used for progressive loading, stretched placeholder, initial zoom
 
 ### <a name="different-thumbnail-dimensions"></a> My thumbnails are square, but large images have different dimensions, what to do with opening/closing transition?
 
-- Option 1: set option `showHideOpacity:true`, and opacity will be applied to the main image, not just to the background.
-- Option 2: disable transition entirely (options `showAnimationDuration` and `hideAnimationDuration`).
+1. If thumbnail aspect ratio does not match large image, do not define `msrc` property for slide objects and enable opacity transition option (`showHideOpacity:true, getThumbBoundsFn:false`).
+2. If aspect ratio of thumbnail image file matches large image, **but thumbnail area is cropped via CSS**, just add `showHideOpacity:true` and make sure that `getThumbBoundsFn` option returns coordinates that consider crop area.
+
+I strongly recommend to display thumbnails that match aspect ratio of large image, or crop the visible area via CSS (2).
 
 I'll try to explain why this is not implemented yet. There are two ways to make expanding area animation:
 
@@ -149,6 +151,8 @@ So [serve responsive images](responsive-images.html), or at least don't serve hu
 
 In much more rare cases crash can occur if you open PhotoSwipe during some process on your page (this can be initial page load/render, or some complex animation on page), try to delay PhotoSwipe initialization until page is rendered (18-300ms after document.ready), especially if you are displaying large images.
 
+**UPD.:** in [v4.1.0](https://github.com/dimsemenov/PhotoSwipe/releases/tag/v4.1.0) this is partly fixed. 
+
 ## Miscellaneous
 
 ### <a name="keep-updated"></a> Where is the changelog, how to do I get notified about updates?
@@ -158,12 +162,9 @@ Releases page has an [Atom feed](https://github.com/dimsemenov/PhotoSwipe/releas
 
 Also, you may join my [email newsletter](http://dimsemenov.com/subscribe.html?i=pswp) (sent 3-4 times a year), follow [@PhotoSwipe on Twitter](http://twitter.com/photoswipe), and star/watch [PhotoSwipe on GitHub](https://github.com/dimsemenov/PhotoSwipe/).
 
-It's very important to keep PhotoSwipe updated, especially during the beta period.
-
-
 ### <a name="wordpress-release"></a> When WordPress plugin will be released?
 
-Plugin is under development and will be released in early-mid 2015. You may [subscribe here](http://dimsemenov.com/subscribe.html?i=pswp-wp) to get notified.
+Plugin is under development and will be released in 2015. To get notified [subscribe to my newsletter](http://dimsemenov.com/subscribe.html?i=pswp-wp).
 
 
 ### <a name="can-i-use-in-theme"></a> I want to use PhotoSwipe in WordPress/Magento/Joomla... template, can I?
