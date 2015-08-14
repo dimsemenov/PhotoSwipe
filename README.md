@@ -24,6 +24,7 @@ JavaScript image gallery for mobile and desktop.
 - [Ember.js addon](https://github.com/poetic/ember-cli-photoswipe).
 - [Eager app](https://eager.io/app/DvuKIoU8iTOt).
 - [Koken CMS plugin](https://github.com/DanielMuller/koken-plugin-photoswipe).
+- [Orchard CMS module](https://gallery.orchardproject.net/List/Modules/Orchard.Module.Cascade.PhotoSwipe).
 
 Coded something useful? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I’ll post a link to it here.
 
