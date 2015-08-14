@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.1.0 - 2015-07-23
+/*! PhotoSwipe - v4.1.0 - 2015-08-14
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 (function (root, factory) { 
@@ -2805,7 +2805,7 @@ var _getItemAt,
 		if(img) {
 
 			item.imageAppended = true;
-			_setImageSize(item, img);
+			_setImageSize(item, img, (item === self.currItem && _renderMaxResolution) );
 			
 			baseDiv.appendChild(img);
 
