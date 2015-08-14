@@ -130,7 +130,7 @@ var _getItemAt,
 		if(img) {
 
 			item.imageAppended = true;
-			_setImageSize(item, img);
+			_setImageSize(item, img, (item === self.currItem && _renderMaxResolution) );
 			
 			baseDiv.appendChild(img);
 
