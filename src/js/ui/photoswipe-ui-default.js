@@ -277,7 +277,7 @@ var PhotoSwipeUI_Default =
 			}
 		},
 		_setupFullscreenAPI = function() {
-			if(_options.fullscreenEl) {
+			if(_options.fullscreenEl && !framework.features.isOldAndroid) {
 				if(!_fullscrenAPI) {
 					_fullscrenAPI = ui.getFullscreenAPI();
 				}
