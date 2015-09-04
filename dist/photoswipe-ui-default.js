@@ -1,4 +1,4 @@
-/*! PhotoSwipe Default UI - 4.1.0 - 2015-07-11
+/*! PhotoSwipe Default UI - 4.1.0 - 2015-09-04
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 /**
@@ -280,7 +280,7 @@ var PhotoSwipeUI_Default =
 			}
 		},
 		_setupFullscreenAPI = function() {
-			if(_options.fullscreenEl) {
+			if(_options.fullscreenEl && !framework.features.isOldAndroid) {
 				if(!_fullscrenAPI) {
 					_fullscrenAPI = ui.getFullscreenAPI();
 				}
