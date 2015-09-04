@@ -125,12 +125,25 @@ h3 code.default {
   width: 160px;
   left: 0;
   top: 106px;
-  border-top: 1px solid #CCC;
-  padding-top: 25px;
-  border-bottom: 1px solid #CCC;
-  padding-bottom: 25px;
+  
 }
 
+.docs-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 25px 0;
+
+  border-top: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+}
+
+.docs-menu__ad {
+  padding: 25px 10px;
+  border-bottom: 1px solid #CCC;
+  font-size: 13px;
+  line-height: 17px;
+  position: relative;
+}
 .docs-menu a {
   text-decoration: none;
   width: 100%;
@@ -140,11 +153,6 @@ a.docs-logo {
   font-size: 20px;
   margin-bottom: 0;
   text-decoration: none;
-}
-.docs-menu ul {
-  list-style: none;
-  margin: 0;
-  padding:0;
 }
 .docs-menu li {
   list-style: none;
@@ -513,7 +521,7 @@ img.img--with_border {
 
 /*.main-wrapper {
   background: none;
-	width: 100%;
+  width: 100%;
   padding-top: 0;
   
 }
@@ -810,13 +818,15 @@ a.demo-gallery__img--main {
 
   .docs-menu {
     position: relative;
-    left: 0;
-    top: 0;
-    border-top: 1px solid #CCC;
-    padding-top: 25px;
-    border-bottom: 1px solid #CCC;
-    padding-bottom: 25px;
     margin: 15px 0;
+    left:0;
+    top:0;
+  }
+  .docs-menu  ul {
+    position: relative;
+  }
+  .docs-menu__ad {
+    display: none;
   }
 
   .row--nav {
@@ -825,6 +835,8 @@ a.demo-gallery__img--main {
   }
 
 }
+
+
 
 @media screen and (max-width: 650px) {
    h1 {
