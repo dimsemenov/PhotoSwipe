@@ -641,7 +641,7 @@ var _gestureStartTime,
 			if(pointerIndex > -1) {
 				releasePoint = _currPointers.splice(pointerIndex, 1)[0];
 
-				if(navigator.pointerEnabled) {
+				if('PointerEvent' in window) {
 					releasePoint.type = e.pointerType || 'mouse';
 				} else {
 					var MSPOINTER_TYPES = {
@@ -1106,7 +1106,7 @@ _registerModule('Gestures', {
 			}
 
 			if(_pointerEventEnabled) {
-				if(navigator.pointerEnabled) {
+				if('PointerEvent' in window) {
 					addEventNames('pointer', 'down', 'move', 'up', 'cancel');
 				} else {
 					// IE10 pointer events are case-sensitive
