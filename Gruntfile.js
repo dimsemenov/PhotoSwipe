@@ -288,10 +288,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-svgmin');
 
   // Default task.
-  grunt.registerTask('default', ['sass', 'autoprefixer', 'imageEmbed', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
+  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'imageEmbed', 'jekyll:dev']);
 
-  grunt.registerTask('production', ['sass', 'autoprefixer', 'imageEmbed', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
-  grunt.registerTask('nosite', ['sass', 'autoprefixer', 'imageEmbed', 'pswpbuild', 'uglify']);
+  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'imageEmbed', 'jekyll:production']);
+  grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'imageEmbed']);
   grunt.registerTask('hint', ['jshint']);
   grunt.registerTask('awsupload', ['aws_s3']);
 
