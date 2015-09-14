@@ -172,6 +172,16 @@ module.exports = function(grunt) {
       }
     },
 
+    imageEmbed: {
+      dist: {
+        src: 'dist/default-skin/default-skin.css',
+        dest: 'dist/default-skin/default-skin.css',
+        options: {
+	      deleteAfterEncoding: false
+        }
+      }
+    },
+
     aws_s3: {
       options: {
         accessKeyId: awsDefaults ? awsDefaults.AWSAccessKeyId : '', // Use the variables
@@ -273,14 +283,15 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-jekyll');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-image-embed');
   grunt.loadNpmTasks('grunt-aws-s3');
   grunt.loadNpmTasks('grunt-svgmin');
 
   // Default task.
-  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
+  grunt.registerTask('default', ['sass', 'autoprefixer', 'imageEmbed', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
 
-  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
-  grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify']);
+  grunt.registerTask('production', ['sass', 'autoprefixer', 'imageEmbed', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
+  grunt.registerTask('nosite', ['sass', 'autoprefixer', 'imageEmbed', 'pswpbuild', 'uglify']);
   grunt.registerTask('hint', ['jshint']);
   grunt.registerTask('awsupload', ['aws_s3']);
 
