@@ -177,7 +177,7 @@ module.exports = function(grunt) {
         src: 'dist/default-skin/default-skin.css',
         dest: 'dist/default-skin/default-skin.css',
         options: {
-	      deleteAfterEncoding: false
+	      deleteAfterEncoding: true
         }
       }
     },
@@ -288,7 +288,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-svgmin');
 
   // Default task.
-  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'imageEmbed', 'jekyll:dev']);
+  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'imageEmbed', 'jekyll:dev']);
 
   grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'imageEmbed', 'jekyll:production']);
   grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'imageEmbed']);
