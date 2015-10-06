@@ -175,9 +175,9 @@ module.exports = function(grunt) {
     imageEmbed: {
       dist: {
         src: 'dist/default-skin/default-skin.css',
-        dest: 'dist/default-skin/default-skin.css',
+        dest: 'dist/default-skin/default-skin-image-embed.css',
         options: {
-	      deleteAfterEncoding: true
+	      deleteAfterEncoding: false
         }
       }
     },
