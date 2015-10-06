@@ -114,7 +114,7 @@ var _getItemAt,
 			// if it's not image, we return zero bounds (content is not zoomable)
 			return item.bounds;
 		}
-		return false;
+		
 	},
 
 	
