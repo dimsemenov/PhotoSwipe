@@ -710,9 +710,11 @@ var PhotoSwipeUI_Default =
 
 	ui.updateIndexIndicator = function() {
 		if(_options.counterEl) {
-			_indexIndicator.innerHTML = (pswp.getCurrentIndex()+1) + 
+			if (_indexIndicator && typeof _indexIndicator === 'object' && _indexIndicator.nodeType) {
+				_indexIndicator.innerHTML = (pswp.getCurrentIndex()+1) + 
 										_options.indexIndicatorSep + 
 										_options.getNumItemsFn();
+			}
 		}
 	};
 	
