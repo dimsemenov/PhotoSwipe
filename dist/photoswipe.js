@@ -52,7 +52,9 @@ var framework = {
 	},
 	removeClass: function(el, className) {
 		var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
-		el.className = el.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); 
+		if ( el && typeof el === 'object' && el.nodeType ) {
+			el.className = el.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); 
+		}
 	},
 	addClass: function(el, className) {
 		if( !framework.hasClass(el,className) ) {
