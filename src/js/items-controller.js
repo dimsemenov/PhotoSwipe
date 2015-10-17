@@ -132,6 +132,8 @@ var _getItemAt,
 			item.imageAppended = true;
 			_setImageSize(item, img, (item === self.currItem && _renderMaxResolution) );
 			
+			_shout('appendingImage', index, item, img);
+			
 			baseDiv.appendChild(img);
 
 			if(keepPlaceholder) {
