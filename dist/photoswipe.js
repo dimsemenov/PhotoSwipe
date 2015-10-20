@@ -1184,7 +1184,7 @@ var publicMethods = {
 			_windowVisibleSize.x = window.innerWidth;
 			_windowVisibleSize.y = window.innerHeight;
 
-			//template.style.width = _windowVisibleSize.x + 'px';
+			template.style.width = _windowVisibleSize.x + 'px';
 			template.style.height = _windowVisibleSize.y + 'px';
 		}
 
