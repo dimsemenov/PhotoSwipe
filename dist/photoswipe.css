@@ -120,8 +120,7 @@
 
 .pswp__container,
 .pswp__zoom-wrap {
-  -webkit-backface-visibility: hidden;
-  will-change: transform; }
+  -webkit-backface-visibility: hidden; }
 
 .pswp__item {
   position: absolute;
