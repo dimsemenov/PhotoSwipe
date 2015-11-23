@@ -90,7 +90,8 @@ var PhotoSwipeUI_Default =
 				return pswp.currItem.title || '';
 			},
 				
-			indexIndicatorSep: ' / '
+			indexIndicatorSep: ' / ',
+			fitControlsWidth: 1200
 
 		},
 		_blockControlsTap,
@@ -146,7 +147,7 @@ var PhotoSwipeUI_Default =
 
 		},
 		_fitControlsInViewport = function() {
-			return !pswp.likelyTouchDevice || _options.mouseUsed || screen.width > 1200;
+			return !pswp.likelyTouchDevice || _options.mouseUsed || screen.width > _options.fitControlsWidth;
 		},
 		_togglePswpClass = function(el, cName, add) {
 			framework[ (add ? 'add' : 'remove') + 'Class' ](el, 'pswp__' + cName);
