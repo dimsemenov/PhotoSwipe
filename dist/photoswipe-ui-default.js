@@ -1,4 +1,4 @@
-/*! PhotoSwipe Default UI - 4.1.0 - 2015-11-23
+/*! PhotoSwipe Default UI - 4.1.0 - 2015-12-03
 * http://photoswipe.com
 * Copyright (c) 2015 Dmitry Semenov; */
 /**
@@ -118,7 +118,7 @@ var PhotoSwipeUI_Default =
 
 			var target = e.target || e.srcElement,
 				uiElement,
-				clickedClass = target.className,
+				clickedClass = target.getAttribute('class') || '',
 				found;
 
 			for(var i = 0; i < _uiElements.length; i++) {
@@ -575,8 +575,8 @@ var PhotoSwipeUI_Default =
 			var t = e.target || e.srcElement;
 			if(
 				t && 
-				t.className && e.type.indexOf('mouse') > -1 && 
-				( t.className.indexOf('__caption') > 0 || (/(SMALL|STRONG|EM)/i).test(t.tagName) ) 
+				t.getAttribute('class') && e.type.indexOf('mouse') > -1 && 
+				( t.getAttribute('class').indexOf('__caption') > 0 || (/(SMALL|STRONG|EM)/i).test(t.tagName) ) 
 			) {
 				preventObj.prevent = false;
 			}
