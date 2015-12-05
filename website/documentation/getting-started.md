@@ -149,7 +149,7 @@ You might ask, why PhotoSwipe doesn't add this code automatically via JS, reason
 
 ### Step 3: initialize
 
-Execute `PhotoSwipe` contructor. It accepts 4 arguments:
+Execute `PhotoSwipe` constructor. It accepts 4 arguments:
 
 1. `.pswp` element from step 2 (it must be added to DOM).
 2. PhotoSwipe UI class. If you included default `photoswipe-ui-default.js`, class will be `PhotoSwipeUI_Default`. Can be `false`.
