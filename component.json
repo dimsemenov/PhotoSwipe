@@ -3,7 +3,7 @@
   "repository": "dimsemenov/PhotoSwipe",
   "description": "JavaScript gallery",
   "main": "dist/photoswipe.js",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "keywords": [
     "gallery",
     "lightbox",
