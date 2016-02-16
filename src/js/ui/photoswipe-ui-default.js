@@ -674,9 +674,9 @@ var PhotoSwipeUI_Default =
 			ui.updateIndexIndicator();
 
 			if(_options.captionEl) {
-				_options.addCaptionHTMLFn(pswp.currItem, _captionContainer);
+				var captionExists = _options.addCaptionHTMLFn(pswp.currItem, _captionContainer);
 
-				_togglePswpClass(_captionContainer, 'caption--empty', !pswp.currItem.title);
+				_togglePswpClass(_captionContainer, 'caption--empty', !captionExists);
 			}
 
 			_overlayUIUpdated = true;
