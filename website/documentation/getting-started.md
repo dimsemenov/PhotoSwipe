@@ -276,7 +276,7 @@ Let's assume that you have a list of links/thumbnails that look like this ([more
 ... and you want click on the thumbnail to open PhotoSwipe with large image (like it's done on a demo page). All you need to do is:
 
 1. Bind click event to links/thumbnails.
-2. After user clicked on on thumbnail, find its index.
+2. After user clicked on thumbnail, find its index.
 3. Create an array of slide objects from DOM elements – loop through all links and retrieve `href` attribute (large image url), `data-size` attribute (its size), `src` of thumbnail, and contents of caption.
 
 PhotoSwipe doesn't really care how will you do this. If you use frameworks like jQuery or MooTools, or if you don't need to support IE8, code can be simplified dramatically.
