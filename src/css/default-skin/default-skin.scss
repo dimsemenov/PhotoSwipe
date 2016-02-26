@@ -48,7 +48,7 @@
 	&:hover {
 		opacity: 1;
 	}
-	
+
 	&:active {
 		outline: none;
 		opacity: 0.9;
@@ -58,6 +58,8 @@
 		padding: 0;
 		border: 0
 	}
+
+	> * { pointer-events: none; }
 }
 
 /* pswp__ui--over-close class it added when mouse is over element that should close gallery */
