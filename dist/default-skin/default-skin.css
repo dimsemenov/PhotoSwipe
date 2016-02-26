@@ -35,8 +35,7 @@
           transition: opacity 0.2s;
   -webkit-box-shadow: none;
           box-shadow: none; }
-  .pswp__button:focus,
-  .pswp__button:hover {
+  .pswp__button:focus, .pswp__button:hover {
     opacity: 1; }
   .pswp__button:active {
     outline: none;
