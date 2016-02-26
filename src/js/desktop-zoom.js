@@ -89,11 +89,14 @@ _registerModule('DesktopZoom', {
 		},
 
 		handleMouseWheel: function(e) {
+			if(!_options.closeOnScroll){
+				return true;
+			}
 
 			if(_currZoomLevel <= self.currItem.fitRatio) {
 				if( _options.modal ) {
 
-					if (!_options.closeOnScroll || _numAnimations || _isDragging) {
+					if (_numAnimations || _isDragging) {
 						e.preventDefault();
 					} else if(_transformKey && Math.abs(e.deltaY) > 2) {
 						// close PhotoSwipe
