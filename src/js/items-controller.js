@@ -169,6 +169,10 @@ var _getItemAt,
 			onComplete();
 		};		
 
+		if(item.title != null) {
+			img.title = item.title;
+			img.alt = item.title;
+		}
 		img.src = item.src;// + '?a=' + Math.random();
 
 		return img;
@@ -466,6 +470,10 @@ _registerModule('Controller', {
 				img = framework.createEl('pswp__img', 'img');
 				img.style.opacity = 1;
 				img.src = item.src;
+				if(item.title != null) {
+					img.title = item.title;
+					img.alt = item.title;
+				}
 				_setImageSize(item, img);
 				_appendImage(index, item, baseDiv, img, true);
 			}
