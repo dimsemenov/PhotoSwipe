@@ -303,6 +303,10 @@ var _gestureStartTime,
 			return;
 		}
 
+		if(_options.preventSwiping) {
+			return;
+		}
+
 		if(_initialZoomRunning) {
 			e.preventDefault();
 			return;
@@ -408,6 +412,10 @@ var _gestureStartTime,
 
 	// Pointermove/touchmove/mousemove handler
 	_onDragMove = function(e) {
+
+		if(_options.preventSwiping) {
+			return;
+		}
 
 		e.preventDefault();
 

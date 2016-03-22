@@ -13,6 +13,7 @@ var DOUBLE_TAP_RADIUS = 25,
  */
 var _options = {
 	allowPanToNext:true,
+	preventSwiping:false,
 	spacing: 0.12,
 	bgOpacity: 1,
 	mouseUsed: false,
@@ -603,6 +604,7 @@ var publicMethods = {
 			rootClasses += 'pswp--animate_opacity ';
 		}
 		rootClasses += _likelyTouchDevice ? 'pswp--touch' : 'pswp--notouch';
+		rootClasses += _options.preventSwiping ? ' pswp--preventswipe' : '';
 		rootClasses += _features.animationName ? ' pswp--css_animation' : '';
 		rootClasses += _features.svg ? ' pswp--svg' : '';
 		framework.addClass(template, rootClasses);

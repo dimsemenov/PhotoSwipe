@@ -300,6 +300,11 @@ Function should check if the element (`el`) is clickable. If it is &ndash; Photo
 
 Controls whether PhotoSwipe should expand to take up the entire viewport. If false, the PhotoSwipe element will take the size of the positioned parent of the template. Take a look at [the FAQ](faq.html#inline-gallery) for more information.
 
+### `preventSwiping` <code class="default">boolean</code> <code class="default">false</code>
+
+Controls whether PhotoSwipe should use swiping to change slides. When set to TRUE, the arrows will show on touch devices and only the arrows and js actions can change slides. 
+
+
 ## Default UI Options
 
 Options for `PhotoSwipeUI_Default` (`dist/ui/photoswipe-ui-default.js`) are added the same way and to the same object as core options.

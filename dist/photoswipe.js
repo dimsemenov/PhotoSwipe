@@ -1,6 +1,6 @@
-/*! PhotoSwipe - v4.1.1 - 2015-12-24
+/*! PhotoSwipe - v4.1.1 - 2016-03-22
 * http://photoswipe.com
-* Copyright (c) 2015 Dmitry Semenov; */
+* Copyright (c) 2016 Dmitry Semenov; */
 (function (root, factory) { 
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
@@ -311,6 +311,7 @@ var DOUBLE_TAP_RADIUS = 25,
  */
 var _options = {
 	allowPanToNext:true,
+	preventSwiping:false,
 	spacing: 0.12,
 	bgOpacity: 1,
 	mouseUsed: false,
@@ -901,6 +902,7 @@ var publicMethods = {
 			rootClasses += 'pswp--animate_opacity ';
 		}
 		rootClasses += _likelyTouchDevice ? 'pswp--touch' : 'pswp--notouch';
+		rootClasses += _options.preventSwiping ? ' pswp--preventswipe' : '';
 		rootClasses += _features.animationName ? ' pswp--css_animation' : '';
 		rootClasses += _features.svg ? ' pswp--svg' : '';
 		framework.addClass(template, rootClasses);
@@ -1633,6 +1635,10 @@ var _gestureStartTime,
 			return;
 		}
 
+		if(_options.preventSwiping) {
+			return;
+		}
+
 		if(_initialZoomRunning) {
 			e.preventDefault();
 			return;
@@ -1738,6 +1744,10 @@ var _gestureStartTime,
 
 	// Pointermove/touchmove/mousemove handler
 	_onDragMove = function(e) {
+
+		if(_options.preventSwiping) {
+			return;
+		}
 
 		e.preventDefault();
 

@@ -123,7 +123,7 @@
 }
 
 /* no arrows on touch screens */
-.pswp--touch {
+.pswp--touch:not(.pswp--preventswipe) {
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right {
 		visibility: hidden;		
