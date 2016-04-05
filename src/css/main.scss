@@ -83,6 +83,7 @@
 	height: 100%;
 	background: $pswp__background-color;
 	opacity: 0;
+	transform: translateZ(0);
 	-webkit-backface-visibility: hidden;
 	will-change:opacity;
 }
