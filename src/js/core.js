@@ -703,7 +703,7 @@ var publicMethods = {
 
 		_stopAllAnimations();
 
-		_listeners = null;
+		_listeners = {};
 	},
 
 	/**
