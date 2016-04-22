@@ -10,7 +10,7 @@ description: PhotoSwipe image gallery getting started guide.
 
 addjs: true
 
-canonical_url: http://photoswipe.com/documentation/getting-started.html
+canonical_url: http://photoswipe.com/documentation/getting-started.md
 
 buildtool: true
 
@@ -21,10 +21,10 @@ markdownpage: true
 First things that you should know before you start:
 
 - PhotoSwipe is not a simple jQuery plugin, at least basic JavaScript knowledge is required to install.
-- PhotoSwipe requires predefined image dimensions ([more about this](faq.html#image-size)).
+- PhotoSwipe requires predefined image dimensions ([more about this](faq.md#image-size)).
 - If you use PhotoSwipe on non-responsive website &ndash; controls will be scaled on mobile (as the whole page is scaled). So you'll need to implement custom controls (e.g. single large close button in top right corner).
 - All code in the documentation is pure Vanilla JS and supports IE 8 and above. If your website or app uses some JavaScript framework (like jQuery or MooTools) or you don't need to support old browsers – feel free to simplify the code.
-- Avoid serving big images (larger than 2000x1500px) for mobile, as they will dramatically reduce animation performance and can cause crash (especially on iOS Safari). Possible solutions: [serve responsive images](responsive-images.html), or open image on a separate page, or use libraries that support image tiling (like [Leaflet](http://leafletjs.com/)) ([more in FAQ](faq.html#mobile-crash)).
+- Avoid serving big images (larger than 2000x1500px) for mobile, as they will dramatically reduce animation performance and can cause crash (especially on iOS Safari). Possible solutions: [serve responsive images](responsive-images.md), or open image on a separate page, or use libraries that support image tiling (like [Leaflet](http://leafletjs.com/)) ([more in FAQ](faq.md#mobile-crash)).
 
 ## <a name="initialization"></a> Initialization
 
@@ -154,7 +154,7 @@ Execute `PhotoSwipe` constructor. It accepts 4 arguments:
 1. `.pswp` element from step 2 (it must be added to DOM).
 2. PhotoSwipe UI class. If you included default `photoswipe-ui-default.js`, class will be `PhotoSwipeUI_Default`. Can be `false`.
 3. Array with objects (slides).
-4. [Options](options.html).
+4. [Options](options.md).
 
 
 ```javascript
@@ -200,7 +200,7 @@ At the end you should get something like this:
 
 Each object in the array should contain data about slide, it can be anything that you wish to display in PhotoSwipe - path to image, caption string, number of shares, comments, etc.
 
-By default PhotoSwipe uses just 5 properties: `src` (path to image), `w` (image width), `h` (image height), `msrc` (path to small image placeholder, large image will be loaded on top), `html` (custom HTML, [more about it](custom-html-in-slides.html)). 
+By default PhotoSwipe uses just 5 properties: `src` (path to image), `w` (image width), `h` (image height), `msrc` (path to small image placeholder, large image will be loaded on top), `html` (custom HTML, [more about it](custom-html-in-slides.md)). 
 
 During the navigation, PhotoSwipe adds its own properties to this object (like `minZoom` or `loaded`).
 
@@ -245,12 +245,12 @@ var slides = [
 ];
 ```
 
-You may dynamically define slide object properties directly before PhotoSwipe reads them, use `gettingData` event (more info in [API section of docs](api.html)). For example, this technique can be used to [serve different images](responsive-images.html) for different screen sizes.
+You may dynamically define slide object properties directly before PhotoSwipe reads them, use `gettingData` event (more info in [API section of docs](api.md)). For example, this technique can be used to [serve different images](responsive-images.md) for different screen sizes.
 
 
 ## <a class="anchor" name="dom-to-slide-objects"></a> How to build an array of slides from a list of links
 
-Let's assume that you have a list of links/thumbnails that look like this ([more info about markup of gallery](seo.html)):
+Let's assume that you have a list of links/thumbnails that look like this ([more info about markup of gallery](seo.md)):
 
 ```html
 <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
@@ -515,7 +515,7 @@ Tip: you may download example from CodePen to play with it locally (`Edit on Cod
 
 ## About
 
-Please [keep script updated](faq.html#keep-updated), report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask questions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
+Please [keep script updated](faq.md#keep-updated), report bugs through [GitHub](https://github.com/dimsemenov/PhotoSwipe), suggest features on [UserVoice](https://photoswipe.uservoice.com/forums/275302-feature-requests-ideas) and ask questions through [StackOverflow](http://stackoverflow.com/questions/ask?tags=javascript,photoswipe).
 
 Know how this page can be improved? Found a typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/getting-started.md)
 
