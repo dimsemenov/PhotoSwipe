@@ -319,7 +319,7 @@ a.pswp__share--download {
 	height: 44px;
 	font-size: 13px;
 	line-height: 44px;
-	color: #FFF;
+	color: $pswp__counter-color;
 	opacity: 0.75;
 	padding: 0 10px;
 }
@@ -340,7 +340,7 @@ a.pswp__share--download {
 
 	small {
 		font-size: 11px;
-		color: #BBB;
+		color: $pswp__caption-small-color;
 	}
 }
 
@@ -351,7 +351,7 @@ a.pswp__share--download {
 	font-size: 13px;
 	padding: 10px;
 	line-height: 20px;
-	color: #CCC;
+	color: $pswp__caption-color;
 }
 
 .pswp__caption--empty {
