@@ -156,7 +156,7 @@
 .pswp__button--arrow--right:before {
 	content: '';
 	top: 35px;
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba($pswp__background-color, 0.3);
 	height: 30px;
 	width: 32px;
 	position: absolute;
@@ -516,14 +516,14 @@ a.pswp__share--download {
 
 .pswp__top-bar,
 .pswp__caption {
-	background-color: rgba(0,0,0,0.5);
+	background-color: rgba($pswp__background-color, 0.5);
 }
 
 /* pswp__ui--fit class is added when main image "fits" between top bar and bottom bar (caption) */
 .pswp__ui--fit {
 	.pswp__top-bar,
 	.pswp__caption {
-		background-color: rgba(0,0,0,0.3);
+		background-color: rgba($pswp__background-color, 0.3);
 	}
 }
 
