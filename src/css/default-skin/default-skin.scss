@@ -21,7 +21,7 @@
 
 
 /*
-	
+
 	1. Buttons
 
  */
@@ -48,7 +48,7 @@
 	&:hover {
 		opacity: 1;
 	}
-	
+
 	&:active {
 		outline: none;
 		opacity: 0.9;
@@ -68,7 +68,7 @@
 .pswp__button,
 .pswp__button--arrow--left:before,
 .pswp__button--arrow--right:before {
-	background: url(#{$pswp__assets-path}default-skin.png) 0 0 no-repeat;
+	background: url(#{$pswp__assets-path}#{$pswp__template-filemame}.png) 0 0 no-repeat;
 	background-size: 264px 88px;
 	width: 44px;
 	height: 44px;
@@ -80,7 +80,7 @@
     .pswp--svg .pswp__button,
     .pswp--svg .pswp__button--arrow--left:before,
 	.pswp--svg .pswp__button--arrow--right:before {
-        background-image: url(#{$pswp__assets-path}default-skin.svg);
+        background-image: url(#{$pswp__assets-path}#{$pswp__template-filemame}.svg);
     }
 
     .pswp--svg .pswp__button--arrow--left,
@@ -126,7 +126,7 @@
 .pswp--touch {
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right {
-		visibility: hidden;		
+		visibility: hidden;
 	}
 }
 
@@ -234,12 +234,12 @@
 			color: #000;
 		}
 
-		
+
 		&:first-child {
 			/* round corners on the first/last list item */
 			border-radius: 2px 2px 0 0;
 		}
-		
+
 		&:last-child {
 			border-radius: 0 0 2px 2px;
 		}
@@ -326,7 +326,7 @@ a.pswp__share--download {
 
 
 /*
-	
+
 	4. Caption
 
  */
@@ -337,7 +337,7 @@ a.pswp__share--download {
 	bottom: 0;
 	width: 100%;
 	min-height: 44px;
-	
+
 	small {
 		font-size: 11px;
 		color: #BBB;
@@ -380,7 +380,7 @@ a.pswp__share--download {
 	left: 50%;
 	margin-left: -22px;
 	opacity: 0;
-	transition: opacity 0.25s ease-out; 
+	transition: opacity 0.25s ease-out;
 	will-change: opacity;
 	direction: ltr;
 }
@@ -412,7 +412,7 @@ a.pswp__share--download {
 			animation: donut-rotate 1000ms cubic-bezier(.4,0,.22,1) infinite;
 		}
 	}
-	
+
 	.pswp__preloader__icn {
 		background: none;
 		opacity: 0.75;
@@ -424,10 +424,10 @@ a.pswp__share--download {
 		margin: 0;
 	}
 
-	
+
 	.pswp__preloader__cut {
-		/* 
-			The idea of animating inner circle is based on Polymer ("material") loading indicator 
+		/*
+			The idea of animating inner circle is based on Polymer ("material") loading indicator
 			 by Keanu Lee https://blog.keanulee.com/2014/10/20/the-tale-of-three-spinners.html
 		*/
 		position: relative;
@@ -475,7 +475,7 @@ a.pswp__share--download {
 
 
 /*
-	
+
 	6. Additional styles
 
  */
@@ -501,7 +501,7 @@ a.pswp__share--download {
 .pswp__top-bar,
 .pswp--has_mouse .pswp__button--arrow--left,
 .pswp--has_mouse .pswp__button--arrow--right {
-	-webkit-backface-visibility: hidden; 
+	-webkit-backface-visibility: hidden;
 	will-change: opacity;
 	transition: opacity $pswp__controls-transition-duration cubic-bezier(.4,0,.22,1);
 }
@@ -528,10 +528,10 @@ a.pswp__share--download {
 }
 
 /* pswp__ui--idle class is added when mouse isn't moving for several seconds (JS option timeToIdle) */
-	
+
 .pswp__ui--idle {
-	.pswp__top-bar { 
-		opacity: 0; 
+	.pswp__top-bar {
+		opacity: 0;
 	}
 
 	.pswp__button--arrow--left,
@@ -550,7 +550,7 @@ a.pswp__share--download {
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right {
 		/* Force paint & create composition layer for controls. */
-		opacity: 0.001; 
+		opacity: 0.001;
 	}
 }
 
@@ -574,15 +574,3 @@ a.pswp__share--download {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
