@@ -122,6 +122,12 @@
 	background-position: -132px 0;
 }
 
+.pswp__button--play {
+  background-position: -176px 0; }
+
+.pswp--slideshow-playing .pswp__button--play {
+  background-position: -220px 0; }
+
 /* no arrows on touch screens */
 .pswp--touch {
 	.pswp__button--arrow--left,

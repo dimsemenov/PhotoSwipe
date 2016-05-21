@@ -524,7 +524,10 @@ buildtool: false
 			<div class="pswp__item"></div>
           </div>
 
-          <div class="pswp__ui pswp__ui--hidden">
+		<!-- bar timer -->
+		<div id="slideshowTimer"></div>
+
+		<div class="pswp__ui pswp__ui--hidden">
 
             <div class="pswp__top-bar">
 
@@ -537,6 +540,8 @@ buildtool: false
 				<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
 
 				<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+				
+				<button class="pswp__button pswp__button--play" title="Slideshow" id="playButton"></button>
 
 				<div class="pswp__preloader">
 					<div class="pswp__preloader__icn">
@@ -722,6 +727,10 @@ buildtool: false
 
 			    // define options (if needed)
 			    options = {
+
+					slideshowAtStartup: false,
+					slideshowDelay: 5,
+					slideshowTimer: true,
 
 			        galleryUID: galleryElement.getAttribute('data-pswp-uid'),
 

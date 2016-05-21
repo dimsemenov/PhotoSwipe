@@ -41,6 +41,8 @@ var _options = {
     },
     maxSpreadZoom: 1.33,
 	modal: true,
+	slideshowDelay: 5,	// seconds
+	slideshowAtStartup: false,
 
 	// not fully implemented yet
 	scaleMode: 'fit' // TODO
@@ -99,6 +101,8 @@ var _isOpen,
 	_features,
 	_windowVisibleSize = {},
 	_renderMaxResolution = false,
+	_slideshowPlaying = false,
+	_slideshowTimer = null,
 
 	// Registers PhotoSWipe module (History, Controller ...)
 	_registerModule = function(name, module) {
@@ -502,6 +506,37 @@ var publicMethods = {
 		_applyCurrentZoomPan( allowRenderResolution );
 	},
 
+	toggleSlideshow: function() {
+		framework[ (!_slideshowPlaying ? 'add' : 'remove') + 'Class'](template, 'pswp--slideshow-playing');
+		if (!_slideshowPlaying) {
+			_slideshowTimer = setInterval(function() {
+				self.next();
+			}, _options.slideshowDelay * 1000);
+		} else {
+			clearInterval(_slideshowTimer);
+		}
+		_slideshowPlaying = !_slideshowPlaying;
+	},
+	
+	resetSlideshow: function() {
+		clearInterval(_slideshowTimer);
+		_slideshowTimer = setInterval(function() {
+			self.next();
+		}, _options.slideshowDelay * 1000);
+	},
+	
+	isSlideshowPlaying: function() {
+		return _slideshowPlaying;
+	},
+	
+	stopAllAnimations: function() {
+		_stopAllAnimations();
+	},
+	
+	isMoving: function() {
+		return (_moved || _zoomStarted || _mainScrollAnimating || _verticalDragInitiated);
+	},
+
 	init: function() {
 
 		if(_isOpen || _isDestroying) {
@@ -663,6 +698,8 @@ var publicMethods = {
 		}
 
 		framework.addClass(template, 'pswp--visible');
+		
+		if (_options.slideshowAtStartup) self.toggleSlideshow();
 	},
 
 	// Close the gallery, then destroy it
@@ -687,6 +724,10 @@ var publicMethods = {
 			clearTimeout(_showOrHideTimeout);
 		}
 		
+		if (_slideshowTimer) {
+			clearTimeout(_slideshowTimer);
+		}
+
 		template.setAttribute('aria-hidden', 'true');
 		template.className = _initalClassName;
 
@@ -821,6 +862,8 @@ var publicMethods = {
 
 		self.currItem = _getItemAt( _currentItemIndex );
 		_renderMaxResolution = false;
+		
+		if (_slideshowPlaying) self.resetSlideshow();
 		
 		_shout('beforeChange', _indexDiff);
 

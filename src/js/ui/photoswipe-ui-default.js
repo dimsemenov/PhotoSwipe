@@ -42,6 +42,10 @@ var PhotoSwipeUI_Default =
 
 		_galleryHasOneSlide,
 
+		_slideshowTimerHelper = null,
+
+		_omitTransitionEffect = false,
+
 		_options,
 		_defaultUIOptions = {
 			barsSize: {top:44, bottom:'auto'},
@@ -62,6 +66,7 @@ var PhotoSwipeUI_Default =
 			closeEl:true,
 			captionEl: true,
 			fullscreenEl: true,
+			playEl: true,
 			zoomEl: true,
 			shareEl: true,
 			counterEl: true,
@@ -72,6 +77,14 @@ var PhotoSwipeUI_Default =
 			tapToToggleControls: true,
 
 			clickToCloseNonZoomable: true,
+
+			slideshowTimerColor: '#ff0000',
+			slideshowTimerBgColor: '#900000',
+			slideshowTimerOpacityPercent: 85,
+			slideshowTimerHeight: 5,
+			slideshowTimerOrientation: "bottom",
+			slideshowTimerShadow: true,
+			transitionDelay: 500,
 
 			shareButtons: [
 				{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
@@ -145,6 +158,18 @@ var PhotoSwipeUI_Default =
 				}, tapDelay);
 			}
 
+		},
+		_handleSlideshow = function() {
+			pswp.toggleSlideshow();
+			if (_options.slideshowTimer) {
+				if (pswp.isSlideshowPlaying()) {					
+					$('#slideshowTimer').css("visibility", "visible");
+					$('#slideshowTimer').bartimer('start');
+				} else {
+					$('#slideshowTimer').css("visibility", "hidden");
+					$('#slideshowTimer').bartimer('reset');
+				}
+			}
 		},
 		_fitControlsInViewport = function() {
 			return !pswp.likelyTouchDevice || _options.mouseUsed || screen.width > _options.fitControlsWidth;
@@ -409,7 +434,25 @@ var PhotoSwipeUI_Default =
 					ui.showControls();
 				}
 			});
-
+		},
+		_setupSlideshowTimer = function() {
+		  if (_options.slideshowTimer) {
+			  $('#slideshowTimer').bartimer({
+				  timerSeconds: _options.slideshowDelay,
+				  color: _options.slideshowTimerColor,
+				  bgColor: _options.slideshowTimerBgColor,
+				  height: _options.slideshowTimerHeight,
+				  opacityPercent: _options.slideshowTimerOpacityPercent,
+				  orientation: _options.slideshowTimerOrientation,
+				  shadow: _options.slideshowTimerShadow,
+				  refreshRateMs: 15,
+				  callback: function() {
+					  $('#slideshowTimer').bartimer('start');
+				  }
+			  });
+			  $('#slideshowTimer').bartimer('reset');
+		  }
+		  $('#slideshowTimer').css("visibility", "hidden");
 		};
 
 
@@ -479,6 +522,13 @@ var PhotoSwipeUI_Default =
 					_fullscrenAPI.enter();
 				}
 			} 
+		},
+		{ 
+			name: 'button--play', 
+			option: 'playEl',
+			onTap: function() {
+				_handleSlideshow();
+			}
 		},
 		{ 
 			name: 'preloader', 
@@ -579,6 +629,21 @@ var PhotoSwipeUI_Default =
 			}
 		});
 
+		// listen for events to apply transition (omit for swipe)
+		_listen('mainScrollAnimStart', function() {
+			$('.pswp__container').stop();
+			_omitTransitionEffect= true;
+		});
+		_listen('beforeChange', function() {
+			$('.pswp__container').stop();
+		});
+		_listen('afterChange', function() {					
+			if (!_omitTransitionEffect) {
+				$('.pswp__container').hide();
+				$('.pswp__container').fadeIn(_options.transitionDelay);
+			} else _omitTransitionEffect= false;	
+		});
+
 		// bind events for UI
 		_listen('bindEvents', function() {
 			framework.bind(_controls, 'pswpTap click', _onControlsTap);
@@ -660,6 +725,8 @@ var PhotoSwipeUI_Default =
 		_setupFullscreenAPI();
 
 		_setupLoadingIndicator();
+		
+		_setupSlideshowTimer();
 	};
 
 	ui.setIdle = function(isIdle) {
@@ -671,6 +738,14 @@ var PhotoSwipeUI_Default =
 		// Don't update UI if it's hidden
 		if(_controlsVisible && pswp.currItem) {
 			
+			// stop slideshow timer if opted and active
+			if (_options.slideshowTimer) {
+				if (pswp.isSlideshowPlaying()) {					
+					$('#slideshowTimer').bartimer('reset');
+					$('#slideshowTimer').bartimer('start');
+				}
+			}
+
 			ui.updateIndexIndicator();
 
 			if(_options.captionEl) {
