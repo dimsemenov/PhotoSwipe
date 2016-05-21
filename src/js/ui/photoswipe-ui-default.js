@@ -576,6 +576,7 @@ var PhotoSwipeUI_Default =
 				( t.getAttribute('class').indexOf('__caption') > 0 || (/(SMALL|STRONG|EM)/i).test(t.tagName) ) 
 			) {
 				preventObj.prevent = false;
+				_stopAllAnimations();
 			}
 		});
 
