@@ -89,6 +89,9 @@ var PhotoSwipeUI_Default =
 			getTextForShare: function( /* shareButtonData */ ) {
 				return pswp.currItem.title || '';
 			},
+			getCustomInfoForShare: function( /* shareButtonData */ ) {
+				return ''; // to be overriden by user
+			},
 				
 			indexIndicatorSep: ' / ',
 			fitControlsWidth: 1200
@@ -219,11 +222,13 @@ var PhotoSwipeUI_Default =
 		},
 		_updateShareURLs = function() {
 			var shareButtonOut = '',
+				shareButtonCurr,
 				shareButtonData,
 				shareURL,
 				image_url,
 				page_url,
-				share_text;
+				share_text,
+				custom_text;
 
 			for(var i = 0; i < _options.shareButtons.length; i++) {
 				shareButtonData = _options.shareButtons[i];
@@ -231,20 +236,24 @@ var PhotoSwipeUI_Default =
 				image_url = _options.getImageURLForShare(shareButtonData);
 				page_url = _options.getPageURLForShare(shareButtonData);
 				share_text = _options.getTextForShare(shareButtonData);
+				custom_text = _options.getCustomInfoForShare(shareButtonData);
 
 				shareURL = shareButtonData.url.replace('{{url}}', encodeURIComponent(page_url) )
 									.replace('{{image_url}}', encodeURIComponent(image_url) )
 									.replace('{{raw_image_url}}', image_url )
-									.replace('{{text}}', encodeURIComponent(share_text) );
+									.replace('{{text}}', encodeURIComponent(share_text) )
+									.replace('{{custom}}', encodeURIComponent(custom_text) );
 
-				shareButtonOut += '<a href="' + shareURL + '" target="_blank" '+
+				shareButtonCurr = '<a href="' + shareURL + '" target="_blank" '+
 									'class="pswp__share--' + shareButtonData.id + '"' +
 									(shareButtonData.download ? 'download' : '') + '>' + 
 									shareButtonData.label + '</a>';
 
 				if(_options.parseShareButtonOut) {
-					shareButtonOut = _options.parseShareButtonOut(shareButtonData, shareButtonOut);
+					shareButtonCurr = _options.parseShareButtonOut(shareButtonData, shareButtonCur);
 				}
+
+				shareButtonOut += shareButtonCurr;
 			}
 			_shareModal.children[0].innerHTML = shareButtonOut;
 			_shareModal.children[0].onclick = _openWindowPopup;

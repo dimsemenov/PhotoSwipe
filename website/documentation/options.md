@@ -376,6 +376,7 @@ indexIndicatorSep: ' / ',
 // {{text}}            - title
 // {{image_url}}       - encoded image url
 // {{raw_image_url}}   - raw image url
+// {{custom}}          - customizable for your use
 shareButtons: [
 	{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
 	{id:'twitter', label:'Tweet', url:'https://twitter.com/intent/tweet?text={{text}}&url={{url}}'},
@@ -402,6 +403,10 @@ getPageURLForShare: function( shareButtonData ) {
 getTextForShare: function( shareButtonData ) {
 	return pswp.currItem.title || '';
 },
+getCustomInfoForShare: function( shareButtonData ) {
+	return ''; // override for your use
+},
+
 
 // Parse output of share links
 parseShareButtonOut: function(shareButtonData, shareButtonOut) {
