@@ -322,7 +322,7 @@ timeToIdleOutside: 1000,
 // Delay until loading indicator is displayed
 loadingIndicatorDelay: 1000,
 
-// Function builds caption markup
+// Function to build caption markup; returns true if there is a caption
 addCaptionHTMLFn: function(item, captionEl, isFake) {
 	// item      - slide object
 	// captionEl - caption DOM element
