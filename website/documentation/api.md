@@ -277,9 +277,11 @@ pswp.listen('shareLinkClick', function(e, target) {
 	// e - original click event
 	// target - link that was clicked
 
-	// If `target` has `href` attribute and 
-	// does not have `download` attribute - 
-	// share modal window will popup
+	// Share modal window will popup with target.href contents
+	// unless `target` has `href` attribute starting 
+	// with `javascript:` (e.g. `javascript:void(0);`) or
+	// `target` has the `download` attribute (in which case
+	// the href is downloaded).
 });
 
 
