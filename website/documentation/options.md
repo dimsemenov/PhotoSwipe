@@ -377,6 +377,11 @@ indexIndicatorSep: ' / ',
 // {{image_url}}       - encoded image url
 // {{raw_image_url}}   - raw image url
 // {{custom}}          - customizable for your use
+//
+// Options: 
+// download: true  - url is a file to download; no popup window opened.
+// noPopup: true   - don't open a popup window; if the url starts with 'javascript:' or is '#', then
+//                   no action is performed (use e.g. 'shareLinkClick' listener to handle) 
 shareButtons: [
 	{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
 	{id:'twitter', label:'Tweet', url:'https://twitter.com/intent/tweet?text={{text}}&url={{url}}'},
@@ -404,7 +409,7 @@ getTextForShare: function( shareButtonData ) {
 	return pswp.currItem.title || '';
 },
 getCustomInfoForShare: function( shareButtonData ) {
-	return ''; // override for your use
+	return ''; // override for your use; use encodeURIComponent() if it will be used within a URL
 },
 
 

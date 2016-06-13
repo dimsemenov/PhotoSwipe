@@ -203,9 +203,12 @@ var PhotoSwipeUI_Default =
 
 			pswp.shout('shareLinkClick', e, target);
 
-			if( target.hasAttribute('download') ) {
-				retval = true;
-			} else if(target.href && !/^javascript:/.test(target.href)) {
+			if(target.hasAttribute('download') || target.hasAttribute('nopopup')) {
+				// if js/no-op idioms found, click handled elsewhere (e.g. shareLinkClick listener)
+				if (!/^javascript:|^#$/.test(target.href)) { 
+					retval = true; // default handling
+				}
+			} else if(target.href) {
 				window.open(target.href, 'pswp_share', 'scrollbars=yes,resizable=yes,toolbar=no,'+
 					'location=yes,width=550,height=420,top=100,left=' + 
 					(window.screen ? Math.round(screen.width / 2 - 275) : 100)  );
@@ -239,11 +242,12 @@ var PhotoSwipeUI_Default =
 									.replace('{{image_url}}', encodeURIComponent(image_url) )
 									.replace('{{raw_image_url}}', image_url )
 									.replace('{{text}}', encodeURIComponent(share_text) )
-									.replace('{{custom}}', encodeURIComponent(custom_text) );
+									.replace('{{custom}}', custom_text );
 
 				shareButtonCurr = '<a href="' + shareURL + '" target="_blank" '+
 									'class="pswp__share--' + shareButtonData.id + '"' +
-									(shareButtonData.download ? 'download' : '') + '>' + 
+									(shareButtonData.noPopup ? ' nopopup' : '') +
+									(shareButtonData.download ? ' download' : '') + '>' + 
 									shareButtonData.label + '</a>';
 
 				if(_options.parseShareButtonOut) {
