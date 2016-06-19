@@ -66,7 +66,8 @@
   height: 100%;
   background: #000;
   opacity: 0;
-  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   will-change: opacity; }
 
