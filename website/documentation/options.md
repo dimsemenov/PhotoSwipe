@@ -49,7 +49,7 @@ Start slide index. `0` is the first slide. Must be integer, not a string.
 
 ### `getThumbBoundsFn` <code class="default">function</code> <code class="default">undefined</code>
 
-Function should return an object with coordinates from which initial zoom-in animation will start (or zoom-out animation will end). 
+Function should return an object with coordinates from which initial zoom-in animation will start (or zoom-out animation will end).
 
 Object should contain three properties: `x` (X position, relative to document), `y` (Y position, relative to document), `w` (width of the element). Height will be calculated automatically based on size of large image. For example if you return `{x:0,y:0,w:50}` zoom animation will start in top left corner of your page.
 
@@ -57,21 +57,21 @@ Function has one argument - `index` of the item that is opening or closing.
 
 In non-modal mode, the template's position relative to the viewport should be subtracted from `x` and `y`. Look at [the FAQ](faq.html#inline-gallery) for more information.
 
-Example that calculates position of thumbnail: 
+Example that calculates position of thumbnail:
 
 ```javascript
 getThumbBoundsFn: function(index) {
 
 	// find thumbnail element
 	var thumbnail = document.querySelectorAll('.my-gallery-thumbnails')[index];
-	
+
 	// get window scroll Y
-	var pageYScroll = window.pageYOffset || document.documentElement.scrollTop; 
+	var pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
 	// optionally get horizontal scroll
 
 	// get position of element relative to viewport
-	var rect = thumbnail.getBoundingClientRect(); 
-	
+	var rect = thumbnail.getBoundingClientRect();
+
 	// w = width
 	return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
 
@@ -88,7 +88,7 @@ If you want to "hide" small thumbnail during the animation use `opacity:0`, not 
 
 ### `showHideOpacity` <code class="default">boolean</code> <code class="default">false</code>
 
-If set to `false`: background `opacity` and image `scale` will be animated (image opacity is always 1). 
+If set to `false`: background `opacity` and image `scale` will be animated (image opacity is always 1).
 If set to `true`: root PhotoSwipe element `opacity` and image `scale` will be animated.
 
 To enable just `opacity` transition (without `scale`), do not define `getThumbBoundsFn` option.
@@ -125,7 +125,7 @@ Background (`.pswp__bg`) opacity. Should be a number from 0 to 1, e.g. `0.7`. Th
 
 ### `spacing` <code class="default">number</code> <code class="default">0.12</code>
 
-Spacing ratio between slides. For example, `0.12` will render as a 12% of sliding viewport width (rounded). 
+Spacing ratio between slides. For example, `0.12` will render as a 12% of sliding viewport width (rounded).
 
 
 ### `allowPanToNext` <code class="default">boolean</code> <code class="default">true</code>
@@ -156,18 +156,18 @@ getDoubleTapZoom: function(isMouseClick, item) {
 	if(isMouseClick) {
 
 		// is mouse click on image or zoom icon
-		
+
 		// zoom to original
 		return 1;
 
 		// e.g. for 1400px image:
 		// 0.5 - zooms to 700px
 		// 2   - zooms to 2800px
-		
+
 	} else {
 
 		// is double-tap
-		
+
 		// zoom to original if initial zoom is less than 0.7x,
 		// otherwise to 1.5x, to make sure that double-tap gesture always zooms image
 		return item.initialZoomLevel < 0.7 ? 1 : 1.5;
@@ -182,9 +182,15 @@ Function is called each time zoom-in animation is initiated. So feel free to ret
 
 ### `loop` <code class="default">boolean</code> <code class="default">true</code>
 
-Loop slides when using swipe gesture. If set to `true` you'll be able to swipe from last to first image. Option is always `false` when there are less than 3 slides.
+Loop slides. Options are boolean `true` or `false`, or the string `'once'` (must be in quotes).
 
-This option has no relation to arrows navigation. Arrows loop is turned on permanently. You can modify this behavior by making custom UI.
+If set to `true` you'll be able to swipe from last to first image and move indefinitely thru all slides in a carousel.
+
+If set to `false` you'll swipe thru the remainder of the images and stop when swiping to proceed forward from the final image or back from the first image.
+
+If set to `'once'` you'll be able to swipe thru all images one time, including changing directions, eg: 5 slides starting on 2nd: 2,3,4,3,2,1,5,4(closes), or 2,3,4,5,1,5,4,3,2(closes). This can be helpful for large galleries without limiting freedom of movement.
+
+Option is always `false` when there are less than 3 slides.
 
 
 ### `pinchToClose` <code class="default">boolean</code> <code class="default">true</code>
@@ -200,7 +206,7 @@ Close gallery on page scroll. Option works just for devices without hardware tou
 ### `closeOnVerticalDrag` <code class="default">boolean</code> <code class="default">true</code>
 
 Close gallery when dragging vertically and when image is not zoomed. Always `false` when mouse is used.
- 
+
 
 ### `mouseUsed` <code class="default">boolean</code> <code class="default">false</code>
 
@@ -246,7 +252,7 @@ var slides = [
 		pid: 'image-two'
 	},
 
-	... 
+	...
 ];
 ```
 
@@ -307,11 +313,11 @@ Options for `PhotoSwipeUI_Default` (`dist/ui/photoswipe-ui-default.js`) are adde
 ```javascript
 // Size of top & bottom bars in pixels,
 // "bottom" parameter can be 'auto' (will calculate height of caption)
-// option applies only when mouse is used, 
+// option applies only when mouse is used,
 // or width of screen is more than 1200px
-// 
+//
 // (Also refer to `parseVerticalMargin` event)
-barsSize: {top:44, bottom:'auto'}, 
+barsSize: {top:44, bottom:'auto'},
 
 // Adds class pswp__ui--idle to pswp__ui element when mouse isn't moving for 4000ms
 timeToIdle: 4000,
@@ -328,7 +334,7 @@ addCaptionHTMLFn: function(item, captionEl, isFake) {
 	// captionEl - caption DOM element
 	// isFake    - true when content is added to fake caption container
 	// 			   (used to get size of next or previous caption)
-	
+
 	if(!item.title) {
 		captionEl.children[0].innerHTML = '';
 		return false;
@@ -359,10 +365,10 @@ clickToCloseNonZoomable: true,
 
 // Element classes click on which should close the PhotoSwipe.
 // In HTML markup, class should always start with "pswp__", e.g.: "pswp__item", "pswp__caption".
-// 
+//
 // "pswp__ui--over-close" class will be added to root element of UI when mouse is over one of these elements
 // By default it's used to highlight the close button.
-closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'], 
+closeElClasses: ['item', 'caption', 'zoom-wrap', 'ui', 'top-bar'],
 
 // Separator for "1 of X" counter
 indexIndicatorSep: ' / ',
@@ -370,7 +376,7 @@ indexIndicatorSep: ' / ',
 
 {% raw %}
 // Share buttons
-// 
+//
 // Available variables for URL:
 // {{url}}             - url to current page
 // {{text}}            - title
@@ -385,15 +391,15 @@ shareButtons: [
 {% endraw %}
 
 // Next 3 functions return data for share links
-// 
+//
 // functions are triggered after click on button that opens share modal,
 // which means that data should be about current (active) slide
 getImageURLForShare: function( shareButtonData ) {
 	// `shareButtonData` - object from shareButtons array
-	// 
+	//
 	// `pswp` is the gallery instance object,
 	// you should define it by yourself
-	// 
+	//
 	return pswp.currItem.src || '';
 },
 getPageURLForShare: function( shareButtonData ) {
@@ -414,5 +420,3 @@ parseShareButtonOut: function(shareButtonData, shareButtonOut) {
 Know how this page can be improved? Found a typo? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
 
 <iframe src="http://ghbtns.com/github-btn.html?user=dimsemenov&amp;repo=photoswipe&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="155" height="30" style=""></iframe>
-
-

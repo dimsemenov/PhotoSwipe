@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.1.1 - 2016-06-19
+/*! PhotoSwipe - v4.1.1 - 2016-06-22
 * http://photoswipe.com
 * Copyright (c) 2016 Dmitry Semenov; */
 (function (root, factory) { 
@@ -303,7 +303,7 @@ var self = this;
 /**
  * Static vars, don't change unless you know what you're doing.
  */
-var DOUBLE_TAP_RADIUS = 25, 
+var DOUBLE_TAP_RADIUS = 25,
 	NUM_HOLDERS = 3;
 
 /**
@@ -350,8 +350,8 @@ framework.extend(_options, options);
  * Private helper variables & functions
  */
 
-var _getEmptyPoint = function() { 
-		return {x:0,y:0}; 
+var _getEmptyPoint = function() {
+		return {x:0,y:0};
 	};
 
 var _isOpen,
@@ -397,6 +397,10 @@ var _isOpen,
 	_features,
 	_windowVisibleSize = {},
 	_renderMaxResolution = false,
+	_isFirstFrame,
+	_isLastFrame,
+	_isFinalFrame = false,
+	_viewedItems = [],
 
 	// Registers PhotoSWipe module (History, Controller ...)
 	_registerModule = function(name, module) {
@@ -413,7 +417,7 @@ var _isOpen,
 		}
 		return index;
 	},
-	
+
 	// Micro bind/trigger
 	_listeners = {},
 	_listen = function(name, fn) {
@@ -445,9 +449,9 @@ var _isOpen,
 
 	_applyZoomTransform = function(styleObj,x,y,zoom,item) {
 		if(!_renderMaxResolution || (item && item !== self.currItem) ) {
-			zoom = zoom / (item ? item.fitRatio : self.currItem.fitRatio);	
+			zoom = zoom / (item ? item.fitRatio : self.currItem.fitRatio);
 		}
-			
+
 		styleObj[_transformKey] = _translatePrefix + x + 'px, ' + y + 'px' + _translateSufix + ' scale(' + zoom + ')';
 	},
 	_applyCurrentZoomPan = function( allowRenderResolution ) {
@@ -466,7 +470,7 @@ var _isOpen,
 					}
 				}
 			}
-			
+
 
 			_applyZoomTransform(_currZoomElementStyle, _panOffset.x, _panOffset.y, _currZoomLevel);
 		}
@@ -474,9 +478,9 @@ var _isOpen,
 	_applyZoomPanToItem = function(item) {
 		if(item.container) {
 
-			_applyZoomTransform(item.container.style, 
-								item.initialPosition.x, 
-								item.initialPosition.y, 
+			_applyZoomTransform(item.container.style,
+								item.initialPosition.x,
+								item.initialPosition.y,
 								item.initialZoomLevel,
 								item);
 		}
@@ -490,12 +494,12 @@ var _isOpen,
 			var newSlideIndexOffset = _currentItemIndex + (_slideSize.x * _currPositionIndex - x) / _slideSize.x,
 				delta = Math.round(x - _mainScrollPos.x);
 
-			if( (newSlideIndexOffset < 0 && delta > 0) || 
+			if( (newSlideIndexOffset < 0 && delta > 0) ||
 				(newSlideIndexOffset >= _getNumItems() - 1 && delta < 0) ) {
 				x = _mainScrollPos.x + delta * _options.mainScrollEndFriction;
-			} 
+			}
 		}
-		
+
 		_mainScrollPos.x = x;
 		_setTranslateX(x, _containerStyle);
 	},
@@ -503,7 +507,7 @@ var _isOpen,
 		var m = _midZoomPoint[axis] - _offset[axis];
 		return _startPanOffset[axis] + _currPanDist[axis] + m - m * ( zoomLevel / _startZoomLevel );
 	},
-	
+
 	_equalizePoints = function(p1, p2) {
 		p1.x = p2.x;
 		p1.y = p2.y;
@@ -520,7 +524,7 @@ var _isOpen,
 	_onFirstMouseMove = function() {
 		// Wait until mouse move event is fired at least twice during 100ms
 		// We do this, because some mobile browsers trigger it on touchstart
-		if(_mouseMoveTimeout ) { 
+		if(_mouseMoveTimeout ) {
 			framework.unbind(document, 'mousemove', _onFirstMouseMove);
 			framework.addClass(template, 'pswp--has_mouse');
 			_options.mouseUsed = true;
@@ -538,7 +542,7 @@ var _isOpen,
 			// don't bind click event in browsers that don't support transform (mostly IE8)
 			framework.bind(self.scrollWrap, 'click', self);
 		}
-		
+
 
 		if(!_options.mouseUsed) {
 			framework.bind(document, 'mousemove', _onFirstMouseMove);
@@ -565,7 +569,7 @@ var _isOpen,
 
 		_shout('unbindEvents');
 	},
-	
+
 	_calculatePanBounds = function(zoomLevel, update) {
 		var bounds = _calculateItemSize( self.currItem, _viewportSize, zoomLevel );
 		if(update) {
@@ -573,7 +577,7 @@ var _isOpen,
 		}
 		return bounds;
 	},
-	
+
 	_getMinZoomLevel = function(item) {
 		if(!item) {
 			item = self.currItem;
@@ -593,7 +597,7 @@ var _isOpen,
 			destPanOffset[axis] = self.currItem.initialPosition[axis];
 			return true;
 		} else {
-			destPanOffset[axis] = _calculatePanOffset(axis, destZoomLevel); 
+			destPanOffset[axis] = _calculatePanOffset(axis, destZoomLevel);
 
 			if(destPanOffset[axis] > destPanBounds.min[axis]) {
 				destPanOffset[axis] = destPanBounds.min[axis];
@@ -612,13 +616,13 @@ var _isOpen,
 			// setup 3d transforms
 			var allow3dTransform = _features.perspective && !_likelyTouchDevice;
 			_translatePrefix = 'translate' + (allow3dTransform ? '3d(' : '(');
-			_translateSufix = _features.perspective ? ', 0px)' : ')';	
+			_translateSufix = _features.perspective ? ', 0px)' : ')';
 			return;
 		}
 
 		// Override zoom/pan/move functions in case old browser is used (most likely IE)
 		// (so they use left/top/width/height, instead of CSS transform)
-	
+
 		_transformKey = 'left';
 		framework.addClass(template, 'pswp--ie');
 
@@ -654,18 +658,18 @@ var _isOpen,
 				s.left = _panOffset.x + 'px';
 				s.top = _panOffset.y + 'px';
 			}
-			
+
 		};
 	},
 
 	_onKeyDown = function(e) {
 		var keydownAction = '';
-		if(_options.escKey && e.keyCode === 27) { 
+		if(_options.escKey && e.keyCode === 27) {
 			keydownAction = 'close';
 		} else if(_options.arrowKeys) {
 			if(e.keyCode === 37) {
 				keydownAction = 'prev';
-			} else if(e.keyCode === 39) { 
+			} else if(e.keyCode === 39) {
 				keydownAction = 'next';
 			}
 		}
@@ -678,7 +682,7 @@ var _isOpen,
 					e.preventDefault();
 				} else {
 					e.returnValue = false;
-				} 
+				}
 				self[keydownAction]();
 			}
 		}
@@ -697,12 +701,12 @@ var _isOpen,
 	},
 
 	_updatePageScrollOffset = function() {
-		self.setScrollOffset(0, framework.getScrollY());		
+		self.setScrollOffset(0, framework.getScrollY());
 	};
-	
 
 
-	
+
+
 
 
 
@@ -732,8 +736,8 @@ var _animations = {},
 
 			if( _animations.hasOwnProperty( prop ) ) {
 				_stopAnimation(prop);
-			} 
-			
+			}
+
 		}
 	},
 	_animateProp = function(name, b, endProp, d, easingFn, onUpdate, onComplete) {
@@ -742,7 +746,7 @@ var _animations = {},
 
 		var animloop = function(){
 			if ( _animations[name] ) {
-				
+
 				t = _getCurrentTime() - startAnimTime; // time diff
 				//b - beginning (start prop)
 				//d - anim duration
@@ -762,7 +766,7 @@ var _animations = {},
 		};
 		animloop();
 	};
-	
+
 
 
 var publicMethods = {
@@ -784,7 +788,7 @@ var publicMethods = {
 	},
 	isDragging: function() {
 		return _isDragging;
-	},	
+	},
 	isZooming: function() {
 		return _isZooming;
 	},
@@ -814,13 +818,13 @@ var publicMethods = {
 
 		_initalClassName = template.className;
 		_isOpen = true;
-				
+
 		_features = framework.detectFeatures();
 		_requestAF = _features.raf;
 		_cancelAF = _features.caf;
 		_transformKey = _features.transform;
 		_oldIE = _features.oldIE;
-		
+
 		self.scrollWrap = framework.getChildByClass(template, 'pswp__scroll-wrap');
 		self.container = framework.getChildByClass(self.scrollWrap, 'pswp__container');
 
@@ -846,7 +850,7 @@ var publicMethods = {
 			click: _onGlobalClick
 		};
 
-		// disable show/hide effects on old browsers that don't support CSS animations or transforms, 
+		// disable show/hide effects on old browsers that don't support CSS animations or transforms,
 		// old IOS, Android and Opera mobile. Blackberry seems to work fine, even older models.
 		var oldPhone = _features.isOldIOSPhone || _features.isOldAndroid || _features.isMobileOpera;
 		if(!_features.animationName || !_features.transform || oldPhone) {
@@ -857,7 +861,7 @@ var publicMethods = {
 		for(i = 0; i < _modules.length; i++) {
 			self['init' + _modules[i]]();
 		}
-		
+
 		// init
 		if(UiClass) {
 			var ui = self.ui = new UiClass(self, framework);
@@ -872,11 +876,11 @@ var publicMethods = {
 		}
 		self.currItem = _getItemAt( _currentItemIndex );
 
-		
+
 		if(_features.isOldIOSPhone || _features.isOldAndroid) {
 			_isFixedPosition = false;
 		}
-		
+
 		template.setAttribute('aria-hidden', 'false');
 		if(_options.modal) {
 			if(!_isFixedPosition) {
@@ -891,7 +895,7 @@ var publicMethods = {
 			_shout('initialLayout');
 			_currentWindowScrollY = _initalWindowScrollY = framework.getScrollY();
 		}
-		
+
 		// add classes to root element of PhotoSwipe
 		var rootClasses = 'pswp--open ';
 		if(_options.mainClass) {
@@ -916,7 +920,7 @@ var publicMethods = {
 
 		if(!_oldIE) {
 			framework.bind(self.scrollWrap, _downEvents, self); // no dragging for old IE
-		}	
+		}
 
 		_listen('initialZoomInEnd', function() {
 			self.setContent(_itemHolders[0], _currentItemIndex-1);
@@ -925,34 +929,36 @@ var publicMethods = {
 			_itemHolders[0].el.style.display = _itemHolders[2].el.style.display = 'block';
 
 			if(_options.focus) {
-				// focus causes layout, 
-				// which causes lag during the animation, 
+				// focus causes layout,
+				// which causes lag during the animation,
 				// that's why we delay it untill the initial zoom transition ends
 				template.focus();
 			}
-			 
+
 
 			_bindEvents();
 		});
 
 		// set content for center slide (first time)
 		self.setContent(_itemHolders[1], _currentItemIndex);
-		
+
 		self.updateCurrItem();
 
 		_shout('afterInit');
 
+		self.setLoopFirstLastFinal();
+
 		if(!_isFixedPosition) {
 
 			// On all versions of iOS lower than 8.0, we check size of viewport every second.
-			// 
-			// This is done to detect when Safari top & bottom bars appear, 
-			// as this action doesn't trigger any events (like resize). 
-			// 
+			//
+			// This is done to detect when Safari top & bottom bars appear,
+			// as this action doesn't trigger any events (like resize).
+			//
 			// On iOS8 they fixed this.
-			// 
+			//
 			// 10 Nov 2014: iOS 7 usage ~40%. iOS 8 usage 56%.
-			
+
 			_updateSizeInterval = setInterval(function() {
 				if(!_numAnimations && !_isDragging && !_isZooming && (_currZoomLevel === self.currItem.initialZoomLevel)  ) {
 					self.updateSize();
@@ -984,7 +990,7 @@ var publicMethods = {
 		if(_showOrHideTimeout) {
 			clearTimeout(_showOrHideTimeout);
 		}
-		
+
 		template.setAttribute('aria-hidden', 'true');
 		template.className = _initalClassName;
 
@@ -1006,8 +1012,8 @@ var publicMethods = {
 
 	/**
 	 * Pan image to position
-	 * @param {Number} x     
-	 * @param {Number} y     
+	 * @param {Number} x
+	 * @param {Number} y
 	 * @param {Boolean} force Will ignore bounds if set to true.
 	 */
 	panTo: function(x,y,force) {
@@ -1024,12 +1030,12 @@ var publicMethods = {
 				y = _currPanBounds.max.y;
 			}
 		}
-		
+
 		_panOffset.x = x;
 		_panOffset.y = y;
 		_applyCurrentZoomPan();
 	},
-	
+
 	handleEvent: function (e) {
 		e = e || window.event;
 		if(_globalEventHandlers[e.type]) {
@@ -1048,9 +1054,9 @@ var publicMethods = {
 		_currentItemIndex = index;
 		self.currItem = _getItemAt( _currentItemIndex );
 		_currPositionIndex -= diff;
-		
+
 		_moveMainScroll(_slideSize.x * _currPositionIndex);
-		
+
 
 		_stopAllAnimations();
 		_mainScrollAnimating = false;
@@ -1058,10 +1064,18 @@ var publicMethods = {
 		self.updateCurrItem();
 	},
 	next: function() {
-		self.goTo( _currentItemIndex + 1);
+		if (_isLastFrame) {
+			return;
+		} else {
+			self.goTo( _currentItemIndex + 1 );
+		}
 	},
 	prev: function() {
-		self.goTo( _currentItemIndex - 1);
+		if (_isFirstFrame) {
+			return;
+		} else {
+			self.goTo( _currentItemIndex - 1 );
+		}
 	},
 
 	// update current zoom/pan objects
@@ -1081,15 +1095,15 @@ var publicMethods = {
 		} else {
 			_currZoomElementStyle = null;
 		}
-		
-		_currPanBounds = self.currItem.bounds;	
+
+		_currPanBounds = self.currItem.bounds;
 		_startZoomLevel = _currZoomLevel = self.currItem.initialZoomLevel;
 
 		_panOffset.x = _currPanBounds.center.x;
 		_panOffset.y = _currPanBounds.center.y;
 
 		if(emulateSetContent) {
-			_shout('afterChange');
+			self.setLoopFirstLastFinal();
 		}
 	},
 
@@ -1119,7 +1133,7 @@ var publicMethods = {
 
 		self.currItem = _getItemAt( _currentItemIndex );
 		_renderMaxResolution = false;
-		
+
 		_shout('beforeChange', _indexDiff);
 
 		if(diffAbs >= NUM_HOLDERS) {
@@ -1142,7 +1156,7 @@ var publicMethods = {
 				_setTranslateX( _containerShiftIndex * _slideSize.x, tempHolder.el.style);
 				self.setContent(tempHolder, _currentItemIndex + diffAbs - i - 1 - 1);
 			}
-			
+
 		}
 
 		// reset zoom/pan on previous item
@@ -1152,7 +1166,7 @@ var publicMethods = {
 			if(prevItem.initialZoomLevel !== _currZoomLevel) {
 				_calculateItemSize(prevItem , _viewportSize );
 				_setImageSize(prevItem);
-				_applyZoomPanToItem( prevItem ); 				
+				_applyZoomPanToItem( prevItem );
 			}
 
 		}
@@ -1164,14 +1178,38 @@ var publicMethods = {
 
 		_prevItemIndex = _currentItemIndex;
 
-		_shout('afterChange');
-		
+		self.setLoopFirstLastFinal();
 	},
 
+	setLoopFirstLastFinal: function() {
+		if(_options.loop === false) {
+			if(_currentItemIndex + 1 === self.items.length ) {
+				_isLastFrame = true;
+			} else {
+				_isLastFrame = false;
+			}
 
+			if(_currentItemIndex === 0) {
+				_isFirstFrame = true;
+			} else {
+				_isFirstFrame = false;
+			}
+		}
+		else if(_options.loop === 'once') {
+				if(_viewedItems.length === self.items.length) { // loops thru all slides once starting from any slide, then marks to close
+					_isFinalFrame = true;
+				} else {
+					_isFinalFrame = false;
+				}
+				_shout('afterChange');
+		}
+		else {
+			return;
+		}
+	},
 
 	updateSize: function(force) {
-		
+
 		if(!_isFixedPosition && _options.modal) {
 			var windowScrollY = framework.getScrollY();
 			if(_currentWindowScrollY !== windowScrollY) {
@@ -1228,7 +1266,7 @@ var publicMethods = {
 				if( item && (_itemsNeedUpdate || item.needsUpdate || !item.bounds) ) {
 
 					self.cleanSlide( item );
-					
+
 					self.setContent( holder, hIndex );
 
 					// if "center" slide
@@ -1248,10 +1286,10 @@ var publicMethods = {
 					_setImageSize(item);
 					_applyZoomPanToItem( item );
 				}
-				
+
 			}
 			_itemsNeedUpdate = false;
-		}	
+		}
 
 		_startZoomLevel = _currZoomLevel = self.currItem.initialZoomLevel;
 		_currPanBounds = self.currItem.bounds;
@@ -1261,10 +1299,10 @@ var publicMethods = {
 			_panOffset.y = _currPanBounds.center.y;
 			_applyCurrentZoomPan( true );
 		}
-		
+
 		_shout('resize');
 	},
-	
+
 	// Zoom current item to
 	zoomTo: function(destZoomLevel, centerPoint, speed, easingFn, updateFn) {
 		/*
@@ -2676,7 +2714,7 @@ var _showOrHideTimeout,
 /**
 *
 * Controller manages gallery items, their dimensions, and their content.
-* 
+*
 */
 
 var _items,
@@ -2700,8 +2738,8 @@ var _getItemAt,
 	_initialIsLoop,
 	_getZeroBounds = function() {
 		return {
-			center:{x:0,y:0}, 
-			max:{x:0,y:0}, 
+			center:{x:0,y:0},
+			max:{x:0,y:0},
 			min:{x:0,y:0}
 		};
 	},
@@ -2713,14 +2751,14 @@ var _getItemAt,
 		bounds.center.y = Math.round((_tempPanAreaSize.y - realPanElementH) / 2) + item.vGap.top;
 
 		// maximum pan position
-		bounds.max.x = (realPanElementW > _tempPanAreaSize.x) ? 
-							Math.round(_tempPanAreaSize.x - realPanElementW) : 
+		bounds.max.x = (realPanElementW > _tempPanAreaSize.x) ?
+							Math.round(_tempPanAreaSize.x - realPanElementW) :
 							bounds.center.x;
-		
-		bounds.max.y = (realPanElementH > _tempPanAreaSize.y) ? 
-							Math.round(_tempPanAreaSize.y - realPanElementH) + item.vGap.top : 
+
+		bounds.max.y = (realPanElementH > _tempPanAreaSize.y) ?
+							Math.round(_tempPanAreaSize.y - realPanElementH) + item.vGap.top :
 							bounds.center.y;
-		
+
 		// minimum pan position
 		bounds.min.x = (realPanElementW > _tempPanAreaSize.x) ? 0 : bounds.center.x;
 		bounds.min.y = (realPanElementH > _tempPanAreaSize.y) ? item.vGap.top : bounds.center.y;
@@ -2729,7 +2767,7 @@ var _getItemAt,
 
 		if (item.src && !item.loadError) {
 			var isInitial = !zoomLevel;
-			
+
 			if(isInitial) {
 				if(!item.vGap) {
 					item.vGap = {top:0,bottom:0};
@@ -2762,10 +2800,10 @@ var _getItemAt,
 				}
 
 				item.initialZoomLevel = zoomLevel;
-				
+
 				if(!item.bounds) {
 					// reuse bounds object
-					item.bounds = _getZeroBounds(); 
+					item.bounds = _getZeroBounds();
 				}
 			}
 
@@ -2789,14 +2827,14 @@ var _getItemAt,
 			// if it's not image, we return zero bounds (content is not zoomable)
 			return item.bounds;
 		}
-		
+
 	},
 
-	
+
 
 
 	_appendImage = function(index, item, baseDiv, img, preventAnimation, keepPlaceholder) {
-		
+
 
 		if(item.loadError) {
 			return;
@@ -2806,7 +2844,7 @@ var _getItemAt,
 
 			item.imageAppended = true;
 			_setImageSize(item, img, (item === self.currItem && _renderMaxResolution) );
-			
+
 			baseDiv.appendChild(img);
 
 			if(keepPlaceholder) {
@@ -2819,7 +2857,7 @@ var _getItemAt,
 			}
 		}
 	},
-	
+
 
 
 	_preloadImage = function(item) {
@@ -2842,7 +2880,7 @@ var _getItemAt,
 		img.onerror = function() {
 			item.loadError = true;
 			onComplete();
-		};		
+		};
 
 		img.src = item.src;// + '?a=' + Math.random();
 
@@ -2857,7 +2895,7 @@ var _getItemAt,
 
 			item.container.innerHTML = _options.errorMsg.replace('%url%',  item.src );
 			return true;
-			
+
 		}
 	},
 	_setImageSize = function(item, img, maxRes) {
@@ -2871,7 +2909,7 @@ var _getItemAt,
 
 		var w = maxRes ? item.w : Math.round(item.w * item.fitRatio),
 			h = maxRes ? item.h : Math.round(item.h * item.fitRatio);
-		
+
 		if(item.placeholder && !item.loaded) {
 			item.placeholder.style.width = w + 'px';
 			item.placeholder.style.height = h + 'px';
@@ -2894,7 +2932,7 @@ var _getItemAt,
 			_imagesToAppendPool = [];
 		}
 	};
-	
+
 
 
 _registerModule('Controller', {
@@ -2932,19 +2970,44 @@ _registerModule('Controller', {
 
 			_listen('beforeChange', function(diff) {
 
-				var p = _options.preload,
-					isNext = diff === null ? true : (diff >= 0),
-					preloadBefore = Math.min(p[0], _getNumItems() ),
-					preloadAfter = Math.min(p[1], _getNumItems() ),
-					i;
+					//if finalFrame and firstViewed { close }
 
+					var p = _options.preload,
+						isNext = diff === null ? true : (diff >= 0),
+						preloadBefore = Math.min(p[0], _getNumItems() ),
+						preloadAfter = Math.min(p[1], _getNumItems() ),
+						i;
 
-				for(i = 1; i <= (isNext ? preloadAfter : preloadBefore); i++) {
-					self.lazyLoadItem(_currentItemIndex+i);
+					for(i = 1; i <= (isNext ? preloadAfter : preloadBefore); i++) {
+						self.lazyLoadItem(_currentItemIndex+i);
+					}
+					for(i = 1; i <= (isNext ? preloadBefore : preloadAfter); i++) {
+						self.lazyLoadItem(_currentItemIndex-i);
+					}
+
+			});
+
+			_listen('afterChange', function() {
+				var currSlide = self.getCurrentIndex(),
+						initialSlide = _viewedItems[0],
+						endingSlide = _viewedItems[_viewedItems.length - 1];
+
+				console.log('currSlide: '+currSlide+' initialSlide: '+initialSlide+' endingSlide: '+endingSlide);
+
+				if(_isFinalFrame) { // if seen all slides
+					if((currSlide === initialSlide) || (currSlide === endingSlide)) { // if back to initial or final slide
+						setTimeout(function(){ // lets PSWP tidy up before closing
+							self.close();
+						}, 100);
+					}
 				}
-				for(i = 1; i <= (isNext ? preloadBefore : preloadAfter); i++) {
-					self.lazyLoadItem(_currentItemIndex-i);
+
+				if (_viewedItems.indexOf(currSlide) >= 0) { // if in the array, it returns its index
+					return;
+				} else {
+					_viewedItems.push(currSlide);
 				}
+
 			});
 
 			_listen('initialLayout', function() {
@@ -2962,7 +3025,7 @@ _registerModule('Controller', {
 					item = _items[i];
 					// remove reference to DOM elements, for GC
 					if(item.container) {
-						item.container = null; 
+						item.container = null;
 					}
 					if(item.placeholder) {
 						item.placeholder = null;
@@ -2990,17 +3053,17 @@ _registerModule('Controller', {
 		},
 
 		allowProgressiveImg: function() {
-			// 1. Progressive image loading isn't working on webkit/blink 
+			// 1. Progressive image loading isn't working on webkit/blink
 			//    when hw-acceleration (e.g. translateZ) is applied to IMG element.
 			//    That's why in PhotoSwipe parent element gets zoom transform, not image itself.
-			//    
+			//
 			// 2. Progressive image loading sometimes blinks in webkit/blink when applying animation to parent element.
 			//    That's why it's disabled on touch devices (mainly because of swipe transition)
-			//    
+			//
 			// 3. Progressive image loading sometimes doesn't work in IE (up to 11).
 
 			// Don't allow progressive loading on non-large touch devices
-			return _options.forceProgressiveLoading || !_likelyTouchDevice || _options.mouseUsed || screen.width > 1200; 
+			return _options.forceProgressiveLoading || !_likelyTouchDevice || _options.mouseUsed || screen.width > 1200;
 			// 1200 - to eliminate touch devices with large screen (like Chromebook Pixel)
 		},
 
@@ -3014,10 +3077,10 @@ _registerModule('Controller', {
 			if(prevItem) {
 				prevItem.container = null;
 			}
-	
+
 			var item = self.getItemAt(index),
 				img;
-			
+
 			if(!item) {
 				holder.el.innerHTML = '';
 				return;
@@ -3030,9 +3093,9 @@ _registerModule('Controller', {
 			holder.item = item;
 
 			// base container DIV is created only once for each of 3 holders
-			var baseDiv = item.container = framework.createEl('pswp__zoom-wrap'); 
+			var baseDiv = item.container = framework.createEl('pswp__zoom-wrap');
 
-			
+
 
 			if(!item.src && item.html) {
 				if(item.html.tagName) {
@@ -3045,7 +3108,7 @@ _registerModule('Controller', {
 			_checkForError(item);
 
 			_calculateItemSize(item, _viewportSize);
-			
+
 			if(item.src && !item.loadError && !item.loaded) {
 
 				item.loadComplete = function(item) {
@@ -3097,24 +3160,24 @@ _registerModule('Controller', {
 				};
 
 				if(framework.features.transform) {
-					
-					var placeholderClassName = 'pswp__img pswp__img--placeholder'; 
+
+					var placeholderClassName = 'pswp__img pswp__img--placeholder';
 					placeholderClassName += (item.msrc ? '' : ' pswp__img--placeholder--blank');
 
 					var placeholder = framework.createEl(placeholderClassName, item.msrc ? 'img' : '');
 					if(item.msrc) {
 						placeholder.src = item.msrc;
 					}
-					
+
 					_setImageSize(item, placeholder);
 
 					baseDiv.appendChild(placeholder);
 					item.placeholder = placeholder;
 
 				}
-				
 
-				
+
+
 
 				if(!item.loading) {
 					_preloadImage(item);
@@ -3125,17 +3188,17 @@ _registerModule('Controller', {
 					// just append image
 					if(!_initialContentSet && _features.transform) {
 						_imagesToAppendPool.push({
-							item:item, 
-							baseDiv:baseDiv, 
-							img:item.img, 
-							index:index, 
+							item:item,
+							baseDiv:baseDiv,
+							img:item.img,
+							index:index,
 							holder:holder
 						});
 					} else {
 						_appendImage(index, item, baseDiv, item.img, true, true);
 					}
 				}
-				
+
 			} else if(item.src && !item.loadError) {
 				// image object is created every time, due to bugs of image loading & delay when switching images
 				img = framework.createEl('pswp__img', 'img');
@@ -3144,7 +3207,7 @@ _registerModule('Controller', {
 				_setImageSize(item, img);
 				_appendImage(index, item, baseDiv, img, true);
 			}
-			
+
 
 			if(!_initialContentSet && index === _currentItemIndex) {
 				_currZoomElementStyle = baseDiv.style;
@@ -3166,6 +3229,7 @@ _registerModule('Controller', {
 
 	}
 });
+
 
 /*>>items-controller*/
 
