@@ -257,8 +257,6 @@ _registerModule('Controller', {
 
 			_listen('beforeChange', function(diff) {
 
-					//if finalFrame and firstViewed { close }
-
 					var p = _options.preload,
 						isNext = diff === null ? true : (diff >= 0),
 						preloadBefore = Math.min(p[0], _getNumItems() ),
