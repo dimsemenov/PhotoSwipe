@@ -259,16 +259,14 @@ _registerModule('Controller', {
 
 				var p = _options.preload,
 					isNext = diff === null ? true : (diff >= 0),
-					preloadBefore = Math.min(p[0], _getNumItems() ),
-					preloadAfter = Math.min(p[1], _getNumItems() ),
+					numItems = _getNumItems(),
+					preloadBefore = Math.min(p[0], numItems),
+					preloadAfter = Math.min(p[1], numItems),
 					i;
 
+				for (i=-preloadBefore; i<=preloadAfter; i++) {
 
-				for(i = 1; i <= (isNext ? preloadAfter : preloadBefore); i++) {
-					self.lazyLoadItem(_currentItemIndex+i);
-				}
-				for(i = 1; i <= (isNext ? preloadBefore : preloadAfter); i++) {
-					self.lazyLoadItem(_currentItemIndex-i);
+					self.lazyLoadItem( (numItems + _currentItemIndex + i) % numItems );
 				}
 			});
 
