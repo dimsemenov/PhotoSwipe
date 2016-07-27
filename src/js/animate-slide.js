@@ -1,16 +1,13 @@
 
 var slideAnim = function(dir) {
 
-	var __dummyAnimData = { lastFlickDist: 50, lastFlickOffset: 50, lastFlickSpeed: 10 };
+	var  itemsDiff = dir
+		,itemChanged
+		,nextCircle;
 
-	var itemChanged;
 	if(!_mainScrollAnimating) {
 		_currZoomedItemIndex = _currentItemIndex;
 	}
-
-	var itemsDiff = dir;
-
-	var nextCircle;
 
 	if(itemsDiff) {
 
@@ -33,20 +30,7 @@ var slideAnim = function(dir) {
 
 	var animateToX = _slideSize.x * _currPositionIndex;
 	var animateToDist = Math.abs( animateToX - _mainScrollPos.x );
-	var finishAnimDuration;
-
-
-	if(!itemChanged && animateToX > _mainScrollPos.x !== __dummyAnimData.lastFlickSpeed.x > 0) {
-		// "return to current" duration, e.g. when dragging from slide 0 to -1
-		finishAnimDuration = 333;
-	} else {
-		finishAnimDuration = Math.abs(__dummyAnimData.lastFlickSpeed.x) > 0 ?
-								animateToDist / Math.abs(__dummyAnimData.lastFlickSpeed.x) :
-								333;
-
-		finishAnimDuration = Math.min(finishAnimDuration, 400);
-		finishAnimDuration = Math.max(finishAnimDuration, 250);
-	}
+	var finishAnimDuration = (animateToDist > 4000) ? 400 : 250;
 
 	if(_currZoomedItemIndex === _currentItemIndex) {
 		itemChanged = false;
@@ -83,7 +67,7 @@ _registerModule('AnimateSlide', {
 
     publicMethods: {
 
-         initAnimateSlide: function(){}
+         initAnimateSlide: function() {}
 
 		,nextAnim: function(){
 			slideAnim(1);
