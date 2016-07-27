@@ -30,7 +30,7 @@ var slideAnim = function(dir) {
 
 	var animateToX = _slideSize.x * _currPositionIndex;
 	var animateToDist = Math.abs( animateToX - _mainScrollPos.x );
-	var finishAnimDuration = (animateToDist > 4000) ? 400 : 250;
+	var finishAnimDuration = (animateToDist > 4000) ? 400 : 300;
 
 	if(_currZoomedItemIndex === _currentItemIndex) {
 		itemChanged = false;
