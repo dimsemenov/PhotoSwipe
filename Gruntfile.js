@@ -87,8 +87,8 @@ module.exports = function(grunt) {
           'items-controller',
           'tap',
           'desktop-zoom',
-          'history'
-          ,'animate-slide'
+          'history',
+          'animate-slide'
         ],
         basePath: 'src/js/',
         dest: 'dist/photoswipe.js',

@@ -1,9 +1,9 @@
 
 var slideAnim = function(dir) {
 
-	var  itemsDiff = dir
-		,itemChanged
-		,nextCircle;
+	var itemsDiff = dir,
+		itemChanged,
+		nextCircle;
 
 	if(!_mainScrollAnimating) {
 		_currZoomedItemIndex = _currentItemIndex;
@@ -60,19 +60,20 @@ var slideAnim = function(dir) {
 	}
 
 	return itemChanged;
-}
+};
 
 
 _registerModule('AnimateSlide', {
 
     publicMethods: {
 
-         initAnimateSlide: function() {}
+        initAnimateSlide: function() {},
 
-		,nextAnim: function(){
+		nextAnim: function(){
 			slideAnim(1);
-		}
-		,prevAnim: function(){
+		},
+
+		prevAnim: function(){
 			slideAnim(-1);
 		}
     }
