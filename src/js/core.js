@@ -366,9 +366,9 @@ var _isOpen,
 			keydownAction = 'close';
 		} else if(_options.arrowKeys) {
 			if(e.keyCode === 37) {
-				keydownAction = 'prev';
-			} else if(e.keyCode === 39) { 
-				keydownAction = 'next';
+				keydownAction = 'prevAnim';
+			} else if(e.keyCode === 39) {
+				keydownAction = 'nextAnim';
 			}
 		}
 

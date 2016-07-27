@@ -462,12 +462,12 @@ var PhotoSwipeUI_Default =
 		{ 
 			name: 'button--arrow--left', 
 			option: 'arrowEl',
-			onTap: pswp.prev
+			onTap: pswp.prevAnim
 		},
 		{ 
 			name: 'button--arrow--right', 
 			option: 'arrowEl',
-			onTap: pswp.next
+			onTap: pswp.nextAnim
 		},
 		{ 
 			name: 'button--fs', 
