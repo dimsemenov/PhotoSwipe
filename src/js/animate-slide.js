@@ -1,3 +1,12 @@
+/**
+ *
+ * animate-slide.js
+ *
+ * - Adds public methods prevAnim() and nextAnim() which animates
+ *   the slide transition when switching to the previous or next
+ *   slide respectively
+ *
+ */
 
 var slideAnim = function(dir) {
 
@@ -65,9 +74,9 @@ var slideAnim = function(dir) {
 
 _registerModule('AnimateSlide', {
 
-    publicMethods: {
+	publicMethods: {
 
-        initAnimateSlide: function() {},
+		initAnimateSlide: function() {},
 
 		nextAnim: function(){
 			slideAnim(1);
@@ -76,5 +85,5 @@ _registerModule('AnimateSlide', {
 		prevAnim: function(){
 			slideAnim(-1);
 		}
-    }
+	}
 });
