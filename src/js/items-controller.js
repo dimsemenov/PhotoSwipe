@@ -367,6 +367,60 @@ _registerModule('Controller', {
 				}
 			}
 
+            if (!item.src && item.video) {
+                framework.addClass(baseDiv, 'pswp__zoom-wrap--video');
+                
+                var videoWrap = framework.createEl('pswp__video-wrap', 'div');
+
+                var _videoImg;
+                item.videoPlaying = false;
+                if (item.videoImg) {
+                    _videoImg = '<img src="'+ item.videoImg +'" class="pswp__video" />'
+                } else {
+                    _videoImg = '<span class="pswp__video" ></span>'
+                }
+
+                videoWrap.innerHTML = _videoImg;
+
+                baseDiv.appendChild(videoWrap);
+
+                var _toggleVideo = item.toggleVideo = function(e){
+                    if (e) {
+                        e.stopPropagation();
+                    }
+
+                    item.videoPlaying = !item.videoPlaying;
+                    if (item.videoPlaying) {
+                        videoWrap.innerHTML = item.video;
+                        framework.addClass(videoWrap, 'pswp__video-wrap--playing');
+                    } else {
+                        videoWrap.innerHTML = _videoImg;
+                        framework.removeClass(videoWrap, 'pswp__video-wrap--playing');
+                    }
+
+                    self.ui.update();
+                };
+
+                framework.bind(videoWrap, 'pswpTap', _toggleVideo);
+
+                _listen('beforeChange', function(diff) {
+                    var prevItem = self.getItemAt(_currentItemIndex - diff);
+                    if (prevItem.videoPlaying) {
+                        prevItem.toggleVideo();
+                    }
+                });
+
+                _listen('close', function() {
+                    if (self.currItem.videoPlaying) {
+                        self.currItem.toggleVideo();
+                    }
+                });
+
+                _listen('unbindEvents', function() {
+                    framework.unbind(videoWrap, 'pswpTap', _toggleVideo);
+                });
+            }
+
 			_checkForError(item);
 
 			_calculateItemSize(item, _viewportSize);

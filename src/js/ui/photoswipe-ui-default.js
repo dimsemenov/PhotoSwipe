@@ -36,6 +36,8 @@ var PhotoSwipeUI_Default =
 		_isIdle,
 		_listen,
 
+        _videoButton,
+
 		_loadingIndicator,
 		_loadingIndicatorHidden,
 		_loadingIndicatorTimeout,
@@ -67,6 +69,7 @@ var PhotoSwipeUI_Default =
 			counterEl: true,
 			arrowEl: true,
 			preloaderEl: true,
+            videoEl: true,
 
 			tapToClose: false,
 			tapToToggleControls: true,
@@ -486,8 +489,19 @@ var PhotoSwipeUI_Default =
 			onInit: function(el) {  
 				_loadingIndicator = el;
 			} 
-		}
-
+		},
+        {
+            name: 'button--video',
+            option: 'videoEl',
+            onInit: function (el) {
+                _videoButton = el;
+            },
+            onTap: function () {
+                if (pswp.currItem.videoPlaying) {
+                    pswp.currItem.toggleVideo();
+                }
+            }
+        }
 	];
 
 	var _setupUIElements = function() {
@@ -678,6 +692,8 @@ var PhotoSwipeUI_Default =
 
 				_togglePswpClass(_captionContainer, 'caption--empty', !pswp.currItem.title);
 			}
+         
+            _togglePswpClass(_videoButton, 'element--disabled', !pswp.currItem.videoPlaying);
 
 			_overlayUIUpdated = true;
 
