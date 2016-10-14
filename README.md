@@ -27,6 +27,7 @@ JavaScript image gallery for mobile and desktop.
 - [Orchard CMS module](https://gallery.orchardproject.net/List/Modules/Orchard.Module.Cascade.PhotoSwipe).
 - [Yellow CMS plugin](https://github.com/datenstrom/yellow-plugins/tree/master/gallery).
 - [Kirby CMS plugin](https://github.com/SiteMarina/guggenheim).
+- [Drupal CMF module](https://www.drupal.org/project/photoswipe).
 
 Coded something useful? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I’ll post a link to it here.
 
