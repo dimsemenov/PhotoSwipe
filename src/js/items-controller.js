@@ -160,6 +160,8 @@ var _getItemAt,
 			} else {
 				item.img = null; // no need to store image object
 			}
+			
+			framework.removeClass(img, 'pswp__img--loading');
 			img.onload = img.onerror = null;
 			img = null;
 		};
@@ -168,7 +170,7 @@ var _getItemAt,
 			item.loadError = true;
 			onComplete();
 		};		
-
+		framework.addClass(img, 'pswp__img--loading');
 		img.src = item.src;// + '?a=' + Math.random();
 
 		return img;
