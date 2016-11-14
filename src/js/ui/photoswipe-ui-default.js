@@ -207,6 +207,11 @@ var PhotoSwipeUI_Default =
 				return true;
 			}
 
+			if( target.hasAttribute('nopopup') || target.href.startsWith("mailto:") ) {
+				location.href = target.href;
+				return false;
+			}
+
 			window.open(target.href, 'pswp_share', 'scrollbars=yes,resizable=yes,toolbar=no,'+
 										'location=yes,width=550,height=420,top=100,left=' + 
 										(window.screen ? Math.round(screen.width / 2 - 275) : 100)  );
