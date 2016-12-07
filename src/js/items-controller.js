@@ -148,39 +148,48 @@ var _getItemAt,
 
 
 	_preloadImage = function(item) {
-		item.loading = true;
-		item.loaded = false;
-		var img = item.img = framework.createEl('pswp__img', 'img');
 		var onComplete = function() {
 			item.loading = false;
 			item.loaded = true;
 
+			if(item.img) {
+				item.img.onload = item.img.onerror = null;
+			}
 			if(item.loadComplete) {
 				item.loadComplete(item);
 			} else {
 				item.img = null; // no need to store image object
 			}
-			img.onload = img.onerror = null;
-			img = null;
 		};
-		img.onload = onComplete;
-		img.onerror = function() {
-			item.loadError = true;
-			onComplete();
-		};		
 
-		img.src = item.src;// + '?a=' + Math.random();
-
-		return img;
+		item.loading = true;
+		item.loaded = false;
+		if(item.src) {
+			item.img = framework.createEl('pswp__img', 'img');
+			item.img.onload = onComplete;
+			item.img.onerror = function() {
+				item.loadError = true;
+				onComplete();
+			};
+			item.img.src = item.src;
+		} else if(item.callback) {
+			item.callback(function _success() {
+				_preloadImage(item);
+			}, function _error() {
+				item.loadError = true;
+				onComplete();
+			});
+		}
 	},
 	_checkForError = function(item, cleanUp) {
-		if(item.src && item.loadError && item.container) {
+		if(item.loadError && item.container) {
 
 			if(cleanUp) {
 				item.container.innerHTML = '';
 			}
 
-			item.container.innerHTML = _options.errorMsg.replace('%url%',  item.src );
+			var url = item.src ? item.src : "???";
+			item.container.innerHTML = _options.errorMsg.replace('%url%', url);
 			return true;
 			
 		}
@@ -235,10 +244,6 @@ _registerModule('Controller', {
 			}
 
 			_shout('gettingData', index, item);
-
-			if (!item.src) {
-				return;
-			}
 
 			_preloadImage(item);
 		},
@@ -357,8 +362,6 @@ _registerModule('Controller', {
 			// base container DIV is created only once for each of 3 holders
 			var baseDiv = item.container = framework.createEl('pswp__zoom-wrap'); 
 
-			
-
 			if(!item.src && item.html) {
 				if(item.html.tagName) {
 					baseDiv.appendChild(item.html);
@@ -371,7 +374,7 @@ _registerModule('Controller', {
 
 			_calculateItemSize(item, _viewportSize);
 			
-			if(item.src && !item.loadError && !item.loaded) {
+			if(!item.loadError && !item.loaded) {
 
 				item.loadComplete = function(item) {
 
