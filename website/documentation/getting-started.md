@@ -200,7 +200,7 @@ At the end you should get something like this:
 
 Each object in the array should contain data about slide, it can be anything that you wish to display in PhotoSwipe - path to image, caption string, number of shares, comments, etc.
 
-By default PhotoSwipe uses just 5 properties: `src` (path to image), `w` (image width), `h` (image height), `msrc` (path to small image placeholder, large image will be loaded on top), `html` (custom HTML, [more about it](custom-html-in-slides.html)). 
+By default PhotoSwipe uses just 6 properties: `src` (path to image), `w` (image width), `h` (image height), `msrc` (path to small image placeholder, large image will be loaded on top), `html` (custom HTML, [more about it](custom-html-in-slides.html)) and `exif_orientation` (EXIF metadata on image orientation, see comment below). 
 
 During the navigation, PhotoSwipe adds its own properties to this object (like `minZoom` or `loaded`).
 
@@ -223,7 +223,13 @@ var slides = [
 
 		title: 'Image Caption'  // used by Default PhotoSwipe UI
 								// if you skip it, there won't be any caption
-								
+		
+		exif_orientation: 6 // can be used to provide EXIF metadata on the orientation 
+		             // of the image, which is used to transform the image for display.
+						// Specifically, the values 3, 6 and 8, which specify rotations
+						// of 180°, 90° and 270° respectively, are handled.
+						// Other EXIF orientations additionally specify that the image must
+						// be flipped along an axis, which is currently unhandled.
 
 		// You may add more properties here and use them.
 		// For example, demo gallery uses "author" property, which is used in the caption.
