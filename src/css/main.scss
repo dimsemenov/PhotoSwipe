@@ -208,3 +208,28 @@
 	color: $pswp__error-text-color;
 	text-decoration: underline;
 }
+
+/*
+	Rotation styles (for EXIF orientation handling)
+*/
+.pswp__rotate90 {
+  transform: rotate(90deg) translateY(-100%);
+  -webkit-transform: rotate(90deg) translateY(-100%);
+  -ms-transform: rotate(90deg) translateY(-100%);
+  transform-origin: top left;
+  -webkit-transform-origin: top left;
+  -ms-transform-origin: top left;
+}
+.pswp__rotate180 {
+  transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+}
+.pswp__rotate270 {
+  transform: rotate(270deg) translateX(-100%);
+  -webkit-transform: rotate(270deg) translateX(-100%);
+  -ms-transform: rotate(270deg) translateX(-100%);
+  transform-origin: top left;
+  -webkit-transform-origin: top left;
+  -ms-transform-origin: top left;
+}

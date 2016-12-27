@@ -197,6 +197,16 @@ var _getItemAt,
 		var w = maxRes ? item.w : Math.round(item.w * item.fitRatio),
 			h = maxRes ? item.h : Math.round(item.h * item.fitRatio);
 		
+		if (item.hasFlippedDimensions) {
+			var temp = w;
+			w = h;
+			h = temp;
+		}
+		
+		if (item.rotationDeg) {
+			framework.addClass(img, 'pswp__rotate'+item.rotationDeg);
+		}
+		
 		if(item.placeholder && !item.loaded) {
 			item.placeholder.style.width = w + 'px';
 			item.placeholder.style.height = h + 'px';
@@ -217,6 +227,31 @@ var _getItemAt,
 				}
 			}
 			_imagesToAppendPool = [];
+		}
+	},
+	_preprocessItems = function(items) {
+		//apply transformations based on EXIF orientation data, setting
+		// the attributes 'rotationDeg' and 'hasFlippedDimensions' 
+		var rotationMap = {
+			3: 180,	
+			6: 90,
+			8: 270
+		};
+		for (var i = 0; i < items.length; ++i) {
+			var item = items[i];
+			var orientation = item.exif_orientation;
+			if (orientation) {
+				orientation = parseInt(orientation);
+				var rotationDeg = rotationMap[orientation];
+				item.rotationDeg = rotationDeg;
+				var flipDim = rotationDeg && rotationDeg % 180 == 90;
+				if (flipDim) {
+					var w = item.w;
+					item.w = item.h;
+					item.h = w;
+					item.hasFlippedDimensions = true;
+				}
+			}
 		}
 	};
 	
@@ -244,10 +279,10 @@ _registerModule('Controller', {
 		},
 		initController: function() {
 			framework.extend(_options, _controllerDefaultOptions, true);
+			_preprocessItems(items);
 			self.items = _items = items;
 			_getItemAt = self.getItemAt;
 			_getNumItems = _options.getNumItemsFn; //self.getNumItems;
-
 
 
 			_initialIsLoop = _options.loop;
