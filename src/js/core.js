@@ -743,22 +743,30 @@ var publicMethods = {
 
 	goTo: function(index) {
 
-		index = _getLoopedId(index);
+		if ( _options.animateTransitions ) {
 
-		var diff = index - _currentItemIndex;
-		_indexDiff = diff;
+			
 
-		_currentItemIndex = index;
-		self.currItem = _getItemAt( _currentItemIndex );
-		_currPositionIndex -= diff;
-		
-		_moveMainScroll(_slideSize.x * _currPositionIndex);
-		
+		} else {
 
-		_stopAllAnimations();
-		_mainScrollAnimating = false;
+			index = _getLoopedId(index);
 
-		self.updateCurrItem();
+			var diff = index - _currentItemIndex;
+			_indexDiff = diff;
+
+			_currentItemIndex = index;
+			self.currItem = _getItemAt( _currentItemIndex );
+			_currPositionIndex -= diff;
+
+			_moveMainScroll(_slideSize.x * _currPositionIndex);
+
+			_stopAllAnimations();
+			_mainScrollAnimating = false;
+
+			self.updateCurrItem();
+
+		}
+
 	},
 	next: function() {
 		self.goTo( _currentItemIndex + 1);
