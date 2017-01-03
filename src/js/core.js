@@ -782,10 +782,18 @@ var publicMethods = {
 
 	},
 	next: function() {
-		self.goTo( _currentItemIndex + 1);
+		if ( _options.animateTransitions ) {
+			self.goTo( -1 );
+		} else {
+			self.goTo( _currentItemIndex + 1);
+		}
 	},
 	prev: function() {
-		self.goTo( _currentItemIndex - 1);
+		if ( _options.animateTransitions ) {
+			self.goTo( 1 );
+		} else {
+			self.goTo( _currentItemIndex - 1);
+		}
 	},
 
 	// update current zoom/pan objects
