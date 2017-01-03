@@ -29,6 +29,7 @@ var _options = {
 	arrowKeys: true,
 	mainScrollEndFriction: 0.35,
 	panEndFriction: 0.35,
+	animateTransitions: false,
 	isClickableElement: function(el) {
         return el.tagName === 'A';
     },
