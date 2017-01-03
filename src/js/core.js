@@ -745,7 +745,20 @@ var publicMethods = {
 
 		if ( _options.animateTransitions ) {
 
-			
+			_finishSwipeMainScrollGesture('swipe', (80*dir), {
+				lastFlickDist: {
+					x : 80,
+					y: 0
+				},
+				lastFlickOffset: {
+					x : (80*dir),
+					y: 0
+				},
+				lastFlickSpeed: {
+					x : (2*dir),
+					y: 0
+				}
+			});
 
 		} else {
 
