@@ -245,7 +245,7 @@ var _getItemAt,
 				var rotationDeg = rotationMap[orientation];
 				item.rotationDeg = rotationDeg;
 				var flipDim = rotationDeg && rotationDeg % 180 == 90;
-				if (flipDim) {
+				if (flipDim && !item.hasFlippedDimensions) {
 					var w = item.w;
 					item.w = item.h;
 					item.h = w;
