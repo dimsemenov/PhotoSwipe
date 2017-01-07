@@ -1,6 +1,6 @@
-/*! PhotoSwipe - v4.1.1 - 2015-12-24
+/*! PhotoSwipe - v4.1.1 - 2017-01-07
 * http://photoswipe.com
-* Copyright (c) 2015 Dmitry Semenov; */
+* Copyright (c) 2017 Dmitry Semenov; */
 (function (root, factory) { 
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
@@ -3174,17 +3174,17 @@ _registerModule('Controller', {
  * tap.js:
  *
  * Displatches tap and double-tap events.
- * 
+ *
  */
 
 var tapTimer,
 	tapReleasePoint = {},
-	_dispatchTapEvent = function(origEvent, releasePoint, pointerType) {		
+	_dispatchTapEvent = function(origEvent, releasePoint, pointerType) {
 		var e = document.createEvent( 'CustomEvent' ),
 			eDetail = {
-				origEvent:origEvent, 
-				target:origEvent.target, 
-				releasePoint: releasePoint, 
+				origEvent:origEvent,
+				target:origEvent.target,
+				releasePoint: releasePoint,
 				pointerType:pointerType || 'touch'
 			};
 
@@ -3213,6 +3213,12 @@ _registerModule('Tap', {
 				return;
 			}
 
+			var clickedTagName = e.target.tagName.toUpperCase();
+      if (clickedTagName === "A")
+      {
+          return;
+      }
+
 			if(!_moved && !_isMultitouch && !_numAnimations) {
 				var p0 = releasePoint;
 				if(tapTimer) {
@@ -3231,7 +3237,6 @@ _registerModule('Tap', {
 					return;
 				}
 
-				var clickedTagName = e.target.tagName.toUpperCase();
 				// avoid double tap delay on buttons and elements that have class pswp__single-tap
 				if(clickedTagName === 'BUTTON' || framework.hasClass(e.target, 'pswp__single-tap') ) {
 					_dispatchTapEvent(e, releasePoint);
@@ -3248,6 +3253,7 @@ _registerModule('Tap', {
 		}
 	}
 });
+
 
 /*>>tap*/
 
