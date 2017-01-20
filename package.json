@@ -32,6 +32,7 @@
   },
   "homepage": "http://photoswipe.com",
   "main": "dist/photoswipe.js",
+  "style": "dist/photoswipe.css",
   "keywords": [
     "gallery",
     "lightbox",
