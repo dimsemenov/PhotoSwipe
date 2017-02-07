@@ -92,8 +92,8 @@ var _isOpen,
 	_modules = [],
 	_requestAF,
 	_cancelAF,
-	_initalClassName,
-	_initalWindowScrollY,
+	_initialClassName,
+	_initialWindowScrollY,
 	_oldIE,
 	_currentWindowScrollY,
 	_features,
@@ -514,7 +514,7 @@ var publicMethods = {
 		self.template = template; // root DOM element of PhotoSwipe
 		self.bg = framework.getChildByClass(template, 'pswp__bg');
 
-		_initalClassName = template.className;
+		_initialClassName = template.className;
 		_isOpen = true;
 				
 		_features = framework.detectFeatures();
@@ -591,7 +591,7 @@ var publicMethods = {
 
 		if(_currentWindowScrollY === undefined) {
 			_shout('initialLayout');
-			_currentWindowScrollY = _initalWindowScrollY = framework.getScrollY();
+			_currentWindowScrollY = _initialWindowScrollY = framework.getScrollY();
 		}
 		
 		// add classes to root element of PhotoSwipe
@@ -688,7 +688,7 @@ var publicMethods = {
 		}
 		
 		template.setAttribute('aria-hidden', 'true');
-		template.className = _initalClassName;
+		template.className = _initialClassName;
 
 		if(_updateSizeInterval) {
 			clearInterval(_updateSizeInterval);
@@ -905,7 +905,7 @@ var publicMethods = {
 		_shout('beforeResize'); // even may be used for example to switch image sources
 
 
-		// don't re-calculate size on inital size update
+		// don't re-calculate size on initial size update
 		if(_containerShiftIndex !== undefined) {
 
 			var holder,

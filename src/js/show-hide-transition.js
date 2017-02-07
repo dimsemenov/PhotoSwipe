@@ -87,7 +87,7 @@ var _showOrHideTimeout,
 			if(!out) {
 				_currZoomLevel = thumbBounds.w / item.w;
 				_panOffset.x = thumbBounds.x;
-				_panOffset.y = thumbBounds.y - _initalWindowScrollY;
+				_panOffset.y = thumbBounds.y - _initialWindowScrollY;
 
 				self[fadeEverything ? 'template' : 'bg'].style.opacity = 0.001;
 				_applyCurrentZoomPan();
@@ -142,7 +142,7 @@ var _showOrHideTimeout,
 							y: _panOffset.y
 						},
 						initialZoomLevel = _currZoomLevel,
-						initalBgOpacity = _bgOpacity,
+						initialBgOpacity = _bgOpacity,
 						onUpdate = function(now) {
 							
 							if(now === 1) {
@@ -159,7 +159,7 @@ var _showOrHideTimeout,
 							if(fadeEverything) {
 								template.style.opacity = 1 - now;
 							} else {
-								_applyBgOpacity( initalBgOpacity - now * initalBgOpacity );
+								_applyBgOpacity( initialBgOpacity - now * initialBgOpacity );
 							}
 						};
 

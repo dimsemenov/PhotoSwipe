@@ -32,7 +32,7 @@ var PhotoSwipeUI_Default =
 		_shareButton,
 		_shareModal,
 		_shareModalHidden = true,
-		_initalCloseOnScrollValue,
+		_initialCloseOnScrollValue,
 		_isIdle,
 		_listen,
 
@@ -828,7 +828,7 @@ var PhotoSwipeUI_Default =
 		if(api) {
 			api.enter = function() { 
 				// disable close-on-scroll in fullscreen
-				_initalCloseOnScrollValue = _options.closeOnScroll; 
+				_initialCloseOnScrollValue = _options.closeOnScroll;
 				_options.closeOnScroll = false; 
 
 				if(this.enterK === 'webkitRequestFullscreen') {
@@ -838,7 +838,7 @@ var PhotoSwipeUI_Default =
 				}
 			};
 			api.exit = function() { 
-				_options.closeOnScroll = _initalCloseOnScrollValue;
+				_options.closeOnScroll = _initialCloseOnScrollValue;
 
 				return document[this.exitK](); 
 

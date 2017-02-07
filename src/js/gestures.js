@@ -750,12 +750,12 @@ var _gestureStartTime,
 			if(opacityRatio < _options.verticalDragRange) {
 				self.close();
 			} else {
-				var initalPanY = _panOffset.y,
+				var initialPanY = _panOffset.y,
 					initialBgOpacity = _bgOpacity;
 
 				_animateProp('verticalDrag', 0, 1, 300, framework.easing.cubic.out, function(now) {
 					
-					_panOffset.y = (self.currItem.initialPosition.y - initalPanY) * now + initalPanY;
+					_panOffset.y = (self.currItem.initialPosition.y - initialPanY) * now + initialPanY;
 
 					_applyBgOpacity(  (1 - initialBgOpacity) * now + initialBgOpacity );
 					_applyCurrentZoomPan();
