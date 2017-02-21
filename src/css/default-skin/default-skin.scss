@@ -237,11 +237,13 @@
 		
 		&:first-child {
 			/* round corners on the first/last list item */
-			border-radius: 2px 2px 0 0;
+			border-bottom-left-radius: 2px;
+			border-bottom-right-radius: 2px;
 		}
 		
 		&:last-child {
-			border-radius: 0 0 2px 2px;
+			border-top-left-radius: 2px;
+			border-top-right-radius: 2px;
 		}
 	}
 }
