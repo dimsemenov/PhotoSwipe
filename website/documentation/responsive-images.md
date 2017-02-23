@@ -136,5 +136,7 @@ gallery.init();
 
 
 
+
+
 Know how this guide can be improved? [Suggest an edit!](https://github.com/dimsemenov/PhotoSwipe/blob/master/website/documentation/responsive-images.md)
 
