@@ -26,6 +26,11 @@ var framework = {
 		}
 		return el;
 	},
+	resetEl: function(el) {
+		while(el.firstChild) {
+			el.removeChild(el.firstChild);
+		}
+	},
 	getScrollY: function() {
 		var yOffset = window.pageYOffset;
 		return yOffset !== undefined ? yOffset : document.documentElement.scrollTop;
