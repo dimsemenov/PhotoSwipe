@@ -370,10 +370,14 @@ var _isOpen,
 			keydownAction = 'close';
 		} else if(_options.arrowKeys) {
 			if(e.keyCode === 37) {
-				keydownAction = 'prev';
-			} else if(e.keyCode === 39) { 
-				keydownAction = 'next';
-			}
+                        if(_options.loop || _currentItemIndex !== 0) {
+                              keydownAction = 'prev';
+                        }
+                  } else if(e.keyCode === 39) {
+                        if(_options.loop || _currentItemIndex < _getNumItems() - 1) {
+                              keydownAction = 'next';
+                        }
+                  }
 		}
 
 		if(keydownAction) {
