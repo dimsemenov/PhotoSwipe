@@ -424,11 +424,11 @@ _registerModule('Controller', {
 				if(framework.features.transform) {
 					
 					var placeholderClassName = 'pswp__img pswp__img--placeholder'; 
-					placeholderClassName += (item.msrc ? '' : ' pswp__img--placeholder--blank');
+					placeholderClassName += (item.src ? '' : ' pswp__img--placeholder--blank');
 
-					var placeholder = framework.createEl(placeholderClassName, item.msrc ? 'img' : '');
-					if(item.msrc) {
-						placeholder.src = item.msrc;
+					var placeholder = framework.createEl(placeholderClassName, item.src ? 'img' : '');
+					if(item.src) {
+						placeholder.src = item.src;
 					}
 					
 					_setImageSize(item, placeholder);
