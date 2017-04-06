@@ -154,6 +154,26 @@ var _getItemAt,
 		var onComplete = function() {
 			item.loading = false;
 			item.loaded = true;
+			var shouldUpdateSize = false;
+
+			if (_options.useNaturalDimensionsOverride && item.naturalDimensionsSet !== true) {
+				// Attempt to use the actual width/height of the image regardless of what was initially specified.
+				item.naturalDimensionsSet = true;
+
+				if (this.naturalWidth && item.w !== this.naturalWidth) {
+					item.w = this.naturalWidth;
+					shouldUpdateSize = true;
+				}
+
+				if (this.naturalHeight && item.h !== this.naturalHeight) {
+					item.h = this.naturalHeight;
+					shouldUpdateSize = true;
+				}
+
+				if (shouldUpdateSize) {
+					self.updateSize(true);
+				}
+			}
 
 			if(item.loadComplete) {
 				item.loadComplete(item);

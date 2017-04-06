@@ -29,6 +29,8 @@ var _options = {
 	arrowKeys: true,
 	mainScrollEndFriction: 0.35,
 	panEndFriction: 0.35,
+	// Allows for overriding the passed in width/height values with the actual image width/height once it has downloaded.
+	useNaturalDimensionsOverride: false,
 	isClickableElement: function(el) {
         return el.tagName === 'A';
     },
