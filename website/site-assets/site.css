@@ -298,7 +298,7 @@ img {
 
 
 .video {
-  width: 100%%;
+  width: 100%;
   margin: 0 0 24px 0;
 }
 .video__container {
@@ -661,7 +661,7 @@ img.img--with_border {
   /*color: rgba(255, 255, 255, 0.8);*/
 }
 .row--modules span {
-  font-wight:600;
+  font-weight:600;
   border-left:5px solid #FFF;
   padding-left:5px;
   margin-left:-10px;
