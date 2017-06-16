@@ -1,0 +1,66 @@
+<!-- Elemento raiz do PhotoSwipe. Deve ter a classe pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- 'Background' do PhotoSwipe. 
+         É um elemento separado, já que animar a opacidade é mais rápido que o rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Envoltório dos 'slides' com 'overflow:hidden'. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- 'Container' contendo os 'slides'.
+            O PhotoSwipe mantém somente 3 deles no DOM para poupar memória.
+            Não modifique estes 3 elementos '.pswp__item', dados são adicionados posteriormente. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Interface padrão (PhotoSwipeUI_Default) sobre a área de 'slides'. Pode ser alterada. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Os controles são auto-explicativos. Sua ordem pode ser alterada. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Fechar (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Compartilhar"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Alternar tela cheia"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Demo do 'preloader' demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- o elemento receberá a classe pswp__preloader--active quando o 'preloader' estiver rodando -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Anterior (seta à esquerda)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Próximo (seta à direita)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
