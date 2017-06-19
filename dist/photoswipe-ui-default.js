@@ -1,4 +1,4 @@
-/*! PhotoSwipe Default UI - 4.1.2 - 2017-04-05
+/*! PhotoSwipe Default UI - 4.1.2 - 2017-06-19
 * http://photoswipe.com
 * Copyright (c) 2017 Dmitry Semenov; */
 /**
@@ -574,7 +574,8 @@ var PhotoSwipeUI_Default =
 		_listen('preventDragEvent', function(e, isDown, preventObj) {
 			var t = e.target || e.srcElement;
 			if(
-				t && 
+				t &&
+                t.nodeType === 1 &&
 				t.getAttribute('class') && e.type.indexOf('mouse') > -1 && 
 				( t.getAttribute('class').indexOf('__caption') > 0 || (/(SMALL|STRONG|EM)/i).test(t.tagName) ) 
 			) {
