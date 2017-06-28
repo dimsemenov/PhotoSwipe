@@ -153,7 +153,7 @@
   left: 0;
   padding: 10px;
   position: absolute;
-  z-index: 1600;
+  z-index: 15100;
   opacity: 0;
   -webkit-transition: opacity 0.25s ease-out;
           transition: opacity 0.25s ease-out;
@@ -164,7 +164,7 @@
   display: none; }
 
 .pswp__share-tooltip {
-  z-index: 1620;
+  z-index: 15120;
   position: absolute;
   background: #FFF;
   top: 56px;
@@ -417,7 +417,7 @@ a.pswp__share--download:hover {
   -webkit-font-smoothing: auto;
   visibility: visible;
   opacity: 1;
-  z-index: 1550; }
+  z-index: 15050; }
 
 /* top black bar with buttons and "1 of X" indicator */
 .pswp__top-bar {
