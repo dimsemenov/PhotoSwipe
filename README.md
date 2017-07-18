@@ -29,6 +29,7 @@ JavaScript image gallery for mobile and desktop.
 - [Kirby CMS plugin](https://github.com/SiteMarina/guggenheim).
 - [Drupal CMF module](https://www.drupal.org/project/photoswipe).
 - [ProcessWire CMS module](https://github.com/blynx/MarkupProcesswirePhotoswipe).
+- [SPIP CMS module](https://plugins.spip.net/photoswipe.html).
 
 Coded something useful? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I’ll post a link to it here.
 
