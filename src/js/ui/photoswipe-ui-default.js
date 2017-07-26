@@ -363,6 +363,9 @@ var PhotoSwipeUI_Default =
 			} else {
 				gap.top = gap.bottom = 0;
 			}
+
+      item.hGap.left = bars.left;
+      item.hGap.right = bars.right;
 		},
 		_setupIdle = function() {
 			// Hide controls when mouse is used
