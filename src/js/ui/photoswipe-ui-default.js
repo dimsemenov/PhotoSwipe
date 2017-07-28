@@ -336,10 +336,10 @@ var PhotoSwipeUI_Default =
 		},
 		_applyNavBarGaps = function(item) {
 			var gap = item.vGap;
+      var bars = _options.barsSize;
 
-			if( _fitControlsInViewport() ) {
-				
-				var bars = _options.barsSize; 
+      if( _fitControlsInViewport() ) {
+
 				if(_options.captionEl && bars.bottom === 'auto') {
 					if(!_fakeCaptionContainer) {
 						_fakeCaptionContainer = framework.createEl('pswp__caption pswp__caption--fake');
