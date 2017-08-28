@@ -203,6 +203,7 @@ module.exports = function(grunt) {
         newContents = this.data.banner;
 
     newContents += "(function (root, factory) { \n"+
+      "\tif (root === undefined && window !== undefined) root = window; \n" +
       "\tif (typeof define === 'function' && define.amd) {\n" +
         "\t\tdefine(factory);\n" +
       "\t} else if (typeof exports === 'object') {\n" +
