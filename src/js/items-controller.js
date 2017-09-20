@@ -131,6 +131,7 @@ var _getItemAt,
 
 			item.imageAppended = true;
 			_setImageSize(item, img, (item === self.currItem && _renderMaxResolution) );
+			_setImageAltText(item, img);
 			
 			baseDiv.appendChild(img);
 
@@ -183,6 +184,11 @@ var _getItemAt,
 			item.container.innerHTML = _options.errorMsg.replace('%url%',  item.src );
 			return true;
 			
+		}
+	},
+	_setImageAltText = function(item, img) {
+		if(item.alt || item.alt === "") {
+			img.alt = item.alt;
 		}
 	},
 	_setImageSize = function(item, img, maxRes) {
@@ -432,6 +438,7 @@ _registerModule('Controller', {
 					}
 					
 					_setImageSize(item, placeholder);
+					_setImageAltText(item, placeholder);
 
 					baseDiv.appendChild(placeholder);
 					item.placeholder = placeholder;
@@ -467,6 +474,7 @@ _registerModule('Controller', {
 				img.style.opacity = 1;
 				img.src = item.src;
 				_setImageSize(item, img);
+				_setImageAltText(item, img);
 				_appendImage(index, item, baseDiv, img, true);
 			}
 			
