@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/dimsemenov/PhotoSwipe.svg)](https://travis-ci.org/dimsemenov/PhotoSwipe) 
 [![devDependency Status](https://david-dm.org/dimsemenov/PhotoSwipe/dev-status.svg)](https://david-dm.org/dimsemenov/PhotoSwipe#info=devDependencies)
 [![Flattr](http://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/3698358/dimsemenovPhotoSwipe-on-GitHub)
+[![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/photoswipe/badge?style=rounded)](https://www.jsdelivr.com/package/npm/photoswipe)
 
 JavaScript image gallery for mobile and desktop. 
 
