@@ -140,10 +140,10 @@ module.exports = function(grunt) {
           'dist/photoswipe.min.js': ['dist/photoswipe.js'],
           'dist/photoswipe-ui-default.min.js': ['dist/photoswipe-ui-default.js']
         },
-        preserveComments: 'some'
+        preserveComments: /^!/i
       },
       options: {
-        preserveComments: 'some'
+        preserveComments: /^!/i
       }
     },
 

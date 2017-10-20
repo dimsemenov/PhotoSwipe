@@ -99,6 +99,8 @@ var _isOpen,
 	_features,
 	_windowVisibleSize = {},
 	_renderMaxResolution = false,
+	_orientationChangeTimeout,
+
 
 	// Registers PhotoSWipe module (History, Controller ...)
 	_registerModule = function(name, module) {
@@ -246,13 +248,13 @@ var _isOpen,
 			framework.bind(document, 'mousemove', _onFirstMouseMove);
 		}
 
-		framework.bind(window, 'resize scroll', self);
+		framework.bind(window, 'resize scroll orientationchange', self);
 
 		_shout('bindEvents');
 	},
 
 	_unbindEvents = function() {
-		framework.unbind(window, 'resize', self);
+		framework.unbind(window, 'resize scroll orientationchange', self);
 		framework.unbind(window, 'scroll', _globalEventHandlers.scroll);
 		framework.unbind(document, 'keydown', self);
 		framework.unbind(document, 'mousemove', _onFirstMouseMove);
@@ -264,6 +266,8 @@ var _isOpen,
 		if(_isDragging) {
 			framework.unbind(window, _upMoveEvents, self);
 		}
+
+		clearTimeout(_orientationChangeTimeout);
 
 		_shout('unbindEvents');
 	},
@@ -543,6 +547,18 @@ var publicMethods = {
 		// Setup global events
 		_globalEventHandlers = {
 			resize: self.updateSize,
+
+			// Fixes: iOS 10.3 resize event
+			// does not update scrollWrap.clientWidth instantly after resize
+			// https://github.com/dimsemenov/PhotoSwipe/issues/1315
+			orientationchange: function() {
+				clearTimeout(_orientationChangeTimeout);
+				_orientationChangeTimeout = setTimeout(function() {
+					if(_viewportSize.x !== self.scrollWrap.clientWidth) {
+						self.updateSize();
+					}
+				}, 500);
+			},
 			scroll: _updatePageScrollOffset,
 			keydown: _onKeyDown,
 			click: _onGlobalClick
