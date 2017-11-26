@@ -30,7 +30,11 @@ var _showOrHideTimeout,
 			thumbBounds = _options.getThumbBoundsFn && _options.getThumbBoundsFn(_currentItemIndex);
 		}
 
-		var duration = out ? _options.hideAnimationDuration : _options.showAnimationDuration;
+		// Don't animate "out" when picture was dragged vertically
+		// otherwise use configured in/out duration
+		var duration;
+		if(_verticalDragInitiated && out) duration = 0;
+		else duration = out ? _options.hideAnimationDuration : _options.showAnimationDuration;
 
 		var onComplete = function() {
 			_stopAnimation('initialZoom');
