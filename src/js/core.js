@@ -467,6 +467,26 @@ var _animations = {},
 			}
 		};
 		animloop();
+	},
+	_fixCurrentIndex = function (value) {
+		_prevItemIndex = value;
+		_currentItemIndex = value;
+	},
+	_addItems = function (flag, items) {
+		if (_mainScrollAnimating) {
+			// only add or remove items when _mainScrollAnimating is not true to avoid index error
+			return false;
+		}
+		var func = flag === 'prepend' ? Array.prototype.unshift : Array.prototype.push;
+
+		func.apply(self.items, items);
+		if (flag === 'prepend') {
+			_fixCurrentIndex(_currentItemIndex + items.length);
+		}
+
+		// force updates the content of slides which are not current
+		self.updateContent(true, true);
+		return true;
 	};
 	
 
@@ -493,6 +513,33 @@ var publicMethods = {
 	},	
 	isZooming: function() {
 		return _isZooming;
+	},
+	prependItems: function (items) {
+		return _addItems('prepend', items);
+	},
+	appendItems: function (items) {
+		return _addItems('append', items);
+	},
+	removeItems: function (start, deleteCount) {
+		if (_mainScrollAnimating) {
+			return false;
+		}
+
+		const hasCurrItemDeleted = start <= _currentItemIndex && start + deleteCount >= _currentItemIndex;
+
+		self.items.splice(start, deleteCount);
+		if (start <= _currentItemIndex) {
+			_fixCurrentIndex(Math.max(_currentItemIndex - deleteCount, 0));
+		}
+
+		// updates the content of slides
+		if (hasCurrItemDeleted) {
+			self.invalidateCurrItems();
+			self.updateSize(true);
+		} else {
+			self.updateContent(true, true);
+		}
+		return true;
 	},
 	setScrollOffset: function(x,y) {
 		_offset.x = x;
@@ -886,7 +933,64 @@ var publicMethods = {
 		
 	},
 
+	updateContent: function(force, ignoreCurrItem) {
+		// with ignoreCurrItem true, you can avoid the zooming/scaling state change of current item
+		// don't re-calculate size on inital size update
+		if(_containerShiftIndex !== undefined) {
 
+			var holder,
+				item,
+				hIndex;
+
+			for(var i = 0; i < NUM_HOLDERS; i++) {
+				holder = _itemHolders[i];
+				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, holder.el.style);
+
+				hIndex = _currentItemIndex+i-1;
+
+				if(_options.loop && _getNumItems() > 2) {
+					hIndex = _getLoopedId(hIndex);
+				}
+
+				// update zoom level on items and refresh source (if needsUpdate)
+				item = _getItemAt( hIndex );
+
+				// update items which are not current
+				if (ignoreCurrItem && self.currItem === holder.item) {
+					continue;
+				}
+
+				// re-render gallery item if `needsUpdate`,
+				// or doesn't have `bounds` (entirely new slide object)
+				if( item && (_itemsNeedUpdate || item.needsUpdate || !item.bounds) ) {
+
+					self.cleanSlide( item );
+
+					self.setContent( holder, hIndex );
+
+					// if ignoreCurrItem is true, then skip updateCurrZoomItem
+					// if "center" slide
+					if(!ignoreCurrItem && i === 1) {
+						self.currItem = item;
+						self.updateCurrZoomItem(true);
+					}
+
+					item.needsUpdate = false;
+
+				} else if(holder.index === -1 && hIndex >= 0) {
+					// add content first time
+					self.setContent( holder, hIndex );
+				}
+				if(item && item.container) {
+					_calculateItemSize(item, _viewportSize);
+					_setImageSize(item);
+					_applyZoomPanToItem( item );
+				}
+
+			}
+			_itemsNeedUpdate = false;
+		}
+	},
 
 	updateSize: function(force) {
 		
@@ -920,56 +1024,7 @@ var publicMethods = {
 
 		_shout('beforeResize'); // even may be used for example to switch image sources
 
-
-		// don't re-calculate size on inital size update
-		if(_containerShiftIndex !== undefined) {
-
-			var holder,
-				item,
-				hIndex;
-
-			for(var i = 0; i < NUM_HOLDERS; i++) {
-				holder = _itemHolders[i];
-				_setTranslateX( (i+_containerShiftIndex) * _slideSize.x, holder.el.style);
-
-				hIndex = _currentItemIndex+i-1;
-
-				if(_options.loop && _getNumItems() > 2) {
-					hIndex = _getLoopedId(hIndex);
-				}
-
-				// update zoom level on items and refresh source (if needsUpdate)
-				item = _getItemAt( hIndex );
-
-				// re-render gallery item if `needsUpdate`,
-				// or doesn't have `bounds` (entirely new slide object)
-				if( item && (_itemsNeedUpdate || item.needsUpdate || !item.bounds) ) {
-
-					self.cleanSlide( item );
-					
-					self.setContent( holder, hIndex );
-
-					// if "center" slide
-					if(i === 1) {
-						self.currItem = item;
-						self.updateCurrZoomItem(true);
-					}
-
-					item.needsUpdate = false;
-
-				} else if(holder.index === -1 && hIndex >= 0) {
-					// add content first time
-					self.setContent( holder, hIndex );
-				}
-				if(item && item.container) {
-					_calculateItemSize(item, _viewportSize);
-					_setImageSize(item);
-					_applyZoomPanToItem( item );
-				}
-				
-			}
-			_itemsNeedUpdate = false;
-		}	
+		self.updateContent(force, false);
 
 		_startZoomLevel = _currZoomLevel = self.currItem.initialZoomLevel;
 		_currPanBounds = self.currItem.bounds;
