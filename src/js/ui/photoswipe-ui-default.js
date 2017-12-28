@@ -72,6 +72,7 @@ var PhotoSwipeUI_Default =
 			tapToToggleControls: true,
 
 			clickToCloseNonZoomable: true,
+			clickToShowNextNonZoomable: false,
 
 			shareButtons: [
 				{id:'facebook', label:'Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
@@ -734,6 +735,8 @@ var PhotoSwipeUI_Default =
 				if(pswp.getZoomLevel() === 1 && pswp.getZoomLevel() <= pswp.currItem.fitRatio) {
 					if(_options.clickToCloseNonZoomable) {
 						pswp.close();
+					} else if (_options.clickToShowNextNonZoomable) {
+						pswp.next();
 					}
 				} else {
 					pswp.toggleDesktopZoom(e.detail.releasePoint);
