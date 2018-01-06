@@ -105,6 +105,8 @@ You can add HTML code dynamically via JS (directly before the initialization), o
 
 				<button class="pswp__button pswp__button--share" title="Share"></button>
 
+				<button class="pswp__button pswp__button--download" title="Download"></button>
+
 				<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
 
 				<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
