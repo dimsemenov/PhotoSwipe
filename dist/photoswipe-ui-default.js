@@ -1,6 +1,6 @@
-/*! PhotoSwipe Default UI - 4.1.2 - 2017-04-05
+/*! PhotoSwipe Default UI - 4.1.2 - 2018-01-06
 * http://photoswipe.com
-* Copyright (c) 2017 Dmitry Semenov; */
+* Copyright (c) 2018 Dmitry Semenov; */
 /**
 *
 * UI on top of main sliding area (caption, arrows, close button, etc.).
@@ -35,6 +35,7 @@ var PhotoSwipeUI_Default =
 		_shareButton,
 		_shareModal,
 		_shareModalHidden = true,
+		_downloadButton,
 		_initalCloseOnScrollValue,
 		_isIdle,
 		_listen,
@@ -67,6 +68,7 @@ var PhotoSwipeUI_Default =
 			fullscreenEl: true,
 			zoomEl: true,
 			shareEl: true,
+			downloadEl: true,
 			counterEl: true,
 			arrowEl: true,
 			preloaderEl: true,
@@ -165,6 +167,16 @@ var PhotoSwipeUI_Default =
 				_togglePswpClass(_controls, 'ui--one-slide', hasOneSlide);
 				_galleryHasOneSlide = hasOneSlide;
 			}
+		},
+		_downloadFile = function() {
+			var link = document.createElement('A');
+			link.setAttribute('href', pswp.currItem.downloadURL || pswp.currItem.src || '');
+			link.setAttribute('target', '_blank');
+			link.setAttribute('download', '');
+
+			_downloadButton.appendChild(link);
+			link.click();
+			_downloadButton.removeChild(link);
 		},
 		_toggleShareModalClass = function() {
 			_togglePswpClass(_shareModal, 'share-modal--hidden', _shareModalHidden);
@@ -444,6 +456,14 @@ var PhotoSwipeUI_Default =
 			onTap: function() {
 				_toggleShareModal();
 			} 
+		},
+		{
+			name: 'button--download',
+			option: 'downloadEl',
+			onInit: function(el) {
+				_downloadButton = el;
+			},
+			onTap: _downloadFile
 		},
 		{ 
 			name: 'button--zoom', 

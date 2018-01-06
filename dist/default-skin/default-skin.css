@@ -72,6 +72,9 @@
 .pswp__button--share {
   background-position: -44px -44px; }
 
+.pswp__button--download {
+  background-position: -176px 0; }
+
 .pswp__button--fs {
   display: none; }
 
