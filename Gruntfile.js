@@ -120,7 +120,6 @@ module.exports = function(grunt) {
     copy: {
       dev: {
         files: [
-          {src: ['src/css/default-skin/default-skin.svg'], dest: 'dist/default-skin/default-skin.svg'},
           {src: ['src/css/default-skin/default-skin.png'], dest: 'dist/default-skin/default-skin.png'},
           {src: ['src/css/default-skin/preloader.gif'], dest: 'dist/default-skin/preloader.gif'},
           {expand: true, src: ['dist/**'], dest: '_site/'}
@@ -167,7 +166,7 @@ module.exports = function(grunt) {
     svgmin: {
       dist: {
         files: {
-          'src/css/default-skin/default-skin.svg': 'src/css/default-skin/default-skin.svg'
+	  'dist/default-skin/default-skin.svg': 'src/css/default-skin/default-skin.svg'
         }
       }
     },
@@ -277,9 +276,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-svgmin');
 
   // Default task.
-  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'jekyll:dev']);
+  grunt.registerTask('default', ['sass', 'autoprefixer', 'pswpbuild','uglify', 'copy', 'svgmin', 'jekyll:dev']);
 
-  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
+  grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'svgmin', 'jekyll:production']);
   grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify']);
   grunt.registerTask('hint', ['jshint']);
   grunt.registerTask('awsupload', ['aws_s3']);
