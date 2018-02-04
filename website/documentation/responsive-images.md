@@ -129,7 +129,7 @@ gallery.init();
 ```
 
 - You are not obliged to use structure of slide object that looks exactly like above (with `mediumImage` and `largeImage` objects). For example, you may store size of image directly in image filename (`/path/to/large-image-600x500.jpg`) and then parse size in `gettingData` event. Only `item.src`, `item.w`, and `item.h` properties are read by PhotoSwipe and only after `gettingData` event is fired.
-- The larger image, the less smooth animations will look.
+- The larger the image, the less smooth animations will look.
 - Try to avoid serving images just based on devicePixelRatio or just based on viewport size, always combine both.
 - Feel free to use `srcset` on thumbnails that open PhotoSwipe.
 
