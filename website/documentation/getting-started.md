@@ -101,13 +101,13 @@ You can add HTML code dynamically via JS (directly before the initialization), o
 				
 				<div class="pswp__counter"></div>
 
-				<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+				<div class="pswp__button pswp__button--close" title="Close (Esc)"></div>
 
-				<button class="pswp__button pswp__button--share" title="Share"></button>
+				<div class="pswp__button pswp__button--share" title="Share"></div>
 
-				<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+				<div class="pswp__button pswp__button--fs" title="Toggle fullscreen"></div>
 
-				<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+				<div class="pswp__button pswp__button--zoom" title="Zoom in/out"></div>
 
 				<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
 				<!-- element will get class pswp__preloader--active when preloader is running -->
@@ -124,11 +124,9 @@ You can add HTML code dynamically via JS (directly before the initialization), o
 				<div class="pswp__share-tooltip"></div> 
 	        </div>
 
-			<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-			</button>
+			<div class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></div>
 			
-			<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-			</button>
+			<div class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></div>
 
 			<div class="pswp__caption">
 				<div class="pswp__caption__center"></div>
