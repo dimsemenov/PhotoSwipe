@@ -163,12 +163,16 @@ var pswpElement = document.querySelectorAll('.pswp')[0];
 // build items array
 var items = [
 	{
+		// full image to be displayed
 		src: 'https://placekitten.com/600/400',
+		// thumbnail - this image is used for the animated transition of opening the gallery
+		msrc: 'https://placekitten.com/300/200',
 		w: 600,
 		h: 400
 	},
 	{
 		src: 'https://placekitten.com/1200/900',
+		msrc: 'https://placekitten.com/600/450',
 		w: 1200,
 		h: 900
 	}
