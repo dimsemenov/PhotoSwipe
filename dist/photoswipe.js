@@ -2536,7 +2536,9 @@ var _showOrHideTimeout,
 			thumbBounds = _options.getThumbBoundsFn && _options.getThumbBoundsFn(_currentItemIndex);
 		}
 
-		var duration = out ? _options.hideAnimationDuration : _options.showAnimationDuration;
+		var duration;
+		if((_verticalDragInitiated || _zoomStarted) && out) duration = 0;
+		else duration = out ? _options.hideAnimationDuration : _options.showAnimationDuration;
 
 		var onComplete = function() {
 			_stopAnimation('initialZoom');
