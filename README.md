@@ -10,6 +10,7 @@ JavaScript image gallery for mobile and desktop.
 - [Demo and script home page](http://photoswipe.com).
 - [NPM](https://www.npmjs.com/package/photoswipe) `npm install photoswipe`.
 - Bower `bower install photoswipe`.
+- [Yarn](https://yarnpkg.com/en/package/photoswipe) `yarn add photoswipe`.
 
 ## Location of files
 
