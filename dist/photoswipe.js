@@ -2893,8 +2893,10 @@ var _getItemAt,
 			item.placeholder.style.height = h + 'px';
 		}
 
-		img.style.width = w + 'px';
-		img.style.height = h + 'px';
+		if(img && img.style) {
+			img.style.width = w + 'px';
+			img.style.height = h + 'px';
+		}
 	},
 	_appendImagesPool = function() {
 
