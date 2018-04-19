@@ -110,8 +110,7 @@ var PhotoSwipeUI_Default =
 
 			e = e || window.event;
 
-			//Micorassist A11Y - check for a11y option
-			//if(_options.timeToIdle && _options.mouseUsed && !_isIdle) {
+			//check for a11y option to disbale mouseUsed behavior
 			if(_options.timeToIdle && _options.mouseUsed && !_isIdle && !_options.a11y) {
 				// reset idle timer
 				_onIdleMouseMove();
@@ -373,7 +372,7 @@ var PhotoSwipeUI_Default =
 			// Hide controls when mouse is used
 			if(_options.timeToIdle) {
 				_listen('mouseUsed', function() {
-					//Microassist -- A11Y added following if around exiting code
+					//check for a11y option before binding mouseUsed behavior events
 					if(!_options.a11y){
 						framework.bind(document, 'mousemove', _onIdleMouseMove);
 						framework.bind(document, 'mouseout', _onMouseLeaveWindow);
@@ -540,12 +539,12 @@ var PhotoSwipeUI_Default =
 			loopThroughChildElements( topBar.children );
 		}
 		
-		//MicroAssist -- A11Y START
+		//top bar button wrapper used for visual placement
 		var topBarBtnWrap = framework.getChildByClass(_controls, 'pswp__top-bar-btn-wrap');
 		if(topBarBtnWrap) {
 			loopThroughChildElements( topBarBtnWrap.children );
 		}
-		//MicroAssist -- A11Y END
+		
 	};
 
 

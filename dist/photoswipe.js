@@ -323,7 +323,7 @@ var _options = {
 	showAnimationDuration: 333,
 	showHideOpacity: false,
 	focus: true,
-	a11y: true, //Microassist A11Y option
+	a11y: true,
 	escKey: true,
 	arrowKeys: true,
 	mainScrollEndFriction: 0.35,
@@ -919,7 +919,7 @@ var publicMethods = {
 			rootClasses += 'pswp--animate_opacity ';
 		}
 		rootClasses += _likelyTouchDevice ? 'pswp--touch' : 'pswp--notouch';
-		rootClasses += _options.a11y ? ' pswp--a11y' : ''; //Microassist A11Y - add a11y class
+		rootClasses += _options.a11y ? ' pswp--a11y' : '';
 		rootClasses += _features.animationName ? ' pswp--css_animation' : '';
 		rootClasses += _features.svg ? ' pswp--svg' : '';
 		framework.addClass(template, rootClasses);
@@ -989,7 +989,7 @@ var publicMethods = {
 		framework.addClass(template, 'pswp--visible');
 	},
 	
-	//Microassist - listener functions for A11Y Compliance Start
+	//listener functions for a11y compliance behaviors
 	a11y: function(){
 		_listen('afterInit', function() {
 			//Disable Background Elements
@@ -1040,7 +1040,7 @@ var publicMethods = {
 		});
 		
 		_listen('initialZoomInEnd', function() {
-				//Set focus to a visible element
+				//Set focus to a visible element in gallery
 				var _controlsEl, _topBarEl, _topBarBtnWrapEl;
 				_controlsEl = framework.getChildByClass(self.scrollWrap, 'pswp__ui');
 				_topBarEl = framework.getChildByClass(_controlsEl, 'pswp__top-bar');
@@ -1058,7 +1058,6 @@ var publicMethods = {
 			_options.mouseUsed = false;
 		});
 	},
-	//Microassist - A11Y END
 	
 	// Close the gallery, then destroy it
 	close: function() {

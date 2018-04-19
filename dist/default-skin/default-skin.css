@@ -97,7 +97,7 @@
   visibility: hidden; 
 }
 
-/* retain arrows when a11y active - Microassist */
+/* retain arrows when a11y active*/
 .pswp--touch.pswp--a11y .pswp__button--arrow--left,
 .pswp--touch.pswp--a11y .pswp__button--arrow--right {
   visibility: visible; 
