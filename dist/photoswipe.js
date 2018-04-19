@@ -323,6 +323,7 @@ var _options = {
 	showAnimationDuration: 333,
 	showHideOpacity: false,
 	focus: true,
+	a11y: true, //Microassist A11Y option
 	escKey: true,
 	arrowKeys: true,
 	mainScrollEndFriction: 0.35,
@@ -894,6 +895,7 @@ var publicMethods = {
 		}
 		
 		template.setAttribute('aria-hidden', 'false');
+		
 		if(_options.modal) {
 			if(!_isFixedPosition) {
 				template.style.position = 'absolute';
@@ -917,6 +919,7 @@ var publicMethods = {
 			rootClasses += 'pswp--animate_opacity ';
 		}
 		rootClasses += _likelyTouchDevice ? 'pswp--touch' : 'pswp--notouch';
+		rootClasses += _options.a11y ? ' pswp--a11y' : ''; //Microassist A11Y - add a11y class
 		rootClasses += _features.animationName ? ' pswp--css_animation' : '';
 		rootClasses += _features.svg ? ' pswp--svg' : '';
 		framework.addClass(template, rootClasses);
@@ -945,17 +948,24 @@ var publicMethods = {
 				// which causes lag during the animation, 
 				// that's why we delay it untill the initial zoom transition ends
 				template.focus();
+				window.console.log("Other focus");
 			}
 			 
 
 			_bindEvents();
 		});
-
+		
+		//Micoassist A11Y START
+		if(_options.a11y) {
+			self.a11y();
+		}
+		//Micoassist A11Y END
+		
 		// set content for center slide (first time)
 		self.setContent(_itemHolders[1], _currentItemIndex);
 		
 		self.updateCurrItem();
-
+		
 		_shout('afterInit');
 
 		if(!_isFixedPosition) {
@@ -978,7 +988,78 @@ var publicMethods = {
 
 		framework.addClass(template, 'pswp--visible');
 	},
+	
+	//Microassist - listener functions for A11Y Compliance Start
+	a11y: function(){
+		_listen('afterInit', function() {
+			//Disable Background Elements
+			var a, btn, inp, bodyEl, slctEl, txtEl, itemArr;
+			bodyEl = document.getElementsByTagName('body')[0];
+			a = bodyEl.getElementsByTagName('a');
+			btn = bodyEl.getElementsByTagName('button');
+			inp = bodyEl.getElementsByTagName('input');
+			slctEl = bodyEl.getElementsByTagName('select');
+			txtEl = bodyEl.getElementsByTagName('textarea');
+			itemArr = [a, btn, inp, slctEl, txtEl ];
+			for (var j=0; j < itemArr.length; j++){
+				for (var i = 0; i < itemArr[j].length; i++) {
+					var item = itemArr[j][i];
+					if(item.classList.contains('photoswipe') || item.classList.value.indexOf('pswp') > -1){
+					}else{
+						item.setAttribute('tabindex', '-1');
+						item.setAttribute('aria-hidden', 'true');
+					}
+				}
+			}
+		});
+		
+		_listen('destroy', function() {
+			//Enable background elements
+			var a, btn, inp, bodyEl, slctEl, txtEl, itemArr;
+			bodyEl = document.getElementsByTagName('body')[0];
+			a = bodyEl.getElementsByTagName('a');
+			btn = bodyEl.getElementsByTagName('button');
+			inp = bodyEl.getElementsByTagName('input');
+			slctEl = bodyEl.getElementsByTagName('select');
+			txtEl = bodyEl.getElementsByTagName('textarea');
+			itemArr = [a, btn, inp, slctEl, txtEl ];
+			for (var j=0; j < itemArr.length; j++){
+				for (var i = 0; i < itemArr[j].length; i++) {
+					var item = itemArr[j][i];
+					if(item.classList.contains('photoswipe') || item.classList.value.indexOf('pswp') > -1){
+					}else{
+						item.removeAttribute('tabindex');
+						item.removeAttribute('aria-hidden');
+					}	
+				}
+			}
+			//Set focus back to triggering element if set
+			if(typeof(document.pswpGalleryTrigger) !== 'undefined'){
+				document.pswpGalleryTrigger.focus();	
+			}
+		});
+		
+		_listen('initialZoomInEnd', function() {
+				//Set focus to a visible element
+				var _controlsEl, _topBarEl, _topBarBtnWrapEl;
+				_controlsEl = framework.getChildByClass(self.scrollWrap, 'pswp__ui');
+				_topBarEl = framework.getChildByClass(_controlsEl, 'pswp__top-bar');
+				_topBarBtnWrapEl = framework.getChildByClass(_topBarEl, 'pswp__top-bar-btn-wrap');
 
+				if(!_topBarBtnWrapEl){
+					framework.getChildByClass(_topBarEl, 'pswp__button--close').focus();
+				}else{
+					framework.getChildByClass(_topBarBtnWrapEl, 'pswp__button--close').focus();
+				}
+		});
+		
+		_listen('mouseUsed', function(){
+			framework.removeClass(template, 'pswp--has_mouse');
+			_options.mouseUsed = false;
+		});
+	},
+	//Microassist - A11Y END
+	
 	// Close the gallery, then destroy it
 	close: function() {
 		if(!_isOpen) {
@@ -991,6 +1072,7 @@ var publicMethods = {
 		_unbindEvents();
 
 		_showOrHide(self.currItem, null, true, self.destroy);
+					
 	},
 
 	// destroys the gallery (unbinds events, cleans up intervals and timeouts to avoid memory leaks)

@@ -207,6 +207,10 @@ Close gallery when dragging vertically and when image is not zoomed. Always `fal
 Option allows you to predefine if mouse was used or not. Some PhotoSwipe feature depend on it, for example default UI left/right arrows will be displayed only after mouse is used. If set to `false`, PhotoSwipe will start detecting when mouse is used by itself, `mouseUsed` event triggers when mouse is found.
 
 
+### `a11y` <code class="default">boolean</code> <code class="default">true</code>
+
+Option allows you enable some features for WCAG 2.0 accessibility compliance. If set to `true`: handles keyboard trapping within the photoswipe gallery controls while open; Sets focus on gallery open to a visible element; disables hiding of the arrow keys regardless or `mouseUsed` option value; Checks for document.pswpGalleryTrigger value to handle focus management on gallery close.
+
 ### `escKey` <code class="default">boolean</code> <code class="default">true</code>
 
 `esc` keyboard key to close PhotoSwipe. Option can be changed dynamically (`yourPhotoSwipeInstance.options.escKey = false;`).

@@ -101,13 +101,15 @@ You can add HTML code dynamically via JS (directly before the initialization), o
 				
 				<div class="pswp__counter"></div>
 
-				<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+				<div class="pswp__top-bar-btn-wrap">
+					<button class="pswp__button pswp__button--zoom" title="Zoom in/out"><span class="visually-hidden-text">Zoom in/out</span></button>
 
-				<button class="pswp__button pswp__button--share" title="Share"></button>
+					<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"><span class="visually-hidden-text">Toggle fullscreen</span></button>
 
-				<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+					<button class="pswp__button pswp__button--share" title="Share"><span class="visually-hidden-text">Share</span></button>
 
-				<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+					<button class="pswp__button pswp__button--close" title="Close (Esc)"><span class="visually-hidden-text">Close (Esc)</span></button>
+				</div>
 
 				<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
 				<!-- element will get class pswp__preloader--active when preloader is running -->
@@ -382,6 +384,8 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 		if(index >= 0) {
 			// open PhotoSwipe if valid index found
 			openPhotoSwipe( index, clickedGallery );
+			//A11Y set variable for clicked element for focus management
+			document.pswpGalleryTrigger = clickedListItem;
 		}
 		return false;
 	};

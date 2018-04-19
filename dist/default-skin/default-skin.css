@@ -94,7 +94,14 @@
 /* no arrows on touch screens */
 .pswp--touch .pswp__button--arrow--left,
 .pswp--touch .pswp__button--arrow--right {
-  visibility: hidden; }
+  visibility: hidden; 
+}
+
+/* retain arrows when a11y active - Microassist */
+.pswp--touch.pswp--a11y .pswp__button--arrow--left,
+.pswp--touch.pswp--a11y .pswp__button--arrow--right {
+  visibility: visible; 
+}
 
 /*
 	Arrow buttons hit area

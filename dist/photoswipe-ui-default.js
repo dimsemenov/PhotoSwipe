@@ -110,7 +110,9 @@ var PhotoSwipeUI_Default =
 
 			e = e || window.event;
 
-			if(_options.timeToIdle && _options.mouseUsed && !_isIdle) {
+			//Micorassist A11Y - check for a11y option
+			//if(_options.timeToIdle && _options.mouseUsed && !_isIdle) {
+			if(_options.timeToIdle && _options.mouseUsed && !_isIdle && !_options.a11y) {
 				// reset idle timer
 				_onIdleMouseMove();
 			}
@@ -371,16 +373,18 @@ var PhotoSwipeUI_Default =
 			// Hide controls when mouse is used
 			if(_options.timeToIdle) {
 				_listen('mouseUsed', function() {
+					//Microassist -- A11Y added following if around exiting code
+					if(!_options.a11y){
+						framework.bind(document, 'mousemove', _onIdleMouseMove);
+						framework.bind(document, 'mouseout', _onMouseLeaveWindow);
 					
-					framework.bind(document, 'mousemove', _onIdleMouseMove);
-					framework.bind(document, 'mouseout', _onMouseLeaveWindow);
-
-					_idleInterval = setInterval(function() {
-						_idleIncrement++;
-						if(_idleIncrement === 2) {
-							ui.setIdle(true);
-						}
-					}, _options.timeToIdle / 2);
+						_idleInterval = setInterval(function() {
+							_idleIncrement++;
+							if(_idleIncrement === 2) {
+								ui.setIdle(true);
+							}
+						}, _options.timeToIdle / 2);
+					}
 				});
 			}
 		},
@@ -428,7 +432,7 @@ var PhotoSwipeUI_Default =
 		{ 
 			name: 'share-modal', 
 			option: 'shareEl',
-			onInit: function(el) {  
+			onInit: function(el) {			
 				_shareModal = el;
 			},
 			onTap: function() {
@@ -535,6 +539,13 @@ var PhotoSwipeUI_Default =
 		if(topBar) {
 			loopThroughChildElements( topBar.children );
 		}
+		
+		//MicroAssist -- A11Y START
+		var topBarBtnWrap = framework.getChildByClass(_controls, 'pswp__top-bar-btn-wrap');
+		if(topBarBtnWrap) {
+			loopThroughChildElements( topBarBtnWrap.children );
+		}
+		//MicroAssist -- A11Y END
 	};
 
 
