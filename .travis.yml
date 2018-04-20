@@ -5,3 +5,7 @@ node_js:
 
 before_install:
   - npm install grunt-cli -g
+  - npm i -g npm@latest
+
+install:
+  - npm ci
