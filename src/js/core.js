@@ -776,10 +776,10 @@ var publicMethods = {
 		self.updateCurrItem();
 	},
 	next: function() {
-		self.goTo( _currentItemIndex + 1);
+		self.goTo( parseInt(_currentItemIndex) + 1);
 	},
 	prev: function() {
-		self.goTo( _currentItemIndex - 1);
+		self.goTo( parseInt(_currentItemIndex) - 1);
 	},
 
 	// update current zoom/pan objects
