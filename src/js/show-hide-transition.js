@@ -57,12 +57,16 @@ var _showOrHideTimeout,
 
 			_shout('initialZoom' + (out ? 'Out' : 'In') );
 
-			_currZoomLevel = item.initialZoomLevel;
-			_equalizePoints(_panOffset,  item.initialPosition );
-			_applyCurrentZoomPan();
+			if(!out) {
+				_currZoomLevel = item.initialZoomLevel;
+				_equalizePoints(_panOffset,  item.initialPosition );
+				_applyCurrentZoomPan();
 
-			template.style.opacity = out ? 0 : 1;
-			_applyBgOpacity(1);
+				template.style.opacity = 1;
+				_applyBgOpacity(1);
+			} else {
+				template.style.opacity = 0;
+			}
 
 			if(duration) {
 				setTimeout(function() {
