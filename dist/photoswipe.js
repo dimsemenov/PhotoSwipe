@@ -2536,9 +2536,7 @@ var _showOrHideTimeout,
 			thumbBounds = _options.getThumbBoundsFn && _options.getThumbBoundsFn(_currentItemIndex);
 		}
 
-		var duration;
-		if((_verticalDragInitiated || _zoomStarted) && out) duration = 0;
-		else duration = out ? _options.hideAnimationDuration : _options.showAnimationDuration;
+		var duration = out ? _options.hideAnimationDuration : _options.showAnimationDuration;
 
 		var onComplete = function() {
 			_stopAnimation('initialZoom');
@@ -2565,12 +2563,16 @@ var _showOrHideTimeout,
 
 			_shout('initialZoom' + (out ? 'Out' : 'In') );
 
-			_currZoomLevel = item.initialZoomLevel;
-			_equalizePoints(_panOffset,  item.initialPosition );
-			_applyCurrentZoomPan();
-
-			template.style.opacity = out ? 0 : 1;
-			_applyBgOpacity(1);
+			if(!out) {			
+				_currZoomLevel = item.initialZoomLevel;
+				_equalizePoints(_panOffset,  item.initialPosition );
+				_applyCurrentZoomPan();
+				
+				template.style.opacity = 1;
+				_applyBgOpacity(1);
+			} else {
+				template.style.opacity = 0;
+			}
 
 			if(duration) {
 				setTimeout(function() {
