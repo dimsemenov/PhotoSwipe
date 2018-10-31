@@ -155,7 +155,7 @@ var _isOpen,
 		styleObj[_transformKey] = _translatePrefix + x + 'px, ' + y + 'px' + _translateSufix + ' scale(' + zoom + ')';
 	},
 	_applyCurrentZoomPan = function( allowRenderResolution ) {
-		if(_currZoomElementStyle) {
+		if(_currZoomElementStyle && !self.currItem.loadError) {
 
 			if(allowRenderResolution) {
 				if(_currZoomLevel > self.currItem.fitRatio) {
