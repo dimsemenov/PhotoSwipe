@@ -1074,9 +1074,11 @@ var publicMethods = {
 		self.updateCurrItem();
 	},
 	next: function() {
+        if(!_options.loop && _currentItemIndex == _getNumItems()-1) return;
 		self.goTo( _currentItemIndex + 1);
 	},
 	prev: function() {
+        if(!_options.loop && _currentItemIndex == 0) return;
 		self.goTo( _currentItemIndex - 1);
 	},
 
