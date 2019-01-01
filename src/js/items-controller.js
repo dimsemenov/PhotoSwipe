@@ -165,8 +165,15 @@ var _getItemAt,
 		};
 		img.onload = onComplete;
 		img.onerror = function() {
-			item.loadError = true;
-			onComplete();
+            if (item.replace) {
+                item.src = item.replace;
+                img.src = item.replace;
+                item.replace = '';
+            } else {
+                item.loadError = true;
+			    onComplete();
+            }
+			
 		};		
 
 		img.src = item.src;// + '?a=' + Math.random();
