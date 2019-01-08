@@ -1,6 +1,6 @@
-/*! PhotoSwipe - v4.1.2 - 2017-04-05
+/*! PhotoSwipe - v4.1.3 - 2019-01-08
 * http://photoswipe.com
-* Copyright (c) 2017 Dmitry Semenov; */
+* Copyright (c) 2019 Dmitry Semenov; */
 (function (root, factory) { 
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
@@ -157,7 +157,7 @@ var framework = {
 			features.caf = window.cancelAnimationFrame;
 		}
 
-		features.pointerEvent = navigator.pointerEnabled || navigator.msPointerEnabled;
+		features.pointerEvent = !!(window.PointerEvent) || navigator.msPointerEnabled;
 
 		// fix false-positive detection of old Android in new IE
 		// (IE11 ua string contains "Android 4.0")
@@ -1987,9 +1987,7 @@ var _gestureStartTime,
 			if(pointerIndex > -1) {
 				releasePoint = _currPointers.splice(pointerIndex, 1)[0];
 
-				if(navigator.pointerEnabled) {
-					releasePoint.type = e.pointerType || 'mouse';
-				} else {
+				if(navigator.msPointerEnabled) {
 					var MSPOINTER_TYPES = {
 						4: 'mouse', // event.MSPOINTER_TYPE_MOUSE
 						2: 'touch', // event.MSPOINTER_TYPE_TOUCH 
@@ -2000,6 +1998,8 @@ var _gestureStartTime,
 					if(!releasePoint.type) {
 						releasePoint.type = e.pointerType || 'mouse';
 					}
+				} else {
+					releasePoint.type = e.pointerType || 'mouse';
 				}
 
 			}
@@ -2452,11 +2452,11 @@ _registerModule('Gestures', {
 			}
 
 			if(_pointerEventEnabled) {
-				if(navigator.pointerEnabled) {
-					addEventNames('pointer', 'down', 'move', 'up', 'cancel');
-				} else {
+				if(navigator.msPointerEnabled) {
 					// IE10 pointer events are case-sensitive
 					addEventNames('MSPointer', 'Down', 'Move', 'Up', 'Cancel');
+				} else {
+					addEventNames('pointer', 'down', 'move', 'up', 'cancel');
 				}
 			} else if(_features.touch) {
 				addEventNames('touch', 'start', 'move', 'end', 'cancel');
