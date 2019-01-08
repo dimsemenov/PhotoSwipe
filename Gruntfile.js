@@ -22,11 +22,6 @@ module.exports = function(grunt) {
       "markdown: redcarpet \r\n"+
       "kramdown: \r\n"+
       "  input: GFM \r\n";
-  
-  var awsDefaults = {};
-  if( grunt.file.exists('./aws-keys.json') ) {
-    awsDefaults = grunt.file.readJSON('./aws-keys.json');
-  }
 
   grunt.initConfig({
 
@@ -170,24 +165,6 @@ module.exports = function(grunt) {
           'src/css/default-skin/default-skin.svg': 'src/css/default-skin/default-skin.svg'
         }
       }
-    },
-
-    aws_s3: {
-      options: {
-        accessKeyId: awsDefaults ? awsDefaults.AWSAccessKeyId : '', // Use the variables
-        secretAccessKey: awsDefaults ? awsDefaults.AWSSecretKey : '', // You can also use env variables
-        region: 'eu-west-1',
-        uploadConcurrency: 5, // 5 simultaneous uploads
-        downloadConcurrency: 5 // 5 simultaneous downloads
-      },
-      main: {
-        options: {
-          bucket: 'photoswipe'
-        },
-        files: [
-          { expand: true, cwd: 'dist/', src: ['**'], dest: 'pswp/dist/', params: {CacheControl: 'max-age=86400'} }
-        ]
-      }
     }
 
 
@@ -273,7 +250,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-jekyll');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-aws-s3');
   grunt.loadNpmTasks('grunt-svgmin');
 
   // Default task.
@@ -282,6 +258,5 @@ module.exports = function(grunt) {
   grunt.registerTask('production', ['sass', 'autoprefixer', 'pswpbuild', 'uglify', 'copy', 'cssmin', 'jekyll:production']);
   grunt.registerTask('nosite', ['sass', 'autoprefixer', 'pswpbuild', 'uglify']);
   grunt.registerTask('hint', ['jshint']);
-  grunt.registerTask('awsupload', ['aws_s3']);
 
 };
