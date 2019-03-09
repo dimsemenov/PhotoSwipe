@@ -85,7 +85,9 @@
 	opacity: 0;
 	transform: translateZ(0);
 	-webkit-backface-visibility: hidden;
-	will-change:opacity;
+	will-change: opacity;
+	/* for open/close transition */
+	transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
 }
 
 .pswp__scroll-wrap {
@@ -127,12 +129,6 @@
 	transform-origin: left top;
 	/* for open/close transition */
 	transition: transform $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
-}
-
-.pswp__bg {
-	will-change: opacity;
-	/* for open/close transition */
-	transition: opacity $pswp__show-hide-transition-duration cubic-bezier(.4,0,.22,1);
 }
 
 .pswp--animated-in {
