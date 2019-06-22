@@ -457,7 +457,9 @@ var PhotoSwipeUI_Default =
 		{ 
 			name: 'button--close', 
 			option: 'closeEl',
-			onTap: pswp.close
+			onTap: function() {
+				setTimeout(pswp.close,10);
+			}
 		},
 		{ 
 			name: 'button--arrow--left', 
