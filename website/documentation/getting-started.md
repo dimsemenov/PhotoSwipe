@@ -301,8 +301,8 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 
 			figureEl = thumbElements[i]; // <figure> element
 
-			// include only element nodes 
-			if(figureEl.nodeType !== 1) {
+			// include only element nodes and skip any other HTML code between <figure> elements
+			if((figureEl.nodeType !== 1) || (figureEl.nodeName != "FIGURE")) {
 				continue;
 			}
 
@@ -366,7 +366,8 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 			index;
 
 		for (var i = 0; i < numChildNodes; i++) {
-			if(childNodes[i].nodeType !== 1) { 
+			// include only element nodes and skip any other HTML code between <figure> elements
+			if((childNodes[i].nodeType !== 1) || (childNodes[i].nodeName != "FIGURE")) { 
 				continue; 
 			}
 
