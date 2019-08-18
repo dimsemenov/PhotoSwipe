@@ -299,7 +299,7 @@ var _gestureStartTime,
 		// 
 		// http://www.quirksmode.org/js/events_properties.html
 		// https://developer.mozilla.org/en-US/docs/Web/API/event.button
-		if(e.type === 'mousedown' && e.button > 0  ) {
+		if(e.type === 'mousedown' && (e.button > 0 || e.buttons === 0)) {
 			return;
 		}
 
