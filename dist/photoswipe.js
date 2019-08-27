@@ -13,6 +13,8 @@
 
 	'use strict';
 	var PhotoSwipe = function(template, UiClass, items, options){
+		var window = options.window || window;
+		var document = window.document;
 
 /*>>framework-bridge*/
 /**

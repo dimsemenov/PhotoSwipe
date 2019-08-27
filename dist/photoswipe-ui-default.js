@@ -23,6 +23,8 @@
 
 var PhotoSwipeUI_Default =
  function(pswp, framework) {
+	var window = pswp.options.window || window;
+	var document = window.document;
 
 	var ui = this;
 	var _overlayUIUpdated = false,
