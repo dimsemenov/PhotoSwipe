@@ -1,19 +1,21 @@
 /**
- * 
+ *
  * Run 'grunt' to generate JS and CSS in folder 'dist' and site in folder '_site'
  * *
  * Run 'grunt watch' to automatically regenerate '_site' when you change files in 'src' or in 'website'
- * 
+ *
  */
 
 module.exports = function(grunt) {
 
   'use strict';
 
+  var sass = require('node-sass');
+
   var jekyllConfig = "isLocal : false \r\n"+
       "permalink: /:title/ \r\n"+
       "exclude: ['.json', '.rvmrc', '.rbenv-version', 'README.md', 'Rakefile'," +
-                "'changelog.md', 'compiler.jar', 'private', '.htaccess'," + 
+                "'changelog.md', 'compiler.jar', 'private', '.htaccess'," +
                 "'photoswipe.sublime-project', 'photoswipe.sublime-workspace'] \r\n"+
 
       "auto: true \r\n"+
@@ -41,10 +43,14 @@ module.exports = function(grunt) {
     clean: {
       files: ['dist']
     },
-    
-    sass: {                            
-      dist: {                      
-        files: {      
+
+    sass: {
+      options: {
+          implementation: sass,
+          sourceMap: true
+      },
+      dist: {
+        files: {
           'dist/photoswipe.css': 'src/css/main.scss',
           'dist/default-skin/default-skin.css': 'src/css/default-skin/default-skin.scss'
         }
@@ -52,7 +58,7 @@ module.exports = function(grunt) {
     },
 
     // https://github.com/nDmitry/grunt-autoprefixer
-    autoprefixer: { 
+    autoprefixer: {
       options: {
         browsers: ['last 3 versions', 'android 3', 'ie 9', 'bb 10']
       },
@@ -100,7 +106,7 @@ module.exports = function(grunt) {
           url: 'local',
           raw: jekyllConfig + "url: local"
         }
-        
+
       },
       production: {
         options: {
@@ -190,7 +196,7 @@ module.exports = function(grunt) {
     "})(this, function () {\n\n" +
       "\t'use strict';\n"+
       "\tvar PhotoSwipe = function(template, UiClass, items, options){\n";
-      
+
 
     if(includes) {
       includes = includes.split(/[\s,]+/); // 'a,b,c' => ['a','b','c']
@@ -207,20 +213,20 @@ module.exports = function(grunt) {
 
       includes.forEach(function( name ) {
         if(name) {
-           
+
            grunt.log.writeln( 'removed "'+name +'"' );
            files = removeA(files, name);
          }
       });
     }
-    
+
     grunt.log.writeln( 'Your build is made of:'+files );
 
     files.forEach(function( name ) {
       // Wrap each module with a pience of code to be able to exlude it, stolen for modernizr.com
-      newContents += "\n/*>>"+name+"*/\n"; 
+      newContents += "\n/*>>"+name+"*/\n";
       newContents += grunt.file.read( basePath + name + '.js' ) + '\n';
-      newContents += "\n/*>>"+name+"*/\n"; 
+      newContents += "\n/*>>"+name+"*/\n";
     });
 
 
