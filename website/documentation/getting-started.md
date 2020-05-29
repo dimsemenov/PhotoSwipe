@@ -344,9 +344,15 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 	// triggers when user clicks on thumbnail
 	var onThumbnailsClick = function(e) {
 		e = e || window.event;
-		e.preventDefault ? e.preventDefault() : e.returnValue = false;
-
 		var eTarget = e.target || e.srcElement;
+
+		// if it's a link that has been clicked, defer to this default action
+		if (eTarget.tagName === 'A') {
+			e.stopPropagation();
+			return
+		}
+		// otherwise, prevent that default action and proceed to action PhotoSwipe
+		e.preventDefault ? e.preventDefault() : e.returnValue = false;
 
 		// find root element of slide
 		var clickedListItem = closest(eTarget, function(el) {
