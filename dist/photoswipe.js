@@ -2846,6 +2846,12 @@ var _getItemAt,
 			item.loading = false;
 			item.loaded = true;
 
+			if(item.autoSize && img.naturalWidth) {
+				item.w = img.naturalWidth;
+				item.h = img.naturalHeight;
+				item.autoSize = false;
+				self.updateSize();
+			}
 			if(item.loadComplete) {
 				item.loadComplete(item);
 			} else {
@@ -3000,7 +3006,12 @@ _registerModule('Controller', {
 
 		getItemAt: function(index) {
 			if (index >= 0) {
-				return _items[index] !== undefined ? _items[index] : false;
+				var item = _items[index] !== undefined ? _items[index] : false;
+				if(item && item.autoSize) {
+					if(item.w == null) item.w = 0;
+					if(item.h == null) item.h = 0;
+				}
+				return item;
 			}
 			return false;
 		},
