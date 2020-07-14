@@ -30,8 +30,12 @@ website/dist/
 .node-version
 .sass-cache/
 
+# ide
+.idea/*
+*.iml
 
-
-
+#project
+yarn.lock
+package-lock.json
 
 

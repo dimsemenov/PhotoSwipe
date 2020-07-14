@@ -1,6 +1,6 @@
-/*! PhotoSwipe - v4.1.3 - 2019-01-08
+/*! PhotoSwipe - v4.1.4 - 2020-07-14
 * http://photoswipe.com
-* Copyright (c) 2019 Dmitry Semenov; */
+* Copyright (c) 2020 Dmitry Semenov; */
 (function (root, factory) { 
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
@@ -2845,13 +2845,15 @@ var _getItemAt,
 		var onComplete = function() {
 			item.loading = false;
 			item.loaded = true;
-
-			if(item.autoSize && img.naturalWidth) {
+			
+			// set natural image size
+			if(item.autoSize) {
 				item.w = img.naturalWidth;
 				item.h = img.naturalHeight;
 				item.autoSize = false;
 				self.updateSize();
 			}
+
 			if(item.loadComplete) {
 				item.loadComplete(item);
 			} else {
@@ -3193,6 +3195,7 @@ _registerModule('Controller', {
 
 	}
 });
+
 
 /*>>items-controller*/
 
