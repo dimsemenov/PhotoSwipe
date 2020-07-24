@@ -19,7 +19,8 @@
     "grunt-contrib-watch": "~1.1.0",
     "grunt-jekyll": "~1.0.0",
     "grunt-sass": "^3.0.2",
-    "grunt-svgmin": "^5.0.0"
+    "grunt-svgmin": "^5.0.0",
+    "node-sass": "^4.14.1"
   },
   "repository": {
     "type": "git",

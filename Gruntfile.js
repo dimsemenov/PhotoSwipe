@@ -6,6 +6,8 @@
  * 
  */
 
+const sass = require('node-sass');
+
 module.exports = function(grunt) {
 
   'use strict';
@@ -42,9 +44,12 @@ module.exports = function(grunt) {
       files: ['dist']
     },
     
-    sass: {                            
-      dist: {                      
-        files: {      
+    sass: {
+      dist: {
+        options: {
+          implementation: sass
+        },
+        files: {
           'dist/photoswipe.css': 'src/css/main.scss',
           'dist/default-skin/default-skin.css': 'src/css/default-skin/default-skin.scss'
         }
