@@ -550,7 +550,8 @@ a.pswp__share--download {
 	.pswp__button--arrow--left,
 	.pswp__button--arrow--right {
 		/* Force paint & create composition layer for controls. */
-		opacity: 0.001; 
+		opacity: 0.001;
+		visibility: hidden;
 	}
 }
 
