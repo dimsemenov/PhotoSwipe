@@ -41,7 +41,7 @@ _registerModule('Tap', {
 				return;
 			}
 
-			if(!_moved && !_isMultitouch && !_numAnimations) {
+			if(!_moved && !_isMultitouch && !_numAnimations && self.container.contains(e.target)) {
 				var p0 = releasePoint;
 				if(tapTimer) {
 					clearTimeout(tapTimer);
