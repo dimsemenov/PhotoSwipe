@@ -22,7 +22,7 @@ module.exports = function(grunt) {
       "markdown: redcarpet \r\n"+
       "kramdown: \r\n"+
       "  input: GFM \r\n";
-
+  const sass = require('node-sass');
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('photoswipe.json'),
@@ -42,7 +42,8 @@ module.exports = function(grunt) {
       files: ['dist']
     },
     
-    sass: {                            
+    sass: {
+      options: { implementation: sass, sourceMap: true },
       dist: {                      
         files: {      
           'dist/photoswipe.css': 'src/css/main.scss',
