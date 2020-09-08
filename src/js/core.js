@@ -645,7 +645,7 @@ var publicMethods = {
 			if(_options.focus) {
 				// focus causes layout, 
 				// which causes lag during the animation, 
-				// that's why we delay it untill the initial zoom transition ends
+				// that's why we delay it until the initial zoom transition ends
 				template.focus();
 			}
 			 
