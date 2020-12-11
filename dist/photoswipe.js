@@ -3225,7 +3225,11 @@ _registerModule('Tap', {
 			}
 		},
 		onTapRelease: function(e, releasePoint) {
-			if(!releasePoint) {
+			if(
+				!releasePoint ||
+				framework.hasClass(e.target, 'pswp__button') ||
+				framework.hasClass(e.target, 'pswp__share-modal')
+			) {
 				return;
 			}
 
