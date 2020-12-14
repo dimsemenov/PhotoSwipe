@@ -1,4 +1,5 @@
-# PhotoSwipe Repository 
+
+# PhotoSwipe Repository (fork) 
 
 [![Build Status](https://travis-ci.org/dimsemenov/PhotoSwipe.svg)](https://travis-ci.org/dimsemenov/PhotoSwipe) 
 [![devDependency Status](https://david-dm.org/dimsemenov/PhotoSwipe/dev-status.svg)](https://david-dm.org/dimsemenov/PhotoSwipe#info=devDependencies)
@@ -10,6 +11,9 @@ JavaScript image gallery for mobile and desktop.
 - [Demo and script home page](http://photoswipe.com).
 - [NPM](https://www.npmjs.com/package/photoswipe) `npm install photoswipe`.
 - Bower `bower install photoswipe`.
+
+## Differences from the original repo
+- Fix closing modal windows on iOS
 
 ## Location of files
 
