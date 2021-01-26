@@ -40,15 +40,21 @@ To compile PhotoSwipe by yourself, make sure that you have [Node.js](http://node
 
 1) Clone the repository
 
+	```sh
 	git clone https://github.com/dimsemenov/PhotoSwipe.git
+	```
 
 2) Go inside the PhotoSwipe folder that you fetched and install Node dependencies
 
+	```sh
 	cd PhotoSwipe && npm install
+	```
 
 3) Run `grunt` to generate the JS and CSS files in the `dist` folder and the site in the `_site/` folder
 
+	```sh
 	grunt
+	```
 
 Optionally:
 
