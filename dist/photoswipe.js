@@ -1,6 +1,6 @@
-/*! PhotoSwipe - v4.1.3 - 2019-01-08
+/*! PhotoSwipe - v4.1.3 - 2021-02-27
 * http://photoswipe.com
-* Copyright (c) 2019 Dmitry Semenov; */
+* Copyright (c) 2021 Dmitry Semenov; */
 (function (root, factory) { 
 	if (typeof define === 'function' && define.amd) {
 		define(factory);
@@ -1138,10 +1138,10 @@ var publicMethods = {
 		
 		_shout('beforeChange', _indexDiff);
 
-		if(diffAbs >= NUM_HOLDERS) {
+		// if(diffAbs >= NUM_HOLDERS) {
 			_containerShiftIndex += _indexDiff + (_indexDiff > 0 ? -NUM_HOLDERS : NUM_HOLDERS);
 			diffAbs = NUM_HOLDERS;
-		}
+		// }
 		for(var i = 0; i < diffAbs; i++) {
 			if(_indexDiff > 0) {
 				tempHolder = _itemHolders.shift();
@@ -2925,7 +2925,7 @@ _registerModule('Controller', {
 				return;
 			}
 
-			_shout('gettingData', index, item);
+			_shout('gettingData', index===_currentItemIndex, item);
 
 			if (!item.src) {
 				return;
@@ -3040,7 +3040,7 @@ _registerModule('Controller', {
 			}
 
 			// allow to override data
-			_shout('gettingData', index, item);
+			_shout('gettingData', index===_currentItemIndex, item);
 
 			holder.index = index;
 			holder.item = item;
