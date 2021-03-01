@@ -2920,7 +2920,6 @@ _registerModule('Controller', {
 		lazyLoadItem: function(index) {
 			index = _getLoopedId(index);
 			var item = _getItemAt(index);
-			self.cleanSlide(item);
 			if(!item || ((item.loaded || item.loading) && !_itemsNeedUpdate)) {
 				return;
 			}
@@ -3121,9 +3120,6 @@ _registerModule('Controller', {
 
 				
 
-				if(!item.loading) {
-					_preloadImage(item);
-				}
 
 
 				if( self.allowProgressiveImg() ) {
