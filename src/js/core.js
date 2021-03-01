@@ -840,10 +840,10 @@ var publicMethods = {
 		
 		_shout('beforeChange', _indexDiff);
 
-		// if(diffAbs >= NUM_HOLDERS) {
+		if(diffAbs >= NUM_HOLDERS) {
 			_containerShiftIndex += _indexDiff + (_indexDiff > 0 ? -NUM_HOLDERS : NUM_HOLDERS);
 			diffAbs = NUM_HOLDERS;
-		// }
+		}
 		for(var i = 0; i < diffAbs; i++) {
 			if(_indexDiff > 0) {
 				tempHolder = _itemHolders.shift();

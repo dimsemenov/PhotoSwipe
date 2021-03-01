@@ -229,7 +229,7 @@ _registerModule('Controller', {
 		lazyLoadItem: function(index) {
 			index = _getLoopedId(index);
 			var item = _getItemAt(index);
-
+			self.cleanSlide(item);
 			if(!item || ((item.loaded || item.loading) && !_itemsNeedUpdate)) {
 				return;
 			}
@@ -256,20 +256,20 @@ _registerModule('Controller', {
 			}
 
 			_listen('beforeChange', function(diff) {
+				self.lazyLoadItem(_currentItemIndex);
+				// var p = _options.preload,
+				// 	isNext = diff === null ? true : (diff >= 0),
+				// 	preloadBefore = Math.min(p[0], _getNumItems() ),
+				// 	preloadAfter = Math.min(p[1], _getNumItems() ),
+				// 	i;
 
-				var p = _options.preload,
-					isNext = diff === null ? true : (diff >= 0),
-					preloadBefore = Math.min(p[0], _getNumItems() ),
-					preloadAfter = Math.min(p[1], _getNumItems() ),
-					i;
 
-
-				for(i = 1; i <= (isNext ? preloadAfter : preloadBefore); i++) {
-					self.lazyLoadItem(_currentItemIndex+i);
-				}
-				for(i = 1; i <= (isNext ? preloadBefore : preloadAfter); i++) {
-					self.lazyLoadItem(_currentItemIndex-i);
-				}
+				// for(i = 1; i <= (isNext ? preloadAfter : preloadBefore); i++) {
+				// 	self.lazyLoadItem(_currentItemIndex+i);
+				// }
+				// for(i = 1; i <= (isNext ? preloadBefore : preloadAfter); i++) {
+				// 	self.lazyLoadItem(_currentItemIndex-i);
+				// }
 			});
 
 			_listen('initialLayout', function() {
