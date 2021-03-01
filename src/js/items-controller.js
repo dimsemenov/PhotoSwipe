@@ -234,7 +234,7 @@ _registerModule('Controller', {
 				return;
 			}
 
-			_shout('gettingData', index===_currentItemIndex, item);
+			_shout('gettingData', index, item);
 
 			if (!item.src) {
 				return;
@@ -349,7 +349,9 @@ _registerModule('Controller', {
 			}
 
 			// allow to override data
-			_shout('gettingData', index===_currentItemIndex, item);
+			if(index===_currentItemIndex){
+				_shout('gettingData',index , item);
+			}
 
 			holder.index = index;
 			holder.item = item;
