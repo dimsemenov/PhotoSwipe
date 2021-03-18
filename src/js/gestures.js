@@ -84,7 +84,7 @@ var _gestureStartTime,
 	  	}
 
 	  	// don't search elements above pswp__scroll-wrap
-	  	if(el.getAttribute('class') && el.getAttribute('class').indexOf('pswp__scroll-wrap') > -1 ) {
+	  	if(el.getAttribute && el.getAttribute('class') && el.getAttribute('class').indexOf('pswp__scroll-wrap') > -1 ) {
 	  		return false;
 	  	}
 

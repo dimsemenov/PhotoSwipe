@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.1.3 - 2021-03-17
+/*! PhotoSwipe - v4.1.3 - 2021-03-18
 * http://photoswipe.com
 * Copyright (c) 2021 Dmitry Semenov; */
 (function (root, factory) { 
@@ -1430,7 +1430,7 @@ var _gestureStartTime,
 	  	}
 
 	  	// don't search elements above pswp__scroll-wrap
-	  	if(el.getAttribute('class') && el.getAttribute('class').indexOf('pswp__scroll-wrap') > -1 ) {
+	  	if(el.getAttribute && el.getAttribute('class') && el.getAttribute('class').indexOf('pswp__scroll-wrap') > -1 ) {
 	  		return false;
 	  	}
 

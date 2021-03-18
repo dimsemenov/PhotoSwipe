@@ -115,7 +115,7 @@ var PhotoSwipeUI_Default =
 
 			var target = e.target || e.srcElement,
 				uiElement,
-				clickedClass = target.getAttribute('class') || '',
+				clickedClass = target && target.getAttribute ? target.getAttribute('class') || '' : '',
 				found;
 
 			for(var i = 0; i < _uiElements.length; i++) {
@@ -572,6 +572,7 @@ var PhotoSwipeUI_Default =
 			var t = e.target || e.srcElement;
 			if(
 				t && 
+				t.getAttribute && 
 				t.getAttribute('class') && e.type.indexOf('mouse') > -1 && 
 				( t.getAttribute('class').indexOf('__caption') > 0 || (/(SMALL|STRONG|EM)/i).test(t.tagName) ) 
 			) {
