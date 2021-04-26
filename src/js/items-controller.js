@@ -179,8 +179,12 @@ var _getItemAt,
 			if(cleanUp) {
 				item.container.innerHTML = '';
 			}
-
-			item.container.innerHTML = _options.errorMsg.replace('%url%',  item.src );
+			const lt = /</g, 
+						gt = />/g, 
+						ap = /'/g, 
+						ic = /"/g;
+			const safeSrc = item.src.toString().replace(lt, "&lt;").replace(gt, "&gt;").replace(ap, "&#39;").replace(ic, "&#34;");
+			item.container.innerHTML = _options.errorMsg.replace('%url%', safeSrc);
 			return true;
 			
 		}
