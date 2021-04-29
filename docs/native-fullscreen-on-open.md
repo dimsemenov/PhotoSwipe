@@ -38,7 +38,7 @@ function getFullscreenPromise() {
 
     document.addEventListener(fullscreenAPI.change, (event) => {
       pswpContainer.style.display = 'block';
-      // delay to make sure that browser fullscreen animation if finished
+      // delay to make sure that browser fullscreen animation is finished
       setTimeout(function() {
         resolve();
       }, 300);
@@ -58,7 +58,7 @@ const lightbox = new PhotoSwipeLightbox({
   openPromise: getFullscreenPromise,
   
   // Append PhotoSwipe to our container
-  appendToEl: pswpContainer,
+  appendToEl: fullscreenAPI ? pswpContainer : document.body,
 
   // disable opening/closing animations
   showAnimationDuration: 0,
@@ -71,7 +71,7 @@ const lightbox = new PhotoSwipeLightbox({
 });
 lightbox.on('close', () => {
   pswpContainer.style.display = 'none';
-  if (fullscreenAPI.isFullscreen()) {
+  if (fullscreenAPI && fullscreenAPI.isFullscreen()) {
     fullscreenAPI.exit();
   }
 });
