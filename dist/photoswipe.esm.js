@@ -4,7 +4,6 @@
   */
 /**
   * Creates element and optionally appends it to another.
-  * TODO: change order of last two params?
   *
   * @param {String} className
   * @param {String|NULL} tagName
@@ -488,8 +487,6 @@ class ZoomLevel {
   }
 }
 
-// TODO: add comments with explanation of both
-// TODO: improve this
 function getViewportSize(options, pswp) {
   if (options.getViewportSizeFn) {
     const newViewportSize = options.getViewportSizeFn(options, pswp);
@@ -501,13 +498,15 @@ function getViewportSize(options, pswp) {
   return {
     x: document.documentElement.clientWidth,
 
-    // document.documentElement.clientHeight - works weird on mobile browsers
+    // TODO: height on mobile is very incosistent due to toolbar
+    // find a way to improve this
+    //
+    // document.documentElement.clientHeight - doesn't seem to work well
     y: window.innerHeight
   };
 }
 
 function getPanAreaSize(options, viewportSize/*, pswp*/) {
-  // TODO: can we improve padding syntax
   return {
     x: viewportSize.x - (options.paddingLeft || 0) - (options.paddingRight || 0),
     y: viewportSize.y - (options.paddingTop || 0) - (options.paddingBottom || 0)
@@ -687,9 +686,9 @@ class Slide {
     if (this.image) {
       // "progressive loading"  - display parts of image as data arrives
       // This behavior is limited to devices with mouse or with large screens,
-      // (as there are significant FPS drops when image loads)
+      // (as there might be significant FPS drops when image loads)
       //
-      // TODO: test if it really lags on smaller screens
+      // TODO should we disable it on smaller screens?
       //if (this.pswp.options.progressiveLoading !== false
       //    && (this.pswp.hasMouse || this.pswp.viewportSize.x > 900)) {
       this._appendImage();
@@ -928,7 +927,7 @@ class Slide {
     } else {
       pswp.animations.startTransition({
         isPan: true,
-        name: 'zoomTo', // TODO: do we need animation names?
+        name: 'zoomTo',
         target: this.container,
         transform: this.getCurrentTransform(),
         onComplete: finishTransition,
@@ -1046,9 +1045,6 @@ class Slide {
    * the current pan position (this.pan) and zoom level (this.currZoomLevel)
    */
   applyCurrentZoomPan() {
-    // if (applyFriction) {
-    //   // TODO: check if pan is beyond the bounds and apply friction
-    // }
     this._applyZoomTransform(this.pan.x, this.pan.y, this.currZoomLevel);
     if (this === this.pswp.currSlide) {
       this.pswp.dispatch('zoomPanUpdate', { slide: this });
@@ -2120,16 +2116,10 @@ class Gestures {
 
   // eslint-disable-next-line class-methods-use-this
   _preventPointerEventBehaviour(e) {
-    // this
+    // TODO find a way to disable e.preventDefault on some elements
+    //      via event or some class or something
     e.preventDefault();
     return true;
-
-    // TODO_Es6
-    //var preventDefault = !_closest(e.target, _cancelPreventDefaultOnElement);
-    //if (preventDefault) {
-
-    //}
-    //return preventDefault;
   }
 
   /**
@@ -2137,7 +2127,7 @@ class Gestures {
    * Updates p1 and p2.
    *
    * @param {Event} e
-   * @param {Boolean} isPointerUp TODO: is this param needed?
+   * @param {Boolean} isPointerUp
    */
   _updatePoints(e, isPointerUp) {
     if (this._pointerEventEnabled) {
@@ -2284,12 +2274,10 @@ class MainScroll {
     this.resetPosition();
   }
 
-  
-
   /**
    * Position the scroller and slide containers
    * according to viewport size.
-   * 
+   *
    * @param {Boolean} resizeSlides Whether slides content should resized
    */
   resize(resizeSlides) {
@@ -2440,7 +2428,6 @@ class MainScroll {
    * Update slides X positions and set their content
    */
   updateCurrItem() {
-
     const { pswp } = this;
     const positionDifference = this._prevPositionIndex - this._currPositionIndex;
 
@@ -2456,36 +2443,30 @@ class MainScroll {
     let diffAbs = Math.abs(positionDifference);
     let tempHolder;
 
-    {
-      if (diffAbs >= 3) {
-        this._containerShiftIndex += positionDifference + (positionDifference > 0 ? -3 : 3);
-        diffAbs = 3;
-      }
+    if (diffAbs >= 3) {
+      this._containerShiftIndex += positionDifference + (positionDifference > 0 ? -3 : 3);
+      diffAbs = 3;
+    }
 
-      for (let i = 0; i < diffAbs; i++) {
-        if (positionDifference > 0) {
-          tempHolder = this.itemHolders.shift();
-          this.itemHolders[2] = tempHolder; // move first to last
+    for (let i = 0; i < diffAbs; i++) {
+      if (positionDifference > 0) {
+        tempHolder = this.itemHolders.shift();
+        this.itemHolders[2] = tempHolder; // move first to last
 
-          {
-            this._containerShiftIndex++;
-          }
+        this._containerShiftIndex++;
 
-          setTransform(tempHolder.el, (this._containerShiftIndex + 2) * this.slideWidth);
+        setTransform(tempHolder.el, (this._containerShiftIndex + 2) * this.slideWidth);
 
-          pswp.setContent(tempHolder, (pswp.currIndex - diffAbs) + i + 2);
-        } else {
-          tempHolder = this.itemHolders.pop();
-          this.itemHolders.unshift(tempHolder); // move last to first
+        pswp.setContent(tempHolder, (pswp.currIndex - diffAbs) + i + 2);
+      } else {
+        tempHolder = this.itemHolders.pop();
+        this.itemHolders.unshift(tempHolder); // move last to first
 
-          {
-            this._containerShiftIndex--;
-          }
+        this._containerShiftIndex--;
 
-          setTransform(tempHolder.el, this._containerShiftIndex * this.slideWidth);
+        setTransform(tempHolder.el, this._containerShiftIndex * this.slideWidth);
 
-          pswp.setContent(tempHolder, (pswp.currIndex + diffAbs) - i - 2);
-        }
+        pswp.setContent(tempHolder, (pswp.currIndex + diffAbs) - i - 2);
       }
     }
 
@@ -2527,7 +2508,6 @@ class MainScroll {
     let newSlideIndexOffset;
     let delta;
 
-    // TODO: can I do the same friction handling, but for pan? (from slide.js)
     if (!this.pswp.options.loop && dragging) {
       // Apply friction
       newSlideIndexOffset = ((this.slideWidth * this._currPositionIndex) - x) / this.slideWidth;
@@ -2583,7 +2563,7 @@ class Keyboard {
 
   _focusRoot() {
     if (!this._wasFocused) {
-      pswp.template.focus();
+      this.pswp.template.focus();
       this._wasFocused = true;
     }
   }
@@ -2601,7 +2581,7 @@ class Keyboard {
       // for example, in Chrome on Mac cmd+arrow-left returns to previous page
       return;
     }
-    
+
     let keydownAction;
     let axis;
     let isForward;
@@ -2647,7 +2627,6 @@ class Keyboard {
         keydownAction = isForward ? 'next' : 'prev';
       } else if (currSlide && currSlide.currZoomLevel > currSlide.zoomLevels.fit) {
         // up/down arrow keys pan the image vertically
-        
         // left/right arrow keys pan horizontally.
         // Unless there is only one image,
         // or arrowKeys option is disabled
@@ -2739,7 +2718,7 @@ class CSSAnimation {
       this._finished = true;
       this.onFinish();
       if (this._onComplete) {
-        this._onComplete(); // TODO: do I need to call onComplete transitionend?
+        this._onComplete();
       }
     }
   }
@@ -3064,8 +3043,7 @@ function addButtonHTML(htmlData) {
     return '';
   }
 
-  let svgData = htmlData;
-
+  const svgData = htmlData;
   let out = '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 %d %d" width="%d" height="%d">';
   out = out.split('%d').join(svgData.size || 32); // replace all %d with size
 
@@ -3349,6 +3327,7 @@ class UI {
   }
 
   init() {
+    const { pswp } = this;
     this.isRegistered = false;
     this.uiElementsData = [
       closeButton,
@@ -3919,7 +3898,7 @@ class Opener {
     } else {
       this._thumbBounds = this.pswp.getThumbBounds();
     }
-    
+
     this._placeholder = slide.getPlaceholder();
 
     pswp.animations.stopAll();
@@ -3953,7 +3932,6 @@ class Opener {
       }
       return;
     }
-    
 
     if (this._animateZoom && this._thumbBounds.innerRect) {
       // Properties are used when animation from cropped thumbnail
@@ -3984,7 +3962,7 @@ class Opener {
         if (this._placeholder) {
           // tell browser that we plan to animate the placeholder
           this._placeholder.willChange = 'transform';
-  
+
           // hide placeholder to allow hiding of
           // elements that overlap it (such as icons over the thumbnail)
           this._placeholder.style.opacity = MIN_OPACITY;
@@ -3997,11 +3975,11 @@ class Opener {
       pswp.mainScroll.itemHolders[2].el.style.display = 'none';
 
       if (this._croppedZoom) {
-        // shift the main scroller to zero position
-        pswp.mainScroll.resetPosition();
-        // Adding the resize() occasionally messes closing transition
-        // (assuming because it changes transform)
-        // pswp.mainScroll.resize();
+        if (pswp.mainScroll.x !== 0) {
+          // shift the main scroller to zero position
+          pswp.mainScroll.resetPosition();
+          pswp.mainScroll.resize();
+        }
       }
     }
   }
@@ -4013,12 +3991,25 @@ class Opener {
         && this._placeholder.tagName === 'IMG') {
       // To ensure smooth animation
       // we wait till the current slide image placeholder is decoded,
-      // but no longer than 250ms
-      //
-      // TODO: decode placeholder from lightbox?
-      //
+      // but no longer than 250ms,
+      // and no shorter than 50ms
+      // (just using requestanimationframe is not enough in Firefox,
+      // for some reason)
       new Promise((resolve) => {
-        decodeImage(this._placeholder).finally(resolve);
+        let decoded = false;
+        let isDelaying = true;
+        decodeImage(this._placeholder).finally(() => {
+          decoded = true;
+          if (!isDelaying) {
+            resolve();
+          }
+        });
+        setTimeout(() => {
+          isDelaying = false;
+          if (decoded) {
+            resolve();
+          }
+        }, 50);
         setTimeout(resolve, 250);
       }).finally(() => this._initiate());
     } else {
@@ -4067,7 +4058,6 @@ class Opener {
 
   _animateToOpenState() {
     const { pswp } = this;
-
     if (this._animateZoom) {
       if (this._croppedZoom) {
         this._animateTo(this._cropContainer1, 'transform', 'translate3d(0,0,0)');
@@ -4098,7 +4088,7 @@ class Opener {
       this._setClosedStateZoomPan(true);
     }
 
-    if (this._animateBgOpacity 
+    if (this._animateBgOpacity
         && pswp.bgOpacity > 0.01) { // do not animate opacity if it's already at 0
       this._animateTo(pswp.bg, 'opacity', 0);
     }
@@ -4119,13 +4109,14 @@ class Opener {
       const containerTwoPanX = viewportSize.x - innerRect.w;
       const containerTwoPanY = viewportSize.y - innerRect.h;
 
+
       if (animate) {
         this._animateTo(
           this._cropContainer1,
           'transform',
           toTransformString(containerOnePanX, containerOnePanY)
         );
-  
+
         this._animateTo(
           this._cropContainer2,
           'transform',
@@ -4201,11 +4192,8 @@ const defaultOptions = {
 
   index: 0,
   errorMsg: '<div class="pswp__error-msg"><a href="" target="_blank">The image</a> could not be loaded.</div>',
-  
   preload: [1, 2],
-
   easing: 'cubic-bezier(.4,0,.22,1)',
-  
   paddingTop: 0,
   paddingBottom: 0,
   paddingLeft: 0,
@@ -4234,7 +4222,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.events = new DOMEvents();
 
     /** @type {Animations} */
-    this.animations = new Animations(); // TODO: keep?
+    this.animations = new Animations();
 
     this.mainScroll = new MainScroll(this);
     this.gestures = new Gestures(this);
@@ -4260,15 +4248,10 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     this._createMainStructure();
 
-    // // init modules
+    // init modules
     // _modules.forEach(function (module) {
     //   module();
     // });
-
-    // // init UI
-    // pswp.ui = new PhotoSwipeUI();
-    // pswp.ui.init();
-
 
     // add classes to the root element of PhotoSwipe
     let rootClasses = 'pswp--open';
@@ -4322,24 +4305,14 @@ class PhotoSwipe extends PhotoSwipeBase {
 
       this.mainScroll.itemHolders[0].el.style.display = 'block';
       this.mainScroll.itemHolders[2].el.style.display = 'block';
-      
 
       this.appendHeavy();
 
       this.lazyLoader.update();
 
-      // TODO: bind it somewhere else
-      //_bind(this.scrollWrap, 'click', pswp);
-
       this.events.add(window, 'resize', this._handlePageResize.bind(this));
       this.events.add(window, 'scroll', this._updatePageScrollOffset.bind(this));
       this.dispatch('bindEvents');
-
-
-      // TODO_ES6
-      // _appendWaitingImages();
-      // _lazyLoad();
-      // _setupAriaLiveContainer();
     });
 
     // set content for center slide (first time)
@@ -4415,24 +4388,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   goTo(index) {
     index = this.getLoopedIndex(index);
 
-
-    // if (index === this.currIndex
-    //     || index === this.potentialIndex) {
-    //   return;
-    // }
-
-    //const diff = this.getIndexDiff(index);
-
-    // if (diff === 0) {
-    //   return;
-    // }
-
-    // TODO_ES6
-    // allow to stop the event propagation
-    // if (this.dispatch('goto', index, diff) === false) {
-    //   this.dispatch('afterGoto');
-    //   return;
-    // }
+    // TODO: allow to pause the event propagation?
 
     const indexChanged = this.mainScroll.moveIndexBy(index - this.potentialIndex);
     if (indexChanged) {
@@ -4478,9 +4434,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     }
 
     this.isDestroying = true;
-
-    // TODO_ES6
-    //_stopAllAnimations();
 
     this.dispatch('close');
 
@@ -4581,7 +4534,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this._updatePageScrollOffset();
 
     this.dispatch('viewportSize');
-    
+
     // Resize slides only after opener animation is finished
     // and don't re-calculate size on inital size update
     this.mainScroll.resize(this.opener.isOpen);
@@ -4614,13 +4567,10 @@ class PhotoSwipe extends PhotoSwipeBase {
   _handlePageResize() {
     this.updateSize();
 
-    // TODO: use resize observer instead?
-    //
     // In iOS webview, if element size depends on document size,
     // it'll be measured incorrectly in resize event
     //
     // https://bugs.webkit.org/show_bug.cgi?id=170595
-    // https://github.com/dimsemenov/PhotoSwipe/issues/1315
     // https://hackernoon.com/onresize-event-broken-in-mobile-safari-d8469027bf4d
     if (/iPhone|iPad|iPod/i.test(window.navigator.userAgent)) {
       setTimeout(() => {

@@ -142,23 +142,6 @@
 	display: none !important;
 }
 
-/*
-  Screen readers only
-  TODO
-*/
-.pswp__aria-live-container {
-	position: absolute;
-    width: 1px;
-    height: 1px;
-    top: 0;
-    left: -20px;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
-    white-space: nowrap;
-    -webkit-clip-path: inset(50%);
-    clip-path: inset(50%);
-}
-
 
 /*
 

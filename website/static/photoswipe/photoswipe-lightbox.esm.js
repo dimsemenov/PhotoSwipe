@@ -10,7 +10,7 @@
   * @param {Element|NULL} appendToEl
   */
 
-const supportsImageDecode = ('decode' in new Image());
+('decode' in new Image());
 
 /**
  * Check if click or keydown event was dispatched

@@ -1,3 +1,5 @@
+[Documentation and examples ->](https://photoswipe.com/v5/docs/getting-started/)
+
 # Repo structure
 
 - `dist/` - main JS and CSS
@@ -13,7 +15,7 @@
 - `npm run build` - builds and minifies JS and CSS to `dist/` directory. 
 - `npm run lint` - lints JS files in `src/` with eslint (`npm run lint-auto-fix` to fix auto-fixable issues).
 
-# Docs and demos
+# Build docs and demos
 
 - npm install in root
 - npm install in `/website/` directory to get docusaurus (if you also need to build docs)

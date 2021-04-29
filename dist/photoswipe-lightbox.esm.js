@@ -4,14 +4,13 @@
   */
 /**
   * Creates element and optionally appends it to another.
-  * TODO: change order of last two params?
   *
   * @param {String} className
   * @param {String|NULL} tagName
   * @param {Element|NULL} appendToEl
   */
 
-const supportsImageDecode = ('decode' in new Image());
+('decode' in new Image());
 
 /**
  * Check if click or keydown event was dispatched
@@ -25,8 +24,6 @@ function specialKeyUsed(e) {
   }
 }
 
-// TODO: add comments with explanation of both
-// TODO: improve this
 function getViewportSize(options, pswp) {
   if (options.getViewportSizeFn) {
     const newViewportSize = options.getViewportSizeFn(options, pswp);
@@ -38,13 +35,15 @@ function getViewportSize(options, pswp) {
   return {
     x: document.documentElement.clientWidth,
 
-    // document.documentElement.clientHeight - works weird on mobile browsers
+    // TODO: height on mobile is very incosistent due to toolbar
+    // find a way to improve this
+    //
+    // document.documentElement.clientHeight - doesn't seem to work well
     y: window.innerHeight
   };
 }
 
 function getPanAreaSize(options, viewportSize/*, pswp*/) {
-  // TODO: can we improve padding syntax
   return {
     x: viewportSize.x - (options.paddingLeft || 0) - (options.paddingRight || 0),
     y: viewportSize.y - (options.paddingTop || 0) - (options.paddingBottom || 0)

@@ -21,7 +21,7 @@
         "title": "Caption",
         "sidebar_label": "Caption"
       },
-      "click-actions": {
+      "click-and-tap-actions": {
         "title": "Click Actions",
         "sidebar_label": "Click Actions"
       },

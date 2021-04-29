@@ -1,5 +1,5 @@
 ---
-id: click-actions
+id: click-and-tap-actions
 title: Click Actions
 sidebar_label: Click Actions
 ---
