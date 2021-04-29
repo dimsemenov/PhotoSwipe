@@ -8,6 +8,7 @@ pkg/
 *~
 _site/
 .bundle/
+website/static/photoswipe/
 .DS_Store
 bbin/
 sftp-config*
