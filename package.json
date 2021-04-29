@@ -18,16 +18,17 @@
     "test": "npm run lint"
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "chokidar-cli": "^1.2.3",
-    "concurrently": "^4.1.2",
+    "@babel/core": "^7.13.16",
+    "@babel/eslint-parser": "^7.13.14",
+    "chokidar-cli": "^2.1.0",
+    "concurrently": "^6.0.2",
     "copyfiles": "^2.4.1",
-    "eslint": "^5.16.0",
+    "eslint": "^7.25.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.22.1",
-    "rollup": "^1.32.1",
-    "rollup-plugin-copy": "^1.1.0",
-    "rollup-plugin-terser": "^4.0.4"
+    "rollup": "^2.46.0",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "repository": {
     "type": "git",
@@ -48,6 +49,6 @@
     "swipe",
     "zoom"
   ],
-  "author": "Dmitry Semenov (https://dimsemenov.com)",
+  "author": "Dmytro Semenov (https://dimsemenov.com)",
   "license": "MIT"
 }
