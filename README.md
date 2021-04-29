@@ -1,7 +1,7 @@
 
-:exclamation: **Important note** v5 beta is now available for testing, please visit [documentation and examples](https://photoswipe.com/v5/docs/getting-started/) and report any issues that you find, code is within `v5-beta` branch.
+:exclamation: **Important note** v5 beta is now available for testing, [read announcement here](https://github.com/dimsemenov/PhotoSwipe/issues/1749) and report any issues that you find, code is within `v5-beta` branch.
 
-# PhotoSwipe Repository 
+## PhotoSwipe Repository 
 
 [![Build Status](https://travis-ci.org/dimsemenov/PhotoSwipe.svg)](https://travis-ci.org/dimsemenov/PhotoSwipe) 
 
