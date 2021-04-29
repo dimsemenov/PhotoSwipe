@@ -46,7 +46,9 @@ class Opener {
     this._duration = this.pswp.options.hideAnimationDuration;
 
     this._applyStartProps();
-    this._start();
+    setTimeout(() => {
+      this._start();
+    }, this._croppedZoom ? 30 : 0);
 
     return true;
   }
