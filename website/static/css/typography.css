@@ -1,0 +1,73 @@
+body { font-family: 'Inter', sans-serif !important; }
+@supports (font-variation-settings: normal) {
+  body { font-family: 'Inter var', sans-serif !important; }
+}
+
+
+body {
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 18px;
+    line-height: 26px;
+
+    color: #282B30;
+    background: rgba(0,0,0,0.01);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -moz-font-feature-settings: "liga", "kern";
+
+    
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+a {
+    color: #1B57A5;
+}
+a:hover {
+    text-decoration: underline;
+    color: #c00;
+}
+
+
+/* anchor style */
+a.anchor {
+    top: -20px;
+}
+a.hash-link {
+    transition: none;
+}
+a.hash-link svg {
+    display: none;
+}
+a.hash-link:before {
+    content: '#';
+}
+
+
+h1 {
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    line-height: 46px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+h2 {
+    font-size: 24px;
+    letter-spacing: -0.019em;
+    line-height: 34px;
+    margin-top: 48px;
+}
+h2, h3, h4, h5 {
+    font-weight: 700;
+}
+
+/* bring list closer to paragraph */
+p + ul,
+p + ol {
+    margin-top: -0.5em;
+}

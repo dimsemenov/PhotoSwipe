@@ -2,17 +2,13 @@
   "name": "photoswipe",
   "homepage": "https://photoswipe.com",
   "authors": [
-    "Dmitry Semenov <diiiimaaaa@gmail.com> (http://dimsemenov.com)"
+    "Dmytro Semenov <diiiimaaaa@gmail.com> (https://dimsemenov.com)"
   ],
   "description": "Touch-friendly image gallery for mobile and desktop. Without dependencies.",
   "main": [
-    "dist/photoswipe.js",
-    "dist/photoswipe.css",
-    "dist/photoswipe-ui-default.js",
-    "dist/default-skin/default-skin.css",
-    "dist/default-skin/default-skin.png",
-    "dist/default-skin/default-skin.svg",
-    "dist/default-skin/preloader.gif"
+    "dist/photoswipe.esm.js",
+    "dist/photoswipe-lightbox.esm.js",
+    "dist/photoswipe.css"
   ],
   "keywords": [
     "image",
@@ -32,6 +28,7 @@
     "bower_components",
     "test",
     "tests",
-    "website"
+    "website",
+    "docs"
   ]
 }

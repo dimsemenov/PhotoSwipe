@@ -1,0 +1,55 @@
+code {
+    font-family: "Input", "Menlo", "Monaco", Courier, monospace;
+    font-size: 17px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+/* code block background */
+.pswp-example__preview,
+.hljs {
+    padding: 20px 25px;
+    background: #f1f1f1
+}
+pre code {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+
+
+/* style scrollbar */
+.docs-styled-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.docs-styled-scrollbar::-webkit-scrollbar-button {
+    width: 0px;
+    height: 0px;
+}
+.docs-styled-scrollbar::-webkit-scrollbar-thumb {
+    background: #C2C2C2;
+    border: 0;
+    border-radius: 0;
+}
+.docs-styled-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+.docs-styled-scrollbar::-webkit-scrollbar-thumb:active {
+    background: #999;
+}
+.docs-styled-scrollbar::-webkit-scrollbar-track {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  background: #eee;
+}
+.docs-styled-scrollbar::-webkit-scrollbar-track:hover {
+    background: #ddd;
+}
+.docs-styled-scrollbar::-webkit-scrollbar-corner {
+  background: none;
+}
+
+

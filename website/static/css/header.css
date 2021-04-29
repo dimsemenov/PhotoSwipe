@@ -1,0 +1,72 @@
+.fixedHeaderContainer {
+    background: none;
+    padding: 0;
+    position: relative; /* remove fixed header */
+}
+
+.navPusher {
+    padding-top: 0;
+}
+.fixedHeaderContainer a {
+    color: #282B30;
+}
+.navigationSlider .slidingNav ul li a {
+    color: #282B30;
+}
+.headerWrapper header {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 8px 0;
+}
+
+.navigationSlider .slidingNav ul li a {
+    color: #1B57A5;
+    font-size: 16px;
+    letter-spacing: -0.011em;
+    line-height: 22px;
+    font-weight: 400;
+}
+
+.navigationSlider .slidingNav ul li a:focus,
+.navigationSlider .slidingNav ul li a:hover,
+.navigationSlider .slidingNav ul li.siteNavItemActive a,
+.navigationSlider .slidingNav ul li.siteNavGroupActive a {
+    color: #c00;
+    background: none;
+}
+
+.navigationSlider .slidingNav ul li.siteNavItemActive a, 
+.navigationSlider .slidingNav ul li.siteNavGroupActive a {
+    color: #282B30;
+    text-decoration: none;
+}
+
+@media only screen and (max-width: 1023px) {
+    /* menus */
+    .navigationSlider .slidingNav ul {
+        background: none;
+    }
+    .docsNavContainer {
+        margin-top: 80px;
+    }
+    .docsSliderActive .toc section .navGroups {
+        padding-top: 0;
+    }
+    .docsSliderActive.docsNavContainer {
+        padding-bottom: 0;
+    }
+    .toc section .navGroups {
+        padding: 10px;
+    }
+    .docsSliderActive .toc .navBreadcrumb, .tocActive .navBreadcrumb {
+        position: relative;
+    }
+    .navigationSlider .slidingNav ul li:first-child {
+        margin-left: 10px;
+    }
+    .navigationSlider .slidingNav ul {
+        background: #f1f1f1
+    }
+    .mainContainer {
+        padding-top: 10px;
+    }
+}

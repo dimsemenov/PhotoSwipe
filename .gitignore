@@ -1,7 +1,5 @@
 node_modules/
-release/*
-/release
-/node_modules
+release/
 Gemfile.lock
 test/dest
 *.gem
@@ -18,6 +16,7 @@ _site
 private-*
 __article/
 _site/*
+website/build/
 node_modules
 _production
 all.min.css
@@ -29,9 +28,3 @@ website/dist/
 /.idea
 .node-version
 .sass-cache/
-
-
-
-
-
-

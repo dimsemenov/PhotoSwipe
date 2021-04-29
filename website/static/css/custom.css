@@ -1,0 +1,17 @@
+
+
+/* fix: docusaurus footer causes horizontal scrollbar */
+.nav-footer .sitemap {
+    overflow: hidden;
+    
+}
+
+
+@media only screen and (max-width: 1023px) {
+    /* disable fixed-positioned navigation on smaller screens */
+    .fixedHeaderContainer,
+    .docsNavContainer {
+        position: relative;
+    }
+
+}

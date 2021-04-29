@@ -1,0 +1,19 @@
+{
+  "docs": {
+    "Introduction": ["getting-started"],
+    "Examples": [
+      "opening-or-closing-transition",
+      "adjusting-zoom-level",
+      "click-and-tap-actions",
+      "adding-custom-buttons",
+      "caption",
+      "data-sources",
+      "styling",
+      "native-fullscreen-on-open"
+    ],
+    "API": [
+      "options",
+      "api"
+    ]
+  }
+}
