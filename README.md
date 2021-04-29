@@ -1,6 +1,6 @@
-[Documentation and examples ->](https://photoswipe.com/v5/docs/getting-started/)
+v5 is now available for testing, please visit [documentation and examples](https://photoswipe.com/v5/docs/getting-started/) and report any issues that you find.
 
-# Repo structure
+### Repo structure
 
 - `dist/` - main JS and CSS
 - `src/` - source JS and CSS.
@@ -10,12 +10,12 @@
 - `website/` - website with documentation, demos and manual tests.
 - `build/` - rollup build config.
 
-# Build
+### Build
 
 - `npm run build` - builds and minifies JS and CSS to `dist/` directory. 
 - `npm run lint` - lints JS files in `src/` with eslint (`npm run lint-auto-fix` to fix auto-fixable issues).
 
-# Build docs and demos
+### Build docs and demos
 
 - npm install in root
 - npm install in `/website/` directory to get docusaurus (if you also need to build docs)
