@@ -138,7 +138,7 @@ lightbox.init();
 
 ## How initialization works
 
-1. Ligthbox (`photoswipe-lightbox.esm.js`) will be loaded when browser reaches the `import`. It won't block your page rendering as modules are deferred by default. It is also very light comparing to the PhotoSwipe core.
+1. Lightbox (`photoswipe-lightbox.esm.js`) will be loaded when browser reaches the `import`. It won't block your page rendering as modules are deferred by default. It is also very light comparing to the PhotoSwipe core.
 2. Lightbox will bind a single click event to each `gallerySelector`.
 3. After user clicks on any `childSelector` the Lightbox will start loading core PhotoSwipe library, specifically:
 
