@@ -23,6 +23,7 @@ List of options:
 ```js
 imageClickAction: (releasePoint, e) => {}
 ```
+- Any other value, for example `'none'`, will cause the click or tap to be ignored.
 
 
 ## Click on image moves to the next slide
