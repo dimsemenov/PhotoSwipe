@@ -458,6 +458,9 @@ _registerModule('Controller', {
 
 			if(!_initialContentSet && index === _currentItemIndex) {
 				_currZoomElementStyle = baseDiv.style;
+				if (!item.initialPosition) {
+					item.initialPosition = { x: 0, y: 0 };
+				}
 				_showOrHide(item, (img ||item.img) );
 			} else {
 				_applyZoomPanToItem(item);

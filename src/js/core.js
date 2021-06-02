@@ -177,7 +177,9 @@ var _isOpen,
 	},
 	_applyZoomPanToItem = function(item) {
 		if(item.container) {
-
+			if (!item.initialPosition) {
+				item.initialPosition = { x: 0, y: 0};
+			}
 			_applyZoomTransform(item.container.style, 
 								item.initialPosition.x, 
 								item.initialPosition.y, 
