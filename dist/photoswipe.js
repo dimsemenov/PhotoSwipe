@@ -3152,7 +3152,25 @@ _registerModule('Controller', {
 			if(!_initialContentSet && index === _currentItemIndex) {
 				_currZoomElementStyle = baseDiv.style;
 				if (!item.initialPosition) {
-					item.initialPosition = { x: 0, y: 0 };
+					item.initialPosition = { x: 48, y: 44 };
+					item.bounds = {
+						center: {
+							"x": 48,
+							"y": 44
+						},
+						max: {
+							"x": 48,
+							"y": 44
+						},
+						min: {
+							"x": 48,
+							"y": 44
+						}
+					};
+					item.h = window.innerHeight;
+					item.w = window.innerWidth;
+					item.fitRatio = 0.9067796610169492;
+					item.initialZoomLevel = 0.9067796610169492;
 				}
 				_showOrHide(item, (img ||item.img) );
 			} else {
