@@ -120,7 +120,9 @@ export function removeTransitionStyle(el) {
   setTransitionStyle(el);
 }
 
-const supportsImageDecode = ('decode' in new Image());
+const supportsImageDecode = () => {
+  return 'decode' in new Image();
+};
 
 export function isImageDecoded(img) {
   if (supportsImageDecode) {
