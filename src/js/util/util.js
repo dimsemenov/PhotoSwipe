@@ -120,25 +120,13 @@ export function removeTransitionStyle(el) {
   setTransitionStyle(el);
 }
 
-const supportsImageDecode = () => {
-  return 'decode' in new Image();
-};
-
-export function isImageDecoded(img) {
-  if (supportsImageDecode) {
-    return img.decoded;
-  }
-
-  return img.complete;
-}
-
 export function decodeImage(img) {
-  if (isImageDecoded(img)) {
-    return Promise.resolve(img);
+  if ('decode' in new Image()) {
+    return img.decode();
   }
 
-  if (supportsImageDecode) {
-    return img.decode();
+  if (img.complete) {
+    return Promise.resolve(img);
   }
 
   return new Promise((resolve, reject) => {
