@@ -73,13 +73,13 @@ export function clamp(val, min, max) {
  */
 export function toTransformString(x, y, scale) {
   let propValue = 'translate3d('
-                      + x + 'px,' + (y || 0) + 'px'
-                      + ',0)';
+    + x + 'px,' + (y || 0) + 'px'
+    + ',0)';
 
   if (scale !== undefined) {
     propValue += ' scale3d('
-                      + scale + ',' + scale
-                      + ',1)';
+      + scale + ',' + scale
+      + ',1)';
   }
 
   return propValue;
@@ -121,7 +121,7 @@ export function removeTransitionStyle(el) {
 }
 
 export function decodeImage(img) {
-  if ('decode' in new Image()) {
+  if ('decode' in img) {
     return img.decode();
   }
 
