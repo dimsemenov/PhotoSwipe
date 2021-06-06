@@ -73,13 +73,13 @@ export function clamp(val, min, max) {
  */
 export function toTransformString(x, y, scale) {
   let propValue = 'translate3d('
-                      + x + 'px,' + (y || 0) + 'px'
-                      + ',0)';
+    + x + 'px,' + (y || 0) + 'px'
+    + ',0)';
 
   if (scale !== undefined) {
     propValue += ' scale3d('
-                      + scale + ',' + scale
-                      + ',1)';
+      + scale + ',' + scale
+      + ',1)';
   }
 
   return propValue;
@@ -120,23 +120,13 @@ export function removeTransitionStyle(el) {
   setTransitionStyle(el);
 }
 
-const supportsImageDecode = ('decode' in new Image());
-
-export function isImageDecoded(img) {
-  if (supportsImageDecode) {
-    return img.decoded;
-  }
-
-  return img.complete;
-}
-
 export function decodeImage(img) {
-  if (isImageDecoded(img)) {
-    return Promise.resolve(img);
+  if ('decode' in img) {
+    return img.decode();
   }
 
-  if (supportsImageDecode) {
-    return img.decode();
+  if (img.complete) {
+    return Promise.resolve(img);
   }
 
   return new Promise((resolve, reject) => {
