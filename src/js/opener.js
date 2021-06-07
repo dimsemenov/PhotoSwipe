@@ -207,8 +207,10 @@ class Opener {
     this.pswp.template.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
     if (this.isOpening) {
-      // unhide the placeholder
-      this._placeholder.style.opacity = 1;
+      if (this._placeholder) {
+        // unhide the placeholder
+        this._placeholder.style.opacity = 1;
+      }
       this._animateToOpenState();
     } else if (this.isClosing) {
       this._animateToClosedState();
