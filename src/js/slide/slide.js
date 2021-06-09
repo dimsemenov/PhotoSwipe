@@ -146,16 +146,18 @@ class Slide {
     // as it causes flash of image after it's loaded in Safari
     // this.image.decoding = 'async';
 
-    this.image.src = this.data.src;
+    // may update sizes attribute
+    this._updateImagesSize();
+
     if (this.data.srcset) {
       this.image.srcset = this.data.srcset;
     }
+
+    this.image.src = this.data.src;
+
     this.image.alt = this.data.alt || '';
 
     this.pswp.lazyLoader.addRecent(this.index);
-
-    // may update sizes attribute
-    this._updateImagesSize();
   }
 
   /**

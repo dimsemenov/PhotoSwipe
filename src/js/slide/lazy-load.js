@@ -35,10 +35,10 @@ export function lazyLoadSlide(index, instance) {
     const image = document.createElement('img');
     image.decoding = 'async';
     image.sizes = Math.ceil(itemData.w * zoomLevel.initial) + 'px';
-    image.src = itemData.src;
     if (itemData.srcset) {
       image.srcset = itemData.srcset;
     }
+    image.src = itemData.src;
   }
 }
 
