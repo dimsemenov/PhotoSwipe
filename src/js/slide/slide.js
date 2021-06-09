@@ -8,7 +8,6 @@ import {
   equalizePoints,
   roundPoint,
   toTransformString,
-  decodeImage,
   clamp,
 } from '../util/util.js';
 
@@ -195,11 +194,21 @@ class Slide {
       this._appendImage();
       //}
 
-      decodeImage(this.image).then(() => {
+      // Firefox (89) throws "DOMException: Invalid image request."
+      // if decode() is called right after image is appended, see #1760
+      // decodeImage(this.image).then(() => {
+      //   this._onImageLoaded();
+      // }).catch(() => {
+      //   this._onImageLoaded(true);
+      // });
+      // So we use simple onload:
+
+      if (this.image.complete) {
         this._onImageLoaded();
-      }).catch(() => {
-        this._onImageLoaded(true);
-      });
+      } else {
+        this.image.onload = () => this._onImageLoaded();
+        this.image.onerror = () => this._onImageLoaded(true);
+      }
     }
   }
 
