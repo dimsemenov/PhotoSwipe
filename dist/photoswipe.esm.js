@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.0.0 - https://photoswipe.com
+  * PhotoSwipe 5.0.1 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -77,13 +77,13 @@ function clamp(val, min, max) {
  */
 function toTransformString(x, y, scale) {
   let propValue = 'translate3d('
-                      + x + 'px,' + (y || 0) + 'px'
-                      + ',0)';
+    + x + 'px,' + (y || 0) + 'px'
+    + ',0)';
 
   if (scale !== undefined) {
     propValue += ' scale3d('
-                      + scale + ',' + scale
-                      + ',1)';
+      + scale + ',' + scale
+      + ',1)';
   }
 
   return propValue;
@@ -124,23 +124,13 @@ function removeTransitionStyle(el) {
   setTransitionStyle(el);
 }
 
-const supportsImageDecode = ('decode' in new Image());
-
-function isImageDecoded(img) {
-  if (supportsImageDecode) {
-    return img.decoded;
-  }
-
-  return img.complete;
-}
-
 function decodeImage(img) {
-  if (isImageDecoded(img)) {
-    return Promise.resolve(img);
+  if ('decode' in img) {
+    return img.decode();
   }
 
-  if (supportsImageDecode) {
-    return img.decode();
+  if (img.complete) {
+    return Promise.resolve(img);
   }
 
   return new Promise((resolve, reject) => {
@@ -647,16 +637,18 @@ class Slide {
     // as it causes flash of image after it's loaded in Safari
     // this.image.decoding = 'async';
 
-    this.image.src = this.data.src;
+    // may update sizes attribute
+    this._updateImagesSize();
+
     if (this.data.srcset) {
       this.image.srcset = this.data.srcset;
     }
+
+    this.image.src = this.data.src;
+
     this.image.alt = this.data.alt || '';
 
     this.pswp.lazyLoader.addRecent(this.index);
-
-    // may update sizes attribute
-    this._updateImagesSize();
   }
 
   /**
@@ -694,11 +686,21 @@ class Slide {
       this._appendImage();
       //}
 
-      decodeImage(this.image).then(() => {
+      // Firefox (89) throws "DOMException: Invalid image request."
+      // if decode() is called right after image is appended, see #1760
+      // decodeImage(this.image).then(() => {
+      //   this._onImageLoaded();
+      // }).catch(() => {
+      //   this._onImageLoaded(true);
+      // });
+      // So we use simple onload:
+
+      if (this.image.complete) {
         this._onImageLoaded();
-      }).catch(() => {
-        this._onImageLoaded(true);
-      });
+      } else {
+        this.image.onload = () => this._onImageLoaded();
+        this.image.onerror = () => this._onImageLoaded(true);
+      }
     }
   }
 
@@ -3539,10 +3541,10 @@ function lazyLoadSlide(index, instance) {
     const image = document.createElement('img');
     image.decoding = 'async';
     image.sizes = Math.ceil(itemData.w * zoomLevel.initial) + 'px';
-    image.src = itemData.src;
     if (itemData.srcset) {
       image.srcset = itemData.srcset;
     }
+    image.src = itemData.src;
   }
 }
 
@@ -4026,8 +4028,10 @@ class Opener {
     this.pswp.template.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
     if (this.isOpening) {
-      // unhide the placeholder
-      this._placeholder.style.opacity = 1;
+      if (this._placeholder) {
+        // unhide the placeholder
+        this._placeholder.style.opacity = 1;
+      }
       this._animateToOpenState();
     } else if (this.isClosing) {
       this._animateToClosedState();

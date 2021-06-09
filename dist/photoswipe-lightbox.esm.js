@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.0.0 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.0.1 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -9,8 +9,6 @@
   * @param {String|NULL} tagName
   * @param {Element|NULL} appendToEl
   */
-
-('decode' in new Image());
 
 /**
  * Check if click or keydown event was dispatched
@@ -220,10 +218,10 @@ function lazyLoadSlide(index, instance) {
     const image = document.createElement('img');
     image.decoding = 'async';
     image.sizes = Math.ceil(itemData.w * zoomLevel.initial) + 'px';
-    image.src = itemData.src;
     if (itemData.srcset) {
       image.srcset = itemData.srcset;
     }
+    image.src = itemData.src;
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "photoswipe",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "engines": {
     "node": ">= 0.12.0"
   },
