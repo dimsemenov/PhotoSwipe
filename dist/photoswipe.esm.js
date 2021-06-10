@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.0.1 - https://photoswipe.com
+  * PhotoSwipe 5.0.2 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -1613,6 +1613,10 @@ class ZoomHandler {
     }
 
     if (!panNeedsChange && !currZoomLevelNeedsChange && !restoreBgOpacity) {
+      // update resolution after gesture
+      currSlide._setResolution(destinationZoomLevel);
+      currSlide.applyCurrentZoomPan();
+
       // nothing to animate
       return;
     }
@@ -1654,6 +1658,11 @@ class ZoomHandler {
           ));
         }
       },
+      onComplete: () => {
+        // update resolution after transition ends
+        currSlide._setResolution(destinationZoomLevel);
+        currSlide.applyCurrentZoomPan();
+      }
     });
   }
 }
