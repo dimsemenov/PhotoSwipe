@@ -97,6 +97,9 @@ class ZoomHandler {
   end() {
     const { pswp } = this;
     const { currSlide } = pswp;
+    const { currZoomLevel } = currSlide;
+    currSlide._setResolution(currZoomLevel);
+    currSlide.applyCurrentZoomPan();
     if (currSlide.currZoomLevel < currSlide.zoomLevels.initial
         && !this._wasOverFitZoomLevel
         && pswp.options.pinchToClose) {
