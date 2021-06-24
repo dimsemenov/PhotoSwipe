@@ -273,7 +273,7 @@ div.pswp__img--placeholder,
   will-change: opacity;
 }
 
-/* 
+/*
 
   Image Title 
 
@@ -289,9 +289,6 @@ div.pswp__img--placeholder,
   align-self: center;
   padding-bottom: 1px;
   margin-top: 3px;
-
-  padding-left: 120px;
-  padding-right: 120px;
   transition:all 0.2s ease;
 
   text-align: center;
@@ -301,7 +298,7 @@ div.pswp__img--placeholder,
 }
 
 @media only screen and (max-width: 500px) {
-  .pswp__image--title{
+  .pswp--one-slide .pswp__image--title{
      transition:all 0.2s ease;
      padding-left: 20px;
      text-align: start;
@@ -309,6 +306,14 @@ div.pswp__img--placeholder,
      left: 0;
   }
 }
+
+@media only screen and (max-width: 400px) {
+  .pswp__image--title {
+    transition:all 0.2s ease;
+    padding-right: 30px;
+ }
+}
+
 
 /*
 
