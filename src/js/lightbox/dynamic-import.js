@@ -5,14 +5,14 @@ export function dynamicImportModule(module) {
 
 export function dynamicImportPlugin(pluginKey, pluginItem) {
   return new Promise((resolve) => {
-    if(typeof pluginItem === 'string' || typeof pluginItem === 'object'){
+    if (typeof pluginItem === 'string' || typeof pluginItem === 'object') {
       dynamicImportModule(pluginItem).then((module) => {
         resolve({
           pluginKey,
           moduleClass: typeof module === 'string' ? module.default : module
         });
       }).catch(resolve);
-    } else{
+    } else {
       resolve();
     }
   });
