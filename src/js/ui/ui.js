@@ -4,6 +4,7 @@ import closeButton from './button-close.js';
 import zoomButton from './button-zoom.js';
 import { loadingIndicator } from './loading-indicator.js';
 import { counterIndicator } from './counter-indicator.js';
+import { imageTitle } from './image-title.js';
 
 /**
  * Set special class on element when image is zoomed.
@@ -26,6 +27,7 @@ class UI {
     const { pswp } = this;
     this.isRegistered = false;
     this.uiElementsData = [
+      imageTitle,
       closeButton,
       arrowPrev,
       arrowNext,
