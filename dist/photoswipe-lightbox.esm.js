@@ -227,19 +227,19 @@ function lazyLoadSlide(index, instance) {
 
 function dynamicImportModule(module) {
   // TODO: polyfill import?
-  return typeof module === 'string' ? import(module) : module;
+  return import(module);
 }
 
 function dynamicImportPlugin(pluginKey, pluginItem) {
   return new Promise((resolve) => {
-    if(module != null){
+    if (typeof pluginItem === 'string') {
       dynamicImportModule(pluginItem).then((module) => {
         resolve({
           pluginKey,
-          moduleClass: typeof module === 'string' ? module.default : module
+          moduleClass: module.default
         });
       }).catch(resolve);
-    } else{
+    } else {
       resolve();
     }
   });
@@ -689,10 +689,10 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     // Pass data to PhotoSwipe and open init
-    const pswp = typeof module === "object" 
-        ? new module.default(null, this.options) // eslint-disable-line
-        : new module(null, this.options);
-
+    const pswp = new module.default( // eslint-disable-line
+      null,
+      this.options
+    );
     pswp.pluginClasses = this._pluginClasses;
 
     this.pswp = pswp;

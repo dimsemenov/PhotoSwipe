@@ -207,10 +207,10 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     // Pass data to PhotoSwipe and open init
-    const pswp = new module.default( // eslint-disable-line
-      null,
-      this.options
-    );
+    const pswp = typeof module === "object" 
+        ? new module.default(null, this.options) // eslint-disable-line
+        : new module(null, this.options);
+
     pswp.pluginClasses = this._pluginClasses;
 
     this.pswp = pswp;
