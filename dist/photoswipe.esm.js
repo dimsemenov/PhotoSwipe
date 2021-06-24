@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.0.2 - https://photoswipe.com
+  * PhotoSwipe 5.0.3 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
