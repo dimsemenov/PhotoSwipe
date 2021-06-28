@@ -273,6 +273,47 @@ div.pswp__img--placeholder,
   will-change: opacity;
 }
 
+/*
+
+  Image Title 
+
+*/
+.pswp__image--title{
+  color: white;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 600;
+
+  width: 100%;
+  position: absolute;
+  align-self: center;
+  padding-bottom: 1px;
+  margin-top: 3px;
+  transition:all 0.2s ease;
+
+  text-align: center;
+  text-overflow: ellipsis; 
+  overflow: hidden; 
+  white-space: nowrap;
+}
+
+@media only screen and (max-width: 500px) {
+  .pswp--one-slide .pswp__image--title{
+     transition:all 0.2s ease;
+     padding-left: 20px;
+     text-align: start;
+     margin-left: 2px;
+     left: 0;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .pswp__image--title {
+    transition:all 0.2s ease;
+    padding-right: 30px;
+ }
+}
+
 
 /*
 

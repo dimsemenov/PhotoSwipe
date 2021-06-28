@@ -227,7 +227,7 @@ function lazyLoadSlide(index, instance) {
 
 function dynamicImportModule(module) {
   // TODO: polyfill import?
-  return typeof module === 'string' ? import(module) : module;
+  return typeof module === 'string' ? import(/* webpackIgnore: true */ module) : module;
 }
 
 function dynamicImportPlugin(pluginKey, pluginItem) {

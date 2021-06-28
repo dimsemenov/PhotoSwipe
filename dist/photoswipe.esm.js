@@ -3320,6 +3320,18 @@ const counterIndicator = {
   }
 };
 
+const imageTitle = {
+  name: 'title',
+  title: 'Title',
+  class: 'image--title',
+  order: 6,
+  onInit: (titleElement, pswp) => {
+    pswp.on('change', () => {
+      titleElement.innerHTML = pswp.currItemData.alt;
+    });
+  }
+};
+
 /**
  * Set special class on element when image is zoomed.
  *
@@ -3341,6 +3353,7 @@ class UI {
     const { pswp } = this;
     this.isRegistered = false;
     this.uiElementsData = [
+      imageTitle,
       closeButton,
       arrowPrev,
       arrowNext,
