@@ -92,3 +92,24 @@ zoomTitle: 'Zoom (z)',
 arrowPrevTitle: 'Previous',
 arrowNextTitle: 'Next'
 ```
+
+## Hiding a specific UI element
+
+Elements can be disabled by their name, for example:
+
+```
+arrowPrev: false,
+arrowNext: false,
+zoom: false,
+close: false,
+counter: false
+```
+
+You may also hide them via CSS, for example:
+
+```
+.pswp__counter {
+  display: none;
+}
+```
+
