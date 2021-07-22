@@ -99,8 +99,6 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.options.loop = false;
     }
 
-    this._initializePlugins();
-
     this.dispatch('init');
 
     this._createMainStructure();
@@ -485,20 +483,6 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   getThumbBounds() {
     return getThumbBounds(this.currIndex, this.currItemData, this);
-  }
-
-  _initializePlugins() {
-    this.plugins = {};
-
-    // pluginClasses should be defined by the lightbox module
-    if (this.pluginClasses) {
-      Object.keys(this.pluginClasses).forEach((name) => {
-        const PluginClass = this.pluginClasses[name];
-        if (typeof PluginClass === 'function') {
-          this.plugins[name] = new PluginClass(this);
-        }
-      });
-    }
   }
 
   _prepareOptions(options) {
