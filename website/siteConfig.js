@@ -56,8 +56,7 @@ const siteConfig = {
   // concateneted to the main docusaurus CSS file
   separateCss: ['photoswipe.css'],
   stylesheets: [
-    //'/photoswipe/photoswipe.css'
-    //'/dist/with-black-background/photoswipe.css'
+    '/v5/photoswipe/photoswipe.css'
   ],
 
   onPageNav: false,

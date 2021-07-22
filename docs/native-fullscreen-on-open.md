@@ -52,7 +52,6 @@ const lightbox = new PhotoSwipeLightbox({
   gallerySelector: '#gallery--native-fs',
   childSelector: 'a',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
 
   // Add function that returns promise
   openPromise: getFullscreenPromise,

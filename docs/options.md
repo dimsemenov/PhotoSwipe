@@ -124,11 +124,7 @@ String|false. CSS selector for elements within `gallerySelector`. For example, l
 
 ### pswpModule
 
-String, `null`. URL to PhotoSwipe Core module JS file, optional.
-
-### pswpCSS
-
-String, `null`. URL to PhotoSwipe CSS file, optional.
+String|Object, `null`. URL to PhotoSwipe Core module JS file or the module object itself, optional.
 
 ### preloadFirstSlide
 

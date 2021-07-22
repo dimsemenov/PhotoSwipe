@@ -18,8 +18,7 @@ const options = {
   gallerySelector:'#gallery--with-custom-button',
   childSelector:'a',
   
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css'
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.on('uiRegister', function() {
@@ -73,8 +72,7 @@ const options = {
   gallerySelector:'#gallery--with-custom-toolbar-indicator',
   childSelector:'a',
   
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css'
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.on('uiRegister', function() {

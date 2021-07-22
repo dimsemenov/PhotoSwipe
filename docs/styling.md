@@ -11,7 +11,7 @@ By default PhotoSwipe includes Close, Zoom and Arrow icon (right arrow is flippe
 
 Default icons contain an outline/shadow so the icon is visible on both dark and light background (to disable it add style `.pswp__icn-shadow { display: none }`).
 
-To modify icons color use CSS variables. To modify SVG shapes use JS options: `arrowPrevSVG`, `arrowNextSVG`, `closeSVG`, `zoomSVG` (set value to empty string `''` if you want to remove the icon).
+To modify the color of the icons use CSS variables. To modify SVG shapes use JS options: `arrowPrevSVG`, `arrowNextSVG`, `closeSVG`, `zoomSVG` (set value to empty string `''` if you want to remove the icon), these options support any HTML string.
 
 For example:
 
@@ -32,8 +32,7 @@ const options = {
 
   gallerySelector: '#gallery--custom-icon-colors',
   childSelector: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css'
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -113,3 +112,48 @@ You may also hide them via CSS, for example:
 }
 ```
 
+## Background color and opacity
+
+Background color can be controlled via CSS variable `.pswp { --pswp-bg: red; }` or directly `.pswp__bg { background: red; }`
+
+To adjust opacity - use JS option `bgOpacity`, for example `bgOpacity: 0.6`.
+
+- If you need transparency - do not use rgba color to define background of the PhotoSwipe, it affects the performance.
+- Do no try to apply blur to the background of PhotoSwipe, as it also heavily affects the performance.
+
+<!-- PhotoSwipe example block START -->
+<div class="pswp-example">
+
+```pswp_example js
+import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+
+const options = {
+  // set background opacity
+  bgOpacity: 0.6,
+
+  // to apply styles just to this instance of PhotoSwipe
+  mainClass: 'pswp--custom-bg',
+
+  gallerySelector: '#gallery--custom-bg',
+  childSelector: 'a',
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+};
+const lightbox = new PhotoSwipeLightbox(options);
+lightbox.init();
+```
+
+```pswp_example css
+.pswp--custom-bg {
+  --pswp-bg: #7079bf;
+}
+```
+
+```pswp_example gallery
+{ 
+  "id":"custom-bg",
+  "autoImages":"4"
+}
+```
+
+</div> 
+<!-- PhotoSwipe example block END -->

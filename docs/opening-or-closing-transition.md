@@ -22,8 +22,7 @@ const lightbox = new PhotoSwipeLightbox({
   gallerySelector: '#gallery--zoom-transition',
   childSelector: 'a',
   showHideAnimationType: 'zoom',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 lightbox.init();
 ```
@@ -46,8 +45,7 @@ const lightbox = new PhotoSwipeLightbox({
   gallerySelector:'#gallery--fade-transition',
   childSelector:'a',
   showHideAnimationType: 'fade',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 lightbox.init();
 ```
@@ -77,8 +75,7 @@ const lightbox = new PhotoSwipeLightbox({
   // to create more consistent experience
   zoomAnimationDuration: false,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 lightbox.init();
 ```
@@ -120,8 +117,7 @@ const lightbox = new PhotoSwipeLightbox({
   showAnimationDuration: 1000,
   hideAnimationDuration: 1000,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 lightbox.on('firstUpdate', () => {
   lightbox.pswp.options.easing = backEasing.out;
@@ -159,8 +155,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallerySelector:'#gallery--cropped-thumbs',
   childSelector:'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 lightbox.init();
 ```
@@ -192,8 +187,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallerySelector:'#gallery--badges',
   childSelector: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 
 let firstElWithBadge;

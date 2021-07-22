@@ -20,7 +20,11 @@ The PhotoSwipe consists of parts:
 1. **Core** (`photoswipe.esm.js`).
 2. **Lightbox** (`photoswipe-lightbox.esm.js`) - loads **Core** and chooses when PhotoSwipe should be opened. Its file size is significantly smaller. It also loads the first image (in parallel with **Core**).
 
-There is also `photoswipe.css` that controls [styling](styling.md), the **Lightbox** can automatically load it.
+There is also `photoswipe.css` that controls [styling](styling.md):
+
+```html
+<link rel="stylesheet" href="/path/to/photoswipe.css"/>
+```
 
 You may use single `<script>` tag to load everything, always add `type="module"` to it, as both files are ES6 modules.
 
@@ -41,11 +45,7 @@ const lightbox = new PhotoSwipeLightbox({
 
   // Include PhotoSwipe Core
   // and use absolute path (that starts with http(s)://)
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-
-  // Include CSS file,
-  // (if you haven't included in via <link>)
-  pswpCSS: '/v5/photoswipe/photoswipe.css'
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 lightbox.init();
 </script>
@@ -61,6 +61,36 @@ lightbox.init();
 
 </div> 
 <!-- PhotoSwipe example block END -->
+
+## Using with Webpack or any other module bundler
+
+I recommend to load PhotoSwipe via dynamic import.
+But if you do not want to bother with it and include everything in the main bundle, it can be done like this:
+
+```js
+import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
+import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
+
+// don't forget to include CSS in some way
+// import 'photoswipe/dist/photoswipe.css';
+
+const lightbox = new PhotoSwipeLightbox({
+  gallerySelector: '#my-gallery',
+  childSelector: 'a',
+  pswpModule: PhotoSwipe
+});
+lightbox.init();
+```
+
+While v5 is in beta, you may install it like this:
+
+```
+npm install --save git://github.com/dimsemenov/photoswipe#v5-beta
+```
+
+If you have suggestions on how to improve initialization for some specific framework - feel free to open an issue.
+
+
 
 ## Required HTML markup
 
@@ -88,8 +118,7 @@ const options = {
   // Skip childSelector
   gallerySelector: '#gallery--individual a',
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css'
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -119,8 +148,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   gallerySelector: '#gallery--responsive-images',
   childSelector: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css'
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -143,9 +171,7 @@ lightbox.init();
 3. After user clicks on any `childSelector` the Lightbox will start loading core PhotoSwipe library, specifically:
 
     - PhotoSwipe core JS file that you may define via `pswpModule` option.
-    - PhotoSwipe CSS file that you may define via `pswpCSS` option.
     - The first image.
-    - Optional plugin JS and CSS files (#todo).
 
 
 ## Supported browsers and fallback

@@ -51,8 +51,7 @@ const options = {
 
   ],
   showHideAnimationType: 'none',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css'
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -103,8 +102,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   gallerySelector: '#gallery--custom-last-slide',
   childSelector: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css'
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.on('numItems', (e) => {
@@ -143,7 +141,6 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   showHideAnimationType: 'none',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
   preload: [1,2]
 };
 const lightbox = new PhotoSwipeLightbox(options);
@@ -193,8 +190,7 @@ const lightbox = new PhotoSwipeLightbox({
   // (for opening/closing zoom transition)
   thumbSelector: 'a',
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
-  pswpCSS: '/v5/photoswipe/photoswipe.css',
+  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 
 lightbox.on('itemData', (e) => {
