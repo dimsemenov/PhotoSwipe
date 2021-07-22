@@ -592,6 +592,10 @@ class Slide {
       );
 
       this.zoomLevels.update(this.width, this.height, this.panAreaSize);
+
+      pswp.dispatch('calcSlideSize', {
+        slide: this
+      });
     } else {
       this.width = 0;
       this.height = 0;
