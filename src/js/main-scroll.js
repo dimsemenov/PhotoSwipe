@@ -143,8 +143,7 @@ class MainScroll {
         naturalFrequency: 30,
         dampingRatio: 1, //0.7,
         onUpdate: (x) => {
-          this.x = x;
-          setTransform(this.pswp.container, x);
+          this.moveTo(x);
         },
         onComplete: () => {
           this.updateCurrItem();
@@ -278,6 +277,8 @@ class MainScroll {
 
     this.x = x;
     setTransform(this.pswp.container, x);
+
+    this.pswp.dispatch('moveMainScroll', { x, dragging });
   }
 }
 
