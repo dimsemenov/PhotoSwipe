@@ -101,6 +101,8 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     this._initializePlugins();
 
+    this.dispatch('init');
+
     this._createMainStructure();
 
     // init modules
