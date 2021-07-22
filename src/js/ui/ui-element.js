@@ -39,6 +39,8 @@ function addButtonHTML(htmlData) {
 class UIElement {
   constructor(pswp, data) {
     const name = data.name || data.class;
+    let elementHTML = data.html;
+
     if (pswp.options[name] === false) {
       // exit if element is disabled from options
       return;
@@ -50,7 +52,7 @@ class UIElement {
       // arrowNextSVG
       // closeSVG
       // zoomSVG
-      data.html = pswp.options[name + 'SVG'];
+      elementHTML = pswp.options[name + 'SVG'];
     }
 
     pswp.dispatch('uiElementCreate', { data });
@@ -67,7 +69,7 @@ class UIElement {
       element = createElement(className, 'button');
       element.type = 'button';
       // add either html or svg inside it
-      element.innerHTML = addButtonHTML(data.html);
+      element.innerHTML = addButtonHTML(elementHTML);
 
       if (typeof pswp.options[name + 'Title'] === 'string') {
         element.title = pswp.options[name + 'Title'];
