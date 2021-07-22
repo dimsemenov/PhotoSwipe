@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.0.3 - https://photoswipe.com
+  * PhotoSwipe 5.1.0 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -1084,6 +1084,10 @@ class Slide {
       );
 
       this.zoomLevels.update(this.width, this.height, this.panAreaSize);
+
+      pswp.dispatch('calcSlideSize', {
+        slide: this
+      });
     } else {
       this.width = 0;
       this.height = 0;
@@ -2398,8 +2402,7 @@ class MainScroll {
         naturalFrequency: 30,
         dampingRatio: 1, //0.7,
         onUpdate: (x) => {
-          this.x = x;
-          setTransform(this.pswp.container, x);
+          this.moveTo(x);
         },
         onComplete: () => {
           this.updateCurrItem();
@@ -2533,6 +2536,8 @@ class MainScroll {
 
     this.x = x;
     setTransform(this.pswp.container, x);
+
+    this.pswp.dispatch('moveMainScroll', { x, dragging });
   }
 }
 
@@ -3077,6 +3082,8 @@ function addButtonHTML(htmlData) {
 class UIElement {
   constructor(pswp, data) {
     const name = data.name || data.class;
+    let elementHTML = data.html;
+
     if (pswp.options[name] === false) {
       // exit if element is disabled from options
       return;
@@ -3088,7 +3095,7 @@ class UIElement {
       // arrowNextSVG
       // closeSVG
       // zoomSVG
-      data.html = pswp.options[name + 'SVG'];
+      elementHTML = pswp.options[name + 'SVG'];
     }
 
     pswp.dispatch('uiElementCreate', { data });
@@ -3105,8 +3112,11 @@ class UIElement {
       element = createElement(className, 'button');
       element.type = 'button';
       // add either html or svg inside it
-      element.innerHTML = addButtonHTML(data.html);
-      if (data.title) {
+      element.innerHTML = addButtonHTML(elementHTML);
+
+      if (typeof pswp.options[name + 'Title'] === 'string') {
+        element.title = pswp.options[name + 'Title'];
+      } else if (data.title) {
         element.title = data.title;
       }
     } else {
@@ -4259,7 +4269,7 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.options.loop = false;
     }
 
-    this._initializePlugins();
+    this.dispatch('init');
 
     this._createMainStructure();
 
@@ -4643,20 +4653,6 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   getThumbBounds() {
     return getThumbBounds(this.currIndex, this.currItemData, this);
-  }
-
-  _initializePlugins() {
-    this.plugins = {};
-
-    // pluginClasses should be defined by the lightbox module
-    if (this.pluginClasses) {
-      Object.keys(this.pluginClasses).forEach((name) => {
-        const PluginClass = this.pluginClasses[name];
-        if (typeof PluginClass === 'function') {
-          this.plugins[name] = new PluginClass(this);
-        }
-      });
-    }
   }
 
   _prepareOptions(options) {

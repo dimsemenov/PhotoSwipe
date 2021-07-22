@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.0.3 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.1.0 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -226,60 +226,7 @@ function lazyLoadSlide(index, instance) {
 }
 
 function dynamicImportModule(module) {
-  // TODO: polyfill import?
-  return typeof module === 'string' ? import(module) : module;
-}
-
-function dynamicImportPlugin(pluginKey, pluginItem) {
-  return new Promise((resolve) => {
-    if (typeof pluginItem === 'string' || typeof pluginItem === 'object') {
-      dynamicImportModule(pluginItem).then((module) => {
-        resolve({
-          pluginKey,
-          moduleClass: typeof module === 'string' ? module.default : module
-        });
-      }).catch(resolve);
-    } else {
-      resolve();
-    }
-  });
-}
-
-/**
- * Dynamically load CSS file.
- *
- * Based on loadCSS by Filament Group:
- * https://github.com/filamentgroup/loadCSS
- * https://filamentgroup.com
- *
- * @param {String} href URL
- */
-function loadCSS(href) {
-  return new Promise((resolve, reject) => {
-    // try to find existing CSS with the same href
-    let link = document.head.querySelector(`link[href="${href}"]`);
-
-    if (!link) {
-      link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = href;
-      link.media = 'all';
-      document.head.appendChild(link);
-    } else if (link.dataset.loaded) {
-      // already loaded
-      resolve();
-      return;
-    }
-
-    link.onload = () => {
-      link.dataset.loaded = true;
-      requestAnimationFrame(() => resolve());
-    };
-    link.onerror = () => {
-      link.remove();
-      reject();
-    };
-  });
+  return typeof module === 'string' ? import(/* webpackIgnore: true */ module) : module;
 }
 
 /**
@@ -509,8 +456,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   constructor(options) {
     super();
     this.options = options;
-    this._additionalDynamicCSS = [];
-    this._pluginClasses = {};
     this._uid = 0;
   }
 
@@ -589,7 +534,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   }
 
   /**
-   * Load JS/CSS files and open PhotoSwipe afterwards.
+   * Load and open PhotoSwipe
    *
    * @param {Integer} index
    * @param {Array|Object|null} dataSource
@@ -613,7 +558,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   }
 
   /**
-   * Load JS/CSS files and the slide content by index
+   * Load the main module and the slide content by index
    *
    * @param {Integer} index
    */
@@ -627,14 +572,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     // Add the main module
     const promiseArray = [dynamicImportModule(options.pswpModule)];
 
-    // Add plugin modules
-    Object.keys(this._pluginClasses).forEach((pluginKey) => {
-      promiseArray.push(dynamicImportPlugin(
-        pluginKey,
-        this._pluginClasses[pluginKey]
-      ));
-    });
-
     // Add custom-defined promise, if any
     if (typeof options.openPromise === 'function') {
       // allow developers to perform some task before opening
@@ -645,25 +582,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       lazyLoadSlide(index, this);
     }
 
-    // Load main CSS
-    if (options.pswpCSS) {
-      promiseArray.push(loadCSS(options.pswpCSS));
-    }
-
-    // Load additional CSS, if any
-    this._additionalDynamicCSS.forEach((href) => {
-      promiseArray.push(loadCSS(href));
-    });
-
     // Wait till all promises resolve and open PhotoSwipe
     const uid = ++this._uid;
     Promise.all(promiseArray).then((iterableModules) => {
-      iterableModules.forEach((item) => {
-        if (item && item.pluginKey && item.moduleClass) {
-          this._pluginClasses[item.pluginKey] = item.moduleClass;
-        }
-      });
-
       if (this.shouldOpen) {
         const mainModule = iterableModules[0];
         this._openPhotoswipe(mainModule, uid);
@@ -693,8 +614,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
         ? new module.default(null, this.options) // eslint-disable-line
         : new module(null, this.options); // eslint-disable-line
 
-    pswp.pluginClasses = this._pluginClasses;
-
     this.pswp = pswp;
     window.pswp = pswp;
 
@@ -712,25 +631,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     });
 
     pswp.init();
-  }
-
-  /**
-   * Register a plugin.
-   *
-   * @param {String} name
-   * @param {Class|String} pluginClass Plugin class or path to module (string).
-   */
-  addPlugin(name, pluginClass) {
-    this._pluginClasses[name] = pluginClass;
-  }
-
-  /**
-   * Add CSS file that will be loaded when PhotoSwipe dialog is opened.
-   *
-   * @param {String} href CSS file URL.
-   */
-  addCSS(href) {
-    this._additionalDynamicCSS.push(href);
   }
 
   destroy() {
