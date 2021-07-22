@@ -68,7 +68,10 @@ class UIElement {
       element.type = 'button';
       // add either html or svg inside it
       element.innerHTML = addButtonHTML(data.html);
-      if (data.title) {
+
+      if (typeof pswp.options[name + 'Title'] === 'string') {
+        element.title = pswp.options[name + 'Title'];
+      } else if (data.title) {
         element.title = data.title;
       }
     } else {

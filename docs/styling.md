@@ -81,3 +81,14 @@ lightbox.init();
 </svg>
 ```
 
+
+## Adjusting button title
+
+Default buttons have a `title` attribute, it can be adjusted via options:
+
+```
+closeTitle: 'Close',
+zoomTitle: 'Zoom (z)',
+arrowPrevTitle: 'Previous',
+arrowNextTitle: 'Next'
+```
