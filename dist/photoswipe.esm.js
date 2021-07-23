@@ -897,6 +897,10 @@ class Slide {
       return;
     }
 
+    pswp.dispatch('beforeZoomTo', {
+      destZoomLevel, centerPoint, transitionDuration
+    });
+
     // stop all pan and zoom transitions
     pswp.animations.stopAllPan();
 
