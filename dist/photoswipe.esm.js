@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.1.0 - https://photoswipe.com
+  * PhotoSwipe 5.1.1 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -2456,7 +2456,6 @@ class MainScroll {
     this._prevPositionIndex = this._currPositionIndex;
 
     pswp.currIndex = pswp.potentialIndex;
-    pswp.currItemData = pswp.getItemData(pswp.currIndex);
 
     let diffAbs = Math.abs(positionDifference);
     let tempHolder;
@@ -4309,8 +4308,6 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.currIndex = 0;
     }
 
-    this.currItemData = this.getItemData(this.currIndex);
-
     if (!this.gestures.supportsTouch) {
       // enable mouse features if no touch support detected
       this.mouseDetected();
@@ -4321,7 +4318,8 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     this.offset.y = window.pageYOffset;
 
-    this.dispatch('gettingData', this.currIndex, this.currItemData, true);
+    this._initialItemData = this.getItemData(this.currIndex);
+    this.dispatch('gettingData', this.currIndex, this._initialItemData, true);
 
     // *Layout* - calculate size and position of elements here
     this._initialThumbBounds = this.getThumbBounds();
@@ -4656,7 +4654,11 @@ class PhotoSwipe extends PhotoSwipeBase {
    * Height is optional (calculated based on the large image)
    */
   getThumbBounds() {
-    return getThumbBounds(this.currIndex, this.currItemData, this);
+    return getThumbBounds(
+      this.currIndex,
+      this.currSlide ? this.currSlide.data : this._initialItemData,
+      this
+    );
   }
 
   _prepareOptions(options) {
