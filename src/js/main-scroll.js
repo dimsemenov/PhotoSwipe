@@ -193,7 +193,6 @@ class MainScroll {
     this._prevPositionIndex = this._currPositionIndex;
 
     pswp.currIndex = pswp.potentialIndex;
-    pswp.currItemData = pswp.getItemData(pswp.currIndex);
 
     let diffAbs = Math.abs(positionDifference);
     let tempHolder;
