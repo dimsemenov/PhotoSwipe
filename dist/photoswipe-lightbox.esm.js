@@ -188,6 +188,36 @@ class ZoomLevel {
 }
 
 /**
+ * Lazy-load an image
+ * This function is used both by Lightbox and PhotoSwipe core,
+ * thus it can be called before dialog is opened.
+ *
+ * @param {Object} itemData Data about the slide
+ * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ */
+function lazyLoadData(itemData, instance) {
+  if (itemData.src && itemData.w && itemData.h) {
+    const { options } = instance;
+
+    // We need to know dimensions of the image to preload it,
+    // as it might use srcset and we need to define sizes
+    const viewportSize = instance.viewportSize || getViewportSize(options);
+    const panAreaSize = getPanAreaSize(options, viewportSize);
+
+    const zoomLevel = new ZoomLevel(options, itemData, -1);
+    zoomLevel.update(itemData.w, itemData.h, panAreaSize);
+
+    const image = document.createElement('img');
+    image.decoding = 'async';
+    image.sizes = Math.ceil(itemData.w * zoomLevel.initial) + 'px';
+    if (itemData.srcset) {
+      image.srcset = itemData.srcset;
+    }
+    image.src = itemData.src;
+  }
+}
+
+/**
  * Lazy-loads specific slide.
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
@@ -204,25 +234,7 @@ function lazyLoadSlide(index, instance) {
     return;
   }
 
-  if (itemData.src && itemData.w && itemData.h) {
-    const { options } = instance;
-
-    // We need to know dimensions of the image to preload it,
-    // as it might use srcset and we need to define sizes
-    const viewportSize = instance.viewportSize || getViewportSize(options);
-    const panAreaSize = getPanAreaSize(options, viewportSize);
-
-    const zoomLevel = new ZoomLevel(options, itemData, index);
-    zoomLevel.update(itemData.w, itemData.h, panAreaSize);
-
-    const image = document.createElement('img');
-    image.decoding = 'async';
-    image.sizes = Math.ceil(itemData.w * zoomLevel.initial) + 'px';
-    if (itemData.srcset) {
-      image.srcset = itemData.srcset;
-    }
-    image.src = itemData.src;
-  }
+  lazyLoadData(itemData, instance);
 }
 
 function dynamicImportModule(module) {

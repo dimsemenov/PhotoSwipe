@@ -3533,6 +3533,36 @@ function getThumbBounds(index, itemData, instance) {
 const MAX_SLIDES_TO_LAZY_LOAD = 15;
 
 /**
+ * Lazy-load an image
+ * This function is used both by Lightbox and PhotoSwipe core,
+ * thus it can be called before dialog is opened.
+ *
+ * @param {Object} itemData Data about the slide
+ * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ */
+function lazyLoadData(itemData, instance) {
+  if (itemData.src && itemData.w && itemData.h) {
+    const { options } = instance;
+
+    // We need to know dimensions of the image to preload it,
+    // as it might use srcset and we need to define sizes
+    const viewportSize = instance.viewportSize || getViewportSize(options);
+    const panAreaSize = getPanAreaSize(options, viewportSize);
+
+    const zoomLevel = new ZoomLevel(options, itemData, -1);
+    zoomLevel.update(itemData.w, itemData.h, panAreaSize);
+
+    const image = document.createElement('img');
+    image.decoding = 'async';
+    image.sizes = Math.ceil(itemData.w * zoomLevel.initial) + 'px';
+    if (itemData.srcset) {
+      image.srcset = itemData.srcset;
+    }
+    image.src = itemData.src;
+  }
+}
+
+/**
  * Lazy-loads specific slide.
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
@@ -3549,25 +3579,7 @@ function lazyLoadSlide(index, instance) {
     return;
   }
 
-  if (itemData.src && itemData.w && itemData.h) {
-    const { options } = instance;
-
-    // We need to know dimensions of the image to preload it,
-    // as it might use srcset and we need to define sizes
-    const viewportSize = instance.viewportSize || getViewportSize(options);
-    const panAreaSize = getPanAreaSize(options, viewportSize);
-
-    const zoomLevel = new ZoomLevel(options, itemData, index);
-    zoomLevel.update(itemData.w, itemData.h, panAreaSize);
-
-    const image = document.createElement('img');
-    image.decoding = 'async';
-    image.sizes = Math.ceil(itemData.w * zoomLevel.initial) + 'px';
-    if (itemData.srcset) {
-      image.srcset = itemData.srcset;
-    }
-    image.src = itemData.src;
-  }
+  lazyLoadData(itemData, instance);
 }
 
 class LazyLoader {
@@ -3594,12 +3606,12 @@ class LazyLoader {
 
     // preload[1] - num items to preload in forward direction
     for (i = 0; i <= preload[1]; i++) {
-      this._loadSlideByIndex(pswp.currIndex + (isForward ? i : (-i)));
+      this.loadSlideByIndex(pswp.currIndex + (isForward ? i : (-i)));
     }
 
     // preload[0] - num items to preload in backward direction
     for (i = 1; i <= preload[0]; i++) {
-      this._loadSlideByIndex(pswp.currIndex + (isForward ? (-i) : i));
+      this.loadSlideByIndex(pswp.currIndex + (isForward ? (-i) : i));
     }
   }
 
@@ -3632,12 +3644,16 @@ class LazyLoader {
     return true;
   }
 
-  _loadSlideByIndex(index) {
+  loadSlideByIndex(index) {
     index = this.pswp.getLoopedIndex(index);
 
     if (this.addRecent(index)) {
       lazyLoadSlide(index, this.pswp);
     }
+  }
+
+  loadSlideByData(data) {
+    lazyLoadData(data, this.pswp);
   }
 }
 
