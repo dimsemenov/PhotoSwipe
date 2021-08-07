@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.1.1 - https://photoswipe.com
+  * PhotoSwipe 5.1.2 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -633,10 +633,6 @@ class Slide {
   preload() {
     this.image = createElement('pswp__img', 'img');
 
-    // Not adding `async`,
-    // as it causes flash of image after it's loaded in Safari
-    // this.image.decoding = 'async';
-
     // may update sizes attribute
     this._updateImagesSize();
 
@@ -647,6 +643,17 @@ class Slide {
     this.image.src = this.data.src;
 
     this.image.alt = this.data.alt || '';
+
+    // Not adding `async`,
+    // as it causes flash of image after it's loaded in Safari
+    // this.image.decoding = 'async';
+
+    // Using decode() to force nearby images to render:
+    // even though nearby images are in DOM and not hidden via display:none,
+    // Safari and FF still do not render them as they're offscreen. This helps:
+    if (!this.isActive && ('decode' in this.image)) {
+      this.image.decode();
+    }
 
     this.pswp.lazyLoader.addRecent(this.index);
   }
@@ -3539,8 +3546,10 @@ const MAX_SLIDES_TO_LAZY_LOAD = 15;
  *
  * @param {Object} itemData Data about the slide
  * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @param {Boolean}  decode Wether decode() should be used.
+ * @returns {Object|Boolean} Image that is being decoded or false.
  */
-function lazyLoadData(itemData, instance) {
+function lazyLoadData(itemData, instance, decode) {
   if (itemData.src && itemData.w && itemData.h) {
     const { options } = instance;
 
@@ -3559,6 +3568,11 @@ function lazyLoadData(itemData, instance) {
       image.srcset = itemData.srcset;
     }
     image.src = itemData.src;
+    if (decode && ('decode' in image)) {
+      image.decode();
+    }
+
+    return image;
   }
 }
 
@@ -3652,8 +3666,9 @@ class LazyLoader {
     }
   }
 
-  loadSlideByData(data) {
-    lazyLoadData(data, this.pswp);
+  // @see lazyLoadData
+  loadSlideByData(data, decode) {
+    lazyLoadData(data, this.pswp, decode);
   }
 }
 

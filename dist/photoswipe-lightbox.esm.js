@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.1.1 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.1.2 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -194,8 +194,10 @@ class ZoomLevel {
  *
  * @param {Object} itemData Data about the slide
  * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @param {Boolean}  decode Wether decode() should be used.
+ * @returns {Object|Boolean} Image that is being decoded or false.
  */
-function lazyLoadData(itemData, instance) {
+function lazyLoadData(itemData, instance, decode) {
   if (itemData.src && itemData.w && itemData.h) {
     const { options } = instance;
 
@@ -214,6 +216,11 @@ function lazyLoadData(itemData, instance) {
       image.srcset = itemData.srcset;
     }
     image.src = itemData.src;
+    if (decode && ('decode' in image)) {
+      image.decode();
+    }
+
+    return image;
   }
 }
 

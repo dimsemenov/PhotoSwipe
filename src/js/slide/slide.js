@@ -141,8 +141,6 @@ class Slide {
   preload() {
     this.image = createElement('pswp__img', 'img');
 
-    
-
     // may update sizes attribute
     this._updateImagesSize();
 
