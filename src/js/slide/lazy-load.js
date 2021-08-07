@@ -11,8 +11,10 @@ const MAX_SLIDES_TO_LAZY_LOAD = 15;
  *
  * @param {Object} itemData Data about the slide
  * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @param {Boolean}  decode Wether decode() should be used.
+ * @returns {Object|Boolean} Image that is being decoded or false.
  */
-export function lazyLoadData(itemData, instance) {
+export function lazyLoadData(itemData, instance, decode) {
   if (itemData.src && itemData.w && itemData.h) {
     const { options } = instance;
 
@@ -31,6 +33,11 @@ export function lazyLoadData(itemData, instance) {
       image.srcset = itemData.srcset;
     }
     image.src = itemData.src;
+    if (decode && ('decode' in image)) {
+      image.decode();
+    }
+
+    return image;
   }
 }
 
@@ -124,8 +131,9 @@ class LazyLoader {
     }
   }
 
-  loadSlideByData(data) {
-    lazyLoadData(data, this.pswp);
+  // @see lazyLoadData
+  loadSlideByData(data, decode) {
+    lazyLoadData(data, this.pswp, decode);
   }
 }
 
