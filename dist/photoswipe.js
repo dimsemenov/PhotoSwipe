@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.1.3 - 2021-06-02
+/*! PhotoSwipe - v4.1.3 - 2021-08-14
 * http://photoswipe.com
 * Copyright (c) 2021 Dmitry Semenov; */
 (function (root, factory) { 
@@ -1293,7 +1293,7 @@ var publicMethods = {
 			}
 		*/
 
-		if(centerPoint) {
+		if(centerPoint && _panOffset) {
 			_startZoomLevel = _currZoomLevel;
 			_midZoomPoint.x = Math.abs(centerPoint.x) - _panOffset.x ;
 			_midZoomPoint.y = Math.abs(centerPoint.y) - _panOffset.y ;

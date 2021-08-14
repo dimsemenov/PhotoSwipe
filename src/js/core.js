@@ -995,7 +995,7 @@ var publicMethods = {
 			}
 		*/
 
-		if(centerPoint) {
+		if(centerPoint && _panOffset) {
 			_startZoomLevel = _currZoomLevel;
 			_midZoomPoint.x = Math.abs(centerPoint.x) - _panOffset.x ;
 			_midZoomPoint.y = Math.abs(centerPoint.y) - _panOffset.y ;
