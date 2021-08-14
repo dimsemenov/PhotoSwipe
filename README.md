@@ -1,8 +1,9 @@
-# PhotoSwipe Repository 
+
+:exclamation: **Important note** v5 beta is now available for testing, [read announcement here](https://github.com/dimsemenov/PhotoSwipe/issues/1749) and report any issues that you find, code is within `v5-beta` branch.
+
+## PhotoSwipe Repository 
 
 [![Build Status](https://travis-ci.org/dimsemenov/PhotoSwipe.svg)](https://travis-ci.org/dimsemenov/PhotoSwipe) 
-[![devDependency Status](https://david-dm.org/dimsemenov/PhotoSwipe/dev-status.svg)](https://david-dm.org/dimsemenov/PhotoSwipe#info=devDependencies)
-[![Flattr](http://api.flattr.com/button/flattr-badge-large.png)](http://flattr.com/thing/3698358/dimsemenovPhotoSwipe-on-GitHub)
 
 JavaScript image gallery for mobile and desktop. 
 
