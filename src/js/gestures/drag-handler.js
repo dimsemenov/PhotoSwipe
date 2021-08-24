@@ -103,7 +103,7 @@ class DragHandler {
     // Restore zoom level
     if (pswp.currSlide.currZoomLevel > pswp.currSlide.zoomLevels.max
         || this.gestures.isMultitouch) {
-      this.gestures.zoomLevels.correctZoomPan();
+      this.gestures.zoomLevels.correctZoomPan(true);
     } else {
       // we run two animations instead of one,
       // as each axis has own pan boundaries and thus different spring function

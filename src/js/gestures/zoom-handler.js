@@ -116,8 +116,11 @@ class ZoomHandler {
    * Correct currZoomLevel and pan if they are
    * beyond minimum or maximum values.
    * With animation.
+   *
+   * @param {Boolean} ignoreGesture Wether gesture coordinates should be ignored
+   *                                when calculating destination pan position.
    */
-  correctZoomPan() {
+  correctZoomPan(ignoreGesture) {
     const { pswp } = this;
     const { currSlide } = pswp;
 
@@ -146,6 +149,14 @@ class ZoomHandler {
 
     const initialPan = equalizePoints({}, currSlide.pan);
     let destinationPan = equalizePoints({}, initialPan);
+
+    if (ignoreGesture) {
+      this._zoomPoint.x = 0;
+      this._zoomPoint.y = 0;
+      this._startZoomPoint.x = 0;
+      this._startZoomPoint.y = 0;
+      equalizePoints(this._startPan, this.pswp.currSlide.pan);
+    }
 
     if (currZoomLevelNeedsChange) {
       destinationPan = {
