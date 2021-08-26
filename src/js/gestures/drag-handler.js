@@ -181,7 +181,7 @@ class DragHandler {
           ));
         }
 
-        pan[axis] = pos;
+        pan[axis] = Math.floor(pos);
         currSlide.applyCurrentZoomPan();
       },
     });
