@@ -2879,7 +2879,7 @@ var _getItemAt,
 		}
 	},
 	_setImageSize = function(item, img, maxRes) {
-		if(!item.src) {
+		if(!item.src || !item?.container?.lastChild) {
 			return;
 		}
 
