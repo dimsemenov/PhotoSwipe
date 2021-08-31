@@ -485,54 +485,26 @@ class Slide {
    * pan bounds according to the new zoom level.
    *
    * @param {String} axis
-   * @param {Object} centerPoint point based on which zoom is performed,
-   *                             usually refers to the current mouse position,
-   *                             or something like center of viewport.
+   * @param {Object|null} centerPoint point based on which zoom is performed,
+   *                                  usually refers to the current mouse position,
+   *                                  if false - viewport center will be used.
    * @param {Number|null} prevZoomLevel Zoom level before new zoom was applied.
    */
   calculateZoomToPanOffset(axis, point, prevZoomLevel) {
     const totalPanDistance = this.bounds.max[axis] - this.bounds.min[axis];
-    let updatedPanOffset;
-
     if (totalPanDistance === 0) {
       return this.bounds.center[axis];
     }
 
-    const imageSize = this[axis === 'x' ? 'width' : 'height']
-                      * (prevZoomLevel || this.currZoomLevel);
-
-
-    const { panPaddingRatio, panEdgeIsViewport } = this.pswp.options;
-
-    const panPadding = this.panAreaSize[axis] * panPaddingRatio;
-
-    // Make it easier to zoom to the edge of the image
-    //
-    // Imagine a transparent border that overlaps an image
-    // if user clicks on it - image will be
-    // zoomed and panned to the corresponding edge
-    //
-    // If panEdgeIsViewport is enabled,
-    // pan position will be based on viewport, instead of based on image
-    //
-    let ratio; // 0 to 1, '0' being minimum pan position and '1' - maximum
-    if (!panEdgeIsViewport && point[axis] < panPadding + this.pan[axis]) {
-      // point is at left or top edge of the image
-      ratio = 0;
-    } else if (!panEdgeIsViewport && point[axis] > imageSize + this.pan[axis] - panPadding) {
-      // point is at bottom or right edge of the image
-      ratio = 1;
-    } else {
-      ratio = (point[axis] - this.bounds.min[axis] - panPadding)
-                / (this.panAreaSize[axis] - panPadding * 2);
+    if (!point) {
+      point = this.pswp.getViewportCenterPoint();
     }
 
-
-    updatedPanOffset = totalPanDistance * ratio + this.bounds.min[axis];
-
-    updatedPanOffset = this.bounds.correctPan(axis, updatedPanOffset);
-
-    return updatedPanOffset;
+    const zoomFactor = this.currZoomLevel / prevZoomLevel;
+    return this.bounds.correctPan(
+      axis,
+      (this.pan[axis] - point[axis]) * zoomFactor + point[axis]
+    );
   }
 
   /**
