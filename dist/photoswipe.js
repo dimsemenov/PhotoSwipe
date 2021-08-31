@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.1.3 - 2021-08-14
+/*! PhotoSwipe - v4.1.3 - 2021-08-31
 * http://photoswipe.com
 * Copyright (c) 2021 Dmitry Semenov; */
 (function (root, factory) { 
