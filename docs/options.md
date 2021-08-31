@@ -86,6 +86,17 @@ getViewportSizeFn: function(options, pswp) {
 }
 ```
 
+### getWheelZoomFactorFn
+
+A function that should return a number. The number represents by how much the current image should be scaled after `wheel` event. For example:
+
+```js
+getWheelZoomFactorFn(e, pswp) {
+  // pswp.currSlide.currZoomLevel - scale of the current slide image
+  return e.deltaY < 0 ? 1.2 : 0.8;
+}
+```
+
 ### index
 
 Number, `0`. Initial slide index.
