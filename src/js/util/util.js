@@ -154,3 +154,28 @@ export function specialKeyUsed(e) {
     return true;
   }
 }
+
+/**
+ * Parse `gallery` or `children` options.
+ *
+ * @param {Element|NodeList|String} option
+ * @param {String|null} legacySelector
+ * @param {Element|null} parent
+ * @returns Element[]
+ */
+export function getElementsFromOption(option, legacySelector, parent = document) {
+  let elements = [];
+
+  if (option instanceof Element) {
+    elements = [option];
+  } else if (option instanceof NodeList || Array.isArray(option)) {
+    elements = Array.from(option);
+  } else {
+    const selector = typeof option === 'string' ? option : legacySelector;
+    if (selector) {
+      elements = Array.from(parent.querySelectorAll(selector));
+    }
+  }
+
+  return elements;
+}

@@ -16,28 +16,12 @@
 
 import {
   specialKeyUsed,
+  getElementsFromOption
 } from '../util/util.js';
 
 import { lazyLoadSlide } from '../slide/lazy-load.js';
 import { dynamicImportModule } from './dynamic-import.js';
 import PhotoSwipeBase from '../core/base.js';
-
-function getElementsFromOption(option, legacySelector, parent = document) {
-  let elements = [];
-
-  if (option instanceof Element) {
-    elements = [option];
-  } else if (option instanceof NodeList || Array.isArray(option)) {
-    elements = Array.from(option);
-  } else {
-    const selector = typeof option === 'string' ? option : legacySelector;
-    if (selector) {
-      elements = Array.from(parent.querySelectorAll(selector));
-    }
-  }
-
-  return elements;
-}
 
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   constructor(options) {
@@ -99,7 +83,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     const clickedTarget = e.target;
-    const childElements = getElementsFromOption(this.options.children, this.options.childSelector, e.currentTarget);
+    const childElements = getElementsFromOption(
+      this.options.children,
+      this.options.childSelector,
+      e.currentTarget
+    );
     const clickedChildIndex = childElements.findIndex(
       child => child === clickedTarget || child.contains(clickedTarget)
     );

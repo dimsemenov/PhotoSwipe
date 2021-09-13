@@ -3,6 +3,9 @@
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
  */
 import Eventable from './eventable';
+import {
+  getElementsFromOption
+} from '../util/util.js';
 
 class PhotoSwipeBase extends Eventable {
   /**
@@ -86,8 +89,12 @@ class PhotoSwipeBase extends Eventable {
    * @param {Element} galleryElement
    */
   _getGalleryDOMElements(galleryElement) {
-    if (this.options.childSelector) {
-      return galleryElement.querySelectorAll(this.options.childSelector) || [];
+    if (this.options.children || this.options.childSelector) {
+      return getElementsFromOption(
+        this.options.children,
+        this.options.childSelector,
+        galleryElement
+      ) || [];
     }
 
     return [galleryElement];
