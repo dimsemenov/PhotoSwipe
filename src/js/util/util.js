@@ -116,6 +116,14 @@ export function setTransitionStyle(el, prop, duration, ease) {
     : 'none';
 }
 
+/**
+ * Apply width and height CSS properties to element
+ */
+export function setWidthHeight(el, w, h) {
+  el.style.width = (typeof w === 'number') ? (w + 'px') : w;
+  el.style.height = (typeof h === 'number') ? (h + 'px') : h;
+}
+
 export function removeTransitionStyle(el) {
   setTransitionStyle(el);
 }

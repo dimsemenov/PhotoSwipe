@@ -13,15 +13,9 @@ import {
 
 import PanBounds from './pan-bounds.js';
 import ZoomLevel from './zoom-level.js';
+
 import { getPanAreaSize } from '../util/viewport-size.js';
 
-/**
- * Apply width and height CSS properties to element
- */
-function applyWidthHeight(el, w, h) {
-  el.style.width = w + 'px';
-  el.style.height = h + 'px';
-}
 
 class Slide {
   constructor(data, index, pswp) {
@@ -48,9 +42,15 @@ class Slide {
     };
 
     this.currZoomLevel = 1;
-    this.width = Number(data.w);
-    this.height = Number(data.h);
+    this.width = Number(data.w) || 0;
+    this.height = Number(data.h) || 0;
     this.bounds = new PanBounds(this);
+
+    this.prevWidth = -1;
+    this.prevHeight = -1;
+    this.prevScaleMultiplier = -1;
+
+    this.pswp.dispatch('slideInit', { slide: this });
   }
 
   /**
@@ -80,44 +80,14 @@ class Slide {
       return;
     }
 
-    this._calculateSize();
+    this.calculateSize();
 
     this.container = createElement('pswp__zoom-wrap');
     this.container.transformOrigin = '0 0';
 
-    if (this.data.html) {
-      this.addSlideHTML(this.data.html);
-    } else if (this.data.src) {
-      // Use image-based placeholder only for the first slide
-      const useImagePlaceholder = this.data.msrc && this.isFirstSlide;
-
-      // Create placeholder
-      // (stretched thumbnail or simple div behind the main image)
-      this.placeholder = createElement(
-        'pswp__img pswp__img--placeholder',
-        useImagePlaceholder ? 'img' : '',
-        this.container
-      );
-
-      if (useImagePlaceholder) {
-        this.placeholder.decoding = 'async';
-        this.placeholder.alt = '';
-        this.placeholder.src = this.data.msrc;
-      }
-
-      this.placeholder.setAttribute('aria-hiden', 'true');
-
-      this.pswp.dispatch('placeholderCreated', { placeholder: this.placeholder, slide: this });
-
-      // Create the main image
-      if (!this.image) {
-        this.preload();
-      }
-
-      this.isLoading = true;
-    }
-
+    this.appendContent();
     this.appendHeavy();
+    this.updateContentSize();
 
     this.holderElement.innerHTML = '';
     this.holderElement.appendChild(this.container);
@@ -135,35 +105,12 @@ class Slide {
     }
   }
 
+
   /**
-   * Creates and loads image
+   * Append content to this.container
    */
-  preload() {
-    this.image = createElement('pswp__img', 'img');
-
-    // may update sizes attribute
-    this._updateImagesSize();
-
-    if (this.data.srcset) {
-      this.image.srcset = this.data.srcset;
-    }
-
-    this.image.src = this.data.src;
-
-    this.image.alt = this.data.alt || '';
-
-    // Not adding `async`,
-    // as it causes flash of image after it's loaded in Safari
-    // this.image.decoding = 'async';
-
-    // Using decode() to force nearby images to render:
-    // even though nearby images are in DOM and not hidden via display:none,
-    // Safari and FF still do not render them as they're offscreen. This helps:
-    if (!this.isActive && ('decode' in this.image)) {
-      this.image.decode();
-    }
-
-    this.pswp.lazyLoader.addRecent(this.index);
+  appendContent() {
+    this.setSlideHTML(this.data.html);
   }
 
   /**
@@ -190,75 +137,11 @@ class Slide {
 
     this.heavyAppended = true;
 
-    if (this.image) {
-      // "progressive loading"  - display parts of image as data arrives
-      // This behavior is limited to devices with mouse or with large screens,
-      // (as there might be significant FPS drops when image loads)
-      //
-      // TODO should we disable it on smaller screens?
-      //if (this.pswp.options.progressiveLoading !== false
-      //    && (this.pswp.hasMouse || this.pswp.viewportSize.x > 900)) {
-      this._appendImage();
-      //}
-
-      // Firefox (89) throws "DOMException: Invalid image request."
-      // if decode() is called right after image is appended, see #1760
-      // decodeImage(this.image).then(() => {
-      //   this._onImageLoaded();
-      // }).catch(() => {
-      //   this._onImageLoaded(true);
-      // });
-      // So we use simple onload:
-
-      if (this.image.complete) {
-        this._onImageLoaded();
-      } else {
-        this.image.onload = () => this._onImageLoaded();
-        this.image.onerror = () => this._onImageLoaded(true);
-      }
-    }
+    this.appendHeavyContent();
   }
 
-  _appendImage() {
-    if (!this._imageAppended) {
-      this.container.appendChild(this.image);
-      this._imageAppended = true;
-    }
-  }
-
-  _onImageLoaded(isError) {
-    this._appendImage();
-    this.isLoading = false;
-    this.pswp.dispatch('loadComplete', { slide: this, isError });
-    if (this.placeholder) {
-      // If large image is not decoded,
-      // which might happen if browser does not support decode(),
-      // there will be a flash after placeholder is removed,
-      // so we hide it with delay
-      setTimeout(() => {
-        if (this.placeholder) {
-          this.placeholder.remove();
-          this.placeholder = null;
-        }
-      }, 500);
-    }
-    if (isError) {
-      this._handleError();
-    }
-  }
-
-  _handleError() {
-    this.addSlideHTML(this.pswp.options.errorMsg);
-    const errorLinkElement = this.container.querySelector('.pswp__error-msg a');
-    if (errorLinkElement && this.data.src) {
-      errorLinkElement.href = this.data.src;
-    }
-    this.loadError = true;
-    this.image = null;
-    this._calculateSize();
-    this.setZoomLevel(1);
-    this.panTo(0, 0);
-    this.pswp.dispatch('loadError', { slide: this });
+  appendHeavyContent() {
+    this.pswp.dispatch('appendHeavyContent', { slide: this });
   }
 
   /**
@@ -268,7 +151,7 @@ class Slide {
    * @param {DOMElement} containerEl
    * @param {String} html
    */
-  addSlideHTML(html) {
+  setSlideHTML(html) {
     const { container } = this;
     if (html.tagName) {
       container.appendChild(html);
@@ -316,15 +199,11 @@ class Slide {
   }
 
   resize() {
-    this._calculateSize();
+    this.calculateSize();
 
-    // Keep initial zoom level if it was before the resize,
-    // as well as when this slide is not active
-    if (this.currZoomLevel === this.zoomLevels.initial || !this.isActive) {
-      this.currentResolution = 0;
-    }
-
-    this._updateImagesSize();
+    // Reset position and scale to original state on resize
+    this.currentResolution = 0;
+    this.updateContentSize();
     this.zoomAndPanToInitial();
     this.applyCurrentZoomPan();
   }
@@ -333,81 +212,29 @@ class Slide {
   /**
    * Apply size to current slide images
    * based on the current resolution.
-   *
-   * @private
+   * @returns Boolean true if size was changed
    */
-  _updateImagesSize() {
-    if (!this.data.src || !this.width) {
-      return;
-    }
-
-    // Use initial zoom level
-    // if resolution is not defined (user didn't zoom yet)
-    const multiplier = this.currentResolution || this.zoomLevels.initial;
-
-    if (!multiplier) {
-      return;
-    }
-
-    const width = Math.round(this.width * multiplier);
-    const height = Math.round(this.height * multiplier);
-
-    if (this.placeholder) {
-      applyWidthHeight(this.placeholder, width, height);
-    }
-
-    const { image } = this;
-    if (image) {
-      applyWidthHeight(image, width, height);
-
-      // Handle srcset sizes attribute.
-      //
-      // Never lower quality, if it was increased previously.
-      // Chrome does this automatically, Firefox and Safari do not,
-      // so we store largest used size in dataset.
-      if (!image.dataset.largestUsedSize
-          || width > image.dataset.largestUsedSize) {
-        image.sizes = width + 'px';
-        image.dataset.largestUsedSize = width;
-      }
-
-      this.pswp.dispatch('imageSizeChange', { slide: this, width, height });
-    }
+  updateContentSize() {
+    return true;
   }
 
-
-  /**
-   * Append HTML content to container container
-   * (usually data.html or error message)
-   *
-   * @param {DOMElement} containerEl
-   * @param {String} html
-   */
-  // addSlideHTML(containerEl, html) {
-  //   if (html.tagName) {
-  //     containerEl.appendChild(html);
-  //   } else {
-  //     containerEl.innerHTML = html;
-  //   }
-  //   containerEl.classList.add('pswp__zoom-wrap--html');
-  // }
-
   getPlaceholder() {
-    return this.placeholder;
+    return false;
   }
 
   /**
    * Zoom current slide image to...
    *
    * @param  {Number} destZoomLevel      Destination zoom level.
-   * @param  {Object} centerPoint        Transform origin center poiint
+   * @param  {Object|false} centerPoint  Transform origin center point,
+   *                                     or false if viewport center should be used.
    * @param  {Number} transitionDuration Transition duration, may be set to 0.
-   * @param  {Boolean|null} ignoreBounds Minimum and maximum zoom levels will be ignore.
+   * @param  {Boolean|null} ignoreBounds Minimum and maximum zoom levels will be ignored.
    * @return {Boolean|null}              Returns true if animated.
    */
   zoomTo(destZoomLevel, centerPoint, transitionDuration, ignoreBounds) {
     const { pswp } = this;
-    if (!this.isZoomable
+    if (!this.isZoomable()
         || pswp.mainScroll.isShifted()) {
       return;
     }
@@ -419,9 +246,9 @@ class Slide {
     // stop all pan and zoom transitions
     pswp.animations.stopAllPan();
 
-    if (!centerPoint) {
-      centerPoint = pswp.getViewportCenterPoint();
-    }
+    // if (!centerPoint) {
+    //   centerPoint = pswp.getViewportCenterPoint();
+    // }
 
     const prevZoomLevel = this.currZoomLevel;
 
@@ -523,14 +350,14 @@ class Slide {
    * Whether slide in the current state can be panned by the user
    */
   isPannable() {
-    return this.width && (this.currZoomLevel > this.zoomLevels.fit);
+    return false;
   }
 
   /**
    * Whether the slide can be zoomed
    */
   isZoomable() {
-    return (this.width > 0);
+    return false;
   }
 
   /**
@@ -565,27 +392,23 @@ class Slide {
     setTransform(this.container, x, y, zoom);
   }
 
-  _calculateSize() {
-    if (this.data.src && !this.loadError) {
-      const { pswp } = this;
+  calculateSize() {
+    // this.zoomLevels.fit = 1;
+    // this.zoomLevels.vFill = 1;
+    // this.zoomLevels.initial = 1;
 
-      equalizePoints(
-        this.panAreaSize,
-        getPanAreaSize(pswp.options, pswp.viewportSize, pswp)
-      );
+    const { pswp } = this;
 
-      this.zoomLevels.update(this.width, this.height, this.panAreaSize);
+    equalizePoints(
+      this.panAreaSize,
+      getPanAreaSize(pswp.options, pswp.viewportSize, pswp)
+    );
 
-      pswp.dispatch('calcSlideSize', {
-        slide: this
-      });
-    } else {
-      this.width = 0;
-      this.height = 0;
-      this.zoomLevels.fit = 1;
-      this.zoomLevels.vFill = 1;
-      this.zoomLevels.initial = 1;
-    }
+    this.zoomLevels.update(this.width, this.height, this.panAreaSize);
+
+    pswp.dispatch('calcSlideSize', {
+      slide: this
+    });
   }
 
   getCurrentTransform() {
@@ -614,7 +437,7 @@ class Slide {
     }
 
     this.currentResolution = newResolution;
-    this._updateImagesSize();
+    this.updateContentSize();
 
     this.pswp.dispatch('resolutionChanged');
   }
