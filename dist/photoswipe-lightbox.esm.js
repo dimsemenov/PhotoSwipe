@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.1.2 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.1.3 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -20,6 +20,31 @@ function specialKeyUsed(e) {
   if (e.which === 2 || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
     return true;
   }
+}
+
+/**
+ * Parse `gallery` or `children` options.
+ *
+ * @param {Element|NodeList|String} option
+ * @param {String|null} legacySelector
+ * @param {Element|null} parent
+ * @returns Element[]
+ */
+function getElementsFromOption(option, legacySelector, parent = document) {
+  let elements = [];
+
+  if (option instanceof Element) {
+    elements = [option];
+  } else if (option instanceof NodeList || Array.isArray(option)) {
+    elements = Array.from(option);
+  } else {
+    const selector = typeof option === 'string' ? option : legacySelector;
+    if (selector) {
+      elements = Array.from(parent.querySelectorAll(selector));
+    }
+  }
+
+  return elements;
 }
 
 function getViewportSize(options, pswp) {
@@ -405,8 +430,12 @@ class PhotoSwipeBase extends Eventable {
    * @param {Element} galleryElement
    */
   _getGalleryDOMElements(galleryElement) {
-    if (this.options.childSelector) {
-      return galleryElement.querySelectorAll(this.options.childSelector) || [];
+    if (this.options.children || this.options.childSelector) {
+      return getElementsFromOption(
+        this.options.children,
+        this.options.childSelector,
+        galleryElement
+      ) || [];
     }
 
     return [galleryElement];
@@ -466,28 +495,26 @@ class PhotoSwipeBase extends Eventable {
  *
  * Loader options use the same object as PhotoSwipe, and supports such options:
  *
- * gallerySelector
- * childSelector - child selector relative to the parent (should be inside)
+ * gallery - Element | Element[] | NodeList | string selector for the gallery element
+ * children - Element | Element[] | NodeList | string selector for the gallery children
  *
  */
 
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   constructor(options) {
     super();
-    this.options = options;
+    this.options = options || {};
     this._uid = 0;
   }
 
   init() {
     this.onThumbnailsClick = this.onThumbnailsClick.bind(this);
 
-    if (this.options && this.options.gallerySelector) {
-      // Bind click events to each gallery
-      const galleryElements = document.querySelectorAll(this.options.gallerySelector);
-      galleryElements.forEach((galleryElement) => {
+    // Bind click events to each gallery
+    getElementsFromOption(this.options.gallery, this.options.gallerySelector)
+      .forEach((galleryElement) => {
         galleryElement.addEventListener('click', this.onThumbnailsClick, false);
       });
-    }
   }
 
   onThumbnailsClick(e) {
@@ -533,23 +560,21 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     const clickedTarget = e.target;
-    const clickedGallery = e.currentTarget;
+    const childElements = getElementsFromOption(
+      this.options.children,
+      this.options.childSelector,
+      e.currentTarget
+    );
+    const clickedChildIndex = childElements.findIndex(
+      child => child === clickedTarget || child.contains(clickedTarget)
+    );
 
-    if (this.options.childSelector) {
-      const clickedChild = clickedTarget.closest(this.options.childSelector);
-      const childElements = clickedGallery.querySelectorAll(this.options.childSelector);
-
-      if (clickedChild) {
-        for (let i = 0; i < childElements.length; i++) {
-          if (clickedChild === childElements[i]) {
-            return i;
-          }
-        }
-      }
-    } else {
-      // There is only one item (which is gallerySelector)
-      return 0;
+    if (clickedChildIndex !== -1) {
+      return clickedChildIndex;
     }
+
+    // There is only one item (which is the gallery)
+    return 0;
   }
 
   /**
@@ -660,12 +685,12 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     this.shouldOpen = false;
     this._listeners = null;
 
-    const galleryElements = document.querySelectorAll(this.options.gallerySelector);
-    galleryElements.forEach((galleryElement) => {
-      galleryElement.removeEventListener('click', this.onThumbnailsClick, false);
-    });
+    getElementsFromOption(this.options.gallery, this.options.gallerySelector)
+      .forEach((galleryElement) => {
+        galleryElement.removeEventListener('click', this.onThumbnailsClick, false);
+      });
   }
 }
 
-export default PhotoSwipeLightbox;
+export { PhotoSwipeLightbox as default };
 //# sourceMappingURL=photoswipe-lightbox.esm.js.map

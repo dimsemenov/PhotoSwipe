@@ -32,6 +32,7 @@
         "no-else-return": 0,
         "no-lonely-if": 0,
         "default-case": 0,
-        "linebreak-style": 0
+        "linebreak-style": 0,
+        "class-methods-use-this": 0
     }
 }
