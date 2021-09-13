@@ -19,8 +19,8 @@ To adjust opening or closing transition type use lightbox option `showHideAnimat
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector: '#gallery--zoom-transition',
-  childSelector: 'a',
+  gallery: '#gallery--zoom-transition',
+  children: 'a',
   showHideAnimationType: 'zoom',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
@@ -42,8 +42,8 @@ lightbox.init();
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--fade-transition',
-  childSelector:'a',
+  gallery:'#gallery--fade-transition',
+  children:'a',
   showHideAnimationType: 'fade',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
@@ -67,8 +67,8 @@ Automatically selected if user agent `(prefers-reduced-motion: reduce)`.
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector: '#gallery--none-transition',
-  childSelector: 'a',
+  gallery: '#gallery--none-transition',
+  children: 'a',
   showHideAnimationType: 'none',
 
   // optionally disable zoom transition,
@@ -110,8 +110,8 @@ const backEasing = {
 };
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--customized-transition',
-  childSelector:'a',
+  gallery:'#gallery--customized-transition',
+  children:'a',
 
   showHideAnimationType: 'zoom',
   showAnimationDuration: 1000,
@@ -153,8 +153,8 @@ Step 3: add `data-cropped="true"` attribute to your links that opens PhotoSwipe.
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--cropped-thumbs',
-  childSelector:'a',
+  gallery:'#gallery--cropped-thumbs',
+  children:'a',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 lightbox.init();
@@ -185,8 +185,8 @@ If you have some element that overlays thumbnail, you may want to fade it out wh
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--badges',
-  childSelector: 'a',
+  gallery:'#gallery--badges',
+  children: 'a',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 

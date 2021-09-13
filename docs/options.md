@@ -69,10 +69,6 @@ Refer to [click and tap actions](click-and-tap-actions.md) page.
 
 String, ` / `. Used for slide count indicator ("1 of 10 ").
 
-### panPaddingRatio
-
-Number, `0.15`. A virtual border around the slide, it makes it easier to zoom to the edge of the image (if user clicks on it - image will be zoomed and panned to the corresponding edge). Defined as ratio relative to pan area width and height.
-
 ### getViewportSizeFn
 
 Function `{x: width, y: height}`, `null`. A function that should return PhotoSwipe viewport width and height, in format `{x: 100, y: 100}`, for example:
@@ -125,13 +121,14 @@ DOMElement, `document.body`. Element to which PhotoSwipe dialog will be appended
 
 See [getting started](getting-started.md) and [data sources](data-sources.md) for examples.
 
-### gallerySelector
+### gallery
 
-String. CSS selector.
+Element, NodeList, or CSS selector (string) for the gallery element. The legacy version of the option (`gallerySelector`) can also be used.
 
-### childSelector
 
-String|false. CSS selector for elements within `gallerySelector`. For example, link elements. If not defined or set to false - root `gallerySelector` node will be used.
+### children
+
+Element, NodeList, or CSS selector (string) for elements within `gallery`. For example, link elements. If not defined or set to false - root `gallery` node will be used.
 
 ### pswpModule
 

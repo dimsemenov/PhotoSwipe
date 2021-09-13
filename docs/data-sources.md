@@ -100,8 +100,8 @@ You might want to add a custom last slide, for example to show related galleries
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
-  gallerySelector: '#gallery--custom-last-slide',
-  childSelector: 'a',
+  gallery: '#gallery--custom-last-slide',
+  children: 'a',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
@@ -183,8 +183,8 @@ You may completely override default requirements for HTML markup. In the example
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector: '#gallery--custom-html-markup',
-  childSelector: 'a',
+  gallery: '#gallery--custom-html-markup',
+  children: 'a',
 
   // Adjust thumbnail selector,
   // (for opening/closing zoom transition)
@@ -196,7 +196,7 @@ const lightbox = new PhotoSwipeLightbox({
 lightbox.on('itemData', (e) => {
   const { itemData } = e;
 
-  // element is childSelector
+  // element is children
   const { element } = itemData; 
 
   itemData.src = element.href;

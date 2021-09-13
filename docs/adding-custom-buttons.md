@@ -15,8 +15,8 @@ Use method `pswp.ui.registerElement` to add any interactive element inside Photo
 
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
-  gallerySelector:'#gallery--with-custom-button',
-  childSelector:'a',
+  gallery:'#gallery--with-custom-button',
+  children:'a',
   
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
@@ -69,8 +69,8 @@ Display zoom level of the current image.
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
-  gallerySelector:'#gallery--with-custom-toolbar-indicator',
-  childSelector:'a',
+  gallery:'#gallery--with-custom-toolbar-indicator',
+  children:'a',
   
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };

@@ -33,8 +33,8 @@ imageClickAction: (releasePoint, e) => {}
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
-  gallerySelector:'#gallery--click-to-next',
-  childSelector:'a',
+  gallery:'#gallery--click-to-next',
+  children:'a',
 
   imageClickAction: 'next',
   tapAction: 'next',
@@ -63,8 +63,8 @@ lightbox.init();
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
-  gallerySelector:'#gallery--click-to-close',
-  childSelector:'a',
+  gallery:'#gallery--click-to-close',
+  children:'a',
 
   initialZoomLevel: 'fill',
   secondaryZoomLevel: 'fit',

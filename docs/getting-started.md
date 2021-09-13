@@ -38,10 +38,10 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
   // may select multiple "galleries"
-  gallerySelector: '#gallery--simple',
+  gallery: '#gallery--simple',
 
-  // Elements within gallerySelector (slides)
-  childSelector: 'a',
+  // Elements within gallery (slides)
+  children: 'a',
 
   // Include PhotoSwipe Core
   // and use absolute path (that starts with http(s)://)
@@ -75,8 +75,8 @@ import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
 // import 'photoswipe/dist/photoswipe.css';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector: '#my-gallery',
-  childSelector: 'a',
+  gallery: '#my-gallery',
+  children: 'a',
   pswpModule: PhotoSwipe
 });
 lightbox.init();
@@ -115,8 +115,8 @@ PhotoSwipe API supports almost any markup and any datasource, [read more about i
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
-  // Skip childSelector
-  gallerySelector: '#gallery--individual a',
+  // Skip children
+  gallery: '#gallery--individual a',
 
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
@@ -146,8 +146,8 @@ lightbox.init();
 ```pswp_example js
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
-  gallerySelector: '#gallery--responsive-images',
-  childSelector: 'a',
+  gallery: '#gallery--responsive-images',
+  children: 'a',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
@@ -167,8 +167,8 @@ lightbox.init();
 ## How initialization works
 
 1. Lightbox (`photoswipe-lightbox.esm.js`) will be loaded when browser reaches the `import`. It won't block your page rendering as modules are deferred by default. It is also very light comparing to the PhotoSwipe core.
-2. Lightbox will bind a single click event to each `gallerySelector`.
-3. After user clicks on any `childSelector` the Lightbox will start loading core PhotoSwipe library, specifically:
+2. Lightbox will bind a single click event to each `gallery`.
+3. After user clicks on any `children` the Lightbox will start loading core PhotoSwipe library, specifically:
 
     - PhotoSwipe core JS file that you may define via `pswpModule` option.
     - The first image.

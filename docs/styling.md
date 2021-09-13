@@ -30,8 +30,8 @@ const options = {
   // to apply styles just to this instance of PhotoSwipe
   mainClass: 'pswp--custom-icon-colors',
 
-  gallerySelector: '#gallery--custom-icon-colors',
-  childSelector: 'a',
+  gallery: '#gallery--custom-icon-colors',
+  children: 'a',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
@@ -134,8 +134,8 @@ const options = {
   // to apply styles just to this instance of PhotoSwipe
   mainClass: 'pswp--custom-bg',
 
-  gallerySelector: '#gallery--custom-bg',
-  childSelector: 'a',
+  gallery: '#gallery--custom-bg',
+  children: 'a',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);

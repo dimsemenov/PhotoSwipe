@@ -16,8 +16,8 @@ Please make sure that important captions are always accessible without PhotoSwip
 
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
-  gallerySelector:'#gallery--with-custom-caption',
-  childSelector:'.pswp-gallery__item',
+  gallery:'#gallery--with-custom-caption',
+  children:'.pswp-gallery__item',
   
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };

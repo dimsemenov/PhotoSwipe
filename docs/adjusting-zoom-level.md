@@ -48,8 +48,8 @@ secondaryZoomLevel: (zoomLevelObject) => {
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--open-in-original-size',
-  childSelector:'a',
+  gallery:'#gallery--open-in-original-size',
+  children:'a',
 
   // works nice with mousemove pan
   mouseMovePan: true,
@@ -80,8 +80,8 @@ lightbox.init();
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--open-in-fill-state',
-  childSelector:'a',
+  gallery:'#gallery--open-in-fill-state',
+  children:'a',
 
   initialZoomLevel: 'fill',
   secondaryZoomLevel: 1,
@@ -113,8 +113,8 @@ lightbox.init();
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--secondary-zoom-higher',
-  childSelector: 'a',
+  gallery:'#gallery--secondary-zoom-higher',
+  children: 'a',
   mouseMovePan: true,
 
   initialZoomLevel: 'fit',
@@ -146,8 +146,8 @@ Initial zoom level is set to `1` (original image size), you may want to disable 
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--initial-higher',
-  childSelector: 'a',
+  gallery:'#gallery--initial-higher',
+  children: 'a',
   mouseMovePan: true,
 
   initialZoomLevel: 1,
@@ -177,8 +177,8 @@ lightbox.init();
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--zoom-levels-equal',
-  childSelector: 'a',
+  gallery:'#gallery--zoom-levels-equal',
+  children: 'a',
   mouseMovePan: true,
 
   initialZoomLevel: 'fill',
@@ -208,7 +208,7 @@ lightbox.init();
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#very-small-image',
+  gallery:'#very-small-image',
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 lightbox.init();
@@ -242,8 +242,8 @@ function isPhonePortrait() {
 }
 
 const lightbox = new PhotoSwipeLightbox({
-  gallerySelector:'#gallery--dynamic-zoom-level',
-  childSelector:'a',
+  gallery:'#gallery--dynamic-zoom-level',
+  children:'a',
   
 
   initialZoomLevel: (zoomLevelObject) => {
