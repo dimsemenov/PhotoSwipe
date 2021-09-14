@@ -48,6 +48,10 @@ class TapHandler {
     const { currSlide } = pswp;
     const optionValue = pswp.options[actionName + 'Action'];
 
+    if (pswp.dispatch(actionName + 'Action', { point, originalEvent }).defaultPrevented) {
+      return;
+    }
+
     if (typeof optionValue === 'function') {
       optionValue.call(pswp, point, originalEvent);
       return;

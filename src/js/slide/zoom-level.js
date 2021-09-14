@@ -6,8 +6,12 @@
 const MAX_IMAGE_WIDTH = 3000;
 
 class ZoomLevel {
+  /**
+   * @param {Object} options PhotoSwipe options
+   * @param {Object} itemData Slide data
+   * @param {Integer} index Slide index
+   */
   constructor(options, itemData, index) {
-    // pswp options
     this.options = options;
     this.itemData = itemData;
     this.index = index;
