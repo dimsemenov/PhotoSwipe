@@ -219,6 +219,11 @@ and show (for example fade in) when PhotoSwipe is opened
   opacity: 1;
 }
 
+.pswp__button:disabled {
+  opacity: 0.3;
+  cursor: auto;
+}
+
 .pswp__icn {
   position: absolute;
   top: 14px;
