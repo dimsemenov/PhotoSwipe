@@ -183,8 +183,8 @@ class ImageSlide extends Slide {
       // Never lower quality, if it was increased previously.
       // Chrome does this automatically, Firefox and Safari do not,
       // so we store largest used size in dataset.
-      if (!image.dataset.largestUsedSize
-          || width > image.dataset.largestUsedSize) {
+      if (image.srcset
+          && (!image.dataset.largestUsedSize || width > image.dataset.largestUsedSize)) {
         image.sizes = width + 'px';
         image.dataset.largestUsedSize = width;
       }
