@@ -10,8 +10,10 @@ class ZoomLevel {
    * @param {Object} options PhotoSwipe options
    * @param {Object} itemData Slide data
    * @param {Integer} index Slide index
+   * @param {PhotoSwipe|undefined} pswp PhotoSwipe instance, can be undefined if not initialized yet
    */
-  constructor(options, itemData, index) {
+  constructor(options, itemData, index, pswp) {
+    this.pswp = pswp;
     this.options = options;
     this.itemData = itemData;
     this.index = index;
@@ -55,6 +57,10 @@ class ZoomLevel {
       this.initial,
       this.secondary
     );
+
+    if (this.pswp) {
+      this.pswp.dispatch('zoomLevelsUpdate', { zoomLevels: this, slideData: this.itemData });
+    }
   }
 
   /**

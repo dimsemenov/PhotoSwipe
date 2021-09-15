@@ -28,7 +28,7 @@ class Slide {
 
     this.isFirstSlide = (this.isActive && !pswp.opener.isOpen);
 
-    this.zoomLevels = new ZoomLevel(pswp.options, data, index);
+    this.zoomLevels = new ZoomLevel(pswp.options, data, index, pswp);
 
     this.pswp.dispatch('gettingData', {
       slide: this,
