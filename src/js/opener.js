@@ -17,6 +17,9 @@ import {
 // we set it to the minimum amount
 const MIN_OPACITY = 0.003;
 
+// Transitions for slides wider than this will be discarded
+const MAX_SLIDE_WIDTH_TO_ANIMATE = 4000;
+
 class Opener {
   constructor(pswp) {
     this.pswp = pswp;
@@ -40,10 +43,18 @@ class Opener {
       return false;
     }
 
+    const slide = this.pswp.currSlide;
+
     this.isOpen = false;
     this.isOpening = false;
     this.isClosing = true;
     this._duration = this.pswp.options.hideAnimationDuration;
+
+    // Automatically disable transition if the current slide
+    // is at MAX_SLIDE_WIDTH_TO_ANIMATE or wider
+    if (slide && slide.currZoomLevel * slide.width >= MAX_SLIDE_WIDTH_TO_ANIMATE) {
+      this._duration = 0;
+    }
 
     this._applyStartProps();
     setTimeout(() => {
