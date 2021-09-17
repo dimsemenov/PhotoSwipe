@@ -128,6 +128,10 @@ class ZoomHandler {
       return;
     }
 
+    if (this._zoomPoint.x === undefined) {
+      ignoreGesture = true;
+    }
+
     const prevZoomLevel = currSlide.currZoomLevel;
 
     let destinationZoomLevel;
