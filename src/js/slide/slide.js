@@ -184,8 +184,10 @@ class Slide {
     this.isActive = false;
 
     // reset zoom level
+    this.currentResolution = 0;
     this.zoomAndPanToInitial();
     this.applyCurrentZoomPan();
+    this.updateContentSize();
 
     this.pswp.dispatch('slideDeactivate', { slide: this });
   }
