@@ -17,7 +17,9 @@ class ScrollWheel {
       return;
     }
 
-    this.pswp.dispatch('wheel');
+    if (this.pswp.dispatch('wheel', { originalEvent: e }).defaultPrevented) {
+      return;
+    }
 
     if (e.ctrlKey || this.pswp.options.wheelToZoom) {
       // zoom
