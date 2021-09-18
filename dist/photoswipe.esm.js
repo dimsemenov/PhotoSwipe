@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.1.3 - https://photoswipe.com
+  * PhotoSwipe 5.1.4 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -379,8 +379,14 @@ class PanBounds {
 const MAX_IMAGE_WIDTH = 3000;
 
 class ZoomLevel {
-  constructor(options, itemData, index) {
-    // pswp options
+  /**
+   * @param {Object} options PhotoSwipe options
+   * @param {Object} itemData Slide data
+   * @param {Integer} index Slide index
+   * @param {PhotoSwipe|undefined} pswp PhotoSwipe instance, can be undefined if not initialized yet
+   */
+  constructor(options, itemData, index, pswp) {
+    this.pswp = pswp;
     this.options = options;
     this.itemData = itemData;
     this.index = index;
@@ -424,6 +430,10 @@ class ZoomLevel {
       this.initial,
       this.secondary
     );
+
+    if (this.pswp) {
+      this.pswp.dispatch('zoomLevelsUpdate', { zoomLevels: this, slideData: this.itemData });
+    }
   }
 
   /**
@@ -552,7 +562,7 @@ class Slide {
 
     this.isFirstSlide = (this.isActive && !pswp.opener.isOpen);
 
-    this.zoomLevels = new ZoomLevel(pswp.options, data, index);
+    this.zoomLevels = new ZoomLevel(pswp.options, data, index, pswp);
 
     this.pswp.dispatch('gettingData', {
       slide: this,
@@ -708,8 +718,10 @@ class Slide {
     this.isActive = false;
 
     // reset zoom level
+    this.currentResolution = 0;
     this.zoomAndPanToInitial();
     this.applyCurrentZoomPan();
+    this.updateContentSize();
 
     this.pswp.dispatch('slideDeactivate', { slide: this });
   }
@@ -1145,8 +1157,8 @@ class ImageSlide extends Slide {
       // Never lower quality, if it was increased previously.
       // Chrome does this automatically, Firefox and Safari do not,
       // so we store largest used size in dataset.
-      if (!image.dataset.largestUsedSize
-          || width > image.dataset.largestUsedSize) {
+      if (image.srcset
+          && (!image.dataset.largestUsedSize || width > image.dataset.largestUsedSize)) {
         image.sizes = width + 'px';
         image.dataset.largestUsedSize = width;
       }
@@ -1264,7 +1276,7 @@ class DragHandler {
     if ((pswp.currSlide.currZoomLevel > pswp.currSlide.zoomLevels.max
         && this.pswp.options.limitMaxZoom)
         || this.gestures.isMultitouch) {
-      this.gestures.zoomLevels.correctZoomPan(true);
+      this.gestures.zoomLevels.correctZoomPan();
     } else {
       // we run two animations instead of one,
       // as each axis has own pan boundaries and thus different spring function
@@ -1608,6 +1620,10 @@ class ZoomHandler {
       return;
     }
 
+    if (this._zoomPoint.x === undefined) {
+      ignoreGesture = true;
+    }
+
     const prevZoomLevel = currSlide.currZoomLevel;
 
     let destinationZoomLevel;
@@ -1765,6 +1781,10 @@ class TapHandler {
     const { pswp } = this.gestures;
     const { currSlide } = pswp;
     const optionValue = pswp.options[actionName + 'Action'];
+
+    if (pswp.dispatch(actionName + 'Action', { point, originalEvent }).defaultPrevented) {
+      return;
+    }
 
     if (typeof optionValue === 'function') {
       optionValue.call(pswp, point, originalEvent);
@@ -3940,6 +3960,9 @@ class PhotoSwipeBase extends Eventable {
 // we set it to the minimum amount
 const MIN_OPACITY = 0.003;
 
+// Transitions for slides wider than this will be discarded
+const MAX_SLIDE_WIDTH_TO_ANIMATE = 4000;
+
 class Opener {
   constructor(pswp) {
     this.pswp = pswp;
@@ -3963,10 +3986,18 @@ class Opener {
       return false;
     }
 
+    const slide = this.pswp.currSlide;
+
     this.isOpen = false;
     this.isOpening = false;
     this.isClosing = true;
     this._duration = this.pswp.options.hideAnimationDuration;
+
+    // Automatically disable transition if the current slide
+    // is at MAX_SLIDE_WIDTH_TO_ANIMATE or wider
+    if (slide && slide.currZoomLevel * slide.width >= MAX_SLIDE_WIDTH_TO_ANIMATE) {
+      this._duration = 0;
+    }
 
     this._applyStartProps();
     setTimeout(() => {

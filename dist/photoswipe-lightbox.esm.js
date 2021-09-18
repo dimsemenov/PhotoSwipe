@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.1.3 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.1.4 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -81,8 +81,14 @@ function getPanAreaSize(options, viewportSize/*, pswp*/) {
 const MAX_IMAGE_WIDTH = 3000;
 
 class ZoomLevel {
-  constructor(options, itemData, index) {
-    // pswp options
+  /**
+   * @param {Object} options PhotoSwipe options
+   * @param {Object} itemData Slide data
+   * @param {Integer} index Slide index
+   * @param {PhotoSwipe|undefined} pswp PhotoSwipe instance, can be undefined if not initialized yet
+   */
+  constructor(options, itemData, index, pswp) {
+    this.pswp = pswp;
     this.options = options;
     this.itemData = itemData;
     this.index = index;
@@ -126,6 +132,10 @@ class ZoomLevel {
       this.initial,
       this.secondary
     );
+
+    if (this.pswp) {
+      this.pswp.dispatch('zoomLevelsUpdate', { zoomLevels: this, slideData: this.itemData });
+    }
   }
 
   /**
@@ -571,6 +581,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     if (clickedChildIndex !== -1) {
       return clickedChildIndex;
+    } else if (this.options.children || this.options.childSelector) {
+      // click wasn't on a child element
+      return -1;
     }
 
     // There is only one item (which is the gallery)
