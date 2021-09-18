@@ -94,6 +94,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     if (clickedChildIndex !== -1) {
       return clickedChildIndex;
+    } else if (this.options.children || this.options.childSelector) {
+      // click wasn't on a child element
+      return -1;
     }
 
     // There is only one item (which is the gallery)
