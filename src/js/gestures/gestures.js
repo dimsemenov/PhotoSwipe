@@ -274,7 +274,7 @@ class Gestures {
         }
       } else /* if (this.isZooming) */ {
         if (!pointsEqual(this.p1, this.prevP1)
-            && !pointsEqual(this.p2, this.prevP2)) {
+            || !pointsEqual(this.p2, this.prevP2)) {
           this.zoomLevels.change();
         }
       }
