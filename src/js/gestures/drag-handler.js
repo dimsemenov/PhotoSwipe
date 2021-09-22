@@ -38,7 +38,7 @@ class DragHandler {
 
     if (dragAxis === 'y'
         && pswp.options.closeOnVerticalDrag
-        && currSlide.currZoomLevel <= currSlide.zoomLevels.vFill
+        && currSlide.currZoomLevel <= currSlide.zoomLevels.fit
         && !this.gestures.isMultitouch) {
       // Handle vertical drag to close
       const panY = currSlide.pan.y + (p1.y - prevP1.y);
