@@ -201,13 +201,22 @@ class Slide {
   }
 
   resize() {
-    this.calculateSize();
+    if (this.currZoomLevel === this.zoomLevels.initial || !this.isActive) {
+      // Keep initial zoom level if it was before the resize,
+      // as well as when this slide is not active
 
-    // Reset position and scale to original state on resize
-    this.currentResolution = 0;
-    this.updateContentSize();
-    this.zoomAndPanToInitial();
-    this.applyCurrentZoomPan();
+      // Reset position and scale to original state
+      this.calculateSize();
+      this.currentResolution = 0;
+      this.zoomAndPanToInitial();
+      this.applyCurrentZoomPan();
+      this.updateContentSize();
+    } else {
+      // readjust pan position if it's beyond the bounds
+      this.calculateSize();
+      this.bounds.update(this.currZoomLevel);
+      this.panTo(this.pan.x, this.pan.y);
+    }
   }
 
 
