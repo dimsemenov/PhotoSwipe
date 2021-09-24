@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.1.4 - https://photoswipe.com
+  * PhotoSwipe 5.1.5 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -735,13 +735,22 @@ class Slide {
   }
 
   resize() {
-    this.calculateSize();
+    if (this.currZoomLevel === this.zoomLevels.initial || !this.isActive) {
+      // Keep initial zoom level if it was before the resize,
+      // as well as when this slide is not active
 
-    // Reset position and scale to original state on resize
-    this.currentResolution = 0;
-    this.updateContentSize();
-    this.zoomAndPanToInitial();
-    this.applyCurrentZoomPan();
+      // Reset position and scale to original state
+      this.calculateSize();
+      this.currentResolution = 0;
+      this.zoomAndPanToInitial();
+      this.applyCurrentZoomPan();
+      this.updateContentSize();
+    } else {
+      // readjust pan position if it's beyond the bounds
+      this.calculateSize();
+      this.bounds.update(this.currZoomLevel);
+      this.panTo(this.pan.x, this.pan.y);
+    }
   }
 
 
@@ -1210,7 +1219,7 @@ class DragHandler {
 
     if (dragAxis === 'y'
         && pswp.options.closeOnVerticalDrag
-        && currSlide.currZoomLevel <= currSlide.zoomLevels.vFill
+        && currSlide.currZoomLevel <= currSlide.zoomLevels.fit
         && !this.gestures.isMultitouch) {
       // Handle vertical drag to close
       const panY = currSlide.pan.y + (p1.y - prevP1.y);
@@ -2090,7 +2099,7 @@ class Gestures {
         }
       } else /* if (this.isZooming) */ {
         if (!pointsEqual(this.p1, this.prevP1)
-            && !pointsEqual(this.p2, this.prevP2)) {
+            || !pointsEqual(this.p2, this.prevP2)) {
           this.zoomLevels.change();
         }
       }
@@ -3077,7 +3086,9 @@ class ScrollWheel {
       return;
     }
 
-    this.pswp.dispatch('wheel');
+    if (this.pswp.dispatch('wheel', { originalEvent: e }).defaultPrevented) {
+      return;
+    }
 
     if (e.ctrlKey || this.pswp.options.wheelToZoom) {
       // zoom

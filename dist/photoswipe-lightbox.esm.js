@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.1.4 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.1.5 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
