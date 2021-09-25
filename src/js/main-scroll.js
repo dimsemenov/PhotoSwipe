@@ -24,9 +24,6 @@ class MainScroll {
     this.pswp = pswp;
     this.x = 0;
 
-    // Size of slide area + spacing
-    this.slideWidth = 0; // old pswp.slideSize.x
-
     this.resetPosition();
   }
 
@@ -38,16 +35,24 @@ class MainScroll {
    */
   resize(resizeSlides) {
     const { pswp } = this;
-
-    this.slideWidth = Math.round(
+    const newSlideWidth = Math.round(
       pswp.viewportSize.x + pswp.viewportSize.x * pswp.options.spacing
     );
+    // Mobile browsers might trigger a resize event during a gesture.
+    // (due to toolbar appearing or hiding).
+    // Avoid re-adjusting main scroll position if width wasn't changed
+    const slideWidthChanged = (newSlideWidth !== this.slideWidth);
 
-    this.moveTo(this.getCurrSlideX());
+    if (slideWidthChanged) {
+      this.slideWidth = newSlideWidth;
+      this.moveTo(this.getCurrSlideX());
+    }
 
     this.itemHolders.forEach((itemHolder, index) => {
-      setTransform(itemHolder.el, (index + this._containerShiftIndex)
+      if (slideWidthChanged) {
+        setTransform(itemHolder.el, (index + this._containerShiftIndex)
                                     * this.slideWidth);
+      }
 
       if (resizeSlides && itemHolder.slide) {
         itemHolder.slide.resize();
@@ -63,6 +68,9 @@ class MainScroll {
     // it is independent from slide index
     this._currPositionIndex = 0;
     this._prevPositionIndex = 0;
+
+    // This will force recalculation of size on next resize()
+    this.slideWidth = 0;
 
     // _containerShiftIndex*viewportSize will give you amount of transform of the current slide
     this._containerShiftIndex = -1;
