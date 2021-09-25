@@ -159,7 +159,8 @@ class ZoomHandler {
       this._zoomPoint.y = 0;
       this._startZoomPoint.x = 0;
       this._startZoomPoint.y = 0;
-      equalizePoints(this._startPan, this.pswp.currSlide.pan);
+      this._startZoomLevel = prevZoomLevel;
+      equalizePoints(this._startPan, initialPan);
     }
 
     if (currZoomLevelNeedsChange) {
