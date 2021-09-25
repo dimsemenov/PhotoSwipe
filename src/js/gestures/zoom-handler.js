@@ -2,8 +2,8 @@ import {
   equalizePoints, getDistanceBetween, clamp, pointsEqual
 } from '../util/util.js';
 
-const UPPER_ZOOM_FRICTION = 0.15;
-const LOWER_ZOOM_FRICTION = 0.25;
+const UPPER_ZOOM_FRICTION = 0.05;
+const LOWER_ZOOM_FRICTION = 0.15;
 
 
 /**
@@ -203,7 +203,7 @@ class ZoomHandler {
       end: 1000,
       velocity: 0,
       dampingRatio: 1,
-      naturalFrequency: 30,
+      naturalFrequency: 40,
       onUpdate: (now) => {
         now /= 1000; // 0 - start, 1 - end
 
