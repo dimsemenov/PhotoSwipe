@@ -43,6 +43,7 @@ const defaultOptions = {
   doubleTapAction: 'zoom',
 
   indexIndicatorSep: ' / ',
+  removePlaceholderOnLoad: true,
 
   bgOpacity: 0.8,
 

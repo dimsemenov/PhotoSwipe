@@ -2,13 +2,15 @@ import Slide from '../slide.js';
 
 import {
   createElement,
-  setWidthHeight
+  setWidthHeight,
+  toTransformString
 } from '../../util/util.js';
 
 class ImageSlide extends Slide {
   appendContent() {
     // Use image-based placeholder only for the first slide
-    const useImagePlaceholder = this.data.msrc && this.isFirstSlide;
+    const useImagePlaceholder = this.data.msrc
+      && (this.isFirstSlide || this.pswp.options.alwaysUseImgPlaceholder);
 
     // Create placeholder
     // (stretched thumbnail or simple div behind the main image)
@@ -56,12 +58,12 @@ class ImageSlide extends Slide {
   loadMainImage() {
     this.image = createElement('pswp__img', 'img');
 
-    // may update sizes attribute
-    this.updateContentSize();
-
     if (this.data.srcset) {
       this.image.srcset = this.data.srcset;
     }
+
+    // may update sizes attribute
+    this.updateContentSize();
 
     this.image.src = this.data.src;
 
@@ -109,7 +111,7 @@ class ImageSlide extends Slide {
     this._appendMainImage();
     this.isLoading = false;
     this.pswp.dispatch('loadComplete', { slide: this, isError });
-    if (this.placeholder) {
+    if (this.placeholder && this.pswp.options.removePlaceholderOnLoad) {
       // If large image is not decoded,
       // which might happen if browser does not support decode(),
       // there will be a flash after placeholder is removed,
@@ -171,7 +173,16 @@ class ImageSlide extends Slide {
     const height = Math.round(this.height * scaleMultiplier);
 
     if (this.placeholder) {
-      setWidthHeight(this.placeholder, width, 'auto');
+      if (this.placeholder.tagName === 'IMG') {
+        // Use transform scale() to modify img placeholder size
+        // (instead of changing width/height directly).
+        // This helps with performance, specifically in iOS15 Safari.
+        setWidthHeight(this.placeholder, 250, 'auto');
+        this.placeholder.style.transformOrigin = '0 0';
+        this.placeholder.style.transform = toTransformString(0, 0, width / 250);
+      } else {
+        setWidthHeight(this.placeholder, width, height);
+      }
     }
 
     const { image } = this;
