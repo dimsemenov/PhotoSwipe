@@ -135,7 +135,7 @@ class Gestures {
 
     pswp.animations.stopAll();
 
-    this._updatePoints(e);
+    this._updatePoints(e, 'down');
 
     this.pointerDown = true;
 
@@ -162,7 +162,7 @@ class Gestures {
       return;
     }
 
-    this._updatePoints(e);
+    this._updatePoints(e, 'move');
 
     if (this.pswp.dispatch('pointerMove', { originalEvent: e }).defaultPrevented) {
       return;
@@ -232,7 +232,7 @@ class Gestures {
       return;
     }
 
-    this._updatePoints(e, true);
+    this._updatePoints(e, 'up');
 
     if (this.pswp.dispatch('pointerUp', { originalEvent: e }).defaultPrevented) {
       return;
@@ -391,19 +391,19 @@ class Gestures {
    * Updates p1 and p2.
    *
    * @param {Event} e
-   * @param {Boolean} isPointerUp
+   * @param {String} pointerType Normalized pointer type ('up', 'down' or 'move')
    */
-  _updatePoints(e, isPointerUp) {
+  _updatePoints(e, pointerType) {
     if (this._pointerEventEnabled) {
       // Try to find the current pointer in ongoing pointers by its ID
       const pointerIndex = this._ongoingPointers.findIndex((ongoingPoiner) => {
         return ongoingPoiner.id === e.pointerId;
       });
 
-      if (isPointerUp && pointerIndex > -1) {
+      if (pointerType === 'up' && pointerIndex > -1) {
         // release the pointer - remove it from ongoing
         this._ongoingPointers.splice(pointerIndex, 1);
-      } else if (!isPointerUp && pointerIndex === -1) {
+      } else if (pointerType === 'down' && pointerIndex === -1) {
         // add new pointer
         this._ongoingPointers.push(this._convertEventPosToPoint(e, {}));
       } else if (pointerIndex > -1) {
@@ -438,7 +438,7 @@ class Gestures {
       } else {
         // Mouse Event
         this._convertEventPosToPoint(e, this.p1);
-        if (isPointerUp) {
+        if (pointerType === 'up') {
           // clear all points on mouseup
           this._numActivePoints = 0;
         } else {
