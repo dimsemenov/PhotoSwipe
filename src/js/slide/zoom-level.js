@@ -3,7 +3,7 @@
  * Depends on viewport size and image size.
  */
 
-const MAX_IMAGE_WIDTH = 3000;
+const MAX_IMAGE_WIDTH = 4000;
 
 class ZoomLevel {
   /**
@@ -108,8 +108,8 @@ class ZoomLevel {
       return currZoomLevel;
     }
 
-    // 2.5x of "fit" state, but not larger than original
-    currZoomLevel = Math.min(1, this.fit * 2.5);
+    // 3x of "fit" state, but not larger than original
+    currZoomLevel = Math.min(1, this.fit * 3);
 
     if (currZoomLevel * this.elementSize.x > MAX_IMAGE_WIDTH) {
       currZoomLevel = MAX_IMAGE_WIDTH / this.elementSize.x;
