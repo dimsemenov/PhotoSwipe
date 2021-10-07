@@ -92,7 +92,7 @@ class UI {
     const currZoomLevelDiff = currSlide.zoomLevels.initial - currSlide.zoomLevels.secondary;
 
     // Initial and secondary zoom levels are almost equal
-    if (Math.abs(currZoomLevelDiff) < 0.01) {
+    if (Math.abs(currZoomLevelDiff) < 0.01 || !currSlide.isZoomable()) {
       // disable zoom
       setZoomedIn(template, false);
       template.classList.remove('pswp--zoom-allowed');
