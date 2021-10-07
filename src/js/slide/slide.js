@@ -9,13 +9,14 @@ import {
   roundPoint,
   toTransformString,
   clamp,
+  LOAD_STATE,
+  setWidthHeight,
 } from '../util/util.js';
 
 import PanBounds from './pan-bounds.js';
 import ZoomLevel from './zoom-level.js';
-
 import { getPanAreaSize } from '../util/viewport-size.js';
-
+import Placeholder from './placeholder.js';
 
 class Slide {
   constructor(data, index, pswp) {
@@ -41,14 +42,17 @@ class Slide {
       y: 0
     };
 
+    const ContentClass = this.pswp.getContentClass(this.data, index);
+    this.content = new ContentClass(this.data, pswp, this);
+
     this.currZoomLevel = 1;
-    this.width = Number(data.w) || 0;
-    this.height = Number(data.h) || 0;
+    this.width = this.content.width;
+    this.height = this.content.height;
+
     this.bounds = new PanBounds(this);
 
-    this.prevWidth = -1;
-    this.prevHeight = -1;
-    this.prevScaleMultiplier = -1;
+    this.prevDisplayedWidth = -1;
+    this.prevDisplayedHeight = -1;
 
     this.pswp.dispatch('slideInit', { slide: this });
   }
@@ -85,7 +89,7 @@ class Slide {
     this.container = createElement('pswp__zoom-wrap');
     this.container.transformOrigin = '0 0';
 
-    this.appendContent();
+    this.load();
     this.appendHeavy();
     this.updateContentSize();
 
@@ -105,12 +109,30 @@ class Slide {
     }
   }
 
+  removePlaceholder() {
+    if (this.placeholder && this.content && !this.content.keepPlaceholder()) {
+      // With delay, as image might be loaded, but not decoded
+      setTimeout(() => {
+        if (this.placeholder) {
+          this.placeholder.destroy();
+          this.placeholder = null;
+        }
+      }, 500);
+    }
+  }
 
-  /**
-   * Append content to this.container
-   */
-  appendContent() {
-    this.setSlideHTML(this.data.html);
+  load() {
+    if (this.usePlaceholder() && !this.placeholder) {
+      const useImagePlaceholder = this.data.msrc && this.isFirstSlide;
+      this.placeholder = new Placeholder(
+        useImagePlaceholder ? this.data.msrc : false,
+        this.container
+      );
+    }
+
+    this.content.load();
+    this.pswp.lazyLoader.addRecent(this.index);
+    this.pswp.dispatch('slideLoad', { slide: this });
   }
 
   /**
@@ -137,10 +159,15 @@ class Slide {
 
     this.heavyAppended = true;
 
-    this.appendHeavyContent();
-  }
+    if (this.content.state === LOAD_STATE.ERROR) {
+      this.displayError();
+    } else {
+      this.content.appendTo(this.container);
+      if (this.placeholder) {
+        this.removePlaceholder();
+      }
+    }
 
-  appendHeavyContent() {
     this.pswp.dispatch('appendHeavyContent', { slide: this });
   }
 
@@ -158,9 +185,16 @@ class Slide {
     } else {
       container.innerHTML = html;
     }
-    container.style.width = '100%';
-    container.style.height = '100%';
-    container.classList.add('pswp__zoom-wrap--html');
+  }
+
+  displayError() {
+    const errorElement = this.content.getErrorElement();
+    errorElement.style.position = 'absolute';
+    errorElement.style.left = 0;
+    errorElement.style.top = 0;
+    this.activeErrorElement = errorElement;
+    this.setSlideHTML(errorElement);
+    this.updateContentSize(true);
   }
 
   /**
@@ -172,6 +206,7 @@ class Slide {
   activate() {
     this.isActive = true;
     this.appendHeavy();
+    this.content.activate();
     this.pswp.dispatch('slideActivate', { slide: this });
   }
 
@@ -182,6 +217,7 @@ class Slide {
    */
   deactivate() {
     this.isActive = false;
+    this.content.deactivate();
 
     // reset zoom level
     this.currentResolution = 0;
@@ -197,6 +233,7 @@ class Slide {
    * (unbind all events and destroy internal components)
    */
   destroy() {
+    this.content.destroy();
     this.pswp.dispatch('slideDestroy', { slide: this });
   }
 
@@ -221,16 +258,53 @@ class Slide {
 
 
   /**
-   * Apply size to current slide images
-   * based on the current resolution.
-   * @returns Boolean true if size was changed
+   * Apply size to current slide content,
+   * based on the current resolution and scale.
+   *
+   * @param {Boolean} force if size should be updated even if dimensions weren't changed
    */
-  updateContentSize() {
-    return true;
+  updateContentSize(force) {
+    // Use initial zoom level
+    // if resolution is not defined (user didn't zoom yet)
+    const scaleMultiplier = this.currentResolution || this.zoomLevels.initial;
+
+    if (!scaleMultiplier) {
+      return;
+    }
+
+    const width = Math.round(this.width * scaleMultiplier) || this.pswp.viewportSize.x;
+    const height = Math.round(this.height * scaleMultiplier) || this.pswp.viewportSize.y;
+
+    if (!this.sizeChanged(width, height) && !force) {
+      return;
+    }
+
+    if (this.placeholder) {
+      this.placeholder.setDisplayedSize(width, height);
+    }
+
+    if (this.activeErrorElement) {
+      setWidthHeight(this.activeErrorElement, width, height);
+    }
+
+    this.content.setDisplayedSize(width, height);
   }
 
-  getPlaceholder() {
+  sizeChanged(width, height) {
+    if (width !== this.prevDisplayedWidth
+        || height !== this.prevDisplayedHeight) {
+      this.prevDisplayedWidth = width;
+      this.prevDisplayedHeight = height;
+      return true;
+    }
+
     return false;
+  }
+
+  getPlaceholderElement() {
+    if (this.placeholder) {
+      return this.placeholder.element;
+    }
   }
 
   /**
@@ -358,17 +432,21 @@ class Slide {
   }
 
   /**
-   * Whether slide in the current state can be panned by the user
+   * If the slide in the current state can be panned by the user
    */
   isPannable() {
-    return false;
+    return this.width && (this.currZoomLevel > this.zoomLevels.fit);
   }
 
   /**
-   * Whether the slide can be zoomed
+   * If the slide can be zoomed
    */
   isZoomable() {
-    return false;
+    return this.width && this.content.isZoomable();
+  }
+
+  usePlaceholder() {
+    return this.content.usePlaceholder();
   }
 
   /**

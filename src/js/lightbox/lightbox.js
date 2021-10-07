@@ -194,6 +194,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       });
     });
 
+    // same with content types
+    pswp.contentTypes = { ...this.contentTypes };
+
     pswp.on('destroy', () => {
       // clean up public variables
       this.pswp = null;
@@ -219,3 +222,5 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 }
 
 export default PhotoSwipeLightbox;
+export { default as Content } from '../slide/content/content.js';
+export { default as ImageContent } from '../slide/content/image.js';

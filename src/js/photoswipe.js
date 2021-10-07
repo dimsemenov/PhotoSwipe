@@ -7,8 +7,6 @@ import {
 
 import DOMEvents from './util/dom-events.js';
 import Slide from './slide/slide.js';
-import ImageSlide from './slide/types/image-slide.js';
-import HTMLSlide from './slide/types/html-slide.js';
 import Gestures from './gestures/gestures.js';
 import MainScroll from './main-scroll.js';
 
@@ -43,18 +41,13 @@ const defaultOptions = {
   doubleTapAction: 'zoom',
 
   indexIndicatorSep: ' / ',
-  removePlaceholderOnLoad: true,
 
   bgOpacity: 0.8,
 
   index: 0,
   errorMsg: '<div class="pswp__error-msg"><a href="" target="_blank">The image</a> could not be loaded.</div>',
   preload: [1, 2],
-  easing: 'cubic-bezier(.4,0,.22,1)',
-  paddingTop: 0,
-  paddingBottom: 0,
-  paddingLeft: 0,
-  paddingRight: 0
+  easing: 'cubic-bezier(.4,0,.22,1)'
 };
 
 class PhotoSwipe extends PhotoSwipeBase {
@@ -169,6 +162,20 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.events.add(window, 'resize', this._handlePageResize.bind(this));
       this.events.add(window, 'scroll', this._updatePageScrollOffset.bind(this));
       this.dispatch('bindEvents');
+    });
+
+    // remove placeholder when slide is loaded
+    this.on('loadComplete', (e) => {
+      if (e.slide.heavyAppended) {
+        e.slide.removePlaceholder();
+      }
+    });
+
+    this.on('loadError', (e) => {
+      if (e.slide.heavyAppended) {
+        e.slide.removePlaceholder();
+        e.slide.displayError();
+      }
     });
 
     // set content for center slide (first time)
@@ -335,9 +342,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     }
 
     const itemData = this.getItemData(index);
-    const SlideClass = this.getSlideClass(itemData, index);
-
-    holder.slide = new SlideClass(itemData, index, this);
+    holder.slide = new Slide(itemData, index, this);
 
     // set current slide
     if (index === this.currIndex) {
@@ -345,22 +350,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     }
 
     holder.slide.append(holder.el);
-  }
-
-  getSlideClass(itemData, index) {
-    let CurrClass;
-
-    if (itemData.html) {
-      CurrClass = HTMLSlide;
-    } else if (itemData.src) {
-      CurrClass = ImageSlide;
-    } else {
-      CurrClass = Slide;
-    }
-
-    const eventData = this.dispatch('slideClass', { itemData, index, slideClass: CurrClass });
-
-    return eventData.slideClass || CurrClass;
   }
 
   getViewportCenterPoint() {
@@ -521,6 +510,5 @@ class PhotoSwipe extends PhotoSwipeBase {
 }
 
 export default PhotoSwipe;
-export { default as Slide } from './slide/slide.js';
-export { default as ImageSlide } from './slide/types/image-slide.js';
-export { default as HTMLSlide } from './slide/types/html-slide.js';
+export { default as Content } from './slide/content/content.js';
+export { default as ImageContent } from './slide/content/image.js';

@@ -143,6 +143,14 @@ export function decodeImage(img) {
   });
 }
 
+export const LOAD_STATE = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  LOADED: 'loaded',
+  ERROR: 'error',
+};
+
+
 /**
  * Check if click or keydown event was dispatched
  * with a special key or via mouse wheel.

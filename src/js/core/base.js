@@ -6,8 +6,18 @@ import Eventable from './eventable';
 import {
   getElementsFromOption
 } from '../util/util.js';
+import ImageContent from '../slide/content/image.js';
+import Content from '../slide/content/content';
 
 class PhotoSwipeBase extends Eventable {
+  constructor() {
+    super();
+    this.contentTypes = {
+      image: ImageContent,
+      html: Content
+    };
+  }
+
   /**
    * Get total number of slides
    */
@@ -37,6 +47,33 @@ class PhotoSwipeBase extends Eventable {
     });
 
     return event.numItems;
+  }
+
+  /**
+   * Add or set slide content type
+   *
+   * @param {String} type
+   * @param {Class} ContentClass
+   */
+  addContentType(type, ContentClass) {
+    this.contentTypes[type] = ContentClass;
+  }
+
+  /**
+   * Get slide content class based on its data
+   *
+   * @param {Object} slideData
+   * @param {Integer} slideIndex
+   * @returns Class
+   */
+  getContentClass(slideData) {
+    if (slideData.type) {
+      return this.contentTypes[slideData.type];
+    } else if (slideData.src) {
+      return this.contentTypes.image;
+    } else if (slideData.html) {
+      return this.contentTypes.html;
+    }
   }
 
   /**
@@ -125,6 +162,10 @@ class PhotoSwipeBase extends Eventable {
 
     itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
     itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
+
+    if (linkEl.dataset.pswpType) {
+      itemData.type = linkEl.dataset.pswpType;
+    }
 
     const thumbnailEl = element.querySelector('img');
 

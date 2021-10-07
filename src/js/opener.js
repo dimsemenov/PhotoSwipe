@@ -93,14 +93,13 @@ class Opener {
       this._thumbBounds = this.pswp.getThumbBounds();
     }
 
-    this._placeholder = slide.getPlaceholder();
+    this._placeholder = slide.getPlaceholderElement();
 
     pswp.animations.stopAll();
 
     // Discard animations when duration is less than 50ms
     this._useAnimation = (this._duration > 50);
     this._animateZoom = Boolean(this._thumbBounds)
-                        && slide.isZoomable()
                         && (!this.isClosing || !pswp.mainScroll.isShifted());
     if (!this._animateZoom) {
       this._animateRootOpacity = true;

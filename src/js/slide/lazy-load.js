@@ -10,35 +10,38 @@ const MAX_SLIDES_TO_LAZY_LOAD = 15;
  * thus it can be called before dialog is opened.
  *
  * @param {Object} itemData Data about the slide
- * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
- * @param {Boolean}  decode Wether decode() should be used.
+ * @param {PhotoSwipeBase}  instance PhotoSwipe or PhotoSwipeLightbox
  * @returns {Object|Boolean} Image that is being decoded or false.
  */
-export function lazyLoadData(itemData, instance, decode) {
-  if (itemData.src && itemData.w && itemData.h) {
-    const { options } = instance;
+export function lazyLoadData(itemData, instance) {
+  const ContentClass = instance.getContentClass(itemData);
 
-    // We need to know dimensions of the image to preload it,
-    // as it might use srcset and we need to define sizes
-    const viewportSize = instance.viewportSize || getViewportSize(options);
-    const panAreaSize = getPanAreaSize(options, viewportSize);
-
-    const zoomLevel = new ZoomLevel(options, itemData, -1);
-    zoomLevel.update(itemData.w, itemData.h, panAreaSize);
-
-    const image = document.createElement('img');
-    image.decoding = 'async';
-    image.sizes = Math.ceil(itemData.w * zoomLevel.initial) + 'px';
-    if (itemData.srcset) {
-      image.srcset = itemData.srcset;
-    }
-    image.src = itemData.src;
-    if (decode && ('decode' in image)) {
-      image.decode();
-    }
-
-    return image;
+  if (!ContentClass) {
+    return;
   }
+
+  // src/slide/content/content.js
+  const content = new ContentClass(itemData, instance);
+
+  if (!content.lazyLoad) {
+    return;
+  }
+
+  const { options } = instance;
+
+  // We need to know dimensions of the image to preload it,
+  // as it might use srcset and we need to define sizes
+  const viewportSize = instance.viewportSize || getViewportSize(options);
+  const panAreaSize = getPanAreaSize(options, viewportSize);
+
+  const zoomLevel = new ZoomLevel(options, itemData, -1);
+  zoomLevel.update(content.width, content.height, panAreaSize);
+
+  content.lazyLoad();
+  content.setDisplayedSize(
+    Math.ceil(content.width * zoomLevel.initial),
+    Math.ceil(content.height * zoomLevel.initial)
+  );
 }
 
 /**
