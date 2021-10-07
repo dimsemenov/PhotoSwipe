@@ -4,6 +4,7 @@
 import {
   clamp
 } from '../util/util.js';
+import { parsePaddingOption } from '../util/viewport-size.js';
 
 class PanBounds {
   constructor(slide) {
@@ -33,9 +34,10 @@ class PanBounds {
 
   // _calculateItemBoundsForAxis
   _updateAxis(axis) {
+    const { pswp } = this.slide;
     const elSize = this.slide[axis === 'x' ? 'width' : 'height'] * this.currZoomLevel;
-    const paddingProp = axis === 'x' ? 'Left' : 'Top';
-    const padding = this.slide.pswp.options['padding' + paddingProp] || 0;
+    const paddingProp = axis === 'x' ? 'left' : 'top';
+    const padding = parsePaddingOption(paddingProp, pswp.options, pswp.viewportSize);
 
     const panAreaSize = this.slide.panAreaSize[axis];
 

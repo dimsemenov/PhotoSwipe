@@ -8,10 +8,6 @@ sidebar_label: Options
 
 Number, `0.8`. Background opacity.
 
-### paddingTop, paddingBottom, paddingLeft, paddingRight 
-  
-Number, 0. Slide area padding (in pixels).
-
 ### spacing
 
 Number, `0.1`. Spacing between slides. Defined as ratio relative to the viewport width (0.1 = 10% of viewport).
@@ -33,6 +29,24 @@ Boolean, `true`. Pinch to close.
 
 Boolean, `true`. Vertical drag to close.
 
+### padding
+  
+Object, `{ top: 0, bottom: 0, left: 0, right: 0 }`. Slide area padding (in pixels).
+
+### paddingFn
+
+Function, should return padding object. Overrides `padding` option if defined. For example:
+
+```
+paddingFn: (viewportSize) => {
+  return {
+    top: 0,
+    bottom: viewportSize.x < 600 ? 0 : 200,
+    left: 0,
+    right: 0
+  };
+}
+```
 
 ### hideAnimationDuration, showAnimationDuration, zoomAnimationDuration
 
