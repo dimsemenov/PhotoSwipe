@@ -28,7 +28,7 @@ export function getViewportSize(options, pswp) {
  *  left: 0,
  *  right: 0
  * }
- * 
+ *
  * // A function that returns the object
  * paddingFn: (viewportSize) => {
  *  return {
@@ -44,7 +44,7 @@ export function getViewportSize(options, pswp) {
  * paddingRight: 0,
  * paddingTop: 0,
  * paddingBottom: 0,
- * 
+ *
  * @param {String} prop 'left', 'top', 'bottom', 'right'
  * @param {Object} options PhotoSwipe options
  * @param {Object} viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }

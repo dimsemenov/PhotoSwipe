@@ -2,14 +2,14 @@
   "name": "PhotoSwipe",
   "title": "Photoswipe",
   "description": "",
-  "version": "5.1.5",
-  "homepage": "http://photoswipe.com",
-  "demo": "http://photoswipe.com",
-  "docs": "http://photoswipe.com",
+  "version": "5.1.61",
+  "homepage": "https://photoswipe.com",
+  "demo": "https://photoswipe.com",
+  "docs": "https://photoswipe.com",
   "author": {
     "name": "Dmytro Semenov",
     "email": "diiiimaaaa@gmail.com",
-    "url": "http://dimsemenov.com"
+    "url": "https://dimsemenov.com"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://www.opensource.org/licenses/mit-license.php"
+      "url": "https://www.opensource.org/licenses/mit-license.php"
     }
   ]
 }

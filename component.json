@@ -3,7 +3,7 @@
   "repository": "dimsemenov/PhotoSwipe",
   "description": "JavaScript gallery",
   "main": "dist/photoswipe.esm.js",
-  "version": "5.1.5",
+  "version": "5.1.61",
   "keywords": [
     "gallery",
     "lightbox",
