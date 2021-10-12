@@ -21,6 +21,39 @@ class PhotoSwipeEvent {
 class Eventable {
   constructor() {
     this._listeners = {};
+    this._filters = {};
+  }
+
+  addFilter(name, fn, priority = 100) {
+    if (!this._filters[name]) {
+      this._filters[name] = [];
+    }
+
+    this._filters[name].push({ fn, priority });
+    this._filters[name].sort((f1, f2) => f1.priority - f2.priority);
+
+    if (this.pswp) {
+      this.pswp.addFilter(name, fn, priority);
+    }
+  }
+
+  removeFilter(name, fn) {
+    if (this._filters[name]) {
+      this._filters[name] = this._filters[name].filter(filter => (filter.fn !== fn));
+    }
+
+    if (this.pswp) {
+      this.pswp.removeFilter(name, fn);
+    }
+  }
+
+  applyFilters(name, ...args) {
+    if (this._filters[name]) {
+      this._filters[name].forEach((filter) => {
+        args[0] = filter.fn.apply(this, args);
+      });
+    }
+    return args[0];
   }
 
   on(name, fn) {
