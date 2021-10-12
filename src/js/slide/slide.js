@@ -161,7 +161,7 @@ class Slide {
       this.displayError();
     } else {
       this.content.appendTo(this.container);
-      if (this.placeholder) {
+      if (this.placeholder && this.content.state === LOAD_STATE.LOADED) {
         this.removePlaceholder();
       }
     }
