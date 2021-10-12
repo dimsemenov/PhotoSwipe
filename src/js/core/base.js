@@ -76,6 +76,12 @@ class PhotoSwipeBase extends Eventable {
     }
   }
 
+  createContentFromData(slideData) {
+    const ContentClass = this.getContentClass(slideData);
+    const content = new ContentClass(slideData, this);
+    return content;
+  }
+
   /**
    * Get item data by index.
    *

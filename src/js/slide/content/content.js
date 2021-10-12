@@ -8,20 +8,21 @@ class Content {
    *                                can be undefined if image was requested by something else
    *                                (for example by lazy-loader)
    */
-  constructor(itemData, instance, slide) {
+  constructor(itemData, instance) {
     this.options = instance.options;
     this.instance = instance;
     this.data = itemData;
 
-    if (slide) {
-      this.slide = slide;
-      this.pswp = slide.pswp;
-    }
-
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
 
+    this.isAttached = false;
     this.state = LOAD_STATE.IDLE;
+  }
+
+  setSlide(slide) {
+    this.slide = slide;
+    this.pswp = slide.pswp;
   }
 
   /**
@@ -87,7 +88,16 @@ class Content {
     return false;
   }
 
+
+  remove() {
+    this.isAttached = false;
+    if (this.element && this.element.parentNode) {
+      this.element.remove();
+    }
+  }
+
   appendTo(container) {
+    this.isAttached = true;
     if (this.element && !this.element.parentNode) {
       container.appendChild(this.element);
     }

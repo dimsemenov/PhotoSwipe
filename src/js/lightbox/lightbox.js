@@ -19,9 +19,9 @@ import {
   getElementsFromOption
 } from '../util/util.js';
 
-import { lazyLoadSlide } from '../slide/lazy-load.js';
 import { dynamicImportModule } from './dynamic-import.js';
 import PhotoSwipeBase from '../core/base.js';
+import { lazyLoadSlide } from '../slide/loader.js';
 
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   constructor(options) {
@@ -149,7 +149,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     if (options.preloadFirstSlide !== false && index >= 0) {
-      lazyLoadSlide(index, this);
+      this._preloadedContent = lazyLoadSlide(index, this);
     }
 
     // Wait till all promises resolve and open PhotoSwipe
@@ -196,6 +196,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     // same with content types
     pswp.contentTypes = { ...this.contentTypes };
+
+    if (this._preloadedContent) {
+      pswp.contentLoader.addToCache(this._preloadedContent);
+      this._preloadedContent = null;
+    }
 
     pswp.on('destroy', () => {
       // clean up public variables

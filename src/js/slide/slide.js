@@ -42,8 +42,7 @@ class Slide {
       y: 0
     };
 
-    const ContentClass = this.pswp.getContentClass(this.data, index);
-    this.content = new ContentClass(this.data, pswp, this);
+    this.content = this.pswp.contentLoader.getContentBySlide(this);
 
     this.currZoomLevel = 1;
     this.width = this.content.width;
@@ -131,7 +130,6 @@ class Slide {
     }
 
     this.content.load();
-    this.pswp.lazyLoader.addRecent(this.index);
     this.pswp.dispatch('slideLoad', { slide: this });
   }
 
@@ -233,7 +231,7 @@ class Slide {
    * (unbind all events and destroy internal components)
    */
   destroy() {
-    this.content.destroy();
+    this.content.remove();
     this.pswp.dispatch('slideDestroy', { slide: this });
   }
 

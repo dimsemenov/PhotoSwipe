@@ -81,6 +81,8 @@ class ImageContent extends Content {
   }
 
   appendTo(container) {
+    this.isAttached = true;
+
     // Use decode() on nearby slides
     //
     // Nearby slide images are in DOM and not hidden via display:none.
@@ -130,7 +132,7 @@ class ImageContent extends Content {
 
   appendImageTo(container) {
     // ensure that element exists and is not already appended
-    if (this.element && !this.element.parentNode) {
+    if (this.element && !this.element.parentNode && this.isAttached) {
       container.appendChild(this.element);
     }
   }
