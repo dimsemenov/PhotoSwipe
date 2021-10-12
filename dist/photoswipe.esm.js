@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.1.61 - https://photoswipe.com
+  * PhotoSwipe 5.1.7 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -687,8 +687,7 @@ class Slide {
       y: 0
     };
 
-    const ContentClass = this.pswp.getContentClass(this.data, index);
-    this.content = new ContentClass(this.data, pswp, this);
+    this.content = this.pswp.contentLoader.getContentBySlide(this);
 
     this.currZoomLevel = 1;
     this.width = this.content.width;
@@ -768,15 +767,18 @@ class Slide {
 
   load() {
     if (this.usePlaceholder() && !this.placeholder) {
-      const useImagePlaceholder = this.data.msrc && this.isFirstSlide;
+      const placeholderSrc = this.pswp.applyFilters(
+        'placeholderSrc',
+        (this.data.msrc && this.isFirstSlide) ? this.data.msrc : false,
+        this
+      );
       this.placeholder = new Placeholder(
-        useImagePlaceholder ? this.data.msrc : false,
+        placeholderSrc,
         this.container
       );
     }
 
     this.content.load();
-    this.pswp.lazyLoader.addRecent(this.index);
     this.pswp.dispatch('slideLoad', { slide: this });
   }
 
@@ -808,7 +810,7 @@ class Slide {
       this.displayError();
     } else {
       this.content.appendTo(this.container);
-      if (this.placeholder) {
+      if (this.placeholder && this.content.state === LOAD_STATE.LOADED) {
         this.removePlaceholder();
       }
     }
@@ -878,7 +880,7 @@ class Slide {
    * (unbind all events and destroy internal components)
    */
   destroy() {
-    this.content.destroy();
+    this.content.remove();
     this.pswp.dispatch('slideDestroy', { slide: this });
   }
 
@@ -2582,7 +2584,7 @@ class MainScroll {
     });
 
     pswp.currSlide = this.itemHolders[1].slide;
-    pswp.lazyLoader.update(positionDifference);
+    pswp.contentLoader.updateLazy(positionDifference);
 
     pswp.currSlide.applyCurrentZoomPan();
     pswp.dispatch('change');
@@ -3532,58 +3534,17 @@ class UI {
   }
 }
 
-/**
- * Get dimensions of thumbnail image
- * (click on which opens photoswipe or closes photoswipe to)
- *
- * @param {Integer} index
- * @param {Object} itemData
- * @param {PhotoSwipe} instance PhotoSwipe instance
- */
-function getThumbBounds(index, itemData, instance) {
-  const event = instance.dispatch('thumbBounds', {
-    index,
-    itemData,
-    instance
-  });
+function getBoundsByElement(el) {
+  const thumbAreaRect = el.getBoundingClientRect();
+  return {
+    x: thumbAreaRect.left,
+    y: thumbAreaRect.top,
+    w: thumbAreaRect.width
+  };
+}
 
-  if (event.thumbBounds) {
-    return event.thumbBounds;
-  }
-
-  const { element } = itemData;
-
-  if (!element
-      || instance.options.thumbSelector === false) {
-    return;
-  }
-
-  const thumbSelector = instance.options.thumbSelector || 'img';
-  const thumbnail = element.matches(thumbSelector)
-    ? element : element.querySelector(thumbSelector);
-
-  if (!thumbnail) {
-    return;
-  }
-
-  const thumbAreaRect = thumbnail.getBoundingClientRect();
-
-  if (!itemData.thumbCropped) {
-    return {
-      x: thumbAreaRect.left,
-      y: thumbAreaRect.top,
-      w: thumbAreaRect.width
-    };
-  }
-
-  // get dimensions of the large image,
-  // its aspect ratio must match thumbnail image
-  const imageWidth = itemData.w;
-  const imageHeight = itemData.h;
-
-  if (!imageWidth || !imageHeight) {
-    return;
-  }
+function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
+  const thumbAreaRect = el.getBoundingClientRect();
 
   // fill image into the area
   // (do they same as object-fit:cover does to retrieve coordinates)
@@ -3615,143 +3576,48 @@ function getThumbBounds(index, itemData, instance) {
   return bounds;
 }
 
-// This much recently lazy-loaded images will not be lazy-loaded again
-const MAX_SLIDES_TO_LAZY_LOAD = 15;
-
 /**
- * Lazy-load an image
- * This function is used both by Lightbox and PhotoSwipe core,
- * thus it can be called before dialog is opened.
+ * Get dimensions of thumbnail image
+ * (click on which opens photoswipe or closes photoswipe to)
  *
- * @param {Object} itemData Data about the slide
- * @param {PhotoSwipeBase}  instance PhotoSwipe or PhotoSwipeLightbox
- * @returns {Object|Boolean} Image that is being decoded or false.
+ * @param {Integer} index
+ * @param {Object} itemData
+ * @param {PhotoSwipe} instance PhotoSwipe instance
+ * @returns Object|undefined
  */
-function lazyLoadData(itemData, instance) {
-  const ContentClass = instance.getContentClass(itemData);
-
-  if (!ContentClass) {
-    return;
+function getThumbBounds(index, itemData, instance) {
+  // legacy event, before filters were introduced
+  const event = instance.dispatch('thumbBounds', {
+    index,
+    itemData,
+    instance
+  });
+  if (event.thumbBounds) {
+    return event.thumbBounds;
   }
 
-  // src/slide/content/content.js
-  const content = new ContentClass(itemData, instance);
+  const { element } = itemData;
+  let thumbBounds;
 
-  if (!content.lazyLoad) {
-    return;
-  }
+  if (element && instance.options.thumbSelector !== false) {
+    const thumbSelector = instance.options.thumbSelector || 'img';
+    const thumbnail = element.matches(thumbSelector)
+      ? element : element.querySelector(thumbSelector);
 
-  const { options } = instance;
-
-  // We need to know dimensions of the image to preload it,
-  // as it might use srcset and we need to define sizes
-  const viewportSize = instance.viewportSize || getViewportSize(options);
-  const panAreaSize = getPanAreaSize(options, viewportSize);
-
-  const zoomLevel = new ZoomLevel(options, itemData, -1);
-  zoomLevel.update(content.width, content.height, panAreaSize);
-
-  content.lazyLoad();
-  content.setDisplayedSize(
-    Math.ceil(content.width * zoomLevel.initial),
-    Math.ceil(content.height * zoomLevel.initial)
-  );
-}
-
-/**
- * Lazy-loads specific slide.
- * This function is used both by Lightbox and PhotoSwipe core,
- * thus it can be called before dialog is opened.
- *
- * By default it loads image based on viewport size and initial zoom level.
- *
- * @param {Integer} index Slide index
- * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
- */
-function lazyLoadSlide(index, instance) {
-  const itemData = instance.getItemData(index);
-
-  if (instance.dispatch('lazyLoadSlide', { index, itemData }).defaultPrevented) {
-    return;
-  }
-
-  lazyLoadData(itemData, instance);
-}
-
-class LazyLoader {
-  constructor(pswp) {
-    this.pswp = pswp;
-    this.clearRecent();
-  }
-
-  /**
-   * Lazy load nearby slides based on `preload` option.
-   *
-   * @param {Integer} diff Difference between slide indexes that was changed recently, or 0.
-   */
-  update(diff) {
-    const { pswp } = this;
-
-    if (pswp.dispatch('lazyLoad').defaultPrevented) {
-      return;
-    }
-
-    const { preload } = pswp.options;
-    const isForward = diff === undefined ? true : (diff >= 0);
-    let i;
-
-    // preload[1] - num items to preload in forward direction
-    for (i = 0; i <= preload[1]; i++) {
-      this.loadSlideByIndex(pswp.currIndex + (isForward ? i : (-i)));
-    }
-
-    // preload[0] - num items to preload in backward direction
-    for (i = 1; i <= preload[0]; i++) {
-      this.loadSlideByIndex(pswp.currIndex + (isForward ? (-i) : i));
+    if (thumbnail) {
+      if (!itemData.thumbCropped) {
+        thumbBounds = getBoundsByElement(thumbnail);
+      } else {
+        thumbBounds = getCroppedBoundsByElement(
+          thumbnail,
+          itemData.w,
+          itemData.h
+        );
+      }
     }
   }
 
-  clearRecent() {
-    this._recentlyLazyLoadedIndexes = [];
-  }
-
-  /**
-   * Add index to recently lazy-loaded slides.
-   *
-   * To prevent duplciate downloads,
-   * we keep track of recently preloaded slides.
-   *
-   * @param {Integer} index
-   */
-  addRecent(index) {
-    if (this._recentlyLazyLoadedIndexes.indexOf(index) > -1) {
-      // already exists
-      return;
-    }
-
-    if (this._recentlyLazyLoadedIndexes.length > MAX_SLIDES_TO_LAZY_LOAD - 1) {
-      this._recentlyLazyLoadedIndexes.pop();
-    }
-
-    // the most recent lazy loaded index is the first
-    // (thus push to the beginning)
-    this._recentlyLazyLoadedIndexes.unshift(index);
-
-    return true;
-  }
-
-  loadSlideByIndex(index) {
-    index = this.pswp.getLoopedIndex(index);
-
-    if (this.addRecent(index)) {
-      lazyLoadSlide(index, this.pswp);
-    }
-  }
-
-  // @see lazyLoadData
-  loadSlideByData(data, decode) {
-    lazyLoadData(data, this.pswp);
-  }
+  return instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
 }
 
 /**
@@ -3777,6 +3643,39 @@ class PhotoSwipeEvent {
 class Eventable {
   constructor() {
     this._listeners = {};
+    this._filters = {};
+  }
+
+  addFilter(name, fn, priority = 100) {
+    if (!this._filters[name]) {
+      this._filters[name] = [];
+    }
+
+    this._filters[name].push({ fn, priority });
+    this._filters[name].sort((f1, f2) => f1.priority - f2.priority);
+
+    if (this.pswp) {
+      this.pswp.addFilter(name, fn, priority);
+    }
+  }
+
+  removeFilter(name, fn) {
+    if (this._filters[name]) {
+      this._filters[name] = this._filters[name].filter(filter => (filter.fn !== fn));
+    }
+
+    if (this.pswp) {
+      this.pswp.removeFilter(name, fn);
+    }
+  }
+
+  applyFilters(name, ...args) {
+    if (this._filters[name]) {
+      this._filters[name].forEach((filter) => {
+        args[0] = filter.fn.apply(this, args);
+      });
+    }
+    return args[0];
   }
 
   on(name, fn) {
@@ -3832,20 +3731,21 @@ class Content {
    *                                can be undefined if image was requested by something else
    *                                (for example by lazy-loader)
    */
-  constructor(itemData, instance, slide) {
+  constructor(itemData, instance) {
     this.options = instance.options;
     this.instance = instance;
     this.data = itemData;
 
-    if (slide) {
-      this.slide = slide;
-      this.pswp = slide.pswp;
-    }
-
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
 
+    this.isAttached = false;
     this.state = LOAD_STATE.IDLE;
+  }
+
+  setSlide(slide) {
+    this.slide = slide;
+    this.pswp = slide.pswp;
   }
 
   /**
@@ -3911,7 +3811,16 @@ class Content {
     return false;
   }
 
+
+  remove() {
+    this.isAttached = false;
+    if (this.element && this.element.parentNode) {
+      this.element.remove();
+    }
+  }
+
   appendTo(container) {
+    this.isAttached = true;
     if (this.element && !this.element.parentNode) {
       container.appendChild(this.element);
     }
@@ -4002,6 +3911,8 @@ class ImageContent extends Content {
   }
 
   appendTo(container) {
+    this.isAttached = true;
+
     // Use decode() on nearby slides
     //
     // Nearby slide images are in DOM and not hidden via display:none.
@@ -4051,7 +3962,7 @@ class ImageContent extends Content {
 
   appendImageTo(container) {
     // ensure that element exists and is not already appended
-    if (this.element && !this.element.parentNode) {
+    if (this.element && !this.element.parentNode && this.isAttached) {
       container.appendChild(this.element);
     }
   }
@@ -4093,13 +4004,12 @@ class PhotoSwipeBase extends Eventable {
       }
     }
 
-    // allow to filter number of items
+    // legacy event, before filters were introduced
     const event = this.dispatch('numItems', {
       dataSource,
       numItems
     });
-
-    return event.numItems;
+    return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
   /**
@@ -4127,6 +4037,12 @@ class PhotoSwipeBase extends Eventable {
     } else if (slideData.html) {
       return this.contentTypes.html;
     }
+  }
+
+  createContentFromData(slideData) {
+    const ContentClass = this.getContentClass(slideData);
+    const content = new ContentClass(slideData, this);
+    return content;
   }
 
   /**
@@ -4163,13 +4079,14 @@ class PhotoSwipeBase extends Eventable {
       itemData = this._domElementToItemData(itemData);
     }
 
-    // allow to filter itemData
+    // Dispatching the itemData event,
+    // it's a legacy verion before filters were introduced
     const event = this.dispatch('itemData', {
       itemData: itemData || {},
       index
     });
 
-    return event.itemData;
+    return this.applyFilters('itemData', event.itemData, index);
   }
 
   /**
@@ -4203,35 +4120,35 @@ class PhotoSwipeBase extends Eventable {
 
     const linkEl = element.tagName === 'A' ? element : element.querySelector('a');
 
-    if (!linkEl) {
-      return itemData;
+    if (linkEl) {
+      // src comes from data-pswp-src attribute,
+      // if it's empty link href is used
+      itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
+
+      itemData.srcset = linkEl.dataset.pswpSrcset;
+
+      itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
+      itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
+
+      if (linkEl.dataset.pswpType) {
+        itemData.type = linkEl.dataset.pswpType;
+      }
+
+      const thumbnailEl = element.querySelector('img');
+
+      if (thumbnailEl) {
+        // define msrc only if it's the first slide,
+        // as rendering (even small stretched thumbnail) is an expensive operation
+        itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
+        itemData.alt = thumbnailEl.getAttribute('alt');
+      }
+
+      if (linkEl.dataset.pswpCropped || linkEl.dataset.cropped) {
+        itemData.thumbCropped = true;
+      }
     }
 
-    // src comes from data-pswp-src attribute,
-    // if it's empty link href is used
-    itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
-
-    itemData.srcset = linkEl.dataset.pswpSrcset;
-
-    itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
-    itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
-
-    if (linkEl.dataset.pswpType) {
-      itemData.type = linkEl.dataset.pswpType;
-    }
-
-    const thumbnailEl = element.querySelector('img');
-
-    if (thumbnailEl) {
-      // define msrc only if it's the first slide,
-      // as rendering (even small stretched thumbnail) is an expensive operation
-      itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
-      itemData.alt = thumbnailEl.getAttribute('alt');
-    }
-
-    if (linkEl.dataset.cropped) {
-      itemData.thumbCropped = true;
-    }
+    this.applyFilters('domItemData', itemData, element, linkEl);
 
     return itemData;
   }
@@ -4592,6 +4509,191 @@ class Opener {
   }
 }
 
+const MIN_SLIDES_TO_CACHE = 5;
+
+/**
+ * Returns cache key by slide index and data
+ *
+ * @param {Object} itemData
+ * @param {Integer} index
+ * @returns {String}
+ */
+function getKey(itemData, index) {
+  if (itemData && itemData.src) {
+    return itemData.src + '_' + index;
+  }
+  return index;
+}
+
+
+/**
+ * Lazy-load an image
+ * This function is used both by Lightbox and PhotoSwipe core,
+ * thus it can be called before dialog is opened.
+ *
+ * @param {Object} itemData Data about the slide
+ * @param {PhotoSwipeBase}  instance PhotoSwipe or PhotoSwipeLightbox
+ * @param {Integer} index
+ * @returns {Object|Boolean} Image that is being decoded or false.
+ */
+function lazyLoadData(itemData, instance, index) {
+  // src/slide/content/content.js
+  const content = instance.createContentFromData(itemData);
+
+  if (!content || !content.lazyLoad) {
+    return;
+  }
+
+  content.key = getKey(itemData, index);
+
+  const { options } = instance;
+
+  // We need to know dimensions of the image to preload it,
+  // as it might use srcset and we need to define sizes
+  const viewportSize = instance.viewportSize || getViewportSize(options);
+  const panAreaSize = getPanAreaSize(options, viewportSize);
+
+  const zoomLevel = new ZoomLevel(options, itemData, -1);
+  zoomLevel.update(content.width, content.height, panAreaSize);
+
+  content.lazyLoad();
+  content.setDisplayedSize(
+    Math.ceil(content.width * zoomLevel.initial),
+    Math.ceil(content.height * zoomLevel.initial)
+  );
+
+  return content;
+}
+
+
+/**
+ * Lazy-loads specific slide.
+ * This function is used both by Lightbox and PhotoSwipe core,
+ * thus it can be called before dialog is opened.
+ *
+ * By default it loads image based on viewport size and initial zoom level.
+ *
+ * @param {Integer} index Slide index
+ * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ */
+function lazyLoadSlide(index, instance) {
+  const itemData = instance.getItemData(index);
+
+  if (instance.dispatch('lazyLoadSlide', { index, itemData }).defaultPrevented) {
+    return;
+  }
+
+  return lazyLoadData(itemData, instance, index);
+}
+
+
+class ContentLoader {
+  constructor(pswp) {
+    this.pswp = pswp;
+    // Total amount of cached images
+    this.limit = Math.max(
+      pswp.options.preload[0] + pswp.options.preload[1] + 1,
+      MIN_SLIDES_TO_CACHE
+    );
+    this._cachedItems = [];
+  }
+
+  /**
+   * Lazy load nearby slides based on `preload` option.
+   *
+   * @param {Integer} diff Difference between slide indexes that was changed recently, or 0.
+   */
+  updateLazy(diff) {
+    const { pswp } = this;
+
+    if (pswp.dispatch('lazyLoad').defaultPrevented) {
+      return;
+    }
+
+    const { preload } = pswp.options;
+    const isForward = diff === undefined ? true : (diff >= 0);
+    let i;
+
+    // preload[1] - num items to preload in forward direction
+    for (i = 0; i <= preload[1]; i++) {
+      this.loadSlideByIndex(pswp.currIndex + (isForward ? i : (-i)));
+    }
+
+    // preload[0] - num items to preload in backward direction
+    for (i = 1; i <= preload[0]; i++) {
+      this.loadSlideByIndex(pswp.currIndex + (isForward ? (-i) : i));
+    }
+  }
+
+  loadSlideByIndex(index) {
+    index = this.pswp.getLoopedIndex(index);
+    const itemData = this.pswp.getItemData(index);
+    const key = getKey(itemData, index);
+    let content = this.getContentByKey(key);
+    if (!content) {
+      content = lazyLoadSlide(index, this.pswp);
+      content.key = key;
+      this.addToCache(content);
+    }
+  }
+
+  getContentBySlide(slide) {
+    let content = this.getContentByKey(this.getKeyBySlide(slide));
+    if (!content) {
+      // create content if not found in cache
+      content = this.pswp.createContentFromData(slide.data);
+      content.key = this.getKeyBySlide(slide);
+      this.addToCache(content);
+    }
+    // assign slide to content
+    content.setSlide(slide);
+    return content;
+  }
+
+  /**
+   * @param {Content} content
+   */
+  addToCache(content) {
+    // move to the end of array
+    this.removeByKey(content.key);
+    this._cachedItems.push(content);
+
+    if (this._cachedItems.length > this.limit) {
+      // Destroy the first content that's not attached
+      const indexToRemove = this._cachedItems.findIndex(item => !item.isAttached);
+      if (indexToRemove !== -1) {
+        const removedItem = this._cachedItems.splice(indexToRemove, 1)[0];
+        removedItem.destroy();
+      }
+    }
+  }
+
+  /**
+   * Removes an image from cache, does not destroy() it, just removes.
+   *
+   * @param {String} key
+   */
+  removeByKey(key) {
+    const indexToRemove = this._cachedItems.findIndex(item => item.key === key);
+    if (indexToRemove !== -1) {
+      this._cachedItems.splice(indexToRemove, 1);
+    }
+  }
+
+  getContentByKey(key) {
+    return this._cachedItems.find(content => content.key === key);
+  }
+
+  getKeyBySlide(slide) {
+    return getKey(slide.data, slide.index);
+  }
+
+  destroy() {
+    this._cachedItems.forEach(content => content.destroy());
+    this._cachedItems = null;
+  }
+}
+
 const defaultOptions = {
   allowPanToNext: true,
   spacing: 0.1,
@@ -4650,7 +4752,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.gestures = new Gestures(this);
     this.opener = new Opener(this);
     this.keyboard = new Keyboard(this);
-    this.lazyLoader = new LazyLoader(this);
+    this.contentLoader = new ContentLoader(this);
   }
 
   init() {
@@ -4729,7 +4831,7 @@ class PhotoSwipe extends PhotoSwipeBase {
 
       this.appendHeavy();
 
-      this.lazyLoader.update();
+      this.contentLoader.updateLazy();
 
       this.events.add(window, 'resize', this._handlePageResize.bind(this));
       this.events.add(window, 'scroll', this._updatePageScrollOffset.bind(this));
@@ -4896,6 +4998,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.scrollWrap.ontouchend = null;
 
     this.template.remove();
+    this.contentLoader.destroy();
     this.events.removeAll();
   }
 

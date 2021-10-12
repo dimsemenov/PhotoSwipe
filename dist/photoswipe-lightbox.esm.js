@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.1.61 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.1.7 - https://photoswipe.com
   * (c) 2021 Dmitry Semenov
   */
 /**
@@ -71,6 +71,544 @@ function getElementsFromOption(option, legacySelector, parent = document) {
   }
 
   return elements;
+}
+
+function dynamicImportModule(module) {
+  return typeof module === 'string' ? import(/* webpackIgnore: true */ module) : module;
+}
+
+/**
+ * Base PhotoSwipe event object
+ */
+class PhotoSwipeEvent {
+  constructor(type, details) {
+    this.type = type;
+    if (details) {
+      Object.assign(this, details);
+    }
+  }
+
+  preventDefault() {
+    this.defaultPrevented = true;
+  }
+}
+
+/**
+ * PhotoSwipe base class that can listen and dispatch for events.
+ * Shared by PhotoSwipe Core and PhotoSwipe Lightbox, extended by base.js
+ */
+class Eventable {
+  constructor() {
+    this._listeners = {};
+    this._filters = {};
+  }
+
+  addFilter(name, fn, priority = 100) {
+    if (!this._filters[name]) {
+      this._filters[name] = [];
+    }
+
+    this._filters[name].push({ fn, priority });
+    this._filters[name].sort((f1, f2) => f1.priority - f2.priority);
+
+    if (this.pswp) {
+      this.pswp.addFilter(name, fn, priority);
+    }
+  }
+
+  removeFilter(name, fn) {
+    if (this._filters[name]) {
+      this._filters[name] = this._filters[name].filter(filter => (filter.fn !== fn));
+    }
+
+    if (this.pswp) {
+      this.pswp.removeFilter(name, fn);
+    }
+  }
+
+  applyFilters(name, ...args) {
+    if (this._filters[name]) {
+      this._filters[name].forEach((filter) => {
+        args[0] = filter.fn.apply(this, args);
+      });
+    }
+    return args[0];
+  }
+
+  on(name, fn) {
+    if (!this._listeners[name]) {
+      this._listeners[name] = [];
+    }
+    this._listeners[name].push(fn);
+
+    // When binding events to lightbox,
+    // also bind events to PhotoSwipe Core,
+    // if it's open.
+    if (this.pswp) {
+      this.pswp.on(name, fn);
+    }
+  }
+
+  off(name, fn) {
+    if (this._listeners[name]) {
+      this._listeners[name] = this._listeners[name].filter(listener => (fn !== listener));
+    }
+
+    if (this.pswp) {
+      this.pswp.off(name, fn);
+    }
+  }
+
+  dispatch(name, details) {
+    if (this.pswp) {
+      return this.pswp.dispatch(name, details);
+    }
+
+    const event = new PhotoSwipeEvent(name, details);
+
+    if (!this._listeners) {
+      return event;
+    }
+
+    if (this._listeners[name]) {
+      this._listeners[name].forEach((listener) => {
+        listener.call(this, event);
+      });
+    }
+
+    return event;
+  }
+}
+
+class Content {
+  /**
+   * @param {Object} itemData Slide data
+   * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox instance
+   * @param {Slide|undefined} slide Slide that requested the image,
+   *                                can be undefined if image was requested by something else
+   *                                (for example by lazy-loader)
+   */
+  constructor(itemData, instance) {
+    this.options = instance.options;
+    this.instance = instance;
+    this.data = itemData;
+
+    this.width = Number(this.data.w) || Number(this.data.width) || 0;
+    this.height = Number(this.data.h) || Number(this.data.height) || 0;
+
+    this.isAttached = false;
+    this.state = LOAD_STATE.IDLE;
+  }
+
+  setSlide(slide) {
+    this.slide = slide;
+    this.pswp = slide.pswp;
+  }
+
+  /**
+   * Load the content
+   *
+   * @param {Boolean} isLazy If method is executed by lazy-loader
+   */
+  load(/* isLazy */) {
+    if (!this.element) {
+      this.element = createElement('pswp__content');
+      this.element.style.position = 'absolute';
+      this.element.style.left = 0;
+      this.element.style.top = 0;
+      this.element.innerHTML = this.data.html || '';
+    }
+  }
+
+  isZoomable() {
+    return false;
+  }
+
+  usePlaceholder() {
+    return false;
+  }
+
+  activate() {
+
+  }
+
+  deactivate() {
+
+  }
+
+  setDisplayedSize(width, height) {
+    if (this.element) {
+      setWidthHeight(this.element, width, height);
+    }
+  }
+
+  onLoaded() {
+    this.state = LOAD_STATE.LOADED;
+
+    if (this.slide) {
+      this.pswp.dispatch('loadComplete', { slide: this.slide });
+    }
+  }
+
+  // If the placeholder should be kept in DOM
+  keepPlaceholder() {
+    return (this.state === LOAD_STATE.LOADING);
+  }
+
+  onError() {
+    this.state = LOAD_STATE.ERROR;
+
+    if (this.slide) {
+      this.pswp.dispatch('loadComplete', { slide: this.slide, isError: true });
+      this.pswp.dispatch('loadError', { slide: this.slide });
+    }
+  }
+
+  getErrorElement() {
+    return false;
+  }
+
+
+  remove() {
+    this.isAttached = false;
+    if (this.element && this.element.parentNode) {
+      this.element.remove();
+    }
+  }
+
+  appendTo(container) {
+    this.isAttached = true;
+    if (this.element && !this.element.parentNode) {
+      container.appendChild(this.element);
+    }
+  }
+
+  destroy() {
+
+  }
+}
+
+class ImageContent extends Content {
+  load(/* isLazy */) {
+    if (this.element) {
+      return;
+    }
+
+    const imageSrc = this.data.src;
+
+    if (!imageSrc) {
+      return;
+    }
+
+    this.element = createElement('pswp__img', 'img');
+
+    if (this.data.srcset) {
+      this.element.srcset = this.data.srcset;
+    }
+
+    this.element.src = imageSrc;
+
+    this.element.alt = this.data.alt || '';
+
+    this.state = LOAD_STATE.LOADING;
+
+    if (this.element.complete) {
+      this.onLoaded();
+    } else {
+      this.element.onload = () => {
+        this.onLoaded();
+      };
+
+      this.element.onerror = () => {
+        this.onError();
+      };
+    }
+  }
+
+  setDisplayedSize(width, height) {
+    const image = this.element;
+    if (image) {
+      setWidthHeight(image, width, 'auto');
+
+      // Handle srcset sizes attribute.
+      //
+      // Never lower quality, if it was increased previously.
+      // Chrome does this automatically, Firefox and Safari do not,
+      // so we store largest used size in dataset.
+      if (image.srcset
+          && (!image.dataset.largestUsedSize || width > image.dataset.largestUsedSize)) {
+        image.sizes = width + 'px';
+        image.dataset.largestUsedSize = width;
+      }
+
+      if (this.slide) {
+        this.pswp.dispatch('imageSizeChange', { slide: this.slide, width, height });
+      }
+    }
+  }
+
+  isZoomable() {
+    return (this.state !== LOAD_STATE.ERROR);
+  }
+
+  usePlaceholder() {
+    return true;
+  }
+
+  lazyLoad() {
+    this.load();
+  }
+
+  destroy() {
+    if (this.element) {
+      this.element.onload = null;
+      this.element.onerror = null;
+      this.element = null;
+    }
+  }
+
+  appendTo(container) {
+    this.isAttached = true;
+
+    // Use decode() on nearby slides
+    //
+    // Nearby slide images are in DOM and not hidden via display:none.
+    // However, they are placed offscreen (to the left and right side).
+    //
+    // Some browsers do not composite the image until it's actually visible,
+    // using decode() helps.
+    //
+    // You might ask "why dont you just decode() and then append all images",
+    // that's because I want to show image before it's fully loaded,
+    // as browser can render parts of image while it is loading.
+    if (this.slide && !this.slide.isActive && ('decode' in this.element)) {
+      this.isDecoding = true;
+      // Make sure that we start decoding on the next frame
+      requestAnimationFrame(() => {
+        if (this.element) {
+          this.element.decode().then(() => {
+            this.isDecoding = false;
+            requestAnimationFrame(() => {
+              this.appendImageTo(container);
+            });
+          }).catch(() => {});
+        }
+      });
+    } else {
+      this.appendImageTo(container);
+    }
+  }
+
+  activate() {
+    if (this.slide && this.slide.container && this.isDecoding) {
+      // add image to slide when it becomes active,
+      // even if it's not finished decoding
+      this.appendImageTo(this.slide.container);
+    }
+  }
+
+  getErrorElement() {
+    const el = createElement('pswp__error-msg-container');
+    el.innerHTML = this.options.errorMsg;
+    const linkEl = el.querySelector('a');
+    if (linkEl) {
+      linkEl.href = this.data.src;
+    }
+    return el;
+  }
+
+  appendImageTo(container) {
+    // ensure that element exists and is not already appended
+    if (this.element && !this.element.parentNode && this.isAttached) {
+      container.appendChild(this.element);
+    }
+  }
+}
+
+/**
+ * PhotoSwipe base class that can retrieve data about every slide.
+ * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
+ */
+
+class PhotoSwipeBase extends Eventable {
+  constructor() {
+    super();
+    this.contentTypes = {
+      image: ImageContent,
+      html: Content
+    };
+  }
+
+  /**
+   * Get total number of slides
+   */
+  getNumItems() {
+    let numItems;
+    const { dataSource } = this.options;
+    if (!dataSource) {
+      numItems = 0;
+    } else if (dataSource.length) {
+      // may be an array or just object with length property
+      numItems = dataSource.length;
+    } else if (dataSource.gallery) {
+      // query DOM elements
+      if (!dataSource.items) {
+        dataSource.items = this._getGalleryDOMElements(dataSource.gallery);
+      }
+
+      if (dataSource.items) {
+        numItems = dataSource.items.length;
+      }
+    }
+
+    // legacy event, before filters were introduced
+    const event = this.dispatch('numItems', {
+      dataSource,
+      numItems
+    });
+    return this.applyFilters('numItems', event.numItems, dataSource);
+  }
+
+  /**
+   * Add or set slide content type
+   *
+   * @param {String} type
+   * @param {Class} ContentClass
+   */
+  addContentType(type, ContentClass) {
+    this.contentTypes[type] = ContentClass;
+  }
+
+  /**
+   * Get slide content class based on its data
+   *
+   * @param {Object} slideData
+   * @param {Integer} slideIndex
+   * @returns Class
+   */
+  getContentClass(slideData) {
+    if (slideData.type) {
+      return this.contentTypes[slideData.type];
+    } else if (slideData.src) {
+      return this.contentTypes.image;
+    } else if (slideData.html) {
+      return this.contentTypes.html;
+    }
+  }
+
+  createContentFromData(slideData) {
+    const ContentClass = this.getContentClass(slideData);
+    const content = new ContentClass(slideData, this);
+    return content;
+  }
+
+  /**
+   * Get item data by index.
+   *
+   * "item data" should contain normalized information that PhotoSwipe needs to generate a slide.
+   * For example, it may contain properties like
+   * `src`, `srcset`, `w`, `h`, which will be used to generate a slide with image.
+   *
+   * @param {Integer} index
+   */
+  getItemData(index) {
+    const { dataSource } = this.options;
+    let dataSourceItem;
+    if (Array.isArray(dataSource)) {
+      // Datasource is an array of elements
+      dataSourceItem = dataSource[index];
+    } else if (dataSource && dataSource.gallery) {
+      // dataSource has gallery property,
+      // thus it was created by Lightbox, based on
+      // gallerySelecor and childSelector options
+
+      // query DOM elements
+      if (!dataSource.items) {
+        dataSource.items = this._getGalleryDOMElements(dataSource.gallery);
+      }
+
+      dataSourceItem = dataSource.items[index];
+    }
+
+    let itemData = dataSourceItem;
+
+    if (itemData instanceof Element) {
+      itemData = this._domElementToItemData(itemData);
+    }
+
+    // Dispatching the itemData event,
+    // it's a legacy verion before filters were introduced
+    const event = this.dispatch('itemData', {
+      itemData: itemData || {},
+      index
+    });
+
+    return this.applyFilters('itemData', event.itemData, index);
+  }
+
+  /**
+   * Get array of gallery DOM elements,
+   * based on childSelector and gallery element.
+   *
+   * @param {Element} galleryElement
+   */
+  _getGalleryDOMElements(galleryElement) {
+    if (this.options.children || this.options.childSelector) {
+      return getElementsFromOption(
+        this.options.children,
+        this.options.childSelector,
+        galleryElement
+      ) || [];
+    }
+
+    return [galleryElement];
+  }
+
+  /**
+   * Converts DOM element to item data object.
+   *
+   * @param {Element} element DOM element
+   */
+  // eslint-disable-next-line class-methods-use-this
+  _domElementToItemData(element) {
+    const itemData = {
+      element
+    };
+
+    const linkEl = element.tagName === 'A' ? element : element.querySelector('a');
+
+    if (linkEl) {
+      // src comes from data-pswp-src attribute,
+      // if it's empty link href is used
+      itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
+
+      itemData.srcset = linkEl.dataset.pswpSrcset;
+
+      itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
+      itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
+
+      if (linkEl.dataset.pswpType) {
+        itemData.type = linkEl.dataset.pswpType;
+      }
+
+      const thumbnailEl = element.querySelector('img');
+
+      if (thumbnailEl) {
+        // define msrc only if it's the first slide,
+        // as rendering (even small stretched thumbnail) is an expensive operation
+        itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
+        itemData.alt = thumbnailEl.getAttribute('alt');
+      }
+
+      if (linkEl.dataset.pswpCropped || linkEl.dataset.cropped) {
+        itemData.thumbCropped = true;
+      }
+    }
+
+    this.applyFilters('domItemData', itemData, element, linkEl);
+
+    return itemData;
+  }
 }
 
 function getViewportSize(options, pswp) {
@@ -304,27 +842,39 @@ class ZoomLevel {
 }
 
 /**
+ * Returns cache key by slide index and data
+ *
+ * @param {Object} itemData
+ * @param {Integer} index
+ * @returns {String}
+ */
+function getKey(itemData, index) {
+  if (itemData && itemData.src) {
+    return itemData.src + '_' + index;
+  }
+  return index;
+}
+
+
+/**
  * Lazy-load an image
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
  *
  * @param {Object} itemData Data about the slide
  * @param {PhotoSwipeBase}  instance PhotoSwipe or PhotoSwipeLightbox
+ * @param {Integer} index
  * @returns {Object|Boolean} Image that is being decoded or false.
  */
-function lazyLoadData(itemData, instance) {
-  const ContentClass = instance.getContentClass(itemData);
-
-  if (!ContentClass) {
-    return;
-  }
-
+function lazyLoadData(itemData, instance, index) {
   // src/slide/content/content.js
-  const content = new ContentClass(itemData, instance);
+  const content = instance.createContentFromData(itemData);
 
-  if (!content.lazyLoad) {
+  if (!content || !content.lazyLoad) {
     return;
   }
+
+  content.key = getKey(itemData, index);
 
   const { options } = instance;
 
@@ -341,7 +891,10 @@ function lazyLoadData(itemData, instance) {
     Math.ceil(content.width * zoomLevel.initial),
     Math.ceil(content.height * zoomLevel.initial)
   );
+
+  return content;
 }
+
 
 /**
  * Lazy-loads specific slide.
@@ -360,494 +913,7 @@ function lazyLoadSlide(index, instance) {
     return;
   }
 
-  lazyLoadData(itemData, instance);
-}
-
-function dynamicImportModule(module) {
-  return typeof module === 'string' ? import(/* webpackIgnore: true */ module) : module;
-}
-
-/**
- * Base PhotoSwipe event object
- */
-class PhotoSwipeEvent {
-  constructor(type, details) {
-    this.type = type;
-    if (details) {
-      Object.assign(this, details);
-    }
-  }
-
-  preventDefault() {
-    this.defaultPrevented = true;
-  }
-}
-
-/**
- * PhotoSwipe base class that can listen and dispatch for events.
- * Shared by PhotoSwipe Core and PhotoSwipe Lightbox, extended by base.js
- */
-class Eventable {
-  constructor() {
-    this._listeners = {};
-  }
-
-  on(name, fn) {
-    if (!this._listeners[name]) {
-      this._listeners[name] = [];
-    }
-    this._listeners[name].push(fn);
-
-    // When binding events to lightbox,
-    // also bind events to PhotoSwipe Core,
-    // if it's open.
-    if (this.pswp) {
-      this.pswp.on(name, fn);
-    }
-  }
-
-  off(name, fn) {
-    if (this._listeners[name]) {
-      this._listeners[name] = this._listeners[name].filter(listener => (fn !== listener));
-    }
-
-    if (this.pswp) {
-      this.pswp.off(name, fn);
-    }
-  }
-
-  dispatch(name, details) {
-    if (this.pswp) {
-      return this.pswp.dispatch(name, details);
-    }
-
-    const event = new PhotoSwipeEvent(name, details);
-
-    if (!this._listeners) {
-      return event;
-    }
-
-    if (this._listeners[name]) {
-      this._listeners[name].forEach((listener) => {
-        listener.call(this, event);
-      });
-    }
-
-    return event;
-  }
-}
-
-class Content {
-  /**
-   * @param {Object} itemData Slide data
-   * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox instance
-   * @param {Slide|undefined} slide Slide that requested the image,
-   *                                can be undefined if image was requested by something else
-   *                                (for example by lazy-loader)
-   */
-  constructor(itemData, instance, slide) {
-    this.options = instance.options;
-    this.instance = instance;
-    this.data = itemData;
-
-    if (slide) {
-      this.slide = slide;
-      this.pswp = slide.pswp;
-    }
-
-    this.width = Number(this.data.w) || Number(this.data.width) || 0;
-    this.height = Number(this.data.h) || Number(this.data.height) || 0;
-
-    this.state = LOAD_STATE.IDLE;
-  }
-
-  /**
-   * Load the content
-   *
-   * @param {Boolean} isLazy If method is executed by lazy-loader
-   */
-  load(/* isLazy */) {
-    if (!this.element) {
-      this.element = createElement('pswp__content');
-      this.element.style.position = 'absolute';
-      this.element.style.left = 0;
-      this.element.style.top = 0;
-      this.element.innerHTML = this.data.html || '';
-    }
-  }
-
-  isZoomable() {
-    return false;
-  }
-
-  usePlaceholder() {
-    return false;
-  }
-
-  activate() {
-
-  }
-
-  deactivate() {
-
-  }
-
-  setDisplayedSize(width, height) {
-    if (this.element) {
-      setWidthHeight(this.element, width, height);
-    }
-  }
-
-  onLoaded() {
-    this.state = LOAD_STATE.LOADED;
-
-    if (this.slide) {
-      this.pswp.dispatch('loadComplete', { slide: this.slide });
-    }
-  }
-
-  // If the placeholder should be kept in DOM
-  keepPlaceholder() {
-    return (this.state === LOAD_STATE.LOADING);
-  }
-
-  onError() {
-    this.state = LOAD_STATE.ERROR;
-
-    if (this.slide) {
-      this.pswp.dispatch('loadComplete', { slide: this.slide, isError: true });
-      this.pswp.dispatch('loadError', { slide: this.slide });
-    }
-  }
-
-  getErrorElement() {
-    return false;
-  }
-
-  appendTo(container) {
-    if (this.element && !this.element.parentNode) {
-      container.appendChild(this.element);
-    }
-  }
-
-  destroy() {
-
-  }
-}
-
-class ImageContent extends Content {
-  load(/* isLazy */) {
-    if (this.element) {
-      return;
-    }
-
-    const imageSrc = this.data.src;
-
-    if (!imageSrc) {
-      return;
-    }
-
-    this.element = createElement('pswp__img', 'img');
-
-    if (this.data.srcset) {
-      this.element.srcset = this.data.srcset;
-    }
-
-    this.element.src = imageSrc;
-
-    this.element.alt = this.data.alt || '';
-
-    this.state = LOAD_STATE.LOADING;
-
-    if (this.element.complete) {
-      this.onLoaded();
-    } else {
-      this.element.onload = () => {
-        this.onLoaded();
-      };
-
-      this.element.onerror = () => {
-        this.onError();
-      };
-    }
-  }
-
-  setDisplayedSize(width, height) {
-    const image = this.element;
-    if (image) {
-      setWidthHeight(image, width, 'auto');
-
-      // Handle srcset sizes attribute.
-      //
-      // Never lower quality, if it was increased previously.
-      // Chrome does this automatically, Firefox and Safari do not,
-      // so we store largest used size in dataset.
-      if (image.srcset
-          && (!image.dataset.largestUsedSize || width > image.dataset.largestUsedSize)) {
-        image.sizes = width + 'px';
-        image.dataset.largestUsedSize = width;
-      }
-
-      if (this.slide) {
-        this.pswp.dispatch('imageSizeChange', { slide: this.slide, width, height });
-      }
-    }
-  }
-
-  isZoomable() {
-    return (this.state !== LOAD_STATE.ERROR);
-  }
-
-  usePlaceholder() {
-    return true;
-  }
-
-  lazyLoad() {
-    this.load();
-  }
-
-  destroy() {
-    if (this.element) {
-      this.element.onload = null;
-      this.element.onerror = null;
-      this.element = null;
-    }
-  }
-
-  appendTo(container) {
-    // Use decode() on nearby slides
-    //
-    // Nearby slide images are in DOM and not hidden via display:none.
-    // However, they are placed offscreen (to the left and right side).
-    //
-    // Some browsers do not composite the image until it's actually visible,
-    // using decode() helps.
-    //
-    // You might ask "why dont you just decode() and then append all images",
-    // that's because I want to show image before it's fully loaded,
-    // as browser can render parts of image while it is loading.
-    if (this.slide && !this.slide.isActive && ('decode' in this.element)) {
-      this.isDecoding = true;
-      // Make sure that we start decoding on the next frame
-      requestAnimationFrame(() => {
-        if (this.element) {
-          this.element.decode().then(() => {
-            this.isDecoding = false;
-            requestAnimationFrame(() => {
-              this.appendImageTo(container);
-            });
-          }).catch(() => {});
-        }
-      });
-    } else {
-      this.appendImageTo(container);
-    }
-  }
-
-  activate() {
-    if (this.slide && this.slide.container && this.isDecoding) {
-      // add image to slide when it becomes active,
-      // even if it's not finished decoding
-      this.appendImageTo(this.slide.container);
-    }
-  }
-
-  getErrorElement() {
-    const el = createElement('pswp__error-msg-container');
-    el.innerHTML = this.options.errorMsg;
-    const linkEl = el.querySelector('a');
-    if (linkEl) {
-      linkEl.href = this.data.src;
-    }
-    return el;
-  }
-
-  appendImageTo(container) {
-    // ensure that element exists and is not already appended
-    if (this.element && !this.element.parentNode) {
-      container.appendChild(this.element);
-    }
-  }
-}
-
-/**
- * PhotoSwipe base class that can retrieve data about every slide.
- * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
- */
-
-class PhotoSwipeBase extends Eventable {
-  constructor() {
-    super();
-    this.contentTypes = {
-      image: ImageContent,
-      html: Content
-    };
-  }
-
-  /**
-   * Get total number of slides
-   */
-  getNumItems() {
-    let numItems;
-    const { dataSource } = this.options;
-    if (!dataSource) {
-      numItems = 0;
-    } else if (dataSource.length) {
-      // may be an array or just object with length property
-      numItems = dataSource.length;
-    } else if (dataSource.gallery) {
-      // query DOM elements
-      if (!dataSource.items) {
-        dataSource.items = this._getGalleryDOMElements(dataSource.gallery);
-      }
-
-      if (dataSource.items) {
-        numItems = dataSource.items.length;
-      }
-    }
-
-    // allow to filter number of items
-    const event = this.dispatch('numItems', {
-      dataSource,
-      numItems
-    });
-
-    return event.numItems;
-  }
-
-  /**
-   * Add or set slide content type
-   *
-   * @param {String} type
-   * @param {Class} ContentClass
-   */
-  addContentType(type, ContentClass) {
-    this.contentTypes[type] = ContentClass;
-  }
-
-  /**
-   * Get slide content class based on its data
-   *
-   * @param {Object} slideData
-   * @param {Integer} slideIndex
-   * @returns Class
-   */
-  getContentClass(slideData) {
-    if (slideData.type) {
-      return this.contentTypes[slideData.type];
-    } else if (slideData.src) {
-      return this.contentTypes.image;
-    } else if (slideData.html) {
-      return this.contentTypes.html;
-    }
-  }
-
-  /**
-   * Get item data by index.
-   *
-   * "item data" should contain normalized information that PhotoSwipe needs to generate a slide.
-   * For example, it may contain properties like
-   * `src`, `srcset`, `w`, `h`, which will be used to generate a slide with image.
-   *
-   * @param {Integer} index
-   */
-  getItemData(index) {
-    const { dataSource } = this.options;
-    let dataSourceItem;
-    if (Array.isArray(dataSource)) {
-      // Datasource is an array of elements
-      dataSourceItem = dataSource[index];
-    } else if (dataSource && dataSource.gallery) {
-      // dataSource has gallery property,
-      // thus it was created by Lightbox, based on
-      // gallerySelecor and childSelector options
-
-      // query DOM elements
-      if (!dataSource.items) {
-        dataSource.items = this._getGalleryDOMElements(dataSource.gallery);
-      }
-
-      dataSourceItem = dataSource.items[index];
-    }
-
-    let itemData = dataSourceItem;
-
-    if (itemData instanceof Element) {
-      itemData = this._domElementToItemData(itemData);
-    }
-
-    // allow to filter itemData
-    const event = this.dispatch('itemData', {
-      itemData: itemData || {},
-      index
-    });
-
-    return event.itemData;
-  }
-
-  /**
-   * Get array of gallery DOM elements,
-   * based on childSelector and gallery element.
-   *
-   * @param {Element} galleryElement
-   */
-  _getGalleryDOMElements(galleryElement) {
-    if (this.options.children || this.options.childSelector) {
-      return getElementsFromOption(
-        this.options.children,
-        this.options.childSelector,
-        galleryElement
-      ) || [];
-    }
-
-    return [galleryElement];
-  }
-
-  /**
-   * Converts DOM element to item data object.
-   *
-   * @param {Element} element DOM element
-   */
-  // eslint-disable-next-line class-methods-use-this
-  _domElementToItemData(element) {
-    const itemData = {
-      element
-    };
-
-    const linkEl = element.tagName === 'A' ? element : element.querySelector('a');
-
-    if (!linkEl) {
-      return itemData;
-    }
-
-    // src comes from data-pswp-src attribute,
-    // if it's empty link href is used
-    itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
-
-    itemData.srcset = linkEl.dataset.pswpSrcset;
-
-    itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
-    itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
-
-    if (linkEl.dataset.pswpType) {
-      itemData.type = linkEl.dataset.pswpType;
-    }
-
-    const thumbnailEl = element.querySelector('img');
-
-    if (thumbnailEl) {
-      // define msrc only if it's the first slide,
-      // as rendering (even small stretched thumbnail) is an expensive operation
-      itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
-      itemData.alt = thumbnailEl.getAttribute('alt');
-    }
-
-    if (linkEl.dataset.cropped) {
-      itemData.thumbCropped = true;
-    }
-
-    return itemData;
-  }
+  return lazyLoadData(itemData, instance, index);
 }
 
 /**
@@ -992,7 +1058,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     if (options.preloadFirstSlide !== false && index >= 0) {
-      lazyLoadSlide(index, this);
+      this._preloadedContent = lazyLoadSlide(index, this);
     }
 
     // Wait till all promises resolve and open PhotoSwipe
@@ -1037,8 +1103,20 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       });
     });
 
+    // same with filters
+    Object.keys(this._filters).forEach((name) => {
+      this._filters[name].forEach((filter) => {
+        pswp.addFilter(name, filter.fn, filter.priority);
+      });
+    });
+
     // same with content types
     pswp.contentTypes = { ...this.contentTypes };
+
+    if (this._preloadedContent) {
+      pswp.contentLoader.addToCache(this._preloadedContent);
+      this._preloadedContent = null;
+    }
 
     pswp.on('destroy', () => {
       // clean up public variables
