@@ -324,6 +324,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.scrollWrap.ontouchend = null;
 
     this.template.remove();
+    this.contentLoader.destroy();
     this.events.removeAll();
   }
 

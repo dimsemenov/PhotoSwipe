@@ -181,6 +181,7 @@ class ContentLoader {
   }
 
   destroy() {
+    this._cachedItems.forEach(content => content.destroy());
     this._cachedItems = null;
   }
 }
