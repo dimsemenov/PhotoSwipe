@@ -18,8 +18,8 @@ import { getViewportSize } from './util/viewport-size.js';
 import { getThumbBounds } from './slide/get-thumb-bounds.js';
 import PhotoSwipeBase from './core/base.js';
 import Opener from './opener.js';
-
 import ContentLoader from './slide/loader.js';
+
 const defaultOptions = {
   allowPanToNext: true,
   spacing: 0.1,
@@ -79,10 +79,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.opener = new Opener(this);
     this.keyboard = new Keyboard(this);
     this.contentLoader = new ContentLoader(this);
-  }
-
-  getComponent(name) {
-    return this.components[name];
   }
 
   init() {

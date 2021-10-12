@@ -146,9 +146,6 @@ class ContentLoader {
    * @param {Content} content
    */
   addToCache(content) {
-    if (!content.key) {
-      debugger; // todo temp debug
-    }
     // move to the end of array
     this.removeByKey(content.key);
     this._cachedItems.push(content);
