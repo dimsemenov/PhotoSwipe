@@ -40,13 +40,12 @@ class PhotoSwipeBase extends Eventable {
       }
     }
 
-    // allow to filter number of items
+    // legacy event, before filters were introduced
     const event = this.dispatch('numItems', {
       dataSource,
       numItems
     });
-
-    return event.numItems;
+    return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
   /**
@@ -116,13 +115,14 @@ class PhotoSwipeBase extends Eventable {
       itemData = this._domElementToItemData(itemData);
     }
 
-    // allow to filter itemData
+    // Dispatching the itemData event,
+    // it's a legacy verion before filters were introduced
     const event = this.dispatch('itemData', {
       itemData: itemData || {},
       index
     });
 
-    return event.itemData;
+    return this.applyFilters('itemData', event.itemData, index);
   }
 
   /**
@@ -156,35 +156,35 @@ class PhotoSwipeBase extends Eventable {
 
     const linkEl = element.tagName === 'A' ? element : element.querySelector('a');
 
-    if (!linkEl) {
-      return itemData;
+    if (linkEl) {
+      // src comes from data-pswp-src attribute,
+      // if it's empty link href is used
+      itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
+
+      itemData.srcset = linkEl.dataset.pswpSrcset;
+
+      itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
+      itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
+
+      if (linkEl.dataset.pswpType) {
+        itemData.type = linkEl.dataset.pswpType;
+      }
+
+      const thumbnailEl = element.querySelector('img');
+
+      if (thumbnailEl) {
+        // define msrc only if it's the first slide,
+        // as rendering (even small stretched thumbnail) is an expensive operation
+        itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
+        itemData.alt = thumbnailEl.getAttribute('alt');
+      }
+
+      if (linkEl.dataset.pswpCropped || linkEl.dataset.cropped) {
+        itemData.thumbCropped = true;
+      }
     }
 
-    // src comes from data-pswp-src attribute,
-    // if it's empty link href is used
-    itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
-
-    itemData.srcset = linkEl.dataset.pswpSrcset;
-
-    itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
-    itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
-
-    if (linkEl.dataset.pswpType) {
-      itemData.type = linkEl.dataset.pswpType;
-    }
-
-    const thumbnailEl = element.querySelector('img');
-
-    if (thumbnailEl) {
-      // define msrc only if it's the first slide,
-      // as rendering (even small stretched thumbnail) is an expensive operation
-      itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
-      itemData.alt = thumbnailEl.getAttribute('alt');
-    }
-
-    if (linkEl.dataset.cropped) {
-      itemData.thumbCropped = true;
-    }
+    this.applyFilters('domItemData', itemData, element, linkEl);
 
     return itemData;
   }

@@ -194,6 +194,13 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       });
     });
 
+    // same with filters
+    Object.keys(this._filters).forEach((name) => {
+      this._filters[name].forEach((filter) => {
+        pswp.addFilter(name, filter.fn, filter.priority);
+      });
+    });
+
     // same with content types
     pswp.contentTypes = { ...this.contentTypes };
 

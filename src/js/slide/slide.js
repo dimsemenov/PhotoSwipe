@@ -122,9 +122,13 @@ class Slide {
 
   load() {
     if (this.usePlaceholder() && !this.placeholder) {
-      const useImagePlaceholder = this.data.msrc && this.isFirstSlide;
+      const placeholderSrc = this.pswp.applyFilters(
+        'placeholderSrc',
+        (this.data.msrc && this.isFirstSlide) ? this.data.msrc : false,
+        this
+      );
       this.placeholder = new Placeholder(
-        useImagePlaceholder ? this.data.msrc : false,
+        placeholderSrc,
         this.container
       );
     }
