@@ -372,7 +372,18 @@ div.pswp__img--placeholder,
   display: block;
 }
 
+.pswp__zoom-icn-magnifier-minus {
+  display: none;
+}
+
 /* "+" => "-" */
+.pswp--zoomed-in .pswp__zoom-icn-magnifier-plus {
+  display: none;
+}
+.pswp--zoomed-in .pswp__zoom-icn-magnifier-minus {
+  display: block;
+}
+
 .pswp--zoomed-in .pswp__zoom-icn-bar-v {
   display: none;
 }
