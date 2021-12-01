@@ -38,7 +38,7 @@ Object, `{ top: 0, bottom: 0, left: 0, right: 0 }`. Slide area padding (in pixel
 Function, should return padding object. Overrides `padding` option if defined. For example:
 
 ```
-paddingFn: (viewportSize) => {
+paddingFn: (viewportSize, itemData) => {
   return {
     top: 0,
     bottom: viewportSize.x < 600 ? 0 : 200,
