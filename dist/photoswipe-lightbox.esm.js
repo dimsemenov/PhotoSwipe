@@ -1,6 +1,6 @@
 /*!
-  * PhotoSwipe Lightbox 5.1.7 - https://photoswipe.com
-  * (c) 2021 Dmitry Semenov
+  * PhotoSwipe Lightbox 5.1.8 - https://photoswipe.com
+  * (c) 2022 Dmitry Semenov
   */
 /**
   * Creates element and optionally appends it to another.
@@ -250,9 +250,13 @@ class Content {
     }
   }
 
+  isLoading() {
+    return (this.state === LOAD_STATE.LOADING);
+  }
+
   // If the placeholder should be kept in DOM
   keepPlaceholder() {
-    return (this.state === LOAD_STATE.LOADING);
+    return this.isLoading();
   }
 
   onError() {
@@ -498,6 +502,9 @@ class PhotoSwipeBase extends Eventable {
 
   createContentFromData(slideData) {
     const ContentClass = this.getContentClass(slideData);
+    if (!ContentClass) {
+      return false;
+    }
     const content = new ContentClass(slideData, this);
     return content;
   }
@@ -1142,5 +1149,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   }
 }
 
-export { Content, ImageContent, PhotoSwipeLightbox as default };
+export default PhotoSwipeLightbox;
+export { Content, ImageContent };
 //# sourceMappingURL=photoswipe-lightbox.esm.js.map

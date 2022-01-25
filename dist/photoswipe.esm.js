@@ -1,6 +1,6 @@
 /*!
-  * PhotoSwipe 5.1.7 - https://photoswipe.com
-  * (c) 2021 Dmitry Semenov
+  * PhotoSwipe 5.1.8 - https://photoswipe.com
+  * (c) 2022 Dmitry Semenov
   */
 /**
   * Creates element and optionally appends it to another.
@@ -780,6 +780,14 @@ class Slide {
 
     this.content.load();
     this.pswp.dispatch('slideLoad', { slide: this });
+  }
+
+  isLoading() {
+    return this.pswp.applyFilters(
+      'isSlideLoading',
+      this.content.isLoading && this.content.isLoading(),
+      this
+    );
   }
 
   /**
@@ -3134,7 +3142,7 @@ class ScrollWheel {
   }
 }
 
-function addButtonHTML(htmlData) {
+function addElementHTML(htmlData) {
   if (typeof htmlData === 'string') {
     // Allow developers to provide full svg,
     // For example:
@@ -3202,8 +3210,6 @@ class UIElement {
       // create button element
       element = createElement(className, 'button');
       element.type = 'button';
-      // add either html or svg inside it
-      element.innerHTML = addButtonHTML(elementHTML);
 
       if (typeof pswp.options[name + 'Title'] === 'string') {
         element.title = pswp.options[name + 'Title'];
@@ -3213,6 +3219,8 @@ class UIElement {
     } else {
       element = createElement(className);
     }
+
+    element.innerHTML = addElementHTML(elementHTML);
 
     if (data.onInit) {
       data.onInit(element, pswp);
@@ -3334,32 +3342,18 @@ const zoomButton = {
   onClick: 'toggleZoom'
 };
 
-// Delay before indicator will be shown
-// (if image is loaded during it - the indicator will not be displayed at all)
-const SHOW_DELAY = 1100; // ms
-
-// Loading indicator fade-out duration
-const FADE_OUT_DURATION = 350; // ms
-
-// Indicator width/height, used for centering
-// (it can not be centered via CSS,
-//  as viewport might be adjusted via JS padding option)
-const INDICATOR_SIZE = 24;
-
 const loadingIndicator = {
   name: 'preloader',
-  appendTo: 'wrapper',
+  appendTo: 'bar',
+  order: 7,
+  html: {
+    isCustomSVG: true,
+    inner: '<path fill-rule="evenodd" clip-rule="evenodd" d="M21.2 16a5.2 5.2 0 1 1-5.2-5.2V8a8 8 0 1 0 8 8h-2.8Z" id="pswp__icn-loading"/>',
+    outlineID: 'pswp__icn-loading'
+  },
   onInit: (indicatorElement, pswp) => {
     let isVisible;
     let delayTimeout;
-    let hidingTimeout;
-
-    const updateIndicatorPosition = () => {
-      if (isVisible) {
-        indicatorElement.style.left = Math.round((pswp.viewportSize.x - INDICATOR_SIZE) / 2) + 'px';
-        indicatorElement.style.top = Math.round((pswp.viewportSize.y - INDICATOR_SIZE) / 2) + 'px';
-      }
-    };
 
     const toggleIndicatorClass = (className, add) => {
       indicatorElement.classList[add ? 'add' : 'remove']('pswp__preloader--' + className);
@@ -3368,44 +3362,39 @@ const loadingIndicator = {
     const setIndicatorVisibility = (visible) => {
       if (isVisible !== visible) {
         isVisible = visible;
-
-        clearTimeout(hidingTimeout);
-        toggleIndicatorClass('hiding', !visible);
-
-        if (!visible) {
-          // Fade out
-          hidingTimeout = setTimeout(() => {
-            toggleIndicatorClass('active', false);
-          }, FADE_OUT_DURATION);
-        } else {
-          updateIndicatorPosition();
-          // Fade in
-          toggleIndicatorClass('active', true);
-        }
+        toggleIndicatorClass('active', visible);
       }
     };
 
-    pswp.on('change', () => {
-      if (!pswp.currSlide.isLoading) {
+    const updatePreloaderVisibility = () => {
+      if (!pswp.currSlide.isLoading()) {
         setIndicatorVisibility(false);
+        if (delayTimeout) {
+          clearTimeout(delayTimeout);
+          delayTimeout = null;
+        }
         return;
       }
 
-      clearTimeout(delayTimeout);
+      if (!delayTimeout) {
+        // display loading indicator with delay
+        delayTimeout = setTimeout(() => {
+          setIndicatorVisibility(pswp.currSlide.isLoading());
+          delayTimeout = null;
+        }, pswp.options.preloaderDelay);
+      }
+    };
 
-      // display loading indicator with delay
-      delayTimeout = setTimeout(() => {
-        setIndicatorVisibility(pswp.currSlide.isLoading);
-      }, SHOW_DELAY);
-    });
+    pswp.on('change', updatePreloaderVisibility);
 
     pswp.on('loadComplete', (e) => {
       if (pswp.currSlide === e.slide) {
-        setIndicatorVisibility(false);
+        updatePreloaderVisibility();
       }
     });
 
-    pswp.on('resize', updateIndicatorPosition);
+    // expose the method
+    pswp.ui.updatePreloaderVisibility = updatePreloaderVisibility;
   }
 };
 
@@ -3793,9 +3782,13 @@ class Content {
     }
   }
 
+  isLoading() {
+    return (this.state === LOAD_STATE.LOADING);
+  }
+
   // If the placeholder should be kept in DOM
   keepPlaceholder() {
-    return (this.state === LOAD_STATE.LOADING);
+    return this.isLoading();
   }
 
   onError() {
@@ -4041,6 +4034,9 @@ class PhotoSwipeBase extends Eventable {
 
   createContentFromData(slideData) {
     const ContentClass = this.getContentClass(slideData);
+    if (!ContentClass) {
+      return false;
+    }
     const content = new ContentClass(slideData, this);
     return content;
   }
@@ -4642,11 +4638,16 @@ class ContentLoader {
     if (!content) {
       // create content if not found in cache
       content = this.pswp.createContentFromData(slide.data);
-      content.key = this.getKeyBySlide(slide);
-      this.addToCache(content);
+      if (content) {
+        content.key = this.getKeyBySlide(slide);
+        this.addToCache(content);
+      }
     }
-    // assign slide to content
-    content.setSlide(slide);
+
+    if (content) {
+      // assign slide to content
+      content.setSlide(slide);
+    }
     return content;
   }
 
@@ -4715,6 +4716,8 @@ const defaultOptions = {
   doubleTapAction: 'zoom',
 
   indexIndicatorSep: ' / ',
+  
+  preloaderDelay: 2000,
 
   bgOpacity: 0.8,
 
@@ -5184,5 +5187,6 @@ class PhotoSwipe extends PhotoSwipeBase {
   }
 }
 
-export { Content, ImageContent, PhotoSwipe as default };
+export default PhotoSwipe;
+export { Content, ImageContent };
 //# sourceMappingURL=photoswipe.esm.js.map

@@ -225,6 +225,11 @@ and show (for example fade in) when PhotoSwipe is opened
 }
 
 .pswp__icn {
+  fill: var(--pswp-icon-color);
+  color: var(--pswp-icon-color-secondary);
+}
+
+.pswp__icn {
   position: absolute;
   top: 14px;
   left: 9px;
@@ -232,9 +237,6 @@ and show (for example fade in) when PhotoSwipe is opened
   height: 32px;
   overflow: hidden;
   pointer-events: none;
-  fill: var(--pswp-icon-color);
-  color: var(--pswp-icon-color-secondary);
-  border-radius: 50%;
 }
 
 .pswp__icn-shadow {
@@ -317,19 +319,6 @@ div.pswp__img--placeholder,
   border-radius: 0;
 }
 
-/* Display arrows only when user hovers over them */
-/* .pswp--ui-visible {
-  .pswp__button--arrow, {
-    opacity: 0.75;
-
-    &:hover,
-    &:focus {
-      opacity: 1;
-      outline: none;
-    }
-  }
-} */
-
 .pswp--one-slide .pswp__button--arrow {
   display: none;
 }
@@ -384,45 +373,26 @@ div.pswp__img--placeholder,
 
 */
 .pswp__preloader {
-  position: absolute;
-  display: none;
-  width: 24px;
-  height: 24px;
-  pointer-events: none;
-  border: 3px solid var(--pswp-preloader-color);
-  border-left-color: var(--pswp-preloader-color-secondary);
-  border-radius: 50%;
-
-
-  
-
-  /* left:50% / top:50% styles are defined via JS,
-    as size of PhotoSwipe viewport might change visually
-    (because of UI elements like sidebar),
-    use !important if you want to override them */
+  position: relative;
+  overflow: hidden;
+  width: 50px;
+  height: 60px;
+  margin-right: auto;
 }
 
-.pswp__preloader--active {
-  display: block;
-  animation: pswp-fadein 333ms linear, pswp-clockwise 600ms linear infinite;
-}
-
-.pswp__preloader--hiding {
+.pswp__preloader .pswp__icn {
+  opacity: 0;
+  transition: opacity 0.2s linear;
   animation: pswp-clockwise 600ms linear infinite;
-
-  /* use of !important to override hide-on-close styles */
-  opacity: 0 !important;
 }
 
+.pswp__preloader--active .pswp__icn {
+  opacity: 0.85;
+}
 
 @keyframes pswp-clockwise {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-@keyframes pswp-fadein {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
 }
 
 
@@ -433,12 +403,12 @@ div.pswp__img--placeholder,
 */
 .pswp__counter {
   height: 30px;
-  margin: 18px 0 0 20px;
+  margin: 15px 0 0 20px;
   font-size: 14px;
   line-height: 30px;
   color: var(--pswp-icon-color);
+  text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
   opacity: 0.85;
-  margin-right: auto; /* align left */
 }
 
 .pswp--one-slide .pswp__counter {
