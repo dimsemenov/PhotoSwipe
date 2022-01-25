@@ -1,6 +1,6 @@
 import { createElement } from '../util/util.js';
 
-function addButtonHTML(htmlData) {
+function addElementHTML(htmlData) {
   if (typeof htmlData === 'string') {
     // Allow developers to provide full svg,
     // For example:
@@ -68,8 +68,6 @@ class UIElement {
       // create button element
       element = createElement(className, 'button');
       element.type = 'button';
-      // add either html or svg inside it
-      element.innerHTML = addButtonHTML(elementHTML);
 
       if (typeof pswp.options[name + 'Title'] === 'string') {
         element.title = pswp.options[name + 'Title'];
@@ -79,6 +77,8 @@ class UIElement {
     } else {
       element = createElement(className);
     }
+
+    element.innerHTML = addElementHTML(elementHTML);
 
     if (data.onInit) {
       data.onInit(element, pswp);

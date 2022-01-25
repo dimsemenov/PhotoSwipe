@@ -41,6 +41,8 @@ const defaultOptions = {
   doubleTapAction: 'zoom',
 
   indexIndicatorSep: ' / ',
+  
+  preloaderDelay: 2000,
 
   bgOpacity: 0.8,
 

@@ -79,6 +79,10 @@ Boolean, `true`. If image is not zoomable (for example, smaller than viewport) i
 
 Refer to [click and tap actions](click-and-tap-actions.md) page.
 
+### preloaderDelay
+
+Number (ms), `2000`. Delay before the loading indicator will be displayed, if image is loaded during it - the indicator will not be displayed at all. Can be zero.
+
 ### indexIndicatorSep
 
 String, ` / `. Used for slide count indicator ("1 of 10 ").
