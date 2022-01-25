@@ -134,11 +134,16 @@ class ContentLoader {
     if (!content) {
       // create content if not found in cache
       content = this.pswp.createContentFromData(slide.data);
-      content.key = this.getKeyBySlide(slide);
-      this.addToCache(content);
+      if (content) {
+        content.key = this.getKeyBySlide(slide);
+        this.addToCache(content);
+      }
     }
-    // assign slide to content
-    content.setSlide(slide);
+
+    if (content) {
+      // assign slide to content
+      content.setSlide(slide);
+    }
     return content;
   }
 

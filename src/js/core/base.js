@@ -77,6 +77,9 @@ class PhotoSwipeBase extends Eventable {
 
   createContentFromData(slideData) {
     const ContentClass = this.getContentClass(slideData);
+    if (!ContentClass) {
+      return false;
+    }
     const content = new ContentClass(slideData, this);
     return content;
   }
