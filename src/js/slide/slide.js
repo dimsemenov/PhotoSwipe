@@ -137,6 +137,14 @@ class Slide {
     this.pswp.dispatch('slideLoad', { slide: this });
   }
 
+  isLoading() {
+    return this.pswp.applyFilters(
+      'isSlideLoading',
+      this.content.isLoading && this.content.isLoading(),
+      this
+    );
+  }
+
   /**
    * Append "heavy" DOM elements
    *

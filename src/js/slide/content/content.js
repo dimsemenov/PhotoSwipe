@@ -70,9 +70,13 @@ class Content {
     }
   }
 
+  isLoading() {
+    return (this.state === LOAD_STATE.LOADING);
+  }
+
   // If the placeholder should be kept in DOM
   keepPlaceholder() {
-    return (this.state === LOAD_STATE.LOADING);
+    return this.isLoading();
   }
 
   onError() {
