@@ -877,11 +877,16 @@ function lazyLoadData(itemData, instance, index) {
   // src/slide/content/content.js
   const content = instance.createContentFromData(itemData);
 
-  if (!content || !content.lazyLoad) {
+  if (!content) {
     return;
   }
 
   content.key = getKey(itemData, index);
+
+  if(!content.lazyLoad) {
+    return content;
+  }
+
 
   const { options } = instance;
 
