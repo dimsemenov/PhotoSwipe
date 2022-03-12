@@ -73,6 +73,14 @@ function getElementsFromOption(option, legacySelector, parent = document) {
   return elements;
 }
 
+/**
+ * @param {*} v
+ * @returns Boolean
+ */
+function isClass(fn) {
+  return typeof fn === 'function' && /^\s*class\s+/.test(fn.toString());
+}
+
 function dynamicImportModule(module) {
   return typeof module === 'string' ? import(/* webpackIgnore: true */ module) : module;
 }
@@ -1056,7 +1064,18 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     // Add the main module
-    const promiseArray = [dynamicImportModule(options.pswpModule)];
+    const promiseArray = [];
+
+    const pswpModuleType = typeof options.pswpModule;
+    if (isClass(options.pswpModule)) {
+      promiseArray.push(options.pswpModule);
+    } else if (pswpModuleType === 'string') {
+      promiseArray.push(dynamicImportModule(options.pswpModule));
+    } else if (pswpModuleType === 'function') {
+      promiseArray.push(options.pswpModule());
+    } else {
+      throw new Error('pswpModule is not valid');
+    }
 
     // Add custom-defined promise, if any
     if (typeof options.openPromise === 'function') {
