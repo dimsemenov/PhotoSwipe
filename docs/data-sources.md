@@ -92,7 +92,7 @@ document.querySelector('#btn-open-pswp-from-arr').onclick = () => {
 
 ## Custom last slide
 
-You might want to add a custom last slide, for example to show related galleries. To add it, increase total number of slides by 1 from `numItems` event and make sure that correct `itemData` is returned for the last slide.
+To add a custom last slide increase the total number of slides by one using `numItems` filter and make sure that correct `itemData` is returned for the last slide.
 
 <!-- PhotoSwipe example block START -->
 <div class="pswp-example">
@@ -105,15 +105,17 @@ const options = {
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 };
 const lightbox = new PhotoSwipeLightbox(options);
-lightbox.on('numItems', (e) => {
-  e.numItems++;
+lightbox.addFilter('numItems', (numItems) => {
+  numItems++;
+  return numItems;
 });
-lightbox.on('itemData', (e) => {
-  if (e.index === lightbox.getNumItems() - 1) {
-    e.itemData = {
+lightbox.addFilter('itemData', (itemData, index) => {
+  if (index === lightbox.getNumItems() - 1) {
+    return {
       html: '<div class="custom-html-slide">This is custom HTML slide. <a href="http://example.com" target="_blank" rel="nofollow">Link</a>.</div>',
     };
   }
+  return itemData;
 });
 lightbox.init();
 ```
@@ -129,7 +131,7 @@ lightbox.init();
 
 ## Dynamically generated data
 
-Event `numItems` allows you to override total number of slides. Event `itemData` will trigger every time PhotoSwipe requests data about the slide, which usually happens before slide is displayed or lazy-loaded.
+The filter `numItems` allows you to override the total number of slides. And `itemData` will trigger every time PhotoSwipe requests data about the slide, which usually happens before slide is displayed or lazy-loaded.
 
 The example below creates a gallery with 1000 images.
 
@@ -144,22 +146,19 @@ const options = {
   preload: [1,2]
 };
 const lightbox = new PhotoSwipeLightbox(options);
-
-lightbox.on('itemData', (e) => {
-  e.itemData = {
-    src: 'https://dummyimage.com/100x100/555/fff/?text=' + (e.index + 1),
+lightbox.addFilter('numItems', (numItems) => {
+  return 1000;
+});
+lightbox.addFilter('itemData', (itemData, index) => {
+  return {
+    src: 'https://dummyimage.com/100x100/555/fff/?text=' + (index + 1),
     w: 100,
     h: 100
-  };
+  };;
 });
-lightbox.on('numItems', (e) => {
-  e.numItems = 1000;
-});
-
 lightbox.init();
 
 document.querySelector('#btn-open-pswp-dyn-gen').onclick = () => {
-  
   lightbox.loadAndOpen(0);
 };
 ```
@@ -174,7 +173,9 @@ document.querySelector('#btn-open-pswp-dyn-gen').onclick = () => {
 
 ## Custom HTML markup
 
-You may completely override default requirements for HTML markup. In the example below we add thumbnail as `background-image`, define custom attribute for image size and make sure that zoom transition runs from `<a>` rather than from `<img>` within.
+You may completely override default requirements for HTML markup. In the example below we add thumbnail as `background-image`, a custom attribute that stores image size, and make sure that zoom transition runs from `<a>` rather than from `<img>` within.
+
+We also use `domItemData` filter, instead of `itemData`. It fires only once per each slide.
 
 <!-- PhotoSwipe example block START -->
 <div class="pswp-example">
@@ -193,18 +194,18 @@ const lightbox = new PhotoSwipeLightbox({
   pswpModule: '/v5/photoswipe/photoswipe.esm.js'
 });
 
-lightbox.on('itemData', (e) => {
-  const { itemData } = e;
+lightbox.addFilter('domItemData', (itemData, element, linkEl) => {
+  if (linkEl) {
+    const sizeAttr = linkEl.dataset.mySize;
 
-  // element is children
-  const { element } = itemData; 
+    itemData.src = linkEl.href;
+    itemData.w = Number(sizeAttr.split('x')[0]);
+    itemData.h = Number(sizeAttr.split('x')[1]);
+    itemData.msrc = linkEl.dataset.thumbSrc;
+    itemData.thumbCropped = true;
+  }
 
-  itemData.src = element.href;
-  const sizeAttr = element.dataset.mySize;
-  itemData.w = Number(sizeAttr.split('x')[0]);
-  itemData.h = Number(sizeAttr.split('x')[1]);
-  itemData.msrc = element.dataset.thumbSrc;
-  itemData.thumbCropped = true;
+  return itemData;
 });
 
 lightbox.init();

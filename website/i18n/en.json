@@ -33,6 +33,10 @@
         "title": "Getting Started",
         "sidebar_label": "Getting Started"
       },
+      "initialization-methods": {
+        "title": "Initialization Methods",
+        "sidebar_label": "Init methods"
+      },
       "native-fullscreen-on-open": {
         "title": "Trigger native fullscreen when lightbox opens",
         "sidebar_label": "Native fullscreen on open"

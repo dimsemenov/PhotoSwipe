@@ -9,7 +9,8 @@
       "caption",
       "data-sources",
       "styling",
-      "native-fullscreen-on-open"
+      "native-fullscreen-on-open",
+      "initialization-methods"
     ],
     "API": [
       "options",
