@@ -16,7 +16,8 @@
 
 import {
   specialKeyUsed,
-  getElementsFromOption
+  getElementsFromOption,
+  isClass
 } from '../util/util.js';
 
 import { dynamicImportModule } from './dynamic-import.js';
@@ -140,7 +141,18 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     // Add the main module
-    const promiseArray = [dynamicImportModule(options.pswpModule)];
+    const promiseArray = [];
+
+    const pswpModuleType = typeof options.pswpModule;
+    if (isClass(options.pswpModule)) {
+      promiseArray.push(options.pswpModule);
+    } else if (pswpModuleType === 'string') {
+      promiseArray.push(dynamicImportModule(options.pswpModule));
+    } else if (pswpModuleType === 'function') {
+      promiseArray.push(options.pswpModule());
+    } else {
+      throw new Error('pswpModule is not valid');
+    }
 
     // Add custom-defined promise, if any
     if (typeof options.openPromise === 'function') {

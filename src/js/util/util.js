@@ -187,3 +187,11 @@ export function getElementsFromOption(option, legacySelector, parent = document)
 
   return elements;
 }
+
+/**
+ * @param {*} v
+ * @returns Boolean
+ */
+export function isClass(fn) {
+  return typeof fn === 'function' && /^\s*class\s+/.test(fn.toString());
+}
