@@ -51,7 +51,7 @@ function getFullscreenPromise() {
 const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--native-fs',
   children: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js'),
 
   // Add function that returns promise
   openPromise: getFullscreenPromise,

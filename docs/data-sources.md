@@ -51,7 +51,7 @@ const options = {
 
   ],
   showHideAnimationType: 'none',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -102,7 +102,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   gallery: '#gallery--custom-last-slide',
   children: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.addFilter('numItems', (numItems) => {
@@ -142,7 +142,7 @@ The example below creates a gallery with 1000 images.
 import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   showHideAnimationType: 'none',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js',
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js'),
   preload: [1,2]
 };
 const lightbox = new PhotoSwipeLightbox(options);
@@ -191,7 +191,7 @@ const lightbox = new PhotoSwipeLightbox({
   // (for opening/closing zoom transition)
   thumbSelector: 'a',
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 
 lightbox.addFilter('domItemData', (itemData, element, linkEl) => {

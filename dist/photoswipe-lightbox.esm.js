@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.1.8 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.1.8-beta.0 - https://photoswipe.com
   * (c) 2022 Dmitry Semenov
   */
 /**
@@ -79,10 +79,6 @@ function getElementsFromOption(option, legacySelector, parent = document) {
  */
 function isClass(fn) {
   return typeof fn === 'function' && /^\s*class\s+/.test(fn.toString());
-}
-
-function dynamicImportModule(module) {
-  return typeof module === 'string' ? import(/* webpackIgnore: true */ module) : module;
 }
 
 /**
@@ -1070,7 +1066,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     if (isClass(options.pswpModule)) {
       promiseArray.push(options.pswpModule);
     } else if (pswpModuleType === 'string') {
-      promiseArray.push(dynamicImportModule(options.pswpModule));
+      throw new Error('pswpModule as string is no longer supported');
     } else if (pswpModuleType === 'function') {
       promiseArray.push(options.pswpModule());
     } else {

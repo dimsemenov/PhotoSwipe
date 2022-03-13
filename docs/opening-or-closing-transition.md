@@ -22,7 +22,7 @@ const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--zoom-transition',
   children: 'a',
   showHideAnimationType: 'zoom',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -45,7 +45,7 @@ const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--fade-transition',
   children:'a',
   showHideAnimationType: 'fade',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -75,7 +75,7 @@ const lightbox = new PhotoSwipeLightbox({
   // to create more consistent experience
   zoomAnimationDuration: false,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -117,7 +117,7 @@ const lightbox = new PhotoSwipeLightbox({
   showAnimationDuration: 1000,
   hideAnimationDuration: 1000,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.on('firstUpdate', () => {
   lightbox.pswp.options.easing = backEasing.out;
@@ -155,7 +155,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--cropped-thumbs',
   children:'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -187,7 +187,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--badges',
   children: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 
 let firstElWithBadge;

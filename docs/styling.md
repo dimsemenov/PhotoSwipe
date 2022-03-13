@@ -32,7 +32,7 @@ const options = {
 
   gallery: '#gallery--custom-icon-colors',
   children: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -136,7 +136,7 @@ const options = {
 
   gallery: '#gallery--custom-bg',
   children: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();

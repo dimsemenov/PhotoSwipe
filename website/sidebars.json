@@ -10,7 +10,7 @@
       "data-sources",
       "styling",
       "native-fullscreen-on-open",
-      "initialization-methods"
+      "react-image-gallery"
     ],
     "API": [
       "options",

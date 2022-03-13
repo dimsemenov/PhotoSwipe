@@ -7,26 +7,28 @@ sidebar_label: Getting Started
 
 Before you start:
 
-- This version is still under development, use in production on your own risk.
-- PhotoSwipe requires predefined image dimensions.
-- PhotoSwipe is not designed to display very large images. Serve responsive images. Maximum recommended size is 3000x3000px. Tiles plugin might be added in future.
-- PhotoSwipe works only in modern browsers. The script is distributed as a ES6 module, thus it will work only in browsers that support them ([caniuse](https://caniuse.com/#feat=es6-module)).
+- PhotoSwipe requires predefined image dimensions, you must define width and height of each image.
+- PhotoSwipe is not designed to display very large images. Serve responsive images. Maximum recommended size is 3000x3000px. However, there is an [experimental tiling plugin](https://github.com/dimsemenov/photoswipe-deep-zoom-plugin) that allows to show extremely large images.
+- PhotoSwipe works only in modern browsers. The script is distributed as ES6 module, thus it will work only in browsers that support them ([caniuse](https://caniuse.com/#feat=es6-module)). You can transpile it to ES5, but it's redundant.
 
 
 ## Initialization
 
-The PhotoSwipe consists of parts:
+```
+npm install --save photoswipe#beta
+```
+
+The PhotoSwipe consists of three parts:
 
 1. **Core** (`photoswipe.esm.js`).
 2. **Lightbox** (`photoswipe-lightbox.esm.js`) - loads **Core** and chooses when PhotoSwipe should be opened. Its file size is significantly smaller. It also loads the first image (in parallel with **Core**).
+3. **CSS** (`photoswipe.css`) - a single file that controls all the styling. There are no external assets for icons - all of them are dynamically generated via JS and very tiny. Refer to [styling](/styling) for more info.
 
-There is also `photoswipe.css` that controls [styling](styling.md):
+JS files are separated, so you can dynamically load **Core** only when user actually needs it, thus reducing the size of your main bundle.
 
-```html
-<link rel="stylesheet" href="/path/to/photoswipe.css"/>
-```
+If you aren't using any bundlers of frameworks, you may use a single `<script type="module">` to initialize everything.
 
-You may use single `<script>` tag to load everything, always add `type="module"` to it, as both files are ES6 modules.
+### With dynamic import
 
 <!-- PhotoSwipe example block START -->
 <div class="pswp-example">
@@ -43,9 +45,8 @@ const lightbox = new PhotoSwipeLightbox({
   // Elements within gallery (slides)
   children: 'a',
 
-  // Include PhotoSwipe Core
-  // and use absolute path (that starts with http(s)://)
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  // setup PhotoSwipe Core dynamic import
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 </script>
@@ -62,33 +63,35 @@ lightbox.init();
 </div> 
 <!-- PhotoSwipe example block END -->
 
-## Using with Webpack or any other module bundler
+### Without dynamic import
 
-I recommend to load PhotoSwipe via dynamic import.
-But if you do not want to bother with it and include everything in the main bundle, it can be done like this:
+Use this method when PhotoSwipe is one of the primary features of your page.
 
-```js
-import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
-import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
+<!-- PhotoSwipe example block START -->
+<div class="pswp-example">
 
-// don't forget to include CSS in some way
-// import 'photoswipe/dist/photoswipe.css';
+```pswp_example html
+<script type="module">
+import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+import PhotoSwipe from '/v5/photoswipe/photoswipe.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
-  gallery: '#my-gallery',
+  gallery: '#gallery--no-dynamic-import',
   children: 'a',
   pswpModule: PhotoSwipe
 });
 lightbox.init();
+</script>
 ```
 
-While v5 is in beta, you may install it like this:
-
+```pswp_example gallery
+{ 
+  "id":"no-dynamic-import"
+}
 ```
-npm install --save git://github.com/dimsemenov/photoswipe#v5-beta
-```
 
-If you have suggestions on how to improve initialization for some specific framework - feel free to open an issue.
+</div> 
+<!-- PhotoSwipe example block END -->
 
 
 
@@ -118,7 +121,7 @@ const options = {
   // Skip children
   gallery: '#gallery--individual a',
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -148,7 +151,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   gallery: '#gallery--responsive-images',
   children: 'a',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -164,20 +167,9 @@ lightbox.init();
 </div> 
 <!-- PhotoSwipe example block END -->
 
-## How initialization works
-
-1. Lightbox (`photoswipe-lightbox.esm.js`) will be loaded when browser reaches the `import`. It won't block your page rendering as modules are deferred by default. It is also very light comparing to the PhotoSwipe core.
-2. Lightbox will bind a single click event to each `gallery`.
-3. After user clicks on any `children` the Lightbox will start loading core PhotoSwipe library, specifically:
-
-    - PhotoSwipe core JS file that you may define via `pswpModule` option.
-    - The first image.
-
-
 ## Supported browsers and fallback
 
 - The PhotoSwipe supports all browsers that [support ES6 modules](https://caniuse.com/#search=module).
   - Thus, it will not work in IE11, Opera Mini, UC browser, and old versions of Chrome, Safari and Firefox. Check your website/region statistics before deciding whether you should use PhotoSwipe or not.
 - Users in unsupported browsers will still be able to view the large image if you use recommended HTML markup - link to image, or link to page that contains image (for example, in WordPress you may link to an attachment page).
-- It is not recommended to transpile the script to ES5 - it is not tested in it.
 - You may add any fallback via `script type="nomodule"`.

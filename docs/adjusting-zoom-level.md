@@ -54,7 +54,7 @@ const lightbox = new PhotoSwipeLightbox({
   // works nice with mousemove pan
   mouseMovePan: true,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -89,7 +89,7 @@ const lightbox = new PhotoSwipeLightbox({
 
   mouseMovePan: true,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -121,7 +121,7 @@ const lightbox = new PhotoSwipeLightbox({
   secondaryZoomLevel: 1.5,
   maxZoomLevel: 1,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -154,7 +154,7 @@ const lightbox = new PhotoSwipeLightbox({
   secondaryZoomLevel: 'fit',
   maxZoomLevel: 4,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -185,7 +185,7 @@ const lightbox = new PhotoSwipeLightbox({
   secondaryZoomLevel: 'fill',
   maxZoomLevel: 3,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -209,7 +209,7 @@ import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#very-small-image',
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
@@ -263,7 +263,7 @@ const lightbox = new PhotoSwipeLightbox({
 
   maxZoomLevel: 1,
 
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```

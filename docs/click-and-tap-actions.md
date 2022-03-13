@@ -39,7 +39,7 @@ const options = {
   imageClickAction: 'next',
   tapAction: 'next',
   
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
@@ -75,7 +75,7 @@ const options = {
   // tap delay is removed if set to false
   doubleTapAction: false,
   
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();

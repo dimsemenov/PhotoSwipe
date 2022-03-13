@@ -19,7 +19,7 @@ const options = {
   gallery:'#gallery--with-custom-caption',
   children:'.pswp-gallery__item',
   
-  pswpModule: '/v5/photoswipe/photoswipe.esm.js'
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.on('uiRegister', function() {
