@@ -20,7 +20,6 @@ import {
   isClass
 } from '../util/util.js';
 
-import { dynamicImportModule } from './dynamic-import.js';
 import PhotoSwipeBase from '../core/base.js';
 import { lazyLoadSlide } from '../slide/loader.js';
 
@@ -147,7 +146,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     if (isClass(options.pswpModule)) {
       promiseArray.push(options.pswpModule);
     } else if (pswpModuleType === 'string') {
-      promiseArray.push(dynamicImportModule(options.pswpModule));
+      throw new Error('pswpModule as string is no longer supported');
     } else if (pswpModuleType === 'function') {
       promiseArray.push(options.pswpModule());
     } else {

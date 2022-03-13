@@ -150,7 +150,23 @@ Element, NodeList, or CSS selector (string) for elements within `gallery`. For e
 
 ### pswpModule
 
-String|Object, `null`. URL to PhotoSwipe Core module JS file or the module object itself, optional.
+Function|Module, `null`. A function that should return import() promise (if you need dynamic import), for example:
+
+```
+pswpModule: () => import('photoswipe/dist/photoswipe.esm.js');
+```
+
+Or the PhotoSwipe Core module itself, for example:
+
+```js
+import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
+import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
+
+const lightbox = new PhotoSwipeLightbox({
+  pswpModule: PhotoSwipe
+  // ...
+});
+```
 
 ### preloadFirstSlide
 
