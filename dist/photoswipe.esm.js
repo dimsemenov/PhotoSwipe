@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.1.8-beta.0 - https://photoswipe.com
+  * PhotoSwipe 5.2.0-beta.0 - https://photoswipe.com
   * (c) 2022 Dmitry Semenov
   */
 /**
@@ -4716,7 +4716,7 @@ const defaultOptions = {
   doubleTapAction: 'zoom',
 
   indexIndicatorSep: ' / ',
-  
+
   preloaderDelay: 2000,
 
   bgOpacity: 0.8,
