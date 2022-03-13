@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.2.0-beta.0 - https://photoswipe.com
+  * PhotoSwipe 5.2.0-beta.2 - https://photoswipe.com
   * (c) 2022 Dmitry Semenov
   */
 /**
@@ -4625,11 +4625,16 @@ class ContentLoader {
     index = this.pswp.getLoopedIndex(index);
     const itemData = this.pswp.getItemData(index);
     const key = getKey(itemData, index);
+    // try to get cached content
     let content = this.getContentByKey(key);
     if (!content) {
+      // no cached content, so try to load from scratch:
       content = lazyLoadSlide(index, this.pswp);
-      content.key = key;
-      this.addToCache(content);
+      // if content can be loaded, add it to cache:
+      if (content) {
+        content.key = key;
+        this.addToCache(content);
+      }
     }
   }
 
@@ -4771,7 +4776,8 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.options.loop = false;
     }
 
-    this.dispatch('init');
+    this.dispatch('init'); // legacy
+    this.dispatch('beforeOpen');
 
     this._createMainStructure();
 
