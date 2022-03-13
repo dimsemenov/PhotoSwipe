@@ -96,7 +96,8 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.options.loop = false;
     }
 
-    this.dispatch('init');
+    this.dispatch('init'); // legacy
+    this.dispatch('beforeOpen');
 
     this._createMainStructure();
 
