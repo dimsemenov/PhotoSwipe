@@ -121,11 +121,16 @@ class ContentLoader {
     index = this.pswp.getLoopedIndex(index);
     const itemData = this.pswp.getItemData(index);
     const key = getKey(itemData, index);
+    // try to get cached content
     let content = this.getContentByKey(key);
     if (!content) {
+      // no cached content, so try to load from scratch:
       content = lazyLoadSlide(index, this.pswp);
-      content.key = key;
-      this.addToCache(content);
+      // if content can be loaded, add it to cache:
+      if (content) {
+        content.key = key;
+        this.addToCache(content);
+      }
     }
   }
 
