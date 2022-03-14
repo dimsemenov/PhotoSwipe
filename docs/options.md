@@ -35,18 +35,47 @@ Object, `{ top: 0, bottom: 0, left: 0, right: 0 }`. Slide area padding (in pixel
 
 ### paddingFn
 
-Function, should return padding object. Overrides `padding` option if defined. For example:
+Function, should return padding object. The option is checked frequently, so make sure it's performant. Overrides `padding` option if defined. For example:
 
+
+<!-- PhotoSwipe example block START -->
+<div class="pswp-example">
+
+```pswp_example html
+<script type="module">
+import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--test-paddingfn',
+  children: 'a',
+  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js'),
+
+  paddingFn: (viewportSize, itemData, index) => {
+    return {
+      // check based on slide index
+      top: index === 0 ? 100 : 0,
+
+      // check based on viewport size
+      bottom: viewportSize.x < 600 ? 0 : 200,
+
+      // check based on image size
+      left: itemData.w < 2000 ? 50 : 0,
+
+      right: 0
+    };
+  }
+});
+lightbox.init();
+</script>
 ```
-paddingFn: (viewportSize) => {
-  return {
-    top: 0,
-    bottom: viewportSize.x < 600 ? 0 : 200,
-    left: 0,
-    right: 0
-  };
+
+```pswp_example gallery
+{ 
+  "id":"test-paddingfn"
 }
 ```
+
+</div> 
+<!-- PhotoSwipe example block END -->
 
 ### hideAnimationDuration, showAnimationDuration, zoomAnimationDuration
 

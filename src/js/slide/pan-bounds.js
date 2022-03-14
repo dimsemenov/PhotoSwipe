@@ -37,7 +37,13 @@ class PanBounds {
     const { pswp } = this.slide;
     const elSize = this.slide[axis === 'x' ? 'width' : 'height'] * this.currZoomLevel;
     const paddingProp = axis === 'x' ? 'left' : 'top';
-    const padding = parsePaddingOption(paddingProp, pswp.options, pswp.viewportSize);
+    const padding = parsePaddingOption(
+      paddingProp,
+      pswp.options,
+      pswp.viewportSize,
+      this.slide.data,
+      this.slide.index
+    );
 
     const panAreaSize = this.slide.panAreaSize[axis];
 

@@ -30,7 +30,7 @@ export function getViewportSize(options, pswp) {
  * }
  *
  * // A function that returns the object
- * paddingFn: (viewportSize) => {
+ * paddingFn: (viewportSize, itemData, index) => {
  *  return {
  *    top: 0,
  *    bottom: 0,
@@ -45,16 +45,18 @@ export function getViewportSize(options, pswp) {
  * paddingTop: 0,
  * paddingBottom: 0,
  *
- * @param {String} prop 'left', 'top', 'bottom', 'right'
- * @param {Object} options PhotoSwipe options
- * @param {Object} viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
+ * @param {String}  prop 'left', 'top', 'bottom', 'right'
+ * @param {Object}  options PhotoSwipe options
+ * @param {Object}  viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
+ * @param {Object}  itemData Data about the slide
+ * @param {Integer} index Slide index
  * @returns {Number}
  */
-export function parsePaddingOption(prop, options, viewportSize) {
+export function parsePaddingOption(prop, options, viewportSize, itemData, index) {
   let paddingValue;
 
   if (options.paddingFn) {
-    paddingValue = options.paddingFn(viewportSize)[prop];
+    paddingValue = options.paddingFn(viewportSize, itemData, index)[prop];
   } else if (options.padding) {
     paddingValue = options.padding[prop];
   } else {
@@ -68,13 +70,13 @@ export function parsePaddingOption(prop, options, viewportSize) {
 }
 
 
-export function getPanAreaSize(options, viewportSize/*, pswp*/) {
+export function getPanAreaSize(options, viewportSize, itemData, index) {
   return {
     x: viewportSize.x
-      - parsePaddingOption('left', options, viewportSize)
-      - parsePaddingOption('right', options, viewportSize),
+      - parsePaddingOption('left', options, viewportSize, itemData, index)
+      - parsePaddingOption('right', options, viewportSize, itemData, index),
     y: viewportSize.y
-      - parsePaddingOption('top', options, viewportSize)
-      - parsePaddingOption('bottom', options, viewportSize)
+      - parsePaddingOption('top', options, viewportSize, itemData, index)
+      - parsePaddingOption('bottom', options, viewportSize, itemData, index)
   };
 }

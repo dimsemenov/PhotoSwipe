@@ -500,7 +500,7 @@ class Slide {
 
     equalizePoints(
       this.panAreaSize,
-      getPanAreaSize(pswp.options, pswp.viewportSize, pswp)
+      getPanAreaSize(pswp.options, pswp.viewportSize, this.data, this.index)
     );
 
     this.zoomLevels.update(this.width, this.height, this.panAreaSize);
