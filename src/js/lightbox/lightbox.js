@@ -213,9 +213,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       });
     });
 
-    // same with content types
-    pswp.contentTypes = { ...this.contentTypes };
-
     if (this._preloadedContent) {
       pswp.contentLoader.addToCache(this._preloadedContent);
       this._preloadedContent = null;
@@ -246,5 +243,3 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 }
 
 export default PhotoSwipeLightbox;
-export { default as Content } from '../slide/content/content.js';
-export { default as ImageContent } from '../slide/content/image.js';

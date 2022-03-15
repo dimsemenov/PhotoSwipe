@@ -514,5 +514,3 @@ class PhotoSwipe extends PhotoSwipeBase {
 }
 
 export default PhotoSwipe;
-export { default as Content } from './slide/content/content.js';
-export { default as ImageContent } from './slide/content/image.js';
