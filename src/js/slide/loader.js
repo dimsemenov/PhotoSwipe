@@ -162,7 +162,9 @@ class ContentLoader {
 
     if (this._cachedItems.length > this.limit) {
       // Destroy the first content that's not attached
-      const indexToRemove = this._cachedItems.findIndex(item => !item.isAttached);
+      const indexToRemove = this._cachedItems.findIndex((item) => {
+        return !item.isAttached && !item.hasSlide;
+      });
       if (indexToRemove !== -1) {
         const removedItem = this._cachedItems.splice(indexToRemove, 1)[0];
         removedItem.destroy();

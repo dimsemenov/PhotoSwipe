@@ -17,11 +17,13 @@ class Content {
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
 
     this.isAttached = false;
+    this.hasSlide = false;
     this.state = LOAD_STATE.IDLE;
   }
 
   setSlide(slide) {
     this.slide = slide;
+    this.hasSlide = true;
     this.pswp = slide.pswp;
   }
 
@@ -108,7 +110,7 @@ class Content {
   }
 
   destroy() {
-
+    this.hasSlide = false;
   }
 }
 

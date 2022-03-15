@@ -243,6 +243,7 @@ class Slide {
    * (unbind all events and destroy internal components)
    */
   destroy() {
+    this.content.hasSlide = false;
     this.content.remove();
     this.pswp.dispatch('slideDestroy', { slide: this });
   }

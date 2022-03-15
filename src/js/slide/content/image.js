@@ -73,6 +73,7 @@ class ImageContent extends Content {
   }
 
   destroy() {
+    super.destroy();
     if (this.element) {
       this.element.onload = null;
       this.element.onerror = null;
