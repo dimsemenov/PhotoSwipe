@@ -61,7 +61,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       initialPoint = null;
     }
 
-    const clickedIndex = this.getClickedIndex(e);
+    let clickedIndex = this.getClickedIndex(e);
+    clickedIndex = this.applyFilters('clickedIndex', clickedIndex, e, this);
     const dataSource = {
       gallery: e.currentTarget
     };
