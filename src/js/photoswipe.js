@@ -252,11 +252,9 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @param  {Integer} New index
    */
   goTo(index) {
-    index = this.getLoopedIndex(index);
-
-    // TODO: allow to pause the event propagation?
-
-    const indexChanged = this.mainScroll.moveIndexBy(index - this.potentialIndex);
+    const indexChanged = this.mainScroll.moveIndexBy(
+      this.getLoopedIndex(index) - this.potentialIndex
+    );
     if (indexChanged) {
       this.dispatch('afterGoto');
     }
@@ -270,7 +268,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   }
 
   /**
-   * Go to the next slide.
+   * Go to the previous slide.
    */
   prev() {
     this.goTo(this.potentialIndex - 1);
@@ -332,16 +330,24 @@ class PhotoSwipe extends PhotoSwipeBase {
   }
 
   setContent(holder, index) {
-    // destroy previous slide to clean the memory
-    if (holder.slide) {
-      holder.slide.destroy();
-    }
-
     if (this.options.loop) {
       index = this.getLoopedIndex(index);
-    } else if (index < 0 || index >= this.getNumItems()) {
-      // empty holder
-      holder.el.innerHTML = '';
+    }
+
+    if (holder.slide) {
+      if (holder.slide.index === index) {
+        // exit if holder already contains this slide
+        // this could be common when just three slides are used
+        return;
+      }
+
+      // destroy previous slide
+      holder.slide.destroy();
+      holder.slide = null;
+    }
+
+    // exit if no loop and index is out of bounds
+    if (!this.options.loop && (index < 0 || index >= this.getNumItems())) {
       return;
     }
 

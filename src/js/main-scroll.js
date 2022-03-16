@@ -121,14 +121,24 @@ class MainScroll {
   moveIndexBy(diff, animate, velocityX) {
     const { pswp } = this;
     let newIndex = pswp.potentialIndex + diff;
+    const numSlides = pswp.getNumItems();
 
     if (pswp.options.loop) {
       newIndex = pswp.getLoopedIndex(newIndex);
+
+      const distance = (diff + numSlides) % numSlides;
+      if (distance <= numSlides / 2) {
+        // go forward
+        diff = distance;
+      } else {
+        // go backwards
+        diff = distance - numSlides;
+      }
     } else {
       if (newIndex < 0) {
         newIndex = 0;
-      } else if (newIndex >= pswp.getNumItems()) {
-        newIndex = pswp.getNumItems() - 1;
+      } else if (newIndex >= numSlides) {
+        newIndex = numSlides - 1;
       }
       diff = newIndex - pswp.potentialIndex;
     }
