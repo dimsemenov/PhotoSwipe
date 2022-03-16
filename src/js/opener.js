@@ -100,6 +100,7 @@ class Opener {
     // Discard animations when duration is less than 50ms
     this._useAnimation = (this._duration > 50);
     this._animateZoom = Boolean(this._thumbBounds)
+                        && (slide.content && slide.content.type === 'image')
                         && (!this.isClosing || !pswp.mainScroll.isShifted());
     if (!this._animateZoom) {
       this._animateRootOpacity = true;

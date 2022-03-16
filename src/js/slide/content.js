@@ -20,6 +20,14 @@ class Content {
     this.hasSlide = false;
     this.state = LOAD_STATE.IDLE;
 
+    if (this.data.type) {
+      this.type = this.data.type;
+    } else if (this.data.src) {
+      this.type = 'image';
+    } else {
+      this.type = 'html';
+    }
+
     this.instance.dispatch('contentInit', { content: this });
   }
 
@@ -132,11 +140,7 @@ class Content {
    * @returns {Boolean} If the content is image
    */
   isImageContent() {
-    return this.instance.applyFilters(
-      'isImageContent',
-      (!this.data.type && this.data.src) || this.data.type === 'image',
-      this
-    );
+    return this.type === 'image';
   }
 
   /**
@@ -352,13 +356,21 @@ class Content {
   }
 
   /**
-   * Append the content image to container
+   * Append the image content to container
    *
    * @param {Element} container
    */
   appendImageTo(container) {
+    if (!this.isAttached) {
+      return;
+    }
+
+    if (this.instance.dispatch('contentAppendImage', { content: this, container }).defaultPrevented) {
+      return;
+    }
+
     // ensure that element exists and is not already appended
-    if (this.element && !this.element.parentNode && this.isAttached) {
+    if (this.element && !this.element.parentNode) {
       container.appendChild(this.element);
     }
   }
