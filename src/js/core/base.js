@@ -124,7 +124,9 @@ class PhotoSwipeBase extends Eventable {
       // if it's empty link href is used
       itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
 
-      itemData.srcset = linkEl.dataset.pswpSrcset;
+      if (linkEl.dataset.pswpSrcset) {
+        itemData.srcset = linkEl.dataset.pswpSrcset;
+      }
 
       itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
       itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
