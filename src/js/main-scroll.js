@@ -169,9 +169,21 @@ class MainScroll {
         }
       });
 
+      let currDiff = pswp.potentialIndex - pswp.currIndex;
+      if (pswp.options.loop) {
+        const currDistance = (currDiff + numSlides) % numSlides;
+        if (currDistance <= numSlides / 2) {
+          // go forward
+          currDiff = currDistance;
+        } else {
+          // go backwards
+          currDiff = currDistance - numSlides;
+        }
+      }
+
       // Force-append new slides during transition
       // if difference between slides is more than 1
-      if (Math.abs(pswp.potentialIndex - pswp.currIndex) > 1) {
+      if (Math.abs(currDiff) > 1) {
         this.updateCurrItem();
       }
     }
