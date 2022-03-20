@@ -109,9 +109,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     if (this.gestures.supportsTouch) {
       rootClasses += ' pswp--touch';
     }
-    if (!this.options.allowMouseDrag) {
-      rootClasses += ' pswp--no-mouse-drag';
-    }
     if (this.options.mainClass) {
       rootClasses += ' ' + this.options.mainClass;
     }
