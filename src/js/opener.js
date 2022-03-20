@@ -62,9 +62,13 @@ class Opener {
   _prepareOpen() {
     this.pswp.off('firstZoomPan', this._prepareOpen);
     if (!this.isOpening) {
+      const slide = this.pswp.currSlide;
       this.isOpening = true;
       this.isClosing = false;
       this._duration = this.pswp.options.showAnimationDuration;
+      if (slide && slide.zoomLevels.initial * slide.width >= this.pswp.options.maxWidthToAnimate) {
+        this._duration = 0;
+      }
       this._applyStartProps();
     }
   }
@@ -136,14 +140,16 @@ class Opener {
 
     if (this.isOpening) {
       // Apply styles before opening transition
-      if (this._animateBgOpacity) {
-        pswp.bg.style.opacity = MIN_OPACITY;
-        pswp.template.style.opacity = 1;
-      }
+      
 
       if (this._animateRootOpacity) {
         pswp.template.style.opacity = MIN_OPACITY;
         pswp.applyBgOpacity(1);
+      } else {
+        if (this._animateBgOpacity) {
+          pswp.bg.style.opacity = MIN_OPACITY;
+        }
+        pswp.template.style.opacity = 1;
       }
 
       if (this._animateZoom) {
