@@ -32,16 +32,14 @@ const defaultOptions = {
   escKey: true,
   arrowKeys: true,
   returnFocus: true,
+  maxWidthToAnimate: 4000,
   clickToCloseNonZoomable: true,
   imageClickAction: 'zoom-or-close',
   bgClickAction: 'close',
   tapAction: 'toggle-controls',
   doubleTapAction: 'zoom',
-
   indexIndicatorSep: ' / ',
-
   preloaderDelay: 2000,
-
   bgOpacity: 0.8,
 
   index: 0,
