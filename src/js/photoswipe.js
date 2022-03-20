@@ -43,7 +43,7 @@ const defaultOptions = {
   bgOpacity: 0.8,
 
   index: 0,
-  errorMsg: '<div class="pswp__error-msg"><a href="" target="_blank">The image</a> could not be loaded.</div>',
+  errorMsg: 'The image cannot be loaded',
   preload: [1, 2],
   easing: 'cubic-bezier(.4,0,.22,1)'
 };
@@ -158,20 +158,6 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.events.add(window, 'resize', this._handlePageResize.bind(this));
       this.events.add(window, 'scroll', this._updatePageScrollOffset.bind(this));
       this.dispatch('bindEvents');
-    });
-
-    // remove placeholder when slide is loaded
-    this.on('loadComplete', (e) => {
-      if (e.slide.heavyAppended) {
-        e.slide.removePlaceholder();
-      }
-    });
-
-    this.on('loadError', (e) => {
-      if (e.slide.heavyAppended) {
-        e.slide.removePlaceholder();
-        e.slide.displayError();
-      }
     });
 
     // set content for center slide (first time)

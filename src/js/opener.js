@@ -140,8 +140,6 @@ class Opener {
 
     if (this.isOpening) {
       // Apply styles before opening transition
-      
-
       if (this._animateRootOpacity) {
         pswp.template.style.opacity = MIN_OPACITY;
         pswp.applyBgOpacity(1);

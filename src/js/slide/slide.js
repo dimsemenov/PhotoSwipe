@@ -9,14 +9,11 @@ import {
   roundPoint,
   toTransformString,
   clamp,
-  LOAD_STATE,
-  setWidthHeight,
 } from '../util/util.js';
 
 import PanBounds from './pan-bounds.js';
 import ZoomLevel from './zoom-level.js';
 import { getPanAreaSize } from '../util/viewport-size.js';
-import Placeholder from './placeholder.js';
 
 class Slide {
   constructor(data, index, pswp) {
@@ -43,6 +40,7 @@ class Slide {
     };
 
     this.content = this.pswp.contentLoader.getContentBySlide(this);
+    this.container = createElement('pswp__zoom-wrap');
 
     this.currZoomLevel = 1;
     this.width = this.content.width;
@@ -85,7 +83,6 @@ class Slide {
 
     this.calculateSize();
 
-    this.container = createElement('pswp__zoom-wrap');
     this.container.transformOrigin = '0 0';
 
     this.load();
@@ -108,33 +105,7 @@ class Slide {
     }
   }
 
-  removePlaceholder() {
-    if (this.placeholder && this.content && !this.content.keepPlaceholder()) {
-      // With delay, as image might be loaded, but not decoded
-      setTimeout(() => {
-        if (this.placeholder) {
-          this.placeholder.destroy();
-          this.placeholder = null;
-        }
-      }, 500);
-    }
-  }
-
   load() {
-    if (this.usePlaceholder() && !this.placeholder) {
-      // use placeholder only for the first slide,
-      // as rendering (even small stretched thumbnail) is an expensive operation
-      const placeholderSrc = this.pswp.applyFilters(
-        'placeholderSrc',
-        (this.data.msrc && this.isFirstSlide) ? this.data.msrc : false,
-        this
-      );
-      this.placeholder = new Placeholder(
-        placeholderSrc,
-        this.container
-      );
-    }
-
     this.content.load();
     this.pswp.dispatch('slideLoad', { slide: this });
   }
@@ -155,7 +126,7 @@ class Slide {
    */
   appendHeavy() {
     const { pswp } = this;
-    const appendHeavyNearby = true;
+    const appendHeavyNearby = true; // todo
 
     // Avoid appending heavy elements during animations
     if (this.heavyAppended
@@ -171,14 +142,7 @@ class Slide {
 
     this.heavyAppended = true;
 
-    if (this.content.state === LOAD_STATE.ERROR) {
-      this.displayError();
-    } else {
-      this.content.appendTo(this.container);
-      if (this.placeholder && this.content.state === LOAD_STATE.LOADED) {
-        this.removePlaceholder();
-      }
-    }
+    this.content.append();
 
     this.pswp.dispatch('appendHeavyContent', { slide: this });
   }
@@ -197,16 +161,6 @@ class Slide {
     } else {
       container.innerHTML = html;
     }
-  }
-
-  displayError() {
-    const errorElement = this.content.getErrorElement();
-    errorElement.style.position = 'absolute';
-    errorElement.style.left = 0;
-    errorElement.style.top = 0;
-    this.activeErrorElement = errorElement;
-    this.setSlideHTML(errorElement);
-    this.updateContentSize(true);
   }
 
   /**
@@ -291,15 +245,6 @@ class Slide {
     if (!this.sizeChanged(width, height) && !force) {
       return;
     }
-
-    if (this.placeholder) {
-      this.placeholder.setDisplayedSize(width, height);
-    }
-
-    if (this.activeErrorElement) {
-      setWidthHeight(this.activeErrorElement, width, height);
-    }
-
     this.content.setDisplayedSize(width, height);
   }
 
@@ -315,8 +260,8 @@ class Slide {
   }
 
   getPlaceholderElement() {
-    if (this.placeholder) {
-      return this.placeholder.element;
+    if (this.content.placeholder) {
+      return this.content.placeholder.element;
     }
   }
 
@@ -456,10 +401,6 @@ class Slide {
    */
   isZoomable() {
     return this.width && this.content.isZoomable();
-  }
-
-  usePlaceholder() {
-    return this.content.usePlaceholder();
   }
 
   /**

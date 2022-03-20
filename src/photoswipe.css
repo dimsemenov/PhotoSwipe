@@ -3,7 +3,7 @@
 .pswp {
   --pswp-bg: #000;
   --pswp-placeholder-bg: #222;
-  --pswp-error-text-color: #f7f7f7;
+  
 
   --pswp-root-z-index: 100000;
   
@@ -17,6 +17,8 @@
   --pswp-icon-color-secondary: #4f4f4f;
   --pswp-icon-stroke-color: #4f4f4f;
   --pswp-icon-stroke-width: 2px;
+
+  --pswp-error-text-color: var(--pswp-icon-color);
 }
 
 
@@ -74,6 +76,7 @@
 .pswp__bg,
 .pswp__container,
 .pswp__item,
+.pswp__content,
 .pswp__img,
 .pswp__zoom-wrap {
 	position: absolute;
@@ -142,6 +145,14 @@
 	display: none !important;
 }
 
+/* Allow to click through pswp__content element, but not its children */
+.pswp__content {
+  pointer-events: none;
+}
+.pswp__content > * {
+  pointer-events: auto;
+}
+
 
 /*
 
@@ -153,22 +164,14 @@
 	Error message appears when image is not loaded
 	(JS option errorMsg controls markup)
 */
+.pswp__error-msg-container {
+  display: grid;
+}
 .pswp__error-msg {
-	position: absolute;
-	top: 50%;
-	left: 0;
-	width: 100%;
-	padding: 0 10px;
-	margin-top: -0.5em;
+	margin: auto;
 	font-size: 1em;
 	line-height: 1;
 	color: var(--pswp-error-text-color);
-	text-align: center;
-}
-
-.pswp__error-msg a {
-  color: var(--pswp-error-text-color);
-  text-decoration: underline;
 }
 
 /*

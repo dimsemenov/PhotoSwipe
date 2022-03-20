@@ -1,4 +1,5 @@
 import { createElement, LOAD_STATE, setWidthHeight } from '../util/util.js';
+import Placeholder from './placeholder.js';
 
 class Content {
   /**
@@ -9,7 +10,6 @@ class Content {
    *                                (for example by lazy-loader)
    */
   constructor(itemData, instance) {
-    this.options = instance.options;
     this.instance = instance;
     this.data = itemData;
 
@@ -31,13 +31,39 @@ class Content {
     this.instance.dispatch('contentInit', { content: this });
   }
 
+  removePlaceholder() {
+    if (this.placeholder && !this.keepPlaceholder()) {
+      // With delay, as image might be loaded, but not rendered
+      setTimeout(() => {
+        if (this.placeholder) {
+          this.placeholder.destroy();
+          this.placeholder = null;
+        }
+      }, 500);
+    }
+  }
+
   /**
    * Preload content
    *
    * @param {Boolean} isLazy
    */
-  load(isLazy) {
-    if (this.element) {
+  load(isLazy, reload) {
+    if (!this.placeholder && this.slide && this.usePlaceholder()) {
+      // use   -based placeholder only for the first slide,
+      // as rendering (even small stretched thumbnail) is an expensive operation
+      const placeholderSrc = this.instance.applyFilters(
+        'placeholderSrc',
+        (this.data.msrc && this.slide.isFirstSlide) ? this.data.msrc : false,
+        this
+      );
+      this.placeholder = new Placeholder(
+        placeholderSrc,
+        this.slide.container
+      );
+    }
+
+    if (this.element && !reload) {
       return;
     }
 
@@ -49,10 +75,11 @@ class Content {
       this.loadImage(isLazy);
     } else {
       this.element = createElement('pswp__content');
-      this.element.style.position = 'absolute';
-      this.element.style.left = 0;
-      this.element.style.top = 0;
       this.element.innerHTML = this.data.html || '';
+    }
+
+    if (reload && this.slide) {
+      this.slide.updateContentSize(true);
     }
   }
 
@@ -100,6 +127,8 @@ class Content {
     this.slide = slide;
     this.hasSlide = true;
     this.instance = slide.pswp;
+
+    // todo: do we need to unset slide?
   }
 
   /**
@@ -110,6 +139,15 @@ class Content {
 
     if (this.slide) {
       this.instance.dispatch('loadComplete', { slide: this.slide, content: this });
+
+      // if content is reloaded
+      if (this.slide.isActive
+          && this.slide.heavyAppended
+          && !this.element.parentNode) {
+        this.slide.container.innerHTML = '';
+        this.append();
+        this.slide.updateContentSize(true);
+      }
     }
   }
 
@@ -120,6 +158,7 @@ class Content {
     this.state = LOAD_STATE.ERROR;
 
     if (this.slide) {
+      this.displayError();
       this.instance.dispatch('loadComplete', { slide: this.slide, isError: true, content: this });
       this.instance.dispatch('loadError', { slide: this.slide, content: this });
     }
@@ -134,6 +173,10 @@ class Content {
       this.state === LOAD_STATE.LOADING,
       this
     );
+  }
+
+  isError() {
+    return this.state === LOAD_STATE.ERROR;
   }
 
   /**
@@ -158,9 +201,13 @@ class Content {
       return;
     }
 
+    if (this.placeholder) {
+      this.placeholder.setDisplayedSize(width, height);
+    }
+
     setWidthHeight(this.element, width, height);
 
-    if (this.isImageContent()) {
+    if (this.isImageContent() && !this.isError()) {
       const image = this.element;
       // Handle srcset sizes attribute.
       //
@@ -230,6 +277,7 @@ class Content {
    */
   destroy() {
     this.hasSlide = false;
+    this.slide = null;
 
     if (this.instance.dispatch('contentDestroy', { content: this }).defaultPrevented) {
       return;
@@ -243,14 +291,38 @@ class Content {
   }
 
   /**
-   * Append the content to container
-   *
-   * @param {Element} container
+   * Display error message
    */
-  appendTo(container) {
+  displayError() {
+    if (this.slide) {
+      let errorMsgEl = createElement('pswp__error-msg');
+      errorMsgEl.innerText = this.instance.options.errorMsg;
+      errorMsgEl = this.instance.applyFilters(
+        'contentErrorElement',
+        errorMsgEl,
+        this
+      );
+      this.element = createElement('pswp__content pswp__error-msg-container');
+      this.element.appendChild(errorMsgEl);
+      this.slide.container.innerHTML = '';
+      this.slide.container.appendChild(this.element);
+      this.slide.updateContentSize(true);
+      this.removePlaceholder();
+    }
+  }
+
+  /**
+   * Append the content
+   */
+  append() {
     this.isAttached = true;
 
-    if (this.instance.dispatch('contentAppend', { content: this, container }).defaultPrevented) {
+    if (this.state === LOAD_STATE.ERROR) {
+      this.displayError();
+      return;
+    }
+
+    if (this.instance.dispatch('contentAppend', { content: this }).defaultPrevented) {
       return;
     }
 
@@ -272,20 +344,27 @@ class Content {
         this.isDecoding = true;
         // Make sure that we start decoding on the next frame
         requestAnimationFrame(() => {
-          if (this.element) {
+          // element might change
+          if (this.element && this.element.tagName === 'IMG') {
             this.element.decode().then(() => {
               this.isDecoding = false;
               requestAnimationFrame(() => {
-                this.appendImageTo(container);
+                this.appendImage();
               });
-            }).catch(() => {});
+            }).catch(() => {
+              this.isDecoding = false;
+            });
           }
         });
       } else {
-        this.appendImageTo(container);
+        if (this.placeholder
+          && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+          this.removePlaceholder();
+        }
+        this.appendImage();
       }
     } else if (this.element && !this.element.parentNode) {
-      container.appendChild(this.element);
+      this.slide.container.appendChild(this.element);
     }
   }
 
@@ -293,18 +372,20 @@ class Content {
    * Activate the slide,
    * active slide is generally the current one,
    * meaning the user can see it.
-   *
-   * @param {Element} container
    */
   activate() {
     if (this.instance.dispatch('contentActivate', { content: this }).defaultPrevented) {
       return;
     }
 
-    if (this.isImageContent() && this.slide && this.slide.container && this.isDecoding) {
-      // add image to slide when it becomes active,
-      // even if it's not finished decoding
-      this.appendImageTo(this.slide.container);
+    if (this.slide) {
+      if (this.isImageContent() && this.isDecoding) {
+        // add image to slide when it becomes active,
+        // even if it's not finished decoding
+        this.appendImage();
+      } else if (this.isError()) {
+        this.load(false, true); // try to reload
+      }
     }
   }
 
@@ -332,46 +413,25 @@ class Content {
   }
 
   /**
-   * Get HTML Element that should display an error message
-   * (if content is loaded with an error)
-   *
-   * @returns {Element}
+   * Append the image content to slide container
    */
-  getErrorElement() {
-    let errorElement;
-    if (this.isImageContent()) {
-      errorElement = createElement('pswp__error-msg-container');
-      errorElement.innerHTML = this.options.errorMsg;
-      const linkEl = errorElement.querySelector('a');
-      if (linkEl) {
-        linkEl.href = this.data.src;
-      }
-    }
-
-    return this.instance.applyFilters(
-      'contentErrorElement',
-      errorElement,
-      this
-    );
-  }
-
-  /**
-   * Append the image content to container
-   *
-   * @param {Element} container
-   */
-  appendImageTo(container) {
+  appendImage() {
     if (!this.isAttached) {
       return;
     }
 
-    if (this.instance.dispatch('contentAppendImage', { content: this, container }).defaultPrevented) {
+    if (this.instance.dispatch('contentAppendImage', { content: this }).defaultPrevented) {
       return;
     }
 
     // ensure that element exists and is not already appended
-    if (this.element && !this.element.parentNode) {
-      container.appendChild(this.element);
+    if (this.slide && this.element && !this.element.parentNode) {
+      this.slide.container.appendChild(this.element);
+
+      if (this.placeholder
+        && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+        this.removePlaceholder();
+      }
     }
   }
 }
