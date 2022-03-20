@@ -62,22 +62,25 @@ export function getThumbBounds(index, itemData, instance) {
 
   const { element } = itemData;
   let thumbBounds;
+  let thumbnail;
 
   if (element && instance.options.thumbSelector !== false) {
     const thumbSelector = instance.options.thumbSelector || 'img';
-    const thumbnail = element.matches(thumbSelector)
+    thumbnail = element.matches(thumbSelector)
       ? element : element.querySelector(thumbSelector);
+  }
 
-    if (thumbnail) {
-      if (!itemData.thumbCropped) {
-        thumbBounds = getBoundsByElement(thumbnail);
-      } else {
-        thumbBounds = getCroppedBoundsByElement(
-          thumbnail,
-          itemData.w,
-          itemData.h
-        );
-      }
+  thumbnail = instance.applyFilters('thumbEl', thumbnail, itemData, index);
+
+  if (thumbnail) {
+    if (!itemData.thumbCropped) {
+      thumbBounds = getBoundsByElement(thumbnail);
+    } else {
+      thumbBounds = getCroppedBoundsByElement(
+        thumbnail,
+        itemData.w,
+        itemData.h
+      );
     }
   }
 
