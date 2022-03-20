@@ -111,7 +111,7 @@ class UIElement {
         container = pswp.scrollWrap;
       } else {
         // root element
-        container = pswp.template;
+        container = pswp.element;
       }
     }
 

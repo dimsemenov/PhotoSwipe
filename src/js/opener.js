@@ -112,7 +112,7 @@ class Opener {
       this._animateRootOpacity = options.showHideOpacity;
     }
     this._animateBgOpacity = !this._animateRootOpacity && this.pswp.options.bgOpacity > MIN_OPACITY;
-    this._opacityElement = this._animateRootOpacity ? pswp.template : pswp.bg;
+    this._opacityElement = this._animateRootOpacity ? pswp.element : pswp.bg;
 
     if (!this._useAnimation) {
       this._duration = 0;
@@ -120,7 +120,7 @@ class Opener {
       this._animateBgOpacity = false;
       this._animateRootOpacity = true;
       if (this.isOpening) {
-        pswp.template.style.opacity = MIN_OPACITY;
+        pswp.element.style.opacity = MIN_OPACITY;
         pswp.applyBgOpacity(1);
       }
       return;
@@ -141,13 +141,13 @@ class Opener {
     if (this.isOpening) {
       // Apply styles before opening transition
       if (this._animateRootOpacity) {
-        pswp.template.style.opacity = MIN_OPACITY;
+        pswp.element.style.opacity = MIN_OPACITY;
         pswp.applyBgOpacity(1);
       } else {
         if (this._animateBgOpacity) {
           pswp.bg.style.opacity = MIN_OPACITY;
         }
-        pswp.template.style.opacity = 1;
+        pswp.element.style.opacity = 1;
       }
 
       if (this._animateZoom) {
@@ -211,10 +211,10 @@ class Opener {
   }
 
   _initiate() {
-    this.pswp.template.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
+    this.pswp.element.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
 
     this.pswp.dispatch('initialZoom' + (this.isOpening ? 'In' : 'Out'));
-    this.pswp.template.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
+    this.pswp.element.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
     if (this.isOpening) {
       if (this._placeholder) {
@@ -272,7 +272,7 @@ class Opener {
     }
 
     if (this._animateRootOpacity) {
-      this._animateTo(pswp.template, 'opacity', 1);
+      this._animateTo(pswp.element, 'opacity', 1);
     }
   }
 
@@ -289,7 +289,7 @@ class Opener {
     }
 
     if (this._animateRootOpacity) {
-      this._animateTo(pswp.template, 'opacity', 0);
+      this._animateTo(pswp.element, 'opacity', 0);
     }
   }
 

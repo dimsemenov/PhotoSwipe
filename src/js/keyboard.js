@@ -38,7 +38,7 @@ class Keyboard {
 
   _focusRoot() {
     if (!this._wasFocused) {
-      this.pswp.template.focus();
+      this.pswp.element.focus();
       this._wasFocused = true;
     }
   }

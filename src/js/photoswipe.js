@@ -110,7 +110,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     if (this.options.mainClass) {
       rootClasses += ' ' + this.options.mainClass;
     }
-    this.template.className += ' ' + rootClasses;
+    this.element.className += ' ' + rootClasses;
 
     this.currIndex = this.options.index || 0;
     this.potentialIndex = this.currIndex;
@@ -303,7 +303,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.scrollWrap.ontouchmove = null;
     this.scrollWrap.ontouchend = null;
 
-    this.template.remove();
+    this.element.remove();
 
     this.mainScroll.itemHolders.forEach((itemHolder) => {
       if (itemHolder.slide) {
@@ -415,7 +415,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   mouseDetected() {
     if (!this.hasMouse) {
       this.hasMouse = true;
-      this.template.classList.add('pswp--has_mouse');
+      this.element.classList.add('pswp--has_mouse');
     }
   }
 
@@ -458,14 +458,17 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   _createMainStructure() {
     // root DOM element of PhotoSwipe (.pswp)
-    this.template = createElement('pswp');
-    this.template.setAttribute('tabindex', -1);
-    this.template.setAttribute('role', 'dialog');
+    this.element = createElement('pswp');
+    this.element.setAttribute('tabindex', -1);
+    this.element.setAttribute('role', 'dialog');
+
+    // template is legacy prop
+    this.template = this.element;
 
     // Background is added as a separate element,
     // as animating opacity is faster than animating rgba()
-    this.bg = createElement('pswp__bg', false, this.template);
-    this.scrollWrap = createElement('pswp__scroll-wrap', false, this.template);
+    this.bg = createElement('pswp__bg', false, this.element);
+    this.scrollWrap = createElement('pswp__scroll-wrap', false, this.element);
     this.container = createElement('pswp__container', false, this.scrollWrap);
 
     this.mainScroll.appendHolders();
@@ -474,7 +477,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.ui.init();
 
     // append to DOM
-    (this.options.appendToEl || document.body).appendChild(this.template);
+    (this.options.appendToEl || document.body).appendChild(this.element);
   }
 
 

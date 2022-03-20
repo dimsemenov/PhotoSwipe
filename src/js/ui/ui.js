@@ -51,7 +51,7 @@ class UI {
 
     // TODO: ensure this works when dynamically adding or removing slides
     if (pswp.getNumItems() === 1) {
-      pswp.template.classList.add('pswp--one-slide');
+      pswp.element.classList.add('pswp--one-slide');
     }
 
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());

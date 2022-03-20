@@ -76,7 +76,7 @@ class TapHandler {
         }
         break;
       case 'toggle-controls':
-        this.gestures.pswp.template.classList.toggle('pswp--ui-visible');
+        this.gestures.pswp.element.classList.toggle('pswp--ui-visible');
         // if (_controlsVisible) {
         //   _ui.hideControls();
         // } else {
