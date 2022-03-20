@@ -122,6 +122,8 @@ class Slide {
 
   load() {
     if (this.usePlaceholder() && !this.placeholder) {
+      // use placeholder only for the first slide,
+      // as rendering (even small stretched thumbnail) is an expensive operation
       const placeholderSrc = this.pswp.applyFilters(
         'placeholderSrc',
         (this.data.msrc && this.isFirstSlide) ? this.data.msrc : false,

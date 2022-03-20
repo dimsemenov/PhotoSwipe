@@ -142,8 +142,8 @@ class PhotoSwipeBase extends Eventable {
       const thumbnailEl = element.querySelector('img');
 
       if (thumbnailEl) {
-        // define msrc only if it's the first slide,
-        // as rendering (even small stretched thumbnail) is an expensive operation
+        // msrc is URL to placeholder image that's displayed before large image is loaded
+        // by default it's displayed only for the first slide
         itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
         itemData.alt = thumbnailEl.getAttribute('alt');
       }
