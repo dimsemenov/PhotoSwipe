@@ -112,7 +112,7 @@ class Opener {
     } else {
       this._animateRootOpacity = options.showHideOpacity;
     }
-    this._animateBgOpacity = !this._animateRootOpacity;
+    this._animateBgOpacity = !this._animateRootOpacity && this.pswp.options.bgOpacity > MIN_OPACITY;
     this._opacityElement = this._animateRootOpacity ? pswp.template : pswp.bg;
 
     if (!this._useAnimation) {
