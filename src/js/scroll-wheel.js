@@ -32,10 +32,6 @@ class ScrollWheel {
         }
         zoomFactor = 2 ** zoomFactor;
 
-        if (this.pswp.options.getWheelZoomFactorFn) {
-          zoomFactor = this.pswp.options.getWheelZoomFactorFn(e, this.pswp);
-        }
-
         const destZoomLevel = currSlide.currZoomLevel * zoomFactor;
         currSlide.zoomTo(destZoomLevel, {
           x: e.clientX,
