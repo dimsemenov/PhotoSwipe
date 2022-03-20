@@ -32,8 +32,6 @@ const defaultOptions = {
   escKey: true,
   arrowKeys: true,
   returnFocus: true,
-  limitMaxZoom: true,
-
   clickToCloseNonZoomable: true,
   imageClickAction: 'zoom-or-close',
   bgClickAction: 'close',

@@ -101,8 +101,7 @@ class DragHandler {
     }
 
     // Restore zoom level
-    if ((pswp.currSlide.currZoomLevel > pswp.currSlide.zoomLevels.max
-        && this.pswp.options.limitMaxZoom)
+    if (pswp.currSlide.currZoomLevel > pswp.currSlide.zoomLevels.max
         || this.gestures.isMultitouch) {
       this.gestures.zoomLevels.correctZoomPan(true);
     } else {
