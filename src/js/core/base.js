@@ -128,8 +128,12 @@ class PhotoSwipeBase extends Eventable {
         itemData.srcset = linkEl.dataset.pswpSrcset;
       }
 
-      itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
-      itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
+      itemData.width = parseInt(linkEl.dataset.pswpWidth, 10);
+      itemData.height = parseInt(linkEl.dataset.pswpHeight, 10);
+
+      // support legacy w & h properties
+      itemData.w = itemData.width;
+      itemData.h = itemData.height;
 
       if (linkEl.dataset.pswpType) {
         itemData.type = linkEl.dataset.pswpType;
