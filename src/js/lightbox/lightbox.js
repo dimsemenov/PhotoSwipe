@@ -230,7 +230,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
   destroy() {
     if (this.pswp) {
-      this.pswp.close();
+      this.pswp.destroy();
     }
 
     this.shouldOpen = false;
