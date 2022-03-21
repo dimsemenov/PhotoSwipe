@@ -143,7 +143,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this._initialThumbBounds = this.getThumbBounds();
     this.dispatch('initialLayout');
 
-    this.on('initialZoomInEnd', () => {
+    this.on('openingAnimationEnd', () => {
       // Add content to the previous and next slide
       this.setContent(this.mainScroll.itemHolders[0], this.currIndex - 1);
       this.setContent(this.mainScroll.itemHolders[2], this.currIndex + 1);
@@ -231,12 +231,9 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @param  {Integer} New index
    */
   goTo(index) {
-    const indexChanged = this.mainScroll.moveIndexBy(
+    this.mainScroll.moveIndexBy(
       this.getLoopedIndex(index) - this.potentialIndex
     );
-    if (indexChanged) {
-      this.dispatch('afterGoto');
-    }
   }
 
   /**

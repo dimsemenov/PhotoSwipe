@@ -213,6 +213,11 @@ class Opener {
   _initiate() {
     this.pswp.element.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
 
+    this.pswp.dispatch(
+      this.isOpening ? 'openingAnimationStart' : 'closingAnimationStart'
+    );
+
+    // legacy event
     this.pswp.dispatch('initialZoom' + (this.isOpening ? 'In' : 'Out'));
     this.pswp.element.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
@@ -238,6 +243,11 @@ class Opener {
     this.isOpening = false;
     this.isClosing = false;
 
+    pswp.dispatch(
+      this.isOpen ? 'openingAnimationEnd' : 'closingAnimationEnd'
+    );
+
+    // legacy event
     pswp.dispatch('initialZoom' + (this.isOpen ? 'InEnd' : 'OutEnd'));
 
     if (this.isClosed) {
