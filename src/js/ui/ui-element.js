@@ -38,7 +38,7 @@ function addElementHTML(htmlData) {
 
 class UIElement {
   constructor(pswp, data) {
-    const name = data.name || data.class;
+    const name = data.name || data.className;
     let elementHTML = data.html;
 
     if (pswp.options[name] === false) {
@@ -57,25 +57,31 @@ class UIElement {
 
     pswp.dispatch('uiElementCreate', { data });
 
-    let className = 'pswp__';
+    let className = '';
     if (data.isButton) {
-      className += 'button pswp__button--';
+      className += 'pswp__button ';
+      className += (data.className || `pswp__button--${data.name}`);
+    } else {
+      className += (data.className || `pswp__${data.name}`);
     }
-    className += (data.class || data.name);
 
     let element;
+    let tagName = data.isButton ? (data.tagName || 'button') : (data.tagName || 'div');
+    tagName = tagName.toLowerCase();
+    element = createElement(className, tagName);
+
     if (data.isButton) {
       // create button element
-      element = createElement(className, 'button');
-      element.type = 'button';
+      element = createElement(className, tagName);
+      if (tagName === 'button') {
+        element.type = 'button';
+      }
 
       if (typeof pswp.options[name + 'Title'] === 'string') {
         element.title = pswp.options[name + 'Title'];
       } else if (data.title) {
         element.title = data.title;
       }
-    } else {
-      element = createElement(className);
     }
 
     element.innerHTML = addElementHTML(elementHTML);
