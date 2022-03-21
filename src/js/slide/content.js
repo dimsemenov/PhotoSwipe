@@ -197,12 +197,12 @@ class Content {
       return;
     }
 
-    if (this.instance.dispatch('contentResize', { content: this, width, height }).defaultPrevented) {
-      return;
-    }
-
     if (this.placeholder) {
       this.placeholder.setDisplayedSize(width, height);
+    }
+
+    if (this.instance.dispatch('contentResize', { content: this, width, height }).defaultPrevented) {
+      return;
     }
 
     setWidthHeight(this.element, width, height);

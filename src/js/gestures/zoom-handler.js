@@ -53,11 +53,6 @@ class ZoomHandler {
                       * getDistanceBetween(p1, p2)
                       * this._startZoomLevel;
 
-    // if (!this.zoomStarted) {
-    //   this.zoomStarted = true;
-    //   pswp.dispatch('zoomGestureStarted');
-    // }
-
     // slightly over the zoom.fit
     if (currZoomLevel > currSlide.zoomLevels.initial + (currSlide.zoomLevels.initial / 15)) {
       this._wasOverFitZoomLevel = true;
@@ -86,12 +81,6 @@ class ZoomHandler {
 
     currSlide.setZoomLevel(currZoomLevel);
     currSlide.applyCurrentZoomPan();
-
-
-    //_isZoomingIn = currZoomLevel > _currZoomLevel;
-    //_currZoomLevel = currZoomLevel;
-    //_applyCurrentZoomPan();
-    //_updatePrevPoints();
   }
 
   end() {

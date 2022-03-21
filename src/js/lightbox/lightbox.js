@@ -79,6 +79,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * @param {Event} e click event
    */
   getClickedIndex(e) {
+    // legacy option
     if (this.options.getClickedIndexFn) {
       return this.options.getClickedIndexFn.call(this, e);
     }

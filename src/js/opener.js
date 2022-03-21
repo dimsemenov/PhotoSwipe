@@ -219,6 +219,7 @@ class Opener {
 
     // legacy event
     this.pswp.dispatch('initialZoom' + (this.isOpening ? 'In' : 'Out'));
+
     this.pswp.element.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
     if (this.isOpening) {

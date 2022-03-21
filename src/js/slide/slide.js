@@ -110,14 +110,6 @@ class Slide {
     this.pswp.dispatch('slideLoad', { slide: this });
   }
 
-  isLoading() {
-    return this.pswp.applyFilters(
-      'isSlideLoading',
-      this.content.isLoading && this.content.isLoading(),
-      this
-    );
-  }
-
   /**
    * Append "heavy" DOM elements
    *
@@ -436,10 +428,6 @@ class Slide {
   }
 
   calculateSize() {
-    // this.zoomLevels.fit = 1;
-    // this.zoomLevels.vFill = 1;
-    // this.zoomLevels.initial = 1;
-
     const { pswp } = this;
 
     equalizePoints(

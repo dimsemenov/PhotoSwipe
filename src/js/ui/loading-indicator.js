@@ -23,7 +23,7 @@ export const loadingIndicator = {
     };
 
     const updatePreloaderVisibility = () => {
-      if (!pswp.currSlide.isLoading()) {
+      if (!pswp.currSlide.content.isLoading()) {
         setIndicatorVisibility(false);
         if (delayTimeout) {
           clearTimeout(delayTimeout);
@@ -35,7 +35,7 @@ export const loadingIndicator = {
       if (!delayTimeout) {
         // display loading indicator with delay
         delayTimeout = setTimeout(() => {
-          setIndicatorVisibility(pswp.currSlide.isLoading());
+          setIndicatorVisibility(pswp.currSlide.content.isLoading());
           delayTimeout = null;
         }, pswp.options.preloaderDelay);
       }
