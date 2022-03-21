@@ -1,6 +1,6 @@
 {
   "name": "photoswipe",
-  "version": "5.2.0-beta.2",
+  "version": "5.2.0-beta.3",
   "main": "dist/photoswipe.esm.js",
   "style": "dist/photoswipe.css",
   "type": "module",
@@ -17,10 +17,10 @@
     "watch": "concurrently \"npm:watch-js\" \"npm:watch-css\" \"npm:watch-docs\"",
     "build-and-minify-js": "rollup --config build/rollup.config.js",
     "watch-js": "rollup --config build/rollup.config.watch.js --watch",
-    "build-css": "copyfiles -f src/*.css dist/ && copyfiles -f src/*.css website/static/photoswipe/",
+    "build-css": "copyfiles -f src/*.css dist/ && copyfiles -f src/*.css demo-docs-website/static/photoswipe/",
     "watch-css": "chokidar \"src/*.css\" --command \"npm run build-css\"",
-    "watch-docs": "cd website/ && npm start",
-    "copy-to-dist": "copyfiles -f website/static/photoswipe/* dist/",
+    "watch-docs": "cd demo-docs-website/ && npm start",
+    "copy-to-dist": "copyfiles -f demo-docs-website/static/photoswipe/* dist/",
     "lint": "eslint src/js/**/*.js",
     "lint-auto-fix": "eslint src/js/**/*.js --fix",
     "test": "npm run lint"
@@ -57,5 +57,6 @@
     "zoom"
   ],
   "author": "Dmytro Semenov (https://dimsemenov.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {}
 }

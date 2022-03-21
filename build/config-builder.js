@@ -8,7 +8,7 @@ const year = new Date().getFullYear();
 function getBanner(name) {
   return `/*!
   * ${name} ${pkg.version} - https://photoswipe.com
-  * (c) ${year} Dmitry Semenov
+  * (c) ${year} Dmytro Semenov
   */`;
 }
 
@@ -26,7 +26,7 @@ function getMinifyPlugin() {
   });
 }
 
-const baseOutputDir = 'website/static/photoswipe/';
+const baseOutputDir = 'demo-docs-website/static/photoswipe/';
 
 export const lightboxJS = {
   input: 'src/js/lightbox/lightbox.js',
