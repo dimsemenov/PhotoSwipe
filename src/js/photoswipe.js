@@ -253,12 +253,14 @@ class PhotoSwipe extends PhotoSwipeBase {
 
   /**
    * Destroys the gallery:
+   * - instantly closes the gallery
    * - unbinds events,
    * - cleans intervals and timeouts
    * - removes elements from DOM
    */
   destroy() {
     if (!this.isDestroying) {
+      this.options.showHideAnimationType = 'none';
       this.close();
       return;
     }
