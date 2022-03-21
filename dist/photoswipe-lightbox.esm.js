@@ -1,6 +1,6 @@
 /*!
-  * PhotoSwipe Lightbox 5.2.0-beta.2 - https://photoswipe.com
-  * (c) 2022 Dmitry Semenov
+  * PhotoSwipe Lightbox 5.2.0-beta.3 - https://photoswipe.com
+  * (c) 2022 Dmytro Semenov
   */
 /**
   * Creates element and optionally appends it to another.
@@ -18,6 +18,27 @@ function createElement(className, tagName, appendToEl) {
     appendToEl.appendChild(el);
   }
   return el;
+}
+
+/**
+ * Get transform string
+ *
+ * @param {Number} x
+ * @param {Number|null} y
+ * @param {Number|null} scale
+ */
+function toTransformString(x, y, scale) {
+  let propValue = 'translate3d('
+    + x + 'px,' + (y || 0) + 'px'
+    + ',0)';
+
+  if (scale !== undefined) {
+    propValue += ' scale3d('
+      + scale + ',' + scale
+      + ',1)';
+  }
+
+  return propValue;
 }
 
 /**
@@ -184,6 +205,55 @@ class Eventable {
   }
 }
 
+class Placeholder {
+  /**
+   * @param {String|false} imageSrc
+   * @param {Element} container
+   */
+  constructor(imageSrc, container) {
+    // Create placeholder
+    // (stretched thumbnail or simple div behind the main image)
+    this.element = createElement(
+      'pswp__img pswp__img--placeholder',
+      imageSrc ? 'img' : '',
+      container
+    );
+
+    if (imageSrc) {
+      this.element.decoding = 'async';
+      this.element.alt = '';
+      this.element.src = imageSrc;
+      this.element.setAttribute('role', 'presentation');
+    }
+
+    this.element.setAttribute('aria-hiden', 'true');
+  }
+
+  setDisplayedSize(width, height) {
+    if (!this.element) {
+      return;
+    }
+
+    if (this.element.tagName === 'IMG') {
+      // Use transform scale() to modify img placeholder size
+      // (instead of changing width/height directly).
+      // This helps with performance, specifically in iOS15 Safari.
+      setWidthHeight(this.element, 250, 'auto');
+      this.element.style.transformOrigin = '0 0';
+      this.element.style.transform = toTransformString(0, 0, width / 250);
+    } else {
+      setWidthHeight(this.element, width, height);
+    }
+  }
+
+  destroy() {
+    if (this.element.parentNode) {
+      this.element.remove();
+    }
+    this.element = null;
+  }
+}
+
 class Content {
   /**
    * @param {Object} itemData Slide data
@@ -193,7 +263,6 @@ class Content {
    *                                (for example by lazy-loader)
    */
   constructor(itemData, instance) {
-    this.options = instance.options;
     this.instance = instance;
     this.data = itemData;
 
@@ -201,120 +270,89 @@ class Content {
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
 
     this.isAttached = false;
+    this.hasSlide = false;
     this.state = LOAD_STATE.IDLE;
+
+    if (this.data.type) {
+      this.type = this.data.type;
+    } else if (this.data.src) {
+      this.type = 'image';
+    } else {
+      this.type = 'html';
+    }
+
+    this.instance.dispatch('contentInit', { content: this });
   }
 
-  setSlide(slide) {
-    this.slide = slide;
-    this.pswp = slide.pswp;
+  removePlaceholder() {
+    if (this.placeholder && !this.keepPlaceholder()) {
+      // With delay, as image might be loaded, but not rendered
+      setTimeout(() => {
+        if (this.placeholder) {
+          this.placeholder.destroy();
+          this.placeholder = null;
+        }
+      }, 500);
+    }
   }
 
   /**
-   * Load the content
+   * Preload content
    *
-   * @param {Boolean} isLazy If method is executed by lazy-loader
+   * @param {Boolean} isLazy
    */
-  load(/* isLazy */) {
-    if (!this.element) {
+  load(isLazy, reload) {
+    if (!this.placeholder && this.slide && this.usePlaceholder()) {
+      // use   -based placeholder only for the first slide,
+      // as rendering (even small stretched thumbnail) is an expensive operation
+      const placeholderSrc = this.instance.applyFilters(
+        'placeholderSrc',
+        (this.data.msrc && this.slide.isFirstSlide) ? this.data.msrc : false,
+        this
+      );
+      this.placeholder = new Placeholder(
+        placeholderSrc,
+        this.slide.container
+      );
+    }
+
+    if (this.element && !reload) {
+      return;
+    }
+
+    if (this.instance.dispatch('contentLoad', { content: this, isLazy }).defaultPrevented) {
+      return;
+    }
+
+    if (this.isImageContent()) {
+      this.loadImage(isLazy);
+    } else {
       this.element = createElement('pswp__content');
-      this.element.style.position = 'absolute';
-      this.element.style.left = 0;
-      this.element.style.top = 0;
       this.element.innerHTML = this.data.html || '';
     }
-  }
 
-  isZoomable() {
-    return false;
-  }
-
-  usePlaceholder() {
-    return false;
-  }
-
-  activate() {
-
-  }
-
-  deactivate() {
-
-  }
-
-  setDisplayedSize(width, height) {
-    if (this.element) {
-      setWidthHeight(this.element, width, height);
+    if (reload && this.slide) {
+      this.slide.updateContentSize(true);
     }
   }
 
-  onLoaded() {
-    this.state = LOAD_STATE.LOADED;
-
-    if (this.slide) {
-      this.pswp.dispatch('loadComplete', { slide: this.slide });
-    }
-  }
-
-  isLoading() {
-    return (this.state === LOAD_STATE.LOADING);
-  }
-
-  // If the placeholder should be kept in DOM
-  keepPlaceholder() {
-    return this.isLoading();
-  }
-
-  onError() {
-    this.state = LOAD_STATE.ERROR;
-
-    if (this.slide) {
-      this.pswp.dispatch('loadComplete', { slide: this.slide, isError: true });
-      this.pswp.dispatch('loadError', { slide: this.slide });
-    }
-  }
-
-  getErrorElement() {
-    return false;
-  }
-
-
-  remove() {
-    this.isAttached = false;
-    if (this.element && this.element.parentNode) {
-      this.element.remove();
-    }
-  }
-
-  appendTo(container) {
-    this.isAttached = true;
-    if (this.element && !this.element.parentNode) {
-      container.appendChild(this.element);
-    }
-  }
-
-  destroy() {
-
-  }
-}
-
-class ImageContent extends Content {
-  load(/* isLazy */) {
-    if (this.element) {
-      return;
-    }
-
-    const imageSrc = this.data.src;
-
-    if (!imageSrc) {
-      return;
-    }
-
+  /**
+   * Preload image
+   *
+   * @param {Boolean} isLazy
+   */
+  loadImage(isLazy) {
     this.element = createElement('pswp__img', 'img');
+
+    if (this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
+      return;
+    }
 
     if (this.data.srcset) {
       this.element.srcset = this.data.srcset;
     }
 
-    this.element.src = imageSrc;
+    this.element.src = this.data.src;
 
     this.element.alt = this.data.alt || '';
 
@@ -333,11 +371,97 @@ class ImageContent extends Content {
     }
   }
 
-  setDisplayedSize(width, height) {
-    const image = this.element;
-    if (image) {
-      setWidthHeight(image, width, 'auto');
+  /**
+   * Assign slide to content
+   *
+   * @param {Slide} slide
+   */
+  setSlide(slide) {
+    this.slide = slide;
+    this.hasSlide = true;
+    this.instance = slide.pswp;
 
+    // todo: do we need to unset slide?
+  }
+
+  /**
+   * Content load success handler
+   */
+  onLoaded() {
+    this.state = LOAD_STATE.LOADED;
+
+    if (this.slide) {
+      this.instance.dispatch('loadComplete', { slide: this.slide, content: this });
+
+      // if content is reloaded
+      if (this.slide.isActive
+          && this.slide.heavyAppended
+          && !this.element.parentNode) {
+        this.slide.container.innerHTML = '';
+        this.append();
+        this.slide.updateContentSize(true);
+      }
+    }
+  }
+
+  /**
+   * Content load error handler
+   */
+  onError() {
+    this.state = LOAD_STATE.ERROR;
+
+    if (this.slide) {
+      this.displayError();
+      this.instance.dispatch('loadComplete', { slide: this.slide, isError: true, content: this });
+      this.instance.dispatch('loadError', { slide: this.slide, content: this });
+    }
+  }
+
+  /**
+   * @returns {Boolean} If the content is currently loading
+   */
+  isLoading() {
+    return this.instance.applyFilters(
+      'isContentLoading',
+      this.state === LOAD_STATE.LOADING,
+      this
+    );
+  }
+
+  isError() {
+    return this.state === LOAD_STATE.ERROR;
+  }
+
+  /**
+   * @returns {Boolean} If the content is image
+   */
+  isImageContent() {
+    return this.type === 'image';
+  }
+
+  /**
+   * Update content size
+   *
+   * @param {Number} width
+   * @param {Number} height
+   */
+  setDisplayedSize(width, height) {
+    if (!this.element) {
+      return;
+    }
+
+    if (this.placeholder) {
+      this.placeholder.setDisplayedSize(width, height);
+    }
+
+    if (this.instance.dispatch('contentResize', { content: this, width, height }).defaultPrevented) {
+      return;
+    }
+
+    setWidthHeight(this.element, width, height);
+
+    if (this.isImageContent() && !this.isError()) {
+      const image = this.element;
       // Handle srcset sizes attribute.
       //
       // Never lower quality, if it was increased previously.
@@ -350,85 +474,217 @@ class ImageContent extends Content {
       }
 
       if (this.slide) {
-        this.pswp.dispatch('imageSizeChange', { slide: this.slide, width, height });
+        this.instance.dispatch('imageSizeChange', { slide: this.slide, width, height, content: this });
       }
     }
   }
 
+  /**
+   * @returns {Boolean} If the content can be zoomed
+   */
   isZoomable() {
-    return (this.state !== LOAD_STATE.ERROR);
+    return this.instance.applyFilters(
+      'isContentZoomable',
+      this.isImageContent() && (this.state !== LOAD_STATE.ERROR),
+      this
+    );
   }
 
+  /**
+   * @returns {Boolean} If content should use a placeholder (from msrc by default)
+   */
   usePlaceholder() {
-    return true;
+    return this.instance.applyFilters(
+      'useContentPlaceholder',
+      this.isImageContent(),
+      this
+    );
   }
 
+  /**
+   * Preload content with lazy-loading param
+   *
+   * @param {Boolean} isLazy
+   */
   lazyLoad() {
-    this.load();
+    if (this.instance.dispatch('contentLazyLoad', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    this.load(true);
   }
 
+  /**
+   * @returns {Boolean} If placeholder should be kept after content is loaded
+   */
+  keepPlaceholder() {
+    return this.instance.applyFilters(
+      'isKeepingPlaceholder',
+      this.isLoading(),
+      this
+    );
+  }
+
+  /**
+   * Destroy the content
+   */
   destroy() {
-    if (this.element) {
+    this.hasSlide = false;
+    this.slide = null;
+
+    if (this.instance.dispatch('contentDestroy', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    if (this.isImageContent() && this.element) {
       this.element.onload = null;
       this.element.onerror = null;
       this.element = null;
     }
   }
 
-  appendTo(container) {
+  /**
+   * Display error message
+   */
+  displayError() {
+    if (this.slide) {
+      let errorMsgEl = createElement('pswp__error-msg');
+      errorMsgEl.innerText = this.instance.options.errorMsg;
+      errorMsgEl = this.instance.applyFilters(
+        'contentErrorElement',
+        errorMsgEl,
+        this
+      );
+      this.element = createElement('pswp__content pswp__error-msg-container');
+      this.element.appendChild(errorMsgEl);
+      this.slide.container.innerHTML = '';
+      this.slide.container.appendChild(this.element);
+      this.slide.updateContentSize(true);
+      this.removePlaceholder();
+    }
+  }
+
+  /**
+   * Append the content
+   */
+  append() {
     this.isAttached = true;
 
-    // Use decode() on nearby slides
-    //
-    // Nearby slide images are in DOM and not hidden via display:none.
-    // However, they are placed offscreen (to the left and right side).
-    //
-    // Some browsers do not composite the image until it's actually visible,
-    // using decode() helps.
-    //
-    // You might ask "why dont you just decode() and then append all images",
-    // that's because I want to show image before it's fully loaded,
-    // as browser can render parts of image while it is loading.
-    if (this.slide && !this.slide.isActive && ('decode' in this.element)) {
-      this.isDecoding = true;
-      // Make sure that we start decoding on the next frame
-      requestAnimationFrame(() => {
-        if (this.element) {
-          this.element.decode().then(() => {
-            this.isDecoding = false;
-            requestAnimationFrame(() => {
-              this.appendImageTo(container);
+    if (this.state === LOAD_STATE.ERROR) {
+      this.displayError();
+      return;
+    }
+
+    if (this.instance.dispatch('contentAppend', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    if (this.isImageContent()) {
+      // Use decode() on nearby slides
+      //
+      // Nearby slide images are in DOM and not hidden via display:none.
+      // However, they are placed offscreen (to the left and right side).
+      //
+      // Some browsers do not composite the image until it's actually visible,
+      // using decode() helps.
+      //
+      // You might ask "why dont you just decode() and then append all images",
+      // that's because I want to show image before it's fully loaded,
+      // as browser can render parts of image while it is loading.
+      if (this.slide
+          && !this.slide.isActive
+          && ('decode' in this.element)) {
+        this.isDecoding = true;
+        // Make sure that we start decoding on the next frame
+        requestAnimationFrame(() => {
+          // element might change
+          if (this.element && this.element.tagName === 'IMG') {
+            this.element.decode().then(() => {
+              this.isDecoding = false;
+              requestAnimationFrame(() => {
+                this.appendImage();
+              });
+            }).catch(() => {
+              this.isDecoding = false;
             });
-          }).catch(() => {});
+          }
+        });
+      } else {
+        if (this.placeholder
+          && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+          this.removePlaceholder();
         }
-      });
-    } else {
-      this.appendImageTo(container);
+        this.appendImage();
+      }
+    } else if (this.element && !this.element.parentNode) {
+      this.slide.container.appendChild(this.element);
     }
   }
 
+  /**
+   * Activate the slide,
+   * active slide is generally the current one,
+   * meaning the user can see it.
+   */
   activate() {
-    if (this.slide && this.slide.container && this.isDecoding) {
-      // add image to slide when it becomes active,
-      // even if it's not finished decoding
-      this.appendImageTo(this.slide.container);
+    if (this.instance.dispatch('contentActivate', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    if (this.slide) {
+      if (this.isImageContent() && this.isDecoding) {
+        // add image to slide when it becomes active,
+        // even if it's not finished decoding
+        this.appendImage();
+      } else if (this.isError()) {
+        this.load(false, true); // try to reload
+      }
     }
   }
 
-  getErrorElement() {
-    const el = createElement('pswp__error-msg-container');
-    el.innerHTML = this.options.errorMsg;
-    const linkEl = el.querySelector('a');
-    if (linkEl) {
-      linkEl.href = this.data.src;
-    }
-    return el;
+  /**
+   * Deactivate the content
+   */
+  deactivate() {
+    this.instance.dispatch('contentDeactivate', { content: this });
   }
 
-  appendImageTo(container) {
+
+  /**
+   * Remove the content from DOM
+   */
+  remove() {
+    this.isAttached = false;
+
+    if (this.instance.dispatch('contentRemove', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    if (this.element && this.element.parentNode) {
+      this.element.remove();
+    }
+  }
+
+  /**
+   * Append the image content to slide container
+   */
+  appendImage() {
+    if (!this.isAttached) {
+      return;
+    }
+
+    if (this.instance.dispatch('contentAppendImage', { content: this }).defaultPrevented) {
+      return;
+    }
+
     // ensure that element exists and is not already appended
-    if (this.element && !this.element.parentNode && this.isAttached) {
-      container.appendChild(this.element);
+    if (this.slide && this.element && !this.element.parentNode) {
+      this.slide.container.appendChild(this.element);
+
+      if (this.placeholder
+        && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+        this.removePlaceholder();
+      }
     }
   }
 }
@@ -438,15 +694,8 @@ class ImageContent extends Content {
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
  */
 
-class PhotoSwipeBase extends Eventable {
-  constructor() {
-    super();
-    this.contentTypes = {
-      image: ImageContent,
-      html: Content
-    };
-  }
 
+class PhotoSwipeBase extends Eventable {
   /**
    * Get total number of slides
    */
@@ -477,40 +726,8 @@ class PhotoSwipeBase extends Eventable {
     return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
-  /**
-   * Add or set slide content type
-   *
-   * @param {String} type
-   * @param {Class} ContentClass
-   */
-  addContentType(type, ContentClass) {
-    this.contentTypes[type] = ContentClass;
-  }
-
-  /**
-   * Get slide content class based on its data
-   *
-   * @param {Object} slideData
-   * @param {Integer} slideIndex
-   * @returns Class
-   */
-  getContentClass(slideData) {
-    if (slideData.type) {
-      return this.contentTypes[slideData.type];
-    } else if (slideData.src) {
-      return this.contentTypes.image;
-    } else if (slideData.html) {
-      return this.contentTypes.html;
-    }
-  }
-
   createContentFromData(slideData) {
-    const ContentClass = this.getContentClass(slideData);
-    if (!ContentClass) {
-      return false;
-    }
-    const content = new ContentClass(slideData, this);
-    return content;
+    return new Content(slideData, this);
   }
 
   /**
@@ -593,10 +810,16 @@ class PhotoSwipeBase extends Eventable {
       // if it's empty link href is used
       itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
 
-      itemData.srcset = linkEl.dataset.pswpSrcset;
+      if (linkEl.dataset.pswpSrcset) {
+        itemData.srcset = linkEl.dataset.pswpSrcset;
+      }
 
-      itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
-      itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
+      itemData.width = parseInt(linkEl.dataset.pswpWidth, 10);
+      itemData.height = parseInt(linkEl.dataset.pswpHeight, 10);
+
+      // support legacy w & h properties
+      itemData.w = itemData.width;
+      itemData.h = itemData.height;
 
       if (linkEl.dataset.pswpType) {
         itemData.type = linkEl.dataset.pswpType;
@@ -605,8 +828,8 @@ class PhotoSwipeBase extends Eventable {
       const thumbnailEl = element.querySelector('img');
 
       if (thumbnailEl) {
-        // define msrc only if it's the first slide,
-        // as rendering (even small stretched thumbnail) is an expensive operation
+        // msrc is URL to placeholder image that's displayed before large image is loaded
+        // by default it's displayed only for the first slide
         itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
         itemData.alt = thumbnailEl.getAttribute('alt');
       }
@@ -983,7 +1206,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       initialPoint = null;
     }
 
-    const clickedIndex = this.getClickedIndex(e);
+    let clickedIndex = this.getClickedIndex(e);
+    clickedIndex = this.applyFilters('clickedIndex', clickedIndex, e, this);
     const dataSource = {
       gallery: e.currentTarget
     };
@@ -1000,6 +1224,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * @param {Event} e click event
    */
   getClickedIndex(e) {
+    // legacy option
     if (this.options.getClickedIndexFn) {
       return this.options.getClickedIndexFn.call(this, e);
     }
@@ -1134,9 +1359,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       });
     });
 
-    // same with content types
-    pswp.contentTypes = { ...this.contentTypes };
-
     if (this._preloadedContent) {
       pswp.contentLoader.addToCache(this._preloadedContent);
       this._preloadedContent = null;
@@ -1153,7 +1375,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
   destroy() {
     if (this.pswp) {
-      this.pswp.close();
+      this.pswp.destroy();
     }
 
     this.shouldOpen = false;
@@ -1167,5 +1389,4 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 }
 
 export default PhotoSwipeLightbox;
-export { Content, ImageContent };
 //# sourceMappingURL=photoswipe-lightbox.esm.js.map

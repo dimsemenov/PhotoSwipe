@@ -1,6 +1,6 @@
 /*!
-  * PhotoSwipe 5.2.0-beta.2 - https://photoswipe.com
-  * (c) 2022 Dmitry Semenov
+  * PhotoSwipe 5.2.0-beta.3 - https://photoswipe.com
+  * (c) 2022 Dmytro Semenov
   */
 /**
   * Creates element and optionally appends it to another.
@@ -618,55 +618,6 @@ class ZoomLevel {
   }
 }
 
-class Placeholder {
-  /**
-   * @param {String|false} imageSrc
-   * @param {Element} container
-   */
-  constructor(imageSrc, container) {
-    // Create placeholder
-    // (stretched thumbnail or simple div behind the main image)
-    this.element = createElement(
-      'pswp__img pswp__img--placeholder',
-      imageSrc ? 'img' : '',
-      container
-    );
-
-    if (imageSrc) {
-      this.element.decoding = 'async';
-      this.element.alt = '';
-      this.element.src = imageSrc;
-      this.element.setAttribute('role', 'presentation');
-    }
-
-    this.element.setAttribute('aria-hiden', 'true');
-  }
-
-  setDisplayedSize(width, height) {
-    if (!this.element) {
-      return;
-    }
-
-    if (this.element.tagName === 'IMG') {
-      // Use transform scale() to modify img placeholder size
-      // (instead of changing width/height directly).
-      // This helps with performance, specifically in iOS15 Safari.
-      setWidthHeight(this.element, 250, 'auto');
-      this.element.style.transformOrigin = '0 0';
-      this.element.style.transform = toTransformString(0, 0, width / 250);
-    } else {
-      setWidthHeight(this.element, width, height);
-    }
-  }
-
-  destroy() {
-    if (this.element.parentNode) {
-      this.element.remove();
-    }
-    this.element = null;
-  }
-}
-
 /**
  * Renders and allows to control a single slide
  */
@@ -696,6 +647,7 @@ class Slide {
     };
 
     this.content = this.pswp.contentLoader.getContentBySlide(this);
+    this.container = createElement('pswp__zoom-wrap');
 
     this.currZoomLevel = 1;
     this.width = this.content.width;
@@ -738,7 +690,6 @@ class Slide {
 
     this.calculateSize();
 
-    this.container = createElement('pswp__zoom-wrap');
     this.container.transformOrigin = '0 0';
 
     this.load();
@@ -761,41 +712,9 @@ class Slide {
     }
   }
 
-  removePlaceholder() {
-    if (this.placeholder && this.content && !this.content.keepPlaceholder()) {
-      // With delay, as image might be loaded, but not decoded
-      setTimeout(() => {
-        if (this.placeholder) {
-          this.placeholder.destroy();
-          this.placeholder = null;
-        }
-      }, 500);
-    }
-  }
-
   load() {
-    if (this.usePlaceholder() && !this.placeholder) {
-      const placeholderSrc = this.pswp.applyFilters(
-        'placeholderSrc',
-        (this.data.msrc && this.isFirstSlide) ? this.data.msrc : false,
-        this
-      );
-      this.placeholder = new Placeholder(
-        placeholderSrc,
-        this.container
-      );
-    }
-
     this.content.load();
     this.pswp.dispatch('slideLoad', { slide: this });
-  }
-
-  isLoading() {
-    return this.pswp.applyFilters(
-      'isSlideLoading',
-      this.content.isLoading && this.content.isLoading(),
-      this
-    );
   }
 
   /**
@@ -806,7 +725,7 @@ class Slide {
    */
   appendHeavy() {
     const { pswp } = this;
-    const appendHeavyNearby = true;
+    const appendHeavyNearby = true; // todo
 
     // Avoid appending heavy elements during animations
     if (this.heavyAppended
@@ -822,14 +741,7 @@ class Slide {
 
     this.heavyAppended = true;
 
-    if (this.content.state === LOAD_STATE.ERROR) {
-      this.displayError();
-    } else {
-      this.content.appendTo(this.container);
-      if (this.placeholder && this.content.state === LOAD_STATE.LOADED) {
-        this.removePlaceholder();
-      }
-    }
+    this.content.append();
 
     this.pswp.dispatch('appendHeavyContent', { slide: this });
   }
@@ -848,16 +760,6 @@ class Slide {
     } else {
       container.innerHTML = html;
     }
-  }
-
-  displayError() {
-    const errorElement = this.content.getErrorElement();
-    errorElement.style.position = 'absolute';
-    errorElement.style.left = 0;
-    errorElement.style.top = 0;
-    this.activeErrorElement = errorElement;
-    this.setSlideHTML(errorElement);
-    this.updateContentSize(true);
   }
 
   /**
@@ -896,6 +798,7 @@ class Slide {
    * (unbind all events and destroy internal components)
    */
   destroy() {
+    this.content.hasSlide = false;
     this.content.remove();
     this.pswp.dispatch('slideDestroy', { slide: this });
   }
@@ -941,15 +844,6 @@ class Slide {
     if (!this.sizeChanged(width, height) && !force) {
       return;
     }
-
-    if (this.placeholder) {
-      this.placeholder.setDisplayedSize(width, height);
-    }
-
-    if (this.activeErrorElement) {
-      setWidthHeight(this.activeErrorElement, width, height);
-    }
-
     this.content.setDisplayedSize(width, height);
   }
 
@@ -965,8 +859,8 @@ class Slide {
   }
 
   getPlaceholderElement() {
-    if (this.placeholder) {
-      return this.placeholder.element;
+    if (this.content.placeholder) {
+      return this.content.placeholder.element;
     }
   }
 
@@ -1108,10 +1002,6 @@ class Slide {
     return this.width && this.content.isZoomable();
   }
 
-  usePlaceholder() {
-    return this.content.usePlaceholder();
-  }
-
   /**
    * Apply transform and scale based on
    * the current pan position (this.pan) and zoom level (this.currZoomLevel)
@@ -1145,10 +1035,6 @@ class Slide {
   }
 
   calculateSize() {
-    // this.zoomLevels.fit = 1;
-    // this.zoomLevels.vFill = 1;
-    // this.zoomLevels.initial = 1;
-
     const { pswp } = this;
 
     equalizePoints(
@@ -1294,8 +1180,7 @@ class DragHandler {
     }
 
     // Restore zoom level
-    if ((pswp.currSlide.currZoomLevel > pswp.currSlide.zoomLevels.max
-        && this.pswp.options.limitMaxZoom)
+    if (pswp.currSlide.currZoomLevel > pswp.currSlide.zoomLevels.max
         || this.gestures.isMultitouch) {
       this.gestures.zoomLevels.correctZoomPan(true);
     } else {
@@ -1566,11 +1451,6 @@ class ZoomHandler {
                       * getDistanceBetween(p1, p2)
                       * this._startZoomLevel;
 
-    // if (!this.zoomStarted) {
-    //   this.zoomStarted = true;
-    //   pswp.dispatch('zoomGestureStarted');
-    // }
-
     // slightly over the zoom.fit
     if (currZoomLevel > currSlide.zoomLevels.initial + (currSlide.zoomLevels.initial / 15)) {
       this._wasOverFitZoomLevel = true;
@@ -1599,12 +1479,6 @@ class ZoomHandler {
 
     currSlide.setZoomLevel(currZoomLevel);
     currSlide.applyCurrentZoomPan();
-
-
-    //_isZoomingIn = currZoomLevel > _currZoomLevel;
-    //_currZoomLevel = currZoomLevel;
-    //_applyCurrentZoomPan();
-    //_updatePrevPoints();
   }
 
   end() {
@@ -1832,7 +1706,7 @@ class TapHandler {
         }
         break;
       case 'toggle-controls':
-        this.gestures.pswp.template.classList.toggle('pswp--ui-visible');
+        this.gestures.pswp.element.classList.toggle('pswp--ui-visible');
         // if (_controlsVisible) {
         //   _ui.hideControls();
         // } else {
@@ -2467,14 +2341,23 @@ class MainScroll {
   moveIndexBy(diff, animate, velocityX) {
     const { pswp } = this;
     let newIndex = pswp.potentialIndex + diff;
+    const numSlides = pswp.getNumItems();
 
-    if (pswp.options.loop) {
+    if (pswp.canLoop()) {
       newIndex = pswp.getLoopedIndex(newIndex);
+      const distance = (diff + numSlides) % numSlides;
+      if (distance <= numSlides / 2) {
+        // go forward
+        diff = distance;
+      } else {
+        // go backwards
+        diff = distance - numSlides;
+      }
     } else {
       if (newIndex < 0) {
         newIndex = 0;
-      } else if (newIndex >= pswp.getNumItems()) {
-        newIndex = pswp.getNumItems() - 1;
+      } else if (newIndex >= numSlides) {
+        newIndex = numSlides - 1;
       }
       diff = newIndex - pswp.potentialIndex;
     }
@@ -2505,9 +2388,21 @@ class MainScroll {
         }
       });
 
+      let currDiff = pswp.potentialIndex - pswp.currIndex;
+      if (pswp.canLoop()) {
+        const currDistance = (currDiff + numSlides) % numSlides;
+        if (currDistance <= numSlides / 2) {
+          // go forward
+          currDiff = currDistance;
+        } else {
+          // go backwards
+          currDiff = currDistance - numSlides;
+        }
+      }
+
       // Force-append new slides during transition
       // if difference between slides is more than 1
-      if (Math.abs(pswp.potentialIndex - pswp.currIndex) > 1) {
+      if (Math.abs(currDiff) > 1) {
         this.updateCurrItem();
       }
     }
@@ -2616,7 +2511,7 @@ class MainScroll {
     let newSlideIndexOffset;
     let delta;
 
-    if (!this.pswp.options.loop && dragging) {
+    if (!this.pswp.canLoop() && dragging) {
       // Apply friction
       newSlideIndexOffset = ((this.slideWidth * this._currPositionIndex) - x) / this.slideWidth;
       newSlideIndexOffset += this.pswp.currIndex;
@@ -2673,7 +2568,7 @@ class Keyboard {
 
   _focusRoot() {
     if (!this._wasFocused) {
-      this.pswp.template.focus();
+      this.pswp.element.focus();
       this._wasFocused = true;
     }
   }
@@ -3005,17 +2900,6 @@ class Animations {
   }
 
   _start(props, isSpring) {
-    // if (!props.name) {
-    //   props.name = this._uid++;
-    // }
-
-    // const { name } = props;
-
-    // if (!name || this.activeAnimations[name]) {
-    //   // Animation already running or no name provided
-    //   return;
-    // }
-
     let animation;
     if (isSpring) {
       animation = new SpringAnimation(props);
@@ -3095,7 +2979,7 @@ class Animations {
 class ScrollWheel {
   constructor(pswp) {
     this.pswp = pswp;
-    pswp.events.add(pswp.template, 'wheel', this._onWheel.bind(this));
+    pswp.events.add(pswp.element, 'wheel', this._onWheel.bind(this));
   }
 
   _onWheel(e) {
@@ -3121,10 +3005,6 @@ class ScrollWheel {
           zoomFactor *= e.deltaMode ? 1 : 0.002;
         }
         zoomFactor = 2 ** zoomFactor;
-
-        if (this.pswp.options.getWheelZoomFactorFn) {
-          zoomFactor = this.pswp.options.getWheelZoomFactorFn(e, this.pswp);
-        }
 
         const destZoomLevel = currSlide.currZoomLevel * zoomFactor;
         currSlide.zoomTo(destZoomLevel, {
@@ -3188,7 +3068,7 @@ function addElementHTML(htmlData) {
 
 class UIElement {
   constructor(pswp, data) {
-    const name = data.name || data.class;
+    const name = data.name || data.className;
     let elementHTML = data.html;
 
     if (pswp.options[name] === false) {
@@ -3207,25 +3087,31 @@ class UIElement {
 
     pswp.dispatch('uiElementCreate', { data });
 
-    let className = 'pswp__';
+    let className = '';
     if (data.isButton) {
-      className += 'button pswp__button--';
+      className += 'pswp__button ';
+      className += (data.className || `pswp__button--${data.name}`);
+    } else {
+      className += (data.className || `pswp__${data.name}`);
     }
-    className += (data.class || data.name);
 
     let element;
+    let tagName = data.isButton ? (data.tagName || 'button') : (data.tagName || 'div');
+    tagName = tagName.toLowerCase();
+    element = createElement(className, tagName);
+
     if (data.isButton) {
       // create button element
-      element = createElement(className, 'button');
-      element.type = 'button';
+      element = createElement(className, tagName);
+      if (tagName === 'button') {
+        element.type = 'button';
+      }
 
       if (typeof pswp.options[name + 'Title'] === 'string') {
         element.title = pswp.options[name + 'Title'];
       } else if (data.title) {
         element.title = data.title;
       }
-    } else {
-      element = createElement(className);
     }
 
     element.innerHTML = addElementHTML(elementHTML);
@@ -3261,7 +3147,7 @@ class UIElement {
         container = pswp.scrollWrap;
       } else {
         // root element
-        container = pswp.template;
+        container = pswp.element;
       }
     }
 
@@ -3288,7 +3174,7 @@ function initArrowButton(element, pswp, isNextButton) {
 
 const arrowPrev = {
   name: 'arrowPrev',
-  class: 'arrow--prev',
+  className: 'pswp__button--arrow--prev',
   title: 'Previous',
   order: 10,
   isButton: true,
@@ -3305,7 +3191,7 @@ const arrowPrev = {
 
 const arrowNext = {
   name: 'arrowNext',
-  class: 'arrow--next',
+  className: 'pswp__button--arrow--next',
   title: 'Next',
   order: 11,
   isButton: true,
@@ -3375,7 +3261,7 @@ const loadingIndicator = {
     };
 
     const updatePreloaderVisibility = () => {
-      if (!pswp.currSlide.isLoading()) {
+      if (!pswp.currSlide.content.isLoading()) {
         setIndicatorVisibility(false);
         if (delayTimeout) {
           clearTimeout(delayTimeout);
@@ -3387,7 +3273,7 @@ const loadingIndicator = {
       if (!delayTimeout) {
         // display loading indicator with delay
         delayTimeout = setTimeout(() => {
-          setIndicatorVisibility(pswp.currSlide.isLoading());
+          setIndicatorVisibility(pswp.currSlide.content.isLoading());
           delayTimeout = null;
         }, pswp.options.preloaderDelay);
       }
@@ -3464,7 +3350,7 @@ class UI {
 
     // TODO: ensure this works when dynamically adding or removing slides
     if (pswp.getNumItems() === 1) {
-      pswp.template.classList.add('pswp--one-slide');
+      pswp.element.classList.add('pswp--one-slide');
     }
 
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());
@@ -3595,22 +3481,25 @@ function getThumbBounds(index, itemData, instance) {
 
   const { element } = itemData;
   let thumbBounds;
+  let thumbnail;
 
   if (element && instance.options.thumbSelector !== false) {
     const thumbSelector = instance.options.thumbSelector || 'img';
-    const thumbnail = element.matches(thumbSelector)
+    thumbnail = element.matches(thumbSelector)
       ? element : element.querySelector(thumbSelector);
+  }
 
-    if (thumbnail) {
-      if (!itemData.thumbCropped) {
-        thumbBounds = getBoundsByElement(thumbnail);
-      } else {
-        thumbBounds = getCroppedBoundsByElement(
-          thumbnail,
-          itemData.w,
-          itemData.h
-        );
-      }
+  thumbnail = instance.applyFilters('thumbEl', thumbnail, itemData, index);
+
+  if (thumbnail) {
+    if (!itemData.thumbCropped) {
+      thumbBounds = getBoundsByElement(thumbnail);
+    } else {
+      thumbBounds = getCroppedBoundsByElement(
+        thumbnail,
+        itemData.w,
+        itemData.h
+      );
     }
   }
 
@@ -3720,6 +3609,55 @@ class Eventable {
   }
 }
 
+class Placeholder {
+  /**
+   * @param {String|false} imageSrc
+   * @param {Element} container
+   */
+  constructor(imageSrc, container) {
+    // Create placeholder
+    // (stretched thumbnail or simple div behind the main image)
+    this.element = createElement(
+      'pswp__img pswp__img--placeholder',
+      imageSrc ? 'img' : '',
+      container
+    );
+
+    if (imageSrc) {
+      this.element.decoding = 'async';
+      this.element.alt = '';
+      this.element.src = imageSrc;
+      this.element.setAttribute('role', 'presentation');
+    }
+
+    this.element.setAttribute('aria-hiden', 'true');
+  }
+
+  setDisplayedSize(width, height) {
+    if (!this.element) {
+      return;
+    }
+
+    if (this.element.tagName === 'IMG') {
+      // Use transform scale() to modify img placeholder size
+      // (instead of changing width/height directly).
+      // This helps with performance, specifically in iOS15 Safari.
+      setWidthHeight(this.element, 250, 'auto');
+      this.element.style.transformOrigin = '0 0';
+      this.element.style.transform = toTransformString(0, 0, width / 250);
+    } else {
+      setWidthHeight(this.element, width, height);
+    }
+  }
+
+  destroy() {
+    if (this.element.parentNode) {
+      this.element.remove();
+    }
+    this.element = null;
+  }
+}
+
 class Content {
   /**
    * @param {Object} itemData Slide data
@@ -3729,7 +3667,6 @@ class Content {
    *                                (for example by lazy-loader)
    */
   constructor(itemData, instance) {
-    this.options = instance.options;
     this.instance = instance;
     this.data = itemData;
 
@@ -3737,120 +3674,89 @@ class Content {
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
 
     this.isAttached = false;
+    this.hasSlide = false;
     this.state = LOAD_STATE.IDLE;
+
+    if (this.data.type) {
+      this.type = this.data.type;
+    } else if (this.data.src) {
+      this.type = 'image';
+    } else {
+      this.type = 'html';
+    }
+
+    this.instance.dispatch('contentInit', { content: this });
   }
 
-  setSlide(slide) {
-    this.slide = slide;
-    this.pswp = slide.pswp;
+  removePlaceholder() {
+    if (this.placeholder && !this.keepPlaceholder()) {
+      // With delay, as image might be loaded, but not rendered
+      setTimeout(() => {
+        if (this.placeholder) {
+          this.placeholder.destroy();
+          this.placeholder = null;
+        }
+      }, 500);
+    }
   }
 
   /**
-   * Load the content
+   * Preload content
    *
-   * @param {Boolean} isLazy If method is executed by lazy-loader
+   * @param {Boolean} isLazy
    */
-  load(/* isLazy */) {
-    if (!this.element) {
+  load(isLazy, reload) {
+    if (!this.placeholder && this.slide && this.usePlaceholder()) {
+      // use   -based placeholder only for the first slide,
+      // as rendering (even small stretched thumbnail) is an expensive operation
+      const placeholderSrc = this.instance.applyFilters(
+        'placeholderSrc',
+        (this.data.msrc && this.slide.isFirstSlide) ? this.data.msrc : false,
+        this
+      );
+      this.placeholder = new Placeholder(
+        placeholderSrc,
+        this.slide.container
+      );
+    }
+
+    if (this.element && !reload) {
+      return;
+    }
+
+    if (this.instance.dispatch('contentLoad', { content: this, isLazy }).defaultPrevented) {
+      return;
+    }
+
+    if (this.isImageContent()) {
+      this.loadImage(isLazy);
+    } else {
       this.element = createElement('pswp__content');
-      this.element.style.position = 'absolute';
-      this.element.style.left = 0;
-      this.element.style.top = 0;
       this.element.innerHTML = this.data.html || '';
     }
-  }
 
-  isZoomable() {
-    return false;
-  }
-
-  usePlaceholder() {
-    return false;
-  }
-
-  activate() {
-
-  }
-
-  deactivate() {
-
-  }
-
-  setDisplayedSize(width, height) {
-    if (this.element) {
-      setWidthHeight(this.element, width, height);
+    if (reload && this.slide) {
+      this.slide.updateContentSize(true);
     }
   }
 
-  onLoaded() {
-    this.state = LOAD_STATE.LOADED;
-
-    if (this.slide) {
-      this.pswp.dispatch('loadComplete', { slide: this.slide });
-    }
-  }
-
-  isLoading() {
-    return (this.state === LOAD_STATE.LOADING);
-  }
-
-  // If the placeholder should be kept in DOM
-  keepPlaceholder() {
-    return this.isLoading();
-  }
-
-  onError() {
-    this.state = LOAD_STATE.ERROR;
-
-    if (this.slide) {
-      this.pswp.dispatch('loadComplete', { slide: this.slide, isError: true });
-      this.pswp.dispatch('loadError', { slide: this.slide });
-    }
-  }
-
-  getErrorElement() {
-    return false;
-  }
-
-
-  remove() {
-    this.isAttached = false;
-    if (this.element && this.element.parentNode) {
-      this.element.remove();
-    }
-  }
-
-  appendTo(container) {
-    this.isAttached = true;
-    if (this.element && !this.element.parentNode) {
-      container.appendChild(this.element);
-    }
-  }
-
-  destroy() {
-
-  }
-}
-
-class ImageContent extends Content {
-  load(/* isLazy */) {
-    if (this.element) {
-      return;
-    }
-
-    const imageSrc = this.data.src;
-
-    if (!imageSrc) {
-      return;
-    }
-
+  /**
+   * Preload image
+   *
+   * @param {Boolean} isLazy
+   */
+  loadImage(isLazy) {
     this.element = createElement('pswp__img', 'img');
+
+    if (this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
+      return;
+    }
 
     if (this.data.srcset) {
       this.element.srcset = this.data.srcset;
     }
 
-    this.element.src = imageSrc;
+    this.element.src = this.data.src;
 
     this.element.alt = this.data.alt || '';
 
@@ -3869,11 +3775,97 @@ class ImageContent extends Content {
     }
   }
 
-  setDisplayedSize(width, height) {
-    const image = this.element;
-    if (image) {
-      setWidthHeight(image, width, 'auto');
+  /**
+   * Assign slide to content
+   *
+   * @param {Slide} slide
+   */
+  setSlide(slide) {
+    this.slide = slide;
+    this.hasSlide = true;
+    this.instance = slide.pswp;
 
+    // todo: do we need to unset slide?
+  }
+
+  /**
+   * Content load success handler
+   */
+  onLoaded() {
+    this.state = LOAD_STATE.LOADED;
+
+    if (this.slide) {
+      this.instance.dispatch('loadComplete', { slide: this.slide, content: this });
+
+      // if content is reloaded
+      if (this.slide.isActive
+          && this.slide.heavyAppended
+          && !this.element.parentNode) {
+        this.slide.container.innerHTML = '';
+        this.append();
+        this.slide.updateContentSize(true);
+      }
+    }
+  }
+
+  /**
+   * Content load error handler
+   */
+  onError() {
+    this.state = LOAD_STATE.ERROR;
+
+    if (this.slide) {
+      this.displayError();
+      this.instance.dispatch('loadComplete', { slide: this.slide, isError: true, content: this });
+      this.instance.dispatch('loadError', { slide: this.slide, content: this });
+    }
+  }
+
+  /**
+   * @returns {Boolean} If the content is currently loading
+   */
+  isLoading() {
+    return this.instance.applyFilters(
+      'isContentLoading',
+      this.state === LOAD_STATE.LOADING,
+      this
+    );
+  }
+
+  isError() {
+    return this.state === LOAD_STATE.ERROR;
+  }
+
+  /**
+   * @returns {Boolean} If the content is image
+   */
+  isImageContent() {
+    return this.type === 'image';
+  }
+
+  /**
+   * Update content size
+   *
+   * @param {Number} width
+   * @param {Number} height
+   */
+  setDisplayedSize(width, height) {
+    if (!this.element) {
+      return;
+    }
+
+    if (this.placeholder) {
+      this.placeholder.setDisplayedSize(width, height);
+    }
+
+    if (this.instance.dispatch('contentResize', { content: this, width, height }).defaultPrevented) {
+      return;
+    }
+
+    setWidthHeight(this.element, width, height);
+
+    if (this.isImageContent() && !this.isError()) {
+      const image = this.element;
       // Handle srcset sizes attribute.
       //
       // Never lower quality, if it was increased previously.
@@ -3886,85 +3878,217 @@ class ImageContent extends Content {
       }
 
       if (this.slide) {
-        this.pswp.dispatch('imageSizeChange', { slide: this.slide, width, height });
+        this.instance.dispatch('imageSizeChange', { slide: this.slide, width, height, content: this });
       }
     }
   }
 
+  /**
+   * @returns {Boolean} If the content can be zoomed
+   */
   isZoomable() {
-    return (this.state !== LOAD_STATE.ERROR);
+    return this.instance.applyFilters(
+      'isContentZoomable',
+      this.isImageContent() && (this.state !== LOAD_STATE.ERROR),
+      this
+    );
   }
 
+  /**
+   * @returns {Boolean} If content should use a placeholder (from msrc by default)
+   */
   usePlaceholder() {
-    return true;
+    return this.instance.applyFilters(
+      'useContentPlaceholder',
+      this.isImageContent(),
+      this
+    );
   }
 
+  /**
+   * Preload content with lazy-loading param
+   *
+   * @param {Boolean} isLazy
+   */
   lazyLoad() {
-    this.load();
+    if (this.instance.dispatch('contentLazyLoad', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    this.load(true);
   }
 
+  /**
+   * @returns {Boolean} If placeholder should be kept after content is loaded
+   */
+  keepPlaceholder() {
+    return this.instance.applyFilters(
+      'isKeepingPlaceholder',
+      this.isLoading(),
+      this
+    );
+  }
+
+  /**
+   * Destroy the content
+   */
   destroy() {
-    if (this.element) {
+    this.hasSlide = false;
+    this.slide = null;
+
+    if (this.instance.dispatch('contentDestroy', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    if (this.isImageContent() && this.element) {
       this.element.onload = null;
       this.element.onerror = null;
       this.element = null;
     }
   }
 
-  appendTo(container) {
+  /**
+   * Display error message
+   */
+  displayError() {
+    if (this.slide) {
+      let errorMsgEl = createElement('pswp__error-msg');
+      errorMsgEl.innerText = this.instance.options.errorMsg;
+      errorMsgEl = this.instance.applyFilters(
+        'contentErrorElement',
+        errorMsgEl,
+        this
+      );
+      this.element = createElement('pswp__content pswp__error-msg-container');
+      this.element.appendChild(errorMsgEl);
+      this.slide.container.innerHTML = '';
+      this.slide.container.appendChild(this.element);
+      this.slide.updateContentSize(true);
+      this.removePlaceholder();
+    }
+  }
+
+  /**
+   * Append the content
+   */
+  append() {
     this.isAttached = true;
 
-    // Use decode() on nearby slides
-    //
-    // Nearby slide images are in DOM and not hidden via display:none.
-    // However, they are placed offscreen (to the left and right side).
-    //
-    // Some browsers do not composite the image until it's actually visible,
-    // using decode() helps.
-    //
-    // You might ask "why dont you just decode() and then append all images",
-    // that's because I want to show image before it's fully loaded,
-    // as browser can render parts of image while it is loading.
-    if (this.slide && !this.slide.isActive && ('decode' in this.element)) {
-      this.isDecoding = true;
-      // Make sure that we start decoding on the next frame
-      requestAnimationFrame(() => {
-        if (this.element) {
-          this.element.decode().then(() => {
-            this.isDecoding = false;
-            requestAnimationFrame(() => {
-              this.appendImageTo(container);
+    if (this.state === LOAD_STATE.ERROR) {
+      this.displayError();
+      return;
+    }
+
+    if (this.instance.dispatch('contentAppend', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    if (this.isImageContent()) {
+      // Use decode() on nearby slides
+      //
+      // Nearby slide images are in DOM and not hidden via display:none.
+      // However, they are placed offscreen (to the left and right side).
+      //
+      // Some browsers do not composite the image until it's actually visible,
+      // using decode() helps.
+      //
+      // You might ask "why dont you just decode() and then append all images",
+      // that's because I want to show image before it's fully loaded,
+      // as browser can render parts of image while it is loading.
+      if (this.slide
+          && !this.slide.isActive
+          && ('decode' in this.element)) {
+        this.isDecoding = true;
+        // Make sure that we start decoding on the next frame
+        requestAnimationFrame(() => {
+          // element might change
+          if (this.element && this.element.tagName === 'IMG') {
+            this.element.decode().then(() => {
+              this.isDecoding = false;
+              requestAnimationFrame(() => {
+                this.appendImage();
+              });
+            }).catch(() => {
+              this.isDecoding = false;
             });
-          }).catch(() => {});
+          }
+        });
+      } else {
+        if (this.placeholder
+          && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+          this.removePlaceholder();
         }
-      });
-    } else {
-      this.appendImageTo(container);
+        this.appendImage();
+      }
+    } else if (this.element && !this.element.parentNode) {
+      this.slide.container.appendChild(this.element);
     }
   }
 
+  /**
+   * Activate the slide,
+   * active slide is generally the current one,
+   * meaning the user can see it.
+   */
   activate() {
-    if (this.slide && this.slide.container && this.isDecoding) {
-      // add image to slide when it becomes active,
-      // even if it's not finished decoding
-      this.appendImageTo(this.slide.container);
+    if (this.instance.dispatch('contentActivate', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    if (this.slide) {
+      if (this.isImageContent() && this.isDecoding) {
+        // add image to slide when it becomes active,
+        // even if it's not finished decoding
+        this.appendImage();
+      } else if (this.isError()) {
+        this.load(false, true); // try to reload
+      }
     }
   }
 
-  getErrorElement() {
-    const el = createElement('pswp__error-msg-container');
-    el.innerHTML = this.options.errorMsg;
-    const linkEl = el.querySelector('a');
-    if (linkEl) {
-      linkEl.href = this.data.src;
-    }
-    return el;
+  /**
+   * Deactivate the content
+   */
+  deactivate() {
+    this.instance.dispatch('contentDeactivate', { content: this });
   }
 
-  appendImageTo(container) {
+
+  /**
+   * Remove the content from DOM
+   */
+  remove() {
+    this.isAttached = false;
+
+    if (this.instance.dispatch('contentRemove', { content: this }).defaultPrevented) {
+      return;
+    }
+
+    if (this.element && this.element.parentNode) {
+      this.element.remove();
+    }
+  }
+
+  /**
+   * Append the image content to slide container
+   */
+  appendImage() {
+    if (!this.isAttached) {
+      return;
+    }
+
+    if (this.instance.dispatch('contentAppendImage', { content: this }).defaultPrevented) {
+      return;
+    }
+
     // ensure that element exists and is not already appended
-    if (this.element && !this.element.parentNode && this.isAttached) {
-      container.appendChild(this.element);
+    if (this.slide && this.element && !this.element.parentNode) {
+      this.slide.container.appendChild(this.element);
+
+      if (this.placeholder
+        && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+        this.removePlaceholder();
+      }
     }
   }
 }
@@ -3974,15 +4098,8 @@ class ImageContent extends Content {
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
  */
 
-class PhotoSwipeBase extends Eventable {
-  constructor() {
-    super();
-    this.contentTypes = {
-      image: ImageContent,
-      html: Content
-    };
-  }
 
+class PhotoSwipeBase extends Eventable {
   /**
    * Get total number of slides
    */
@@ -4013,40 +4130,8 @@ class PhotoSwipeBase extends Eventable {
     return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
-  /**
-   * Add or set slide content type
-   *
-   * @param {String} type
-   * @param {Class} ContentClass
-   */
-  addContentType(type, ContentClass) {
-    this.contentTypes[type] = ContentClass;
-  }
-
-  /**
-   * Get slide content class based on its data
-   *
-   * @param {Object} slideData
-   * @param {Integer} slideIndex
-   * @returns Class
-   */
-  getContentClass(slideData) {
-    if (slideData.type) {
-      return this.contentTypes[slideData.type];
-    } else if (slideData.src) {
-      return this.contentTypes.image;
-    } else if (slideData.html) {
-      return this.contentTypes.html;
-    }
-  }
-
   createContentFromData(slideData) {
-    const ContentClass = this.getContentClass(slideData);
-    if (!ContentClass) {
-      return false;
-    }
-    const content = new ContentClass(slideData, this);
-    return content;
+    return new Content(slideData, this);
   }
 
   /**
@@ -4129,10 +4214,16 @@ class PhotoSwipeBase extends Eventable {
       // if it's empty link href is used
       itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
 
-      itemData.srcset = linkEl.dataset.pswpSrcset;
+      if (linkEl.dataset.pswpSrcset) {
+        itemData.srcset = linkEl.dataset.pswpSrcset;
+      }
 
-      itemData.w = parseInt(linkEl.dataset.pswpWidth, 10);
-      itemData.h = parseInt(linkEl.dataset.pswpHeight, 10);
+      itemData.width = parseInt(linkEl.dataset.pswpWidth, 10);
+      itemData.height = parseInt(linkEl.dataset.pswpHeight, 10);
+
+      // support legacy w & h properties
+      itemData.w = itemData.width;
+      itemData.h = itemData.height;
 
       if (linkEl.dataset.pswpType) {
         itemData.type = linkEl.dataset.pswpType;
@@ -4141,8 +4232,8 @@ class PhotoSwipeBase extends Eventable {
       const thumbnailEl = element.querySelector('img');
 
       if (thumbnailEl) {
-        // define msrc only if it's the first slide,
-        // as rendering (even small stretched thumbnail) is an expensive operation
+        // msrc is URL to placeholder image that's displayed before large image is loaded
+        // by default it's displayed only for the first slide
         itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
         itemData.alt = thumbnailEl.getAttribute('alt');
       }
@@ -4169,9 +4260,6 @@ class PhotoSwipeBase extends Eventable {
 // since we need to pre-render elements for the animation -
 // we set it to the minimum amount
 const MIN_OPACITY = 0.003;
-
-// Transitions for slides wider than this will be discarded
-const MAX_SLIDE_WIDTH_TO_ANIMATE = 4000;
 
 class Opener {
   constructor(pswp) {
@@ -4203,9 +4291,7 @@ class Opener {
     this.isClosing = true;
     this._duration = this.pswp.options.hideAnimationDuration;
 
-    // Automatically disable transition if the current slide
-    // is at MAX_SLIDE_WIDTH_TO_ANIMATE or wider
-    if (slide && slide.currZoomLevel * slide.width >= MAX_SLIDE_WIDTH_TO_ANIMATE) {
+    if (slide && slide.currZoomLevel * slide.width >= this.pswp.options.maxWidthToAnimate) {
       this._duration = 0;
     }
 
@@ -4220,9 +4306,13 @@ class Opener {
   _prepareOpen() {
     this.pswp.off('firstZoomPan', this._prepareOpen);
     if (!this.isOpening) {
+      const slide = this.pswp.currSlide;
       this.isOpening = true;
       this.isClosing = false;
       this._duration = this.pswp.options.showAnimationDuration;
+      if (slide && slide.zoomLevels.initial * slide.width >= this.pswp.options.maxWidthToAnimate) {
+        this._duration = 0;
+      }
       this._applyStartProps();
     }
   }
@@ -4253,6 +4343,7 @@ class Opener {
     // Discard animations when duration is less than 50ms
     this._useAnimation = (this._duration > 50);
     this._animateZoom = Boolean(this._thumbBounds)
+                        && (slide.content && slide.content.type === 'image')
                         && (!this.isClosing || !pswp.mainScroll.isShifted());
     if (!this._animateZoom) {
       this._animateRootOpacity = true;
@@ -4264,8 +4355,8 @@ class Opener {
     } else {
       this._animateRootOpacity = options.showHideOpacity;
     }
-    this._animateBgOpacity = !this._animateRootOpacity;
-    this._opacityElement = this._animateRootOpacity ? pswp.template : pswp.bg;
+    this._animateBgOpacity = !this._animateRootOpacity && this.pswp.options.bgOpacity > MIN_OPACITY;
+    this._opacityElement = this._animateRootOpacity ? pswp.element : pswp.bg;
 
     if (!this._useAnimation) {
       this._duration = 0;
@@ -4273,7 +4364,7 @@ class Opener {
       this._animateBgOpacity = false;
       this._animateRootOpacity = true;
       if (this.isOpening) {
-        pswp.template.style.opacity = MIN_OPACITY;
+        pswp.element.style.opacity = MIN_OPACITY;
         pswp.applyBgOpacity(1);
       }
       return;
@@ -4293,14 +4384,14 @@ class Opener {
 
     if (this.isOpening) {
       // Apply styles before opening transition
-      if (this._animateBgOpacity) {
-        pswp.bg.style.opacity = MIN_OPACITY;
-        pswp.template.style.opacity = 1;
-      }
-
       if (this._animateRootOpacity) {
-        pswp.template.style.opacity = MIN_OPACITY;
+        pswp.element.style.opacity = MIN_OPACITY;
         pswp.applyBgOpacity(1);
+      } else {
+        if (this._animateBgOpacity) {
+          pswp.bg.style.opacity = MIN_OPACITY;
+        }
+        pswp.element.style.opacity = 1;
       }
 
       if (this._animateZoom) {
@@ -4364,10 +4455,16 @@ class Opener {
   }
 
   _initiate() {
-    this.pswp.template.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
+    this.pswp.element.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
 
+    this.pswp.dispatch(
+      this.isOpening ? 'openingAnimationStart' : 'closingAnimationStart'
+    );
+
+    // legacy event
     this.pswp.dispatch('initialZoom' + (this.isOpening ? 'In' : 'Out'));
-    this.pswp.template.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
+
+    this.pswp.element.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
     if (this.isOpening) {
       if (this._placeholder) {
@@ -4391,6 +4488,11 @@ class Opener {
     this.isOpening = false;
     this.isClosing = false;
 
+    pswp.dispatch(
+      this.isOpen ? 'openingAnimationEnd' : 'closingAnimationEnd'
+    );
+
+    // legacy event
     pswp.dispatch('initialZoom' + (this.isOpen ? 'InEnd' : 'OutEnd'));
 
     if (this.isClosed) {
@@ -4425,7 +4527,7 @@ class Opener {
     }
 
     if (this._animateRootOpacity) {
-      this._animateTo(pswp.template, 'opacity', 1);
+      this._animateTo(pswp.element, 'opacity', 1);
     }
   }
 
@@ -4442,7 +4544,7 @@ class Opener {
     }
 
     if (this._animateRootOpacity) {
-      this._animateTo(pswp.template, 'opacity', 0);
+      this._animateTo(pswp.element, 'opacity', 0);
     }
   }
 
@@ -4674,7 +4776,9 @@ class ContentLoader {
 
     if (this._cachedItems.length > this.limit) {
       // Destroy the first content that's not attached
-      const indexToRemove = this._cachedItems.findIndex(item => !item.isAttached);
+      const indexToRemove = this._cachedItems.findIndex((item) => {
+        return !item.isAttached && !item.hasSlide;
+      });
       if (indexToRemove !== -1) {
         const removedItem = this._cachedItems.splice(indexToRemove, 1)[0];
         removedItem.destroy();
@@ -4720,22 +4824,18 @@ const defaultOptions = {
   escKey: true,
   arrowKeys: true,
   returnFocus: true,
-  limitMaxZoom: true,
-
+  maxWidthToAnimate: 4000,
   clickToCloseNonZoomable: true,
   imageClickAction: 'zoom-or-close',
   bgClickAction: 'close',
   tapAction: 'toggle-controls',
   doubleTapAction: 'zoom',
-
   indexIndicatorSep: ' / ',
-
   preloaderDelay: 2000,
-
   bgOpacity: 0.8,
 
   index: 0,
-  errorMsg: '<div class="pswp__error-msg"><a href="" target="_blank">The image</a> could not be loaded.</div>',
+  errorMsg: 'The image cannot be loaded',
   preload: [1, 2],
   easing: 'cubic-bezier(.4,0,.22,1)'
 };
@@ -4777,13 +4877,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     }
 
     this.isOpen = true;
-
-    if (this.getNumItems() < 3) {
-      // disable loop if less than 3 items,
-      // as we do not clone slides
-      this.options.loop = false;
-    }
-
     this.dispatch('init'); // legacy
     this.dispatch('beforeOpen');
 
@@ -4799,13 +4892,10 @@ class PhotoSwipe extends PhotoSwipeBase {
     if (this.gestures.supportsTouch) {
       rootClasses += ' pswp--touch';
     }
-    if (!this.options.allowMouseDrag) {
-      rootClasses += ' pswp--no-mouse-drag';
-    }
     if (this.options.mainClass) {
       rootClasses += ' ' + this.options.mainClass;
     }
-    this.template.className += ' ' + rootClasses;
+    this.element.className += ' ' + rootClasses;
 
     this.currIndex = this.options.index || 0;
     this.potentialIndex = this.currIndex;
@@ -4838,7 +4928,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this._initialThumbBounds = this.getThumbBounds();
     this.dispatch('initialLayout');
 
-    this.on('initialZoomInEnd', () => {
+    this.on('openingAnimationEnd', () => {
       // Add content to the previous and next slide
       this.setContent(this.mainScroll.itemHolders[0], this.currIndex - 1);
       this.setContent(this.mainScroll.itemHolders[2], this.currIndex + 1);
@@ -4853,20 +4943,6 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.events.add(window, 'resize', this._handlePageResize.bind(this));
       this.events.add(window, 'scroll', this._updatePageScrollOffset.bind(this));
       this.dispatch('bindEvents');
-    });
-
-    // remove placeholder when slide is loaded
-    this.on('loadComplete', (e) => {
-      if (e.slide.heavyAppended) {
-        e.slide.removePlaceholder();
-      }
-    });
-
-    this.on('loadError', (e) => {
-      if (e.slide.heavyAppended) {
-        e.slide.removePlaceholder();
-        e.slide.displayError();
-      }
     });
 
     // set content for center slide (first time)
@@ -4904,29 +4980,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     return index;
   }
 
-  /**
-   * Get the difference between current index and provided index.
-   * Used to determine the direction of movement
-   * or if slide should be moved at all.
-   *
-   * @param {Integer} index
-   */
-  getIndexDiff(index) {
-    if (this.options.loop) {
-      const lastItemIndex = this.getNumItems() - 1;
-      // Moving from the last to the first or vice-versa:
-      if (this.currIndex === 0 && index === lastItemIndex) {
-        // go back one slide
-        return -1;
-      } if (this.currIndex === lastItemIndex && index === 0) {
-        // go forward one slide
-        return 1;
-      }
-    }
-
-    return index - this.currIndex;
-  }
-
   appendHeavy() {
     this.mainScroll.itemHolders.forEach((itemHolder) => {
       if (itemHolder.slide) {
@@ -4940,14 +4993,9 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @param  {Integer} New index
    */
   goTo(index) {
-    index = this.getLoopedIndex(index);
-
-    // TODO: allow to pause the event propagation?
-
-    const indexChanged = this.mainScroll.moveIndexBy(index - this.potentialIndex);
-    if (indexChanged) {
-      this.dispatch('afterGoto');
-    }
+    this.mainScroll.moveIndexBy(
+      this.getLoopedIndex(index) - this.potentialIndex
+    );
   }
 
   /**
@@ -4958,7 +5006,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   }
 
   /**
-   * Go to the next slide.
+   * Go to the previous slide.
    */
   prev() {
     this.goTo(this.potentialIndex - 1);
@@ -4997,12 +5045,14 @@ class PhotoSwipe extends PhotoSwipeBase {
 
   /**
    * Destroys the gallery:
+   * - instantly closes the gallery
    * - unbinds events,
    * - cleans intervals and timeouts
    * - removes elements from DOM
    */
   destroy() {
     if (!this.isDestroying) {
+      this.options.showHideAnimationType = 'none';
       this.close();
       return;
     }
@@ -5014,22 +5064,37 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.scrollWrap.ontouchmove = null;
     this.scrollWrap.ontouchend = null;
 
-    this.template.remove();
+    this.element.remove();
+
+    this.mainScroll.itemHolders.forEach((itemHolder) => {
+      if (itemHolder.slide) {
+        itemHolder.slide.destroy();
+      }
+    });
+
     this.contentLoader.destroy();
     this.events.removeAll();
   }
 
   setContent(holder, index) {
-    // destroy previous slide to clean the memory
-    if (holder.slide) {
-      holder.slide.destroy();
+    if (this.canLoop()) {
+      index = this.getLoopedIndex(index);
     }
 
-    if (this.options.loop) {
-      index = this.getLoopedIndex(index);
-    } else if (index < 0 || index >= this.getNumItems()) {
-      // empty holder
-      holder.el.innerHTML = '';
+    if (holder.slide) {
+      if (holder.slide.index === index) {
+        // exit if holder already contains this slide
+        // this could be common when just three slides are used
+        return;
+      }
+
+      // destroy previous slide
+      holder.slide.destroy();
+      holder.slide = null;
+    }
+
+    // exit if no loop and index is out of bounds
+    if (!this.canLoop() && (index < 0 || index >= this.getNumItems())) {
       return;
     }
 
@@ -5111,7 +5176,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   mouseDetected() {
     if (!this.hasMouse) {
       this.hasMouse = true;
-      this.template.classList.add('pswp--has_mouse');
+      this.element.classList.add('pswp--has_mouse');
     }
   }
 
@@ -5154,14 +5219,17 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   _createMainStructure() {
     // root DOM element of PhotoSwipe (.pswp)
-    this.template = createElement('pswp');
-    this.template.setAttribute('tabindex', -1);
-    this.template.setAttribute('role', 'dialog');
+    this.element = createElement('pswp');
+    this.element.setAttribute('tabindex', -1);
+    this.element.setAttribute('role', 'dialog');
+
+    // template is legacy prop
+    this.template = this.element;
 
     // Background is added as a separate element,
     // as animating opacity is faster than animating rgba()
-    this.bg = createElement('pswp__bg', false, this.template);
-    this.scrollWrap = createElement('pswp__scroll-wrap', false, this.template);
+    this.bg = createElement('pswp__bg', false, this.element);
+    this.scrollWrap = createElement('pswp__scroll-wrap', false, this.element);
     this.container = createElement('pswp__container', false, this.scrollWrap);
 
     this.mainScroll.appendHolders();
@@ -5170,7 +5238,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.ui.init();
 
     // append to DOM
-    (this.options.appendToEl || document.body).appendChild(this.template);
+    (this.options.appendToEl || document.body).appendChild(this.element);
   }
 
 
@@ -5188,6 +5256,14 @@ class PhotoSwipe extends PhotoSwipeBase {
     );
   }
 
+  /**
+   * If the PhotoSwipe can have continious loop
+   * @returns Boolean
+   */
+  canLoop() {
+    return (this.options.loop && this.getNumItems() > 2);
+  }
+
   _prepareOptions(options) {
     if (window.matchMedia('(prefers-reduced-motion), (update: slow)').matches) {
       options.showHideAnimationType = 'none';
@@ -5202,5 +5278,4 @@ class PhotoSwipe extends PhotoSwipeBase {
 }
 
 export default PhotoSwipe;
-export { Content, ImageContent };
 //# sourceMappingURL=photoswipe.esm.js.map
