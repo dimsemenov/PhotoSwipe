@@ -123,9 +123,8 @@ class MainScroll {
     let newIndex = pswp.potentialIndex + diff;
     const numSlides = pswp.getNumItems();
 
-    if (pswp.options.loop) {
+    if (pswp.canLoop()) {
       newIndex = pswp.getLoopedIndex(newIndex);
-
       const distance = (diff + numSlides) % numSlides;
       if (distance <= numSlides / 2) {
         // go forward
@@ -170,7 +169,7 @@ class MainScroll {
       });
 
       let currDiff = pswp.potentialIndex - pswp.currIndex;
-      if (pswp.options.loop) {
+      if (pswp.canLoop()) {
         const currDistance = (currDiff + numSlides) % numSlides;
         if (currDistance <= numSlides / 2) {
           // go forward
@@ -292,7 +291,7 @@ class MainScroll {
     let newSlideIndexOffset;
     let delta;
 
-    if (!this.pswp.options.loop && dragging) {
+    if (!this.pswp.canLoop() && dragging) {
       // Apply friction
       newSlideIndexOffset = ((this.slideWidth * this._currPositionIndex) - x) / this.slideWidth;
       newSlideIndexOffset += this.pswp.currIndex;

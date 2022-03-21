@@ -85,13 +85,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     }
 
     this.isOpen = true;
-
-    if (this.getNumItems() < 3) {
-      // disable loop if less than 3 items,
-      // as we do not clone slides
-      this.options.loop = false;
-    }
-
     this.dispatch('init'); // legacy
     this.dispatch('beforeOpen');
 
@@ -195,29 +188,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     return index;
   }
 
-  /**
-   * Get the difference between current index and provided index.
-   * Used to determine the direction of movement
-   * or if slide should be moved at all.
-   *
-   * @param {Integer} index
-   */
-  getIndexDiff(index) {
-    if (this.options.loop) {
-      const lastItemIndex = this.getNumItems() - 1;
-      // Moving from the last to the first or vice-versa:
-      if (this.currIndex === 0 && index === lastItemIndex) {
-        // go back one slide
-        return -1;
-      } if (this.currIndex === lastItemIndex && index === 0) {
-        // go forward one slide
-        return 1;
-      }
-    }
-
-    return index - this.currIndex;
-  }
-
   appendHeavy() {
     this.mainScroll.itemHolders.forEach((itemHolder) => {
       if (itemHolder.slide) {
@@ -313,7 +283,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   }
 
   setContent(holder, index) {
-    if (this.options.loop) {
+    if (this.canLoop()) {
       index = this.getLoopedIndex(index);
     }
 
@@ -330,7 +300,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     }
 
     // exit if no loop and index is out of bounds
-    if (!this.options.loop && (index < 0 || index >= this.getNumItems())) {
+    if (!this.canLoop() && (index < 0 || index >= this.getNumItems())) {
       return;
     }
 
@@ -490,6 +460,14 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.currSlide ? this.currSlide.data : this._initialItemData,
       this
     );
+  }
+  
+  /**
+   * If the PhotoSwipe can have continious loop
+   * @returns Boolean
+   */
+  canLoop() {
+    return (this.options.loop && this.getNumItems() > 2);
   }
 
   _prepareOptions(options) {
