@@ -4,6 +4,14 @@
   "main": "dist/photoswipe.esm.js",
   "style": "dist/photoswipe.css",
   "type": "module",
+  "exports": {
+		".": {
+			"import": "./dist/photoswipe.esm.js"
+		},
+		"./lightbox": {
+			"import": "./dist/photoswipe-lightbox.esm.js"
+		}
+  },
   "files": [
     "dist",
     "src",
