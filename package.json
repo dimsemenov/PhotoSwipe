@@ -1,16 +1,16 @@
 {
   "name": "photoswipe",
-  "version": "5.2.0-beta.3",
+  "version": "5.2.0-beta.4",
   "main": "dist/photoswipe.esm.js",
   "style": "dist/photoswipe.css",
   "type": "module",
   "exports": {
-		".": {
-			"import": "./dist/photoswipe.esm.js"
-		},
-		"./lightbox": {
-			"import": "./dist/photoswipe-lightbox.esm.js"
-		}
+    ".": {
+      "import": "./dist/photoswipe.esm.js"
+    },
+    "./lightbox": {
+      "import": "./dist/photoswipe-lightbox.esm.js"
+    }
   },
   "files": [
     "dist",
