@@ -140,22 +140,6 @@ class Slide {
   }
 
   /**
-   * Append HTML content to slide container
-   * (usually item.html or error message)
-   *
-   * @param {DOMElement} containerEl
-   * @param {String} html
-   */
-  setSlideHTML(html) {
-    const { container } = this;
-    if (html.tagName) {
-      container.appendChild(html);
-    } else {
-      container.innerHTML = html;
-    }
-  }
-
-  /**
    * Triggered when this slide is active (selected).
    *
    * If it's part of opening/closing transition -
