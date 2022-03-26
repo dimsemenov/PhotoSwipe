@@ -1,0 +1,140 @@
+.pswp-example {
+  width: 100%;
+  position: relative;
+  margin-bottom: 1rem;
+  
+}
+
+span.docusaurus-highlight-code-line {
+  background: rgba(255, 217, 109, .3);
+}
+
+
+.pswp-example .theme-code-block {
+  width: calc(100% - 204px);
+  margin-bottom: 4px;
+}
+.pswp-example__preview {
+  width: 200px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow-y: auto;
+  margin-left: 4px;
+}
+
+.pswp-example__preview {
+  padding: var(--ifm-pre-padding);
+}
+.pswp-example .pswp-gallery {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  position: relative;
+  width: 155px;
+  
+}
+
+.pswp-example .pswp-gallery img {
+  display: block;
+}
+.pswp-gallery {
+  display: flex;
+}
+.pswp-gallery > * {
+  display: block;
+  position: relative;
+  margin-bottom: 4px;
+  margin-right: 4px;
+  width: 70px;
+}
+.pswp-example .pswp-gallery > *:nth-child(2n) {
+  margin-right: 0;
+}
+
+.pswp-example .pswp-gallery--single-column > * {
+  width: 120px;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+button.pswp-example__hide-html-btn {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 12px;
+  right: 0;
+  bottom: 0;
+  color: var(--ifm-link-color);
+  background: none;
+  border: 0;
+  padding: 2px 5px;
+  background: var(--ifm-pre-background);
+}
+button.pswp-example__hide-html-btn:hover {
+  color: var(--ifm-link-hover-color);
+}
+
+[data-cropped] img {
+  width: 100%;
+  height: 70px;
+  object-fit: cover;
+}
+
+@media only screen and (max-width: 600px) {
+  .pswp-example .theme-code-block {
+      width: 100%;
+  }
+  .pswp-example__preview {
+      width: 100%;
+      height: auto;
+      position: relative;
+  }
+  .pswp-example__preview .pswp-gallery {
+      max-width: 150px;
+  }
+}
+
+.pswp-example__code--hidden {
+  display: none;
+}
+
+
+input[type="checkbox"].hidden-cb {
+  width: 1px;
+  height: 1px;
+  opacity: 0.01;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+label.pswp-example__toggle {
+  position: absolute;
+  right: 0;
+  bottom: -25px;
+  padding: 0 0;
+  border-radius: 0;
+  font-size: 14px;
+  color: #1B57A5;
+  cursor: pointer;
+  z-index: 20;
+}
+label.pswp-example__toggle:hover {
+  color: #c00;
+}
+input[type="checkbox"]:focus + label {
+  outline: 1px dotted #212121;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+input[type="checkbox"]:checked {
+  display: none;
+}
+input[type="checkbox"]:checked + label {
+  display: none;
+}
+input[type="checkbox"]:checked + label + .pswp-example__code--hidden {
+  display: block !important;
+}

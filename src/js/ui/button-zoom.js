@@ -1,6 +1,6 @@
 const zoomButton = {
   name: 'zoom',
-  title: 'Zoom (z)',
+  title: 'Zoom',
   order: 10,
   isButton: true,
   html: {

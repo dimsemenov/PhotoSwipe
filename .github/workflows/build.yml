@@ -1,0 +1,22 @@
+name: Publish docs
+
+on: [push]
+
+jobs:
+  build:
+    name: Build application
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "setup node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: "npm install & build docs"
+        working-directory: demo-docs-website
+        run: |
+          npm install
+          npm run build

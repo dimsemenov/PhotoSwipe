@@ -5,12 +5,8 @@
   "style": "dist/photoswipe.css",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/photoswipe.esm.js"
-    },
-    "./lightbox": {
-      "import": "./dist/photoswipe-lightbox.esm.js"
-    }
+    ".": "./dist/photoswipe.esm.js",
+    "./lightbox": "./dist/photoswipe-lightbox.esm.js"
   },
   "files": [
     "dist",
