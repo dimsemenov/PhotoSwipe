@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.2.0-beta.3 - https://photoswipe.com
+  * PhotoSwipe 5.2.0-beta.4 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /**
@@ -744,22 +744,6 @@ class Slide {
     this.content.append();
 
     this.pswp.dispatch('appendHeavyContent', { slide: this });
-  }
-
-  /**
-   * Append HTML content to slide container
-   * (usually item.html or error message)
-   *
-   * @param {DOMElement} containerEl
-   * @param {String} html
-   */
-  setSlideHTML(html) {
-    const { container } = this;
-    if (html.tagName) {
-      container.appendChild(html);
-    } else {
-      container.innerHTML = html;
-    }
   }
 
   /**
@@ -3223,7 +3207,7 @@ const closeButton = {
 
 const zoomButton = {
   name: 'zoom',
-  title: 'Zoom (z)',
+  title: 'Zoom',
   order: 10,
   isButton: true,
   html: {
@@ -3297,7 +3281,7 @@ const counterIndicator = {
   order: 5,
   onInit: (counterElement, pswp) => {
     pswp.on('change', () => {
-      counterElement.innerHTML = (pswp.currIndex + 1)
+      counterElement.innerText = (pswp.currIndex + 1)
                                   + pswp.options.indexIndicatorSep
                                   + pswp.getNumItems();
     });
@@ -3348,10 +3332,9 @@ class UI {
       this.registerElement(uiElementData);
     });
 
-    // TODO: ensure this works when dynamically adding or removing slides
-    if (pswp.getNumItems() === 1) {
-      pswp.element.classList.add('pswp--one-slide');
-    }
+    pswp.on('change', () => {
+      pswp.element.classList[pswp.getNumItems() === 1 ? 'add' : 'remove']('pswp--one-slide');
+    });
 
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());
   }
@@ -3666,9 +3649,10 @@ class Content {
    *                                can be undefined if image was requested by something else
    *                                (for example by lazy-loader)
    */
-  constructor(itemData, instance) {
+  constructor(itemData, instance, index) {
     this.instance = instance;
     this.data = itemData;
+    this.index = index;
 
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
@@ -3940,6 +3924,8 @@ class Content {
       return;
     }
 
+    this.remove();
+
     if (this.isImageContent() && this.element) {
       this.element.onload = null;
       this.element.onerror = null;
@@ -4130,8 +4116,8 @@ class PhotoSwipeBase extends Eventable {
     return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
-  createContentFromData(slideData) {
-    return new Content(slideData, this);
+  createContentFromData(slideData, index) {
+    return new Content(slideData, this, index);
   }
 
   /**
@@ -4343,7 +4329,7 @@ class Opener {
     // Discard animations when duration is less than 50ms
     this._useAnimation = (this._duration > 50);
     this._animateZoom = Boolean(this._thumbBounds)
-                        && (slide.content && slide.content.type === 'image')
+                        && (slide.content && slide.content.usePlaceholder())
                         && (!this.isClosing || !pswp.mainScroll.isShifted());
     if (!this._animateZoom) {
       this._animateRootOpacity = true;
@@ -4618,21 +4604,6 @@ class Opener {
 const MIN_SLIDES_TO_CACHE = 5;
 
 /**
- * Returns cache key by slide index and data
- *
- * @param {Object} itemData
- * @param {Integer} index
- * @returns {String}
- */
-function getKey(itemData, index) {
-  if (itemData && itemData.src) {
-    return itemData.src + '_' + index;
-  }
-  return index;
-}
-
-
-/**
  * Lazy-load an image
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
@@ -4644,13 +4615,11 @@ function getKey(itemData, index) {
  */
 function lazyLoadData(itemData, instance, index) {
   // src/slide/content/content.js
-  const content = instance.createContentFromData(itemData);
+  const content = instance.createContentFromData(itemData, index);
 
   if (!content || !content.lazyLoad) {
     return;
   }
-
-  content.key = getKey(itemData, index);
 
   const { options } = instance;
 
@@ -4733,28 +4702,24 @@ class ContentLoader {
 
   loadSlideByIndex(index) {
     index = this.pswp.getLoopedIndex(index);
-    const itemData = this.pswp.getItemData(index);
-    const key = getKey(itemData, index);
     // try to get cached content
-    let content = this.getContentByKey(key);
+    let content = this.getContentByIndex(index);
     if (!content) {
       // no cached content, so try to load from scratch:
       content = lazyLoadSlide(index, this.pswp);
       // if content can be loaded, add it to cache:
       if (content) {
-        content.key = key;
         this.addToCache(content);
       }
     }
   }
 
   getContentBySlide(slide) {
-    let content = this.getContentByKey(this.getKeyBySlide(slide));
+    let content = this.getContentByIndex(slide.index);
     if (!content) {
       // create content if not found in cache
-      content = this.pswp.createContentFromData(slide.data);
+      content = this.pswp.createContentFromData(slide.data, slide.index);
       if (content) {
-        content.key = this.getKeyBySlide(slide);
         this.addToCache(content);
       }
     }
@@ -4771,7 +4736,7 @@ class ContentLoader {
    */
   addToCache(content) {
     // move to the end of array
-    this.removeByKey(content.key);
+    this.removeByIndex(content.index);
     this._cachedItems.push(content);
 
     if (this._cachedItems.length > this.limit) {
@@ -4789,21 +4754,17 @@ class ContentLoader {
   /**
    * Removes an image from cache, does not destroy() it, just removes.
    *
-   * @param {String} key
+   * @param {Integer} index
    */
-  removeByKey(key) {
-    const indexToRemove = this._cachedItems.findIndex(item => item.key === key);
+  removeByIndex(index) {
+    const indexToRemove = this._cachedItems.findIndex(item => item.index === index);
     if (indexToRemove !== -1) {
       this._cachedItems.splice(indexToRemove, 1);
     }
   }
 
-  getContentByKey(key) {
-    return this._cachedItems.find(content => content.key === key);
-  }
-
-  getKeyBySlide(slide) {
-    return getKey(slide.data, slide.index);
+  getContentByIndex(index) {
+    return this._cachedItems.find(content => content.index === index);
   }
 
   destroy() {
@@ -4841,10 +4802,8 @@ const defaultOptions = {
 };
 
 class PhotoSwipe extends PhotoSwipeBase {
-  constructor(items, options) {
+  constructor(options) {
     super();
-
-    this.items = items;
 
     this._prepareOptions(options);
 
@@ -4881,11 +4840,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.dispatch('beforeOpen');
 
     this._createMainStructure();
-
-    // init modules
-    // _modules.forEach(function (module) {
-    //   module();
-    // });
 
     // add classes to the root element of PhotoSwipe
     let rootClasses = 'pswp--open';
@@ -5076,13 +5030,48 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.events.removeAll();
   }
 
-  setContent(holder, index) {
+  /**
+   * Refresh/reload content of a slide by its index
+   *
+   * @param {Integer} slideIndex
+   */
+  refreshSlideContent(slideIndex) {
+    this.contentLoader.removeByIndex(slideIndex);
+    this.mainScroll.itemHolders.forEach((itemHolder, i) => {
+      let potentialHolderIndex = this.currSlide.index - 1 + i;
+      if (this.canLoop()) {
+        potentialHolderIndex = this.getLoopedIndex(potentialHolderIndex);
+      }
+      if (potentialHolderIndex === slideIndex) {
+        // set the new slide content
+        this.setContent(itemHolder, slideIndex, true);
+
+        // activate the new slide if it's current
+        if (i === 1) {
+          this.currSlide = itemHolder.slide;
+          itemHolder.slide.setIsActive(true);
+        }
+      }
+    });
+
+    this.dispatch('change');
+  }
+
+
+  /**
+   * Set slide content
+   *
+   * @param {Object} holder mainScroll.itemHolders array item
+   * @param {Integer} index Slide index
+   * @param {Boolean} force If content should be set even if index wasn't changed
+   */
+  setContent(holder, index, force) {
     if (this.canLoop()) {
       index = this.getLoopedIndex(index);
     }
 
     if (holder.slide) {
-      if (holder.slide.index === index) {
+      if (holder.slide.index === index && !force) {
         // exit if holder already contains this slide
         // this could be common when just three slides are used
         return;

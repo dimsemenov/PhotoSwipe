@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.2.0-beta.3 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.2.0-beta.4 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /**
@@ -262,9 +262,10 @@ class Content {
    *                                can be undefined if image was requested by something else
    *                                (for example by lazy-loader)
    */
-  constructor(itemData, instance) {
+  constructor(itemData, instance, index) {
     this.instance = instance;
     this.data = itemData;
+    this.index = index;
 
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
@@ -536,6 +537,8 @@ class Content {
       return;
     }
 
+    this.remove();
+
     if (this.isImageContent() && this.element) {
       this.element.onload = null;
       this.element.onerror = null;
@@ -726,8 +729,8 @@ class PhotoSwipeBase extends Eventable {
     return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
-  createContentFromData(slideData) {
-    return new Content(slideData, this);
+  createContentFromData(slideData, index) {
+    return new Content(slideData, this, index);
   }
 
   /**
@@ -1078,21 +1081,6 @@ class ZoomLevel {
 }
 
 /**
- * Returns cache key by slide index and data
- *
- * @param {Object} itemData
- * @param {Integer} index
- * @returns {String}
- */
-function getKey(itemData, index) {
-  if (itemData && itemData.src) {
-    return itemData.src + '_' + index;
-  }
-  return index;
-}
-
-
-/**
  * Lazy-load an image
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
@@ -1104,13 +1092,11 @@ function getKey(itemData, index) {
  */
 function lazyLoadData(itemData, instance, index) {
   // src/slide/content/content.js
-  const content = instance.createContentFromData(itemData);
+  const content = instance.createContentFromData(itemData, index);
 
   if (!content || !content.lazyLoad) {
     return;
   }
-
-  content.key = getKey(itemData, index);
 
   const { options } = instance;
 
@@ -1339,8 +1325,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     // Pass data to PhotoSwipe and open init
     const pswp = typeof module === 'object'
-        ? new module.default(null, this.options) // eslint-disable-line
-        : new module(null, this.options); // eslint-disable-line
+        ? new module.default(this.options) // eslint-disable-line
+        : new module(this.options); // eslint-disable-line
 
     this.pswp = pswp;
     window.pswp = pswp;
