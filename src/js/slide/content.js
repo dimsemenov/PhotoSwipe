@@ -9,9 +9,10 @@ class Content {
    *                                can be undefined if image was requested by something else
    *                                (for example by lazy-loader)
    */
-  constructor(itemData, instance) {
+  constructor(itemData, instance, index) {
     this.instance = instance;
     this.data = itemData;
+    this.index = index;
 
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
@@ -282,6 +283,8 @@ class Content {
     if (this.instance.dispatch('contentDestroy', { content: this }).defaultPrevented) {
       return;
     }
+
+    this.remove();
 
     if (this.isImageContent() && this.element) {
       this.element.onload = null;
