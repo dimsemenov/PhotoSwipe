@@ -1,10 +1,10 @@
-name: Publish docs
+name: PhotoSwipe Jobs
 
 on: [push]
 
 jobs:
   build:
-    name: Build application
+    name: Publish docs
     runs-on: ubuntu-latest
     steps:
       - name: "checkout repository"

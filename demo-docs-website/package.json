@@ -21,7 +21,7 @@
     "@docusaurus/theme-live-codeblock": "^2.0.0-beta.17",
     "@mdx-js/react": "^1.6.22",
     "clsx": "^1.1.1",
-    "photoswipe-deep-zoom-plugin": "^1.1.0",
+    "photoswipe-deep-zoom-plugin": "^1.1.1",
     "photoswipe-dynamic-caption-plugin": "^1.1.1",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.1",
