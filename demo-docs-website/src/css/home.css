@@ -187,3 +187,30 @@ figcaption.caption {
   font-size: 12px;
   margin-top: 6px;
 }
+
+
+
+@media (max-width: 650px) {
+  .pswp-docs__home-gallery {
+    grid-gap: 5px;
+  }
+  .pswp-docs__header-title-text h1 {
+    font-size: 36px;
+  }
+  .pswp-docs__header-title-text {
+    margin: 40px 0px 30px;
+    font-size: 18px;
+    text-align: center;
+  }
+  .pswp-docs__home-block h2 {
+    font-size: 26px;
+    margin: 40px auto 12px;
+  }
+  .pswp-docs__whats-new h4 {
+    margin: 24px auto 12px;
+    font-size: var(--ifm-font-size-base);
+  }
+  #gallery--deep-zoom {
+    max-width: 296px;
+  }
+}

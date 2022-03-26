@@ -15,6 +15,10 @@ jobs:
         with:
           node-version: 16
 
+      - name: "github api fetch (for stars count)"
+        working-directory: demo-docs-website
+        run: curl -s https://api.github.com/repos/dimsemenov/photoswipe -o ./repo-data.json 
+
       - name: "npm install & build docs"
         working-directory: demo-docs-website
         run: |

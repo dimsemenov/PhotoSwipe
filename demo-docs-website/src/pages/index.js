@@ -12,6 +12,7 @@ function HomepageHeader() {
     <div className="pswp-docs__home-block pswp-docs__header-intro container">
       <Head>
         <html className="pswp-docs__home" />
+        <title>PhotoSwipe: Responsive JavaScript Image Gallery</title>
       </Head>
       <div className="row">
         <div className="col col--12 pswp-docs__header-title-text">
@@ -111,7 +112,6 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title="PhotoSwipe: Responsive JavaScript Image Gallery"
       description="Open-source JavaScript image gallery and lightbox.">
       <HomepageHeader />
       <WhatsNew />

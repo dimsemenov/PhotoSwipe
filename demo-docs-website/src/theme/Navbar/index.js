@@ -258,7 +258,7 @@ export default function Navbar() {
         </div>
         <div className="navbar__items navbar__items--right">
           <TwitterLink />
-          <ReactGithubStars repo="dimsemenov/photoswipe" />
+          <ReactGithubStars />
           {rightItems.map((item, i) => (
             <NavbarItem {...item} key={i} />
           ))}

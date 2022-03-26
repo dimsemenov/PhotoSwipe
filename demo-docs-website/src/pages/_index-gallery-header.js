@@ -108,7 +108,7 @@ function GalleryItem(props) {
     style: { 
       paddingBottom:  props.cropped ? 1 / props.aspectRatio * 100 + '%'  : props.height / props.width * 100 + '%'
     },
-    href: props.srcset,
+    href: props.src,
     'data-pswp-srcset': props.srcset,
     'data-pswp-width': props.width,
     'data-pswp-height': props.height,

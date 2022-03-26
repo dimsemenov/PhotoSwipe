@@ -41,7 +41,7 @@ lightbox.init();
 Alternatively, you may install PhotoSwipe via NPM or Yarn:
 
 ```
-npm i --save photoswipe#beta
+npm i photoswipe --save
 ```
 
 ```js
