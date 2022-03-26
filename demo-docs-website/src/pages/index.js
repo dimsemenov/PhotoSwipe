@@ -111,7 +111,7 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={siteConfig.title}
+      title="PhotoSwipe: Responsive JavaScript Image Gallery"
       description="Open-source JavaScript image gallery and lightbox.">
       <HomepageHeader />
       <WhatsNew />

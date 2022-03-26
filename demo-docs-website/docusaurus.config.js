@@ -5,7 +5,7 @@ const lightCodeTheme = require('prism-react-renderer/themes/github');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'PhotoSwipe: Responsive JavaScript Image Gallery',
+  title: 'PhotoSwipe',
   tagline: '',
   url: 'https://photoswipe.com',
   baseUrl: '/',
