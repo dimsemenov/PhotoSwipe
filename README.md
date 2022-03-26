@@ -1,7 +1,3 @@
-v5 is now available for testing, please visit [documentation and examples](https://photoswipe.com/v5/docs/getting-started/) and report any issues that you find.
-
-Install beta via NPM via (or grab files from `dist/`): 
-
 ```
 npm install photoswipe#beta
 ```
