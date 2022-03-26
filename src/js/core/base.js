@@ -40,8 +40,8 @@ class PhotoSwipeBase extends Eventable {
     return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
-  createContentFromData(slideData) {
-    return new Content(slideData, this);
+  createContentFromData(slideData, index) {
+    return new Content(slideData, this, index);
   }
 
   /**

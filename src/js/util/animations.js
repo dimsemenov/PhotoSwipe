@@ -19,17 +19,6 @@ class Animations {
   }
 
   _start(props, isSpring) {
-    // if (!props.name) {
-    //   props.name = this._uid++;
-    // }
-
-    // const { name } = props;
-
-    // if (!name || this.activeAnimations[name]) {
-    //   // Animation already running or no name provided
-    //   return;
-    // }
-
     let animation;
     if (isSpring) {
       animation = new SpringAnimation(props);
