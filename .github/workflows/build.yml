@@ -1,6 +1,6 @@
 name: PhotoSwipe Jobs
 
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   build:
