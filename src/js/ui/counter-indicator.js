@@ -3,7 +3,7 @@ export const counterIndicator = {
   order: 5,
   onInit: (counterElement, pswp) => {
     pswp.on('change', () => {
-      counterElement.innerHTML = (pswp.currIndex + 1)
+      counterElement.innerText = (pswp.currIndex + 1)
                                   + pswp.options.indexIndicatorSep
                                   + pswp.getNumItems();
     });
