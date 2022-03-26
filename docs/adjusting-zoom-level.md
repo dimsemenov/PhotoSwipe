@@ -1,7 +1,7 @@
 ---
 id: adjusting-zoom-level
 title: Adjusting Zoom Level
-sidebar_label: Adjusting Zoom Level
+sidebar_label: Adjusting zoom level
 ---
 
 Photoswipe has three zoom level options:
@@ -41,43 +41,29 @@ secondaryZoomLevel: (zoomLevelObject) => {
 - Secondary zoom level is `2.5x` of `fit`, but not wider than `3000px`.
 - Maximum zoom level is `4x` of `fit`.
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="open-in-original-size" numItems="4">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--open-in-original-size',
   children:'a',
-
-  // works nice with mousemove pan
-  mouseMovePan: true,
-
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ 
-  "id":"open-in-original-size",
-  "autoImages":6
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 
 
 ## Open images in `fill` state
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="open-in-fill-state" numItems="6">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--open-in-fill-state',
@@ -87,30 +73,19 @@ const lightbox = new PhotoSwipeLightbox({
   secondaryZoomLevel: 1,
   maxZoomLevel: 2,
 
-  mouseMovePan: true,
-
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ 
-  "id":"open-in-fill-state",
-  "autoImages":6
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 ## Secondary zoom level is higher than initial
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="secondary-zoom-higher">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--secondary-zoom-higher',
@@ -121,29 +96,21 @@ const lightbox = new PhotoSwipeLightbox({
   secondaryZoomLevel: 1.5,
   maxZoomLevel: 1,
 
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ 
-  "id":"secondary-zoom-higher"
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 ## Initial zoom level is higher than secondary
 
 Initial zoom level is set to `1` (original image size), you may want to disable opening closing transition (`showHideAnimationType:'none'`) - as the larger the image - the harder it is to animate it smoothly. In this example it's not disabled, just to show you how it behaves:
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="initial-higher">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--initial-higher',
@@ -154,27 +121,19 @@ const lightbox = new PhotoSwipeLightbox({
   secondaryZoomLevel: 'fit',
   maxZoomLevel: 4,
 
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ 
-  "id":"initial-higher"
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 ## Initial and secondary zoom level are equal
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="zoom-levels-equal">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--zoom-levels-equal',
@@ -185,43 +144,34 @@ const lightbox = new PhotoSwipeLightbox({
   secondaryZoomLevel: 'fill',
   maxZoomLevel: 3,
 
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ 
-  "id":"zoom-levels-equal"
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 ## Image is smaller than initial and secondary
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview>
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#very-small-image',
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example html
+```html pswpcode
 <a id="very-small-image" href="https://dummyimage.com/200x200/555/fff/" data-pswp-width="200" data-pswp-height="200" target="_blank">
   <img src="https://dummyimage.com/100x100/555/fff/?text=small%20image" alt="" />
 </a>
 ```
 
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 ## Dynamic zoom level
 
@@ -230,11 +180,10 @@ Change zoom levels based on viewport size and device orientation:
 - fill 100% height of viewport on phones with portrait orientation,
 - otherwise fit image into viewport
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="dynamic-zoom-level" orientation="landscape" numItems="4">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 
 function isPhonePortrait() {
@@ -263,18 +212,9 @@ const lightbox = new PhotoSwipeLightbox({
 
   maxZoomLevel: 1,
 
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ 
-  "id":"dynamic-zoom-level",
-  "orientation":"landscape",
-  "autoImages": 4
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>

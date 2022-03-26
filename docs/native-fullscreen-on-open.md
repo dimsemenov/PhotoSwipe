@@ -8,11 +8,10 @@ You may use asynchronous initialization to open gallery in fullscreen mode right
 
 To implement it, create a promise that is resolved after fullscreen mode is entered and pass it to lightbox as an `openPromise` option.
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview>
 
-```pswp_example js  
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode  
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 // Simple fullscreen API
 const fullscreenAPI = getFullscreenAPI();
@@ -51,7 +50,7 @@ function getFullscreenPromise() {
 const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--native-fs',
   children: 'a',
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js'),
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
 
   // Add function that returns promise
   openPromise: getFullscreenPromise,
@@ -137,7 +136,7 @@ function getContainer() {
 }
 ```
 
-```pswp_example html
+```html pswpcode
 <div class="pswp-gallery" id="gallery--native-fs">
 <a href="https://dummyimage.com/1500x1000/555/fff/?text=1st-1500x1000" 
     data-pswp-srcset="
@@ -163,6 +162,5 @@ function getContainer() {
 </div>
 ```
 
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 

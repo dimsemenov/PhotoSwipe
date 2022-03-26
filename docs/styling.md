@@ -15,11 +15,10 @@ To modify the color of the icons use CSS variables. To modify SVG shapes use JS 
 
 For example:
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview>
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const leftArrowSVGString = '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 100 125" width="100" height="125"><path d="M5,50L50,5l3,3L11,50l42,42l-3,3L5,50z M92,95l3-3L53,50L95,8l-3-3L47,50L92,95z"/></svg>';
 
@@ -32,20 +31,20 @@ const options = {
 
   gallery: '#gallery--custom-icon-colors',
   children: 'a',
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
 ```
 
-```pswp_example css
+```css pswpcode
 .pswp--custom-icon-colors {
   --pswp-icon-color: #00fffc;
   --pswp-icon-color-secondary: #333;
 }
 ```
 
-```pswp_example html
+```html pswpcode
 <div class="pswp-gallery" id="gallery--custom-icon-colors">
   <a href="https://source.unsplash.com/Volo9FYUAzU/1620x1080" 
     data-pswp-width="1620" 
@@ -68,8 +67,7 @@ lightbox.init();
 </div>
 ```
 
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 - Use SVGO to optimize icons. ([SVGOMG online tool](https://jakearchibald.github.io/svgomg/)).
 - Add `pswp__icn` class, define `viewBox`, `width`, `height` and `aria-hidden="true"` attributes.
@@ -80,17 +78,6 @@ lightbox.init();
 </svg>
 ```
 
-
-## Adjusting button title
-
-Default buttons have a `title` attribute, it can be adjusted via options:
-
-```
-closeTitle: 'Close',
-zoomTitle: 'Zoom (z)',
-arrowPrevTitle: 'Previous',
-arrowNextTitle: 'Next'
-```
 
 ## Hiding a specific UI element
 
@@ -121,11 +108,10 @@ To adjust opacity - use JS option `bgOpacity`, for example `bgOpacity: 0.6`.
 - If you need transparency - do not use rgba color to define background of the PhotoSwipe, it affects the performance.
 - Do no try to apply blur to the background of PhotoSwipe, as it also heavily affects the performance.
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview numItems="4" galleryID="custom-bg">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const options = {
   // set background opacity
@@ -136,24 +122,47 @@ const options = {
 
   gallery: '#gallery--custom-bg',
   children: 'a',
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
 ```
 
-```pswp_example css
+```css pswpcode
 .pswp--custom-bg {
   --pswp-bg: #7079bf;
 }
 ```
 
-```pswp_example gallery
-{ 
-  "id":"custom-bg",
-  "autoImages":"4"
+</PswpCodePreview>
+
+## Loading indicator (preloader)
+
+If you have a good connection, you probably haven't even seen the loading indicator. That's because PhotoSwipe displays loading indicator only if image is not loaded within 2 seconds (can be adjusted via [preloaderDelay](options#preloaderDelay) option). Use dev tools network throttling to test it.
+
+The default loading indicator is displayed in the top left corner and is just a spinning 3/4 circle. You may adjust it just via CSS, the default styles are in `photoswipe.css`. https://github.com/dimsemenov/PhotoSwipe/blob/v5-beta/dist/photoswipe.css#L372
+
+The example below permanently displays it for debugging:
+
+
+<PswpCodePreview numItems="4" galleryID="perma-preloader">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--perma-preloader',
+  children: 'a',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
+  mainClass: 'pswp-with-perma-preloader',
+});
+lightbox.init();
+```
+
+```css pswpcode 
+/* debug: permanently display preloader */
+.pswp-with-perma-preloader .pswp__icn {
+  opacity: 0.85 !important;
 }
 ```
 
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>

@@ -4,22 +4,20 @@ title: Caption
 sidebar_label: Caption
 ---
 
-For now, PhotoSwipe does not support caption out of box, example below shows how to add it via API.
+PhotoSwipe does not support caption out of box, but you may implement a basic caption via API, as you can see below. Or you may use a [dynamic caption plugin](https://github.com/dimsemenov/photoswipe-dynamic-caption-plugin). 
 
-Please make sure that important captions are always accessible without PhotoSwipe — the lightbox is disabled in unsupported browsers. There are also accessibility concerns - screen readers won't be able to properly access the text.
+**Important!** Please make sure that caption is always accessible without PhotoSwipe for screen reader users — the lightbox is disabled in unsupported browsers. If you are unable to show the caption text on the page - make sure that image has a proper `alt` attribute, `aria-labelledby`, or `<figcaption>` inside `<figure>`.
 
+import { captionTemplate } from '@site/src/components/PswpCodePreview/gallery-templates/caption.js';
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="with-custom-caption" templateFn={captionTemplate}>
 
-```pswp_example js
-
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   gallery:'#gallery--with-custom-caption',
   children:'.pswp-gallery__item',
-  
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.on('uiRegister', function() {
@@ -49,10 +47,9 @@ lightbox.on('uiRegister', function() {
   });
 });
 lightbox.init();
-
 ```
 
-```pswp_example css
+```css pswpcode
 .pswp__custom-caption {
   background: rgba(75, 150, 75, 0.75);
   font-size: 16px;
@@ -61,7 +58,6 @@ lightbox.init();
   max-width: 400px;
   padding: 2px 8px;
   border-radius: 4px;
-
   position: absolute;
   left: 50%;
   bottom: 16px;
@@ -76,18 +72,4 @@ lightbox.init();
 }
 ```
 
-
-
-```pswp_example gallery
-{ 
-  "template":"caption",
-  "id":"with-custom-caption"
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
-
-## Sidebar caption
-
-// TODO
+</PswpCodePreview>

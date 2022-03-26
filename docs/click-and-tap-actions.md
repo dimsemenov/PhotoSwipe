@@ -1,7 +1,7 @@
 ---
 id: click-and-tap-actions
 title: Click Actions
-sidebar_label: Click Actions
+sidebar_label: Click actions
 ---
 
 List of options:
@@ -27,11 +27,10 @@ imageClickAction: (releasePoint, e) => {}
 
 ## Click on image moves to the next slide
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="click-to-next">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   gallery:'#gallery--click-to-next',
   children:'a',
@@ -39,29 +38,21 @@ const options = {
   imageClickAction: 'next',
   tapAction: 'next',
   
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ 
-  "id":"click-to-next"
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 
 ## Disable tap delay, click/tap to close
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="click-to-close">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 const options = {
   gallery:'#gallery--click-to-close',
   children:'a',
@@ -75,24 +66,17 @@ const options = {
   // tap delay is removed if set to false
   doubleTapAction: false,
   
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 };
 const lightbox = new PhotoSwipeLightbox(options);
 lightbox.init();
 ```
 
-```pswp_example css
+```css pswpcode
 /* override zoom cursor */
 .pswp__img {
     cursor: pointer !important;
 }
 ```
 
-```pswp_example gallery
-{ 
-  "id":"click-to-close"
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>

@@ -4,68 +4,52 @@ title: Opening or closing transition
 sidebar_label: Opening or closing transition
 ---
 
-
-
-
-
-
-To adjust opening or closing transition type use lightbox option `showHideAnimationType` (`String`). It supports three values - `zoom` (default), `fade` (default in no thumbnail) and `none`.
+To adjust opening or closing transition type use lightbox option `showHideAnimationType` (`String`). It supports three values - `zoom` (default), `fade` (default if there is no thumbnail) and `none`.
 
 ## zoom
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="zoom-transition">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--zoom-transition',
   children: 'a',
   showHideAnimationType: 'zoom',
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ "autoImages":3, "id":"zoom-transition" }
-```
+</PswpCodePreview>
 
-</div> 
-<!-- PhotoSwipe example block END -->
+If you're using a different datasource, for example Array of images and you still want to use zoom transition, please refer to [Separate DOM and data](data-sources#separate-dom-and-data) guide.
 
 ## fade
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="fade-transition" numItems="5">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--fade-transition',
   children:'a',
   showHideAnimationType: 'fade',
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ "autoImages":5, "id":"fade-transition" }
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 ## none
 
 Automatically selected if user agent `(prefers-reduced-motion: reduce)`.
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="none-transition" numItems="8">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--none-transition',
   children: 'a',
@@ -75,17 +59,12 @@ const lightbox = new PhotoSwipeLightbox({
   // to create more consistent experience
   zoomAnimationDuration: false,
 
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ "autoImages":8, "id":"none-transition" }
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 ## Transition duration and easing
 
@@ -97,11 +76,10 @@ Both options can be modified dynamically while PhotoSwipe is opened.
 
 In the example below transition duration is set to 1000ms (1s). Easing is defined dynamically (opening transition gets ease-out-back, zoom transitions gets ease-in-out-back, and closing transition gets ease-in-back):
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+<PswpCodePreview galleryID="customized-transition">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const backEasing = {
   in: 'cubic-bezier(0.6, -0.28, 0.7, 1)',
@@ -117,7 +95,7 @@ const lightbox = new PhotoSwipeLightbox({
   showAnimationDuration: 1000,
   hideAnimationDuration: 1000,
 
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.on('firstUpdate', () => {
   lightbox.pswp.options.easing = backEasing.out;
@@ -131,63 +109,46 @@ lightbox.on('close', () => {
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ "autoImages":3, "id":"customized-transition" }
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 ## Animating from cropped thumbnail
 
-Step 1: use thumbnail image that matches aspect ratio of the large image.
-
-Step 2: crop thumbnail via CSS. For example, using `object-fit:cover`, or `background-size:cover`.
-
-Step 3: add `data-cropped="true"` attribute to your links that opens PhotoSwipe.
+1. Use thumbnail image that matches aspect ratio of the large image.
+2. Crop thumbnail via CSS. For example, using `object-fit:cover`, or `background-size:cover`. Please note that animation from thumbnail that's cropped on the server-side isn't supported,
+3. Add `data-cropped="true"` attribute to your links that opens PhotoSwipe.
 
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
+import { basicCroppedTemplate } from '@site/src/components/PswpCodePreview/gallery-templates/basic--cropped.js';
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+<PswpCodePreview galleryID="cropped-thumbs" numItems="6" templateFn={basicCroppedTemplate}>
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--cropped-thumbs',
   children:'a',
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 lightbox.init();
 ```
 
-```pswp_example gallery
-{ 
-  "autoImages":5, 
-  "id":"cropped-thumbs", 
-  "template":"basic--cropped"
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
-
-
-
-
+</PswpCodePreview>
 
 ## Hiding elements that overlap thumbnails
 
 If you have some element that overlays thumbnail, you may want to fade it out when PhotoSwipe is opening, and fade it back in when PhotoSwipe is closed.
 
-<!-- PhotoSwipe example block START -->
-<div class="pswp-example">
 
-```pswp_example js
-import PhotoSwipeLightbox from '/v5/photoswipe/photoswipe-lightbox.esm.js';
+import { basicBadgesTemplate } from '@site/src/components/PswpCodePreview/gallery-templates/basic--badges.js';
+
+<PswpCodePreview galleryID="badges" numItems="6" templateFn={basicBadgesTemplate}>
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery:'#gallery--badges',
   children: 'a',
-  pswpModule: () => import('/v5/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
 });
 
 let firstElWithBadge;
@@ -227,7 +188,7 @@ function showBadge(el) {
 }
 ```
 
-```pswp_example css
+```css pswpcode
 .badge {
   position: absolute;
   bottom: 5px;
@@ -237,23 +198,14 @@ function showBadge(el) {
   background: rgba(0,0,0,0.5);
   line-height: 1;
   transition: opacity 100ms linear;
+  font-size: 16px;
+  font-weight: normal;
 }
 .badge--hidden {
   opacity: 0;
 }
 ```
 
-
-```pswp_example gallery
-{ 
-  "id":"badges",
-  "autoImages":6,
-  "template":"basic--badges",
-  "captionHTML":"<div class=\"badge\">Badge %index%</div>"
-}
-```
-
-</div> 
-<!-- PhotoSwipe example block END -->
+</PswpCodePreview>
 
 You may use this technique to hide any element that might interfere with the transition. For example, fixed header, sharing icons or carousel arrows.
