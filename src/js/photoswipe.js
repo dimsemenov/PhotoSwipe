@@ -49,10 +49,8 @@ const defaultOptions = {
 };
 
 class PhotoSwipe extends PhotoSwipeBase {
-  constructor(items, options) {
+  constructor(options) {
     super();
-
-    this.items = items;
 
     this._prepareOptions(options);
 
@@ -89,11 +87,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.dispatch('beforeOpen');
 
     this._createMainStructure();
-
-    // init modules
-    // _modules.forEach(function (module) {
-    //   module();
-    // });
 
     // add classes to the root element of PhotoSwipe
     let rootClasses = 'pswp--open';
@@ -284,13 +277,48 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.events.removeAll();
   }
 
-  setContent(holder, index) {
+  /**
+   * Refresh/reload content of a slide by its index
+   *
+   * @param {Integer} slideIndex
+   */
+  refreshSlideContent(slideIndex) {
+    this.contentLoader.removeByIndex(slideIndex);
+    this.mainScroll.itemHolders.forEach((itemHolder, i) => {
+      let potentialHolderIndex = this.currSlide.index - 1 + i;
+      if (this.canLoop()) {
+        potentialHolderIndex = this.getLoopedIndex(potentialHolderIndex);
+      }
+      if (potentialHolderIndex === slideIndex) {
+        // set the new slide content
+        this.setContent(itemHolder, slideIndex, true);
+
+        // activate the new slide if it's current
+        if (i === 1) {
+          this.currSlide = itemHolder.slide;
+          itemHolder.slide.setIsActive(true);
+        }
+      }
+    });
+
+    this.dispatch('change');
+  }
+
+
+  /**
+   * Set slide content
+   *
+   * @param {Object} holder mainScroll.itemHolders array item
+   * @param {Integer} index Slide index
+   * @param {Boolean} force If content should be set even if index wasn't changed
+   */
+  setContent(holder, index, force) {
     if (this.canLoop()) {
       index = this.getLoopedIndex(index);
     }
 
     if (holder.slide) {
-      if (holder.slide.index === index) {
+      if (holder.slide.index === index && !force) {
         // exit if holder already contains this slide
         // this could be common when just three slides are used
         return;
@@ -463,7 +491,7 @@ class PhotoSwipe extends PhotoSwipeBase {
       this
     );
   }
-  
+
   /**
    * If the PhotoSwipe can have continious loop
    * @returns Boolean
