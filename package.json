@@ -6,7 +6,10 @@
   "type": "module",
   "exports": {
     ".": "./dist/photoswipe.esm.js",
-    "./lightbox": "./dist/photoswipe-lightbox.esm.js"
+    "./lightbox": "./dist/photoswipe-lightbox.esm.js",
+    "./dist/photoswipe.css": "./dist/photoswipe.css",
+    "./photoswipe.css": "./dist/photoswipe.css",
+    "./style.css": "./dist/photoswipe.css"  
   },
   "files": [
     "dist",
@@ -19,11 +22,13 @@
   "scripts": {
     "build": "npm run build-and-minify-js && npm run build-css && npm run copy-to-dist",
     "watch": "concurrently \"npm:watch-js\" \"npm:watch-css\" \"npm:watch-docs\"",
+    "watch-local": "concurrently \"npm:watch-js\" \"npm:watch-css\" \"npm:watch-docs-local\"",
     "build-and-minify-js": "rollup --config build/rollup.config.js",
     "watch-js": "rollup --config build/rollup.config.watch.js --watch",
     "build-css": "copyfiles -f src/*.css dist/ && copyfiles -f src/*.css demo-docs-website/static/photoswipe/",
     "watch-css": "chokidar \"src/*.css\" --command \"npm run build-css\"",
     "watch-docs": "cd demo-docs-website/ && npm start",
+    "watch-docs-local": "cd demo-docs-website/ && npm start -- --host 192.168.1.120",
     "copy-to-dist": "copyfiles -f demo-docs-website/static/photoswipe/* dist/",
     "lint": "eslint src/js/**/*.js",
     "lint-auto-fix": "eslint src/js/**/*.js --fix",
