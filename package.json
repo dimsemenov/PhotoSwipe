@@ -1,6 +1,6 @@
 {
   "name": "photoswipe",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "main": "dist/photoswipe.esm.js",
   "style": "dist/photoswipe.css",
   "type": "module",
@@ -9,7 +9,7 @@
     "./lightbox": "./dist/photoswipe-lightbox.esm.js",
     "./dist/photoswipe.css": "./dist/photoswipe.css",
     "./photoswipe.css": "./dist/photoswipe.css",
-    "./style.css": "./dist/photoswipe.css"  
+    "./style.css": "./dist/photoswipe.css"
   },
   "files": [
     "dist",
