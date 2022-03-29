@@ -48,7 +48,7 @@ lightbox.init();
           <h2>What’s new in v5</h2>
 
           <h4>Code quality and rewrite in ES6</h4>
-          <p>Script is now distributed as a ES module and does not require a build step to use. <a href="/getting-started">The documentation</a> is also updated and now includes more examples.</p>
+          <p>The script is now distributed as an ES module and does not require a build step to use. <a href="/getting-started">The documentation</a> is also updated and now includes more examples.</p>
 
           <h4>Simpler initialization and dynamic import support</h4>
           <p>PhotoSwipe now supports dynamic import and does not block page rendering.</p>
@@ -56,20 +56,20 @@ lightbox.init();
 
           <h4>Animation and gesture engine update</h4>
           <p>Improved performance of most animations, touch gestures should feel more fluid now. 
-            The initial opening or closing <a href="/opening-or-closing-transition#animating-from-cropped-thumbnail">transition can be run from css-cropped thumbnail</a>, as you can see on top of this page.</p>
+            The initial opening or closing <a href="/opening-or-closing-transition#animating-from-cropped-thumbnail">transition can be run from a CSS-cropped thumbnail</a>, as you can see on the top of this page.</p>
 
           <h4>Single CSS file and no external assets</h4>
           <p>Using CSS variables, default icons are dynamically generated and tiny.<br/><a href="/styling">Styling guide &rarr;</a></p>
 
           <h4>Built-in responsive images support</h4>
-          <p>PhotoSwipe also dynamically loads larger images as user zooms via srcset.</p>
+          <p>PhotoSwipe also dynamically loads larger images as a user zooms via srcset.</p>
 
-          <h4>Open images in zoomed state</h4>
-          <p>It's now much easier to control zoom level, refer to <a href="/adjusting-zoom-level">Adjusting Zoom Level</a> section of docs for more info. The example below opens images in a zoomed state and individually.</p>
+          <h4>Open images in a zoomed state</h4>
+          <p>It's now much easier to control zoom level, refer to the <a href="/adjusting-zoom-level">Adjusting Zoom Level</a> section of docs for more info. The example below opens images in a zoomed state and individually.</p>
           <GalleryExampleOpenZoomed />
 
           <h4>Removed features from the core</h4>
-          <p>Some built-in features were removed in v5, either because they are using an outdated technology or just rarely used. Some of them are or will be replaced by a plugin. These include:</p>
+          <p>Some built-in features were removed in v5, either because they are using outdated technology or just rarely used. Some of them are or will be replaced by a plugin. These include:</p>
           <ul>
             <li>History API (#hash-based navigation is outdated)</li>
             <li>Social sharing (unreliable URL, lack of Opengraph support)</li>
@@ -90,9 +90,9 @@ lightbox.init();
 
           <h4><a href="https://github.com/dimsemenov/photoswipe-deep-zoom-plugin">Tiled Deep Zoom plugin</a> (experimental)</h4>
           <p>
-            Tile-based image viewer that allows to display extremely large images.
-            Unlike convetional tile-viewers (such as Leaflet or OpenSeaDragon) 
-            it displays tiles only after user zooms beyond the primary image,
+            Tile-based image viewer that allows displaying of extremely large images.
+            Unlike conventional tile-viewers (such as Leaflet or OpenSeaDragon) 
+            it displays tiles only after the user zooms beyond the primary image,
             and keeps all default PhotoSwipe navigation between slides.<br/>
           </p>
           <DeepZoomGalleryDemo />

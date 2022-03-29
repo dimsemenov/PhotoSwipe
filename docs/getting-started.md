@@ -7,9 +7,9 @@ sidebar_label: Getting Started
 
 Before you start:
 
-- PhotoSwipe requires predefined image dimensions, you must define width and height of each image.
-- PhotoSwipe is not designed to display very large images. Serve responsive images. Maximum recommended size is 3000x3000px. However, there is an [experimental tiling plugin](https://github.com/dimsemenov/photoswipe-deep-zoom-plugin) that allows to show extremely large images.
-- PhotoSwipe is designed with progressive enhancement in mind and works only in modern browsers. Always provide an alternative way to view the content (for example, link to image).
+- PhotoSwipe requires predefined image dimensions, you must define the width and height of each image.
+- PhotoSwipe is not designed to display very large images. Serve responsive images. Maximum recommended size is 3000x3000px. However, there is an [experimental tiling plugin](https://github.com/dimsemenov/photoswipe-deep-zoom-plugin) that allows showing extremely large images.
+- PhotoSwipe is designed with progressive enhancement in mind and works only in modern browsers. Always provide an alternative way to view the content (for example, link to the image).
 
 
 ## Initialization
@@ -22,20 +22,26 @@ The PhotoSwipe consists of three parts:
 2. **Lightbox** (`photoswipe-lightbox.esm.js`) - loads **Core** and chooses when PhotoSwipe should be opened. Its file size is significantly smaller. It also loads the first image (in parallel with **Core**).
 3. **CSS** (`photoswipe.css`) - a single file that controls all the styling. There are no external assets for icons - all of them are dynamically generated via JS and very tiny. Refer to [styling](/styling) for more info.
 
-JS files are separated, so you can dynamically load **Core** only when user actually needs it, thus reducing the size of your main bundle.
+JS files are separated, so you can dynamically load **Core** only when the user needs it, thus reducing the size of your main bundle.
 
 The recommended way to use PhotoSwipe is using a single `<script type="module"></script>`, for example:
 
 ```html
 <script type="module">
-import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
   gallery: '#my-gallery',
   children: 'a',
-  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
+  pswpModule: () => import('photoswipe/dist/photoswipe.esm.js')
 });
 lightbox.init();
 </script>
+```
+
+Don't forget to include the CSS too:
+
+```html
+<link rel="stylesheet" href="photoswipe/dist/photoswipe.css">
 ```
 
 Alternatively, you may install PhotoSwipe via NPM or Yarn:
@@ -46,6 +52,8 @@ npm i photoswipe --save
 
 ```js
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
+import 'photoswipe/style.css';
+
 const lightbox = new PhotoSwipeLightbox({
   gallery: '#my-gallery',
   children: 'a',
@@ -54,6 +62,7 @@ const lightbox = new PhotoSwipeLightbox({
 lightbox.init();
 ```
 
+Playgrounds: [StackBlitz](https://stackblitz.com/edit/js-o1vrod?file=index.js), [CodeSandbox](https://codesandbox.io/s/vigorous-matan-zxok9x?file=/src/index.js), [CodePen (with unpkg)](https://codepen.io/dimsemenov/pen/ZEvypBw).
 
 ### Basic vanilla JS example
 
@@ -115,10 +124,10 @@ Each element that matches the selector should be or should contain link `<a>` el
 
 And optionally:
 
-- `<img>` thumbnail within the link element that will be displayed before large image is loaded (applied only for the first image, can be adjusted via `thumbSelector`).
+- `<img>` thumbnail within the link element that will be displayed before the large image is loaded (applied only for the first image, can be adjusted via `thumbSelector`).
 - Optional `data-cropped="true"` attribute if thumbnail is cropped.
 
-PhotoSwipe API supports almost any markup and any datasource, [read more about it here](data-sources#custom-html-markup).
+PhotoSwipe API supports almost any markup and any data source, [read more about it here](data-sources#custom-html-markup).
 
 ## Open each image individually
 
@@ -165,6 +174,6 @@ lightbox.init();
 ## Supported browsers and fallback
 
 - The PhotoSwipe supports all browsers that [support ES6 modules](https://caniuse.com/#search=module).
-  - Thus, it might not work in IE11, Opera Mini, UC browser, and old versions of Chrome, Safari and Firefox. Check your website/region statistics before deciding whether you should use PhotoSwipe or not.
+  - Thus, it might not work in IE11, Opera Mini, UC browser, and old versions of Chrome, Safari, and Firefox. Check your website/region statistics before deciding whether you should use PhotoSwipe or not.
 - Users in unsupported browsers will still be able to view the large image if you use recommended HTML markup - link to image, or link to pa age that contains image.
 - You may add any fallback via `script type="nomodule"`.
