@@ -7,7 +7,7 @@ function getBoundsByElement(el) {
   };
 }
 
-function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
+function getCroppedBoundsByElement(el, imageWidth, imageHeight, position) {
   const thumbAreaRect = el.getBoundingClientRect();
 
   // fill image into the area
@@ -15,9 +15,10 @@ function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
   const hRatio = thumbAreaRect.width / imageWidth;
   const vRatio = thumbAreaRect.height / imageHeight;
   const fillZoomLevel = hRatio > vRatio ? hRatio : vRatio;
+  const [positionX, positionY = 'center'] = position.split(' ');
 
-  const offsetX = (thumbAreaRect.width - imageWidth * fillZoomLevel) / 2;
-  const offsetY = (thumbAreaRect.height - imageHeight * fillZoomLevel) / 2;
+  const offsetX = getCroppedBoundsOffset(positionX, imageWidth, thumbAreaRect.width, fillZoomLevel);
+  const offsetY = getCroppedBoundsOffset(positionY, imageHeight, thumbAreaRect.height, fillZoomLevel);
 
   // Coordinates of the image,
   // as if it was not cropped,
@@ -38,6 +39,21 @@ function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
   };
 
   return bounds;
+}
+
+function getCroppedBoundsOffset(position, imageSize, thumbSize, zoomLevel) {
+  switch (position) {
+    case 'top':
+    case 'left':
+      return 0;
+    case 'center':
+      return (thumbSize - imageSize * zoomLevel) / 2;
+    case 'bottom':
+    case 'right':
+      return thumbSize;
+    default:
+      return position;
+  }
 }
 
 /**
@@ -79,7 +95,8 @@ export function getThumbBounds(index, itemData, instance) {
       thumbBounds = getCroppedBoundsByElement(
         thumbnail,
         itemData.w,
-        itemData.h
+        itemData.h,
+        itemData.thumbCroppedPosition
       );
     }
   }

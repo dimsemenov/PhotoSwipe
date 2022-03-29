@@ -150,6 +150,7 @@ class PhotoSwipeBase extends Eventable {
 
       if (linkEl.dataset.pswpCropped || linkEl.dataset.cropped) {
         itemData.thumbCropped = true;
+        itemData.thumbCroppedPosition = linkEl.dataset.croppedPosition || 'center center';
       }
     }
 
