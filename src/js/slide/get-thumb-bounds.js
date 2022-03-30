@@ -15,7 +15,7 @@ function getCroppedBoundsByElement(el, imageWidth, imageHeight, position) {
   const hRatio = thumbAreaRect.width / imageWidth;
   const vRatio = thumbAreaRect.height / imageHeight;
   const fillZoomLevel = hRatio > vRatio ? hRatio : vRatio;
-  const [positionX, positionY = 'center'] = position.split(' ');
+  const [positionX, positionY] = position.split(' ');
 
   const offsetX = getCroppedBoundsOffset(positionX, imageWidth, thumbAreaRect.width, fillZoomLevel);
   const offsetY = getCroppedBoundsOffset(positionY, imageHeight, thumbAreaRect.height, fillZoomLevel);
@@ -42,18 +42,13 @@ function getCroppedBoundsByElement(el, imageWidth, imageHeight, position) {
 }
 
 function getCroppedBoundsOffset(position, imageSize, thumbSize, zoomLevel) {
-  switch (position) {
-    case 'top':
-    case 'left':
-      return 0;
-    case 'center':
-      return (thumbSize - imageSize * zoomLevel) / 2;
-    case 'bottom':
-    case 'right':
-      return thumbSize;
-    default:
-      return position;
+  const float = parseFloat(position);
+
+  if (position.indexOf('%')) {
+    return (thumbSize - imageSize * zoomLevel) * float / 100;
   }
+
+  return float;
 }
 
 /**
