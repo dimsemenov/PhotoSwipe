@@ -44,7 +44,7 @@ function getCroppedBoundsByElement(el, imageWidth, imageHeight, position) {
 function getCroppedBoundsOffset(position, imageSize, thumbSize, zoomLevel) {
   const float = parseFloat(position);
 
-  if (position.indexOf('%')) {
+  if (position.indexOf('%') > 0) {
     return (thumbSize - imageSize * zoomLevel) * float / 100;
   }
 
