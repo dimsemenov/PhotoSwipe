@@ -150,11 +150,9 @@ class PhotoSwipeBase extends Eventable {
 
       if (linkEl.dataset.pswpCropped || linkEl.dataset.cropped) {
         itemData.thumbCropped = true;
-        itemData.thumbCroppedPosition = '50% 50%';
-
-        if (thumbnailEl) {
-          itemData.thumbCroppedPosition = getComputedStyle(thumbnailEl).getPropertyValue('object-position')
-        }
+        itemData.thumbCroppedPosition = thumbnailEl
+          ? getComputedStyle(thumbnailEl).getPropertyValue('object-position')
+          : '50% 50%';
       }
     }
 
