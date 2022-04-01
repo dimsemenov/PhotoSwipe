@@ -113,10 +113,9 @@ lightbox.init();
 
 ## Animating from cropped thumbnail
 
-1. Use thumbnail image that matches aspect ratio of the large image.
-2. Crop thumbnail via CSS. For example, using `object-fit:cover`, or `background-size:cover`. Please note that animation from thumbnail that's cropped on the server-side isn't supported,
-3. Add `data-cropped="true"` attribute to your links that opens PhotoSwipe.
-
+1. Use thumbnail image that matches aspect ratio of the large image. Animation from thumbnails that are cropped on server side is not supported.
+2. Crop thumbnail via CSS using `object-fit:cover`. If you're using a different `object-position` - use [Object Position plugin](https://github.com/vovayatsyuk/photoswipe-object-position) by Vova Yatsyuk, or adjust it manually via `thumbBounds` filter.
+3. Add `data-cropped="true"` attribute to links that open PhotoSwipe.
 
 import { basicCroppedTemplate } from '@site/src/components/PswpCodePreview/gallery-templates/basic--cropped.js';
 
