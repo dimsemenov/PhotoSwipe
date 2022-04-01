@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import Lightbox from '../../static/photoswipe/photoswipe-lightbox.esm.js';
+import PhotoSwipe from '../../static/photoswipe/photoswipe.esm.js'
+
 import PhotoSwipeDynamicCaption from 'photoswipe-dynamic-caption-plugin';
 import 'photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css';
 
@@ -149,7 +151,7 @@ export function GalleryExampleOpenZoomed(props) {
       initialZoomLevel: 'fill',
       secondaryZoomLevel: 'fill',
       maxZoomLevel: 3,
-      pswpModule: () => import('../../static/photoswipe/photoswipe.esm.js')
+      pswpModule: PhotoSwipe
     });
     lightbox.init();
 

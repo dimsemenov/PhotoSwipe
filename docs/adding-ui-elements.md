@@ -21,6 +21,7 @@ const lightbox = new PhotoSwipeLightbox(options);
 lightbox.on('uiRegister', function() {
   lightbox.pswp.ui.registerElement({
     name: 'test-button',
+    ariaLabel: 'Toggle zoom',
     order: 9,
     isButton: true,
     html: 'Test',
@@ -238,7 +239,7 @@ pswp.ui.registerElement({
   // Classname of the element. 
   // Optional, if not defined - name will be used 
   // in format pswp__button--name, or pswp__name
-  className: 'test-123'
+  className: undefined,
 
   // Order of element, default order elements:
   // counter - 5, zoom button - 10, info - 15, close - 20.
@@ -254,6 +255,10 @@ pswp.ui.registerElement({
 
   // Button title, optional
   title: 'Button title', 
+
+  // Button aria-label attribute,
+  // if not defined - title will be used
+  ariaLabel: undefined,
   
   // html string, will be added inside button, optional
   // can also be an object with svg data
@@ -285,5 +290,7 @@ pswp.ui.registerElement({
 ```
 
 All default buttons and elements also use this syntax, so you can look up more examples in folder `/src/js/ui/` within the repository.
+
+If you need to override or slightly adjust existing buttons - feel free to use [`uiElement` filter](filters#uielement).
 
 `registerElement` is not the only method to add various UI elements, it's just an optional shortcut. Feel free to append elements manually.
