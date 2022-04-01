@@ -77,10 +77,19 @@ class UIElement {
         element.type = 'button';
       }
 
+      let { title } = data;
+      const { ariaLabel } = data;
+
       if (typeof pswp.options[name + 'Title'] === 'string') {
-        element.title = pswp.options[name + 'Title'];
-      } else if (data.title) {
-        element.title = data.title;
+        title = pswp.options[name + 'Title'];
+      }
+
+      if (title) {
+        element.title = title;
+      }
+
+      if (ariaLabel || title) {
+        element.setAttribute('aria-label', ariaLabel || title);
       }
     }
 
