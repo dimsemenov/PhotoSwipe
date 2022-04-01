@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.2.2 - https://photoswipe.com
+  * PhotoSwipe 5.2.3 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /**
@@ -3091,10 +3091,19 @@ class UIElement {
         element.type = 'button';
       }
 
+      let { title } = data;
+      const { ariaLabel } = data;
+
       if (typeof pswp.options[name + 'Title'] === 'string') {
-        element.title = pswp.options[name + 'Title'];
-      } else if (data.title) {
-        element.title = data.title;
+        title = pswp.options[name + 'Title'];
+      }
+
+      if (title) {
+        element.title = title;
+      }
+
+      if (ariaLabel || title) {
+        element.setAttribute('aria-label', ariaLabel || title);
       }
     }
 
@@ -3135,7 +3144,7 @@ class UIElement {
       }
     }
 
-    container.appendChild(element);
+    container.appendChild(pswp.applyFilters('uiElement', element, data));
   }
 }
 
