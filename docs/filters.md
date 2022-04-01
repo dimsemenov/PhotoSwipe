@@ -136,6 +136,30 @@ lightbox.init();
 
 
 
+### uiElement
+
+Modify a UI element that's being created.
+
+<PswpCodePreview galleryID="test-ui-element-filter">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--test-ui-element-filter',
+  children: 'a',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
+});
+lightbox.addFilter('uiElement', (element, data) => {
+  if (data.name === 'arrowNext') {
+    element.style.background = 'red';
+  }
+  return element;
+});
+lightbox.init();
+```
+
+</PswpCodePreview>
+
 
 ### thumbEl
 

@@ -121,7 +121,7 @@ class UIElement {
       }
     }
 
-    container.appendChild(element);
+    container.appendChild(pswp.applyFilters('uiElement', element, data));
   }
 }
 
