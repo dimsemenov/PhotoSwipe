@@ -1,0 +1,31 @@
+name: PhotoSwipe Jobs
+
+on: [push]
+
+jobs:
+  build:
+    name: Publish docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "setup node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: "npm install & build docs"
+        working-directory: demo-docs-website
+        run: |
+          npm install
+          npm run build
+
+      - name: "install ssh key"
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
+      - name: "deploy with rsync"
+        run: rsync -avz ./demo-docs-website/build/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.RSYNC_DIR }}

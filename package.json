@@ -1,25 +1,46 @@
 {
   "name": "photoswipe",
-  "version": "4.1.3",
+  "version": "5.2.0-beta.5",
+  "main": "dist/photoswipe.esm.js",
+  "style": "dist/photoswipe.css",
+  "type": "module",
+  "exports": {
+    ".": "./dist/photoswipe.esm.js",
+    "./lightbox": "./dist/photoswipe-lightbox.esm.js"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 0.12.0"
   },
   "scripts": {
-    "test": "grunt jshint"
+    "build": "npm run build-and-minify-js && npm run build-css && npm run copy-to-dist",
+    "watch": "concurrently \"npm:watch-js\" \"npm:watch-css\" \"npm:watch-docs\"",
+    "build-and-minify-js": "rollup --config build/rollup.config.js",
+    "watch-js": "rollup --config build/rollup.config.watch.js --watch",
+    "build-css": "copyfiles -f src/*.css dist/ && copyfiles -f src/*.css demo-docs-website/static/photoswipe/",
+    "watch-css": "chokidar \"src/*.css\" --command \"npm run build-css\"",
+    "watch-docs": "cd demo-docs-website/ && npm start",
+    "copy-to-dist": "copyfiles -f demo-docs-website/static/photoswipe/* dist/",
+    "lint": "eslint src/js/**/*.js",
+    "lint-auto-fix": "eslint src/js/**/*.js --fix",
+    "test": "npm run lint"
   },
   "devDependencies": {
-    "grunt": "~1.0.3",
-    "grunt-autoprefixer": "^3.0.3",
-    "grunt-contrib-clean": "~2.0.0",
-    "grunt-contrib-concat": "~1.0.1",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-cssmin": "^3.0.0",
-    "grunt-contrib-jshint": "~2.0.0",
-    "grunt-contrib-uglify": "~4.0.0",
-    "grunt-contrib-watch": "~1.1.0",
-    "grunt-jekyll": "~1.0.0",
-    "grunt-sass": "^3.0.2",
-    "grunt-svgmin": "^5.0.0"
+    "@babel/core": "^7.13.16",
+    "@babel/eslint-parser": "^7.13.14",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^6.0.2",
+    "copyfiles": "^2.4.1",
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "rollup": "^2.46.0",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "repository": {
     "type": "git",
@@ -30,7 +51,6 @@
     "url": "https://github.com/dimsemenov/Photoswipe/issues"
   },
   "homepage": "https://photoswipe.com",
-  "main": "dist/photoswipe.js",
   "keywords": [
     "gallery",
     "lightbox",
@@ -40,6 +60,7 @@
     "swipe",
     "zoom"
   ],
-  "author": "Dmitry Semenov (http://dimsemenov.com)",
-  "license": "MIT"
+  "author": "Dmytro Semenov (https://dimsemenov.com)",
+  "license": "MIT",
+  "dependencies": {}
 }

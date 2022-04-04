@@ -1,0 +1,35 @@
+/* .theme-doc-footer,
+.pagination-nav,
+.theme-doc-markdown > * {
+  max-width: 650px;
+} */
+
+.theme-doc-markdown iframe {
+  width: 100%;
+  height: 450px;
+}
+
+.theme-doc-footer {
+  border-top: 1px solid var(--ifm-toc-border-color);
+  padding: var(--ifm-global-spacing) 0;
+}
+nav.pagination-nav {
+  border-top: 1px solid var(--ifm-toc-border-color);
+  margin-top: 0;
+}
+a.pagination-nav__link {
+  border: 0;
+  text-decoration: none;
+  padding: var(--ifm-global-spacing) 0;
+}
+a.pagination-nav__link .pagination-nav__sublabel {
+  text-decoration: none;
+}
+.pagination-nav__label {
+  font-size: var(--ifm-h3-font-size);
+}
+.pagination-nav__label::after,
+.pagination-nav__label::before {
+  content: none !important;
+}
+    

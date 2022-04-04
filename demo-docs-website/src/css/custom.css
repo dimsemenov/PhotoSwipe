@@ -1,0 +1,139 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e; 
+  --ifm-code-font-size: 95%;
+
+  --ifm-toc-border-color: rgba(0, 0, 0, 0.065);
+  --ifm-code-background: rgb(250, 250, 250);
+
+  --ifm-link-color: #3169B3;
+  --ifm-link-hover-color: #C00;
+  --ifm-link-decoration: underline;
+  --ifm-link-hover-decoration: underline;
+
+  --ifm-navbar-link-hover-color: var(--ifm-link-hover-color);
+
+  --ifm-footer-background-color: none;
+  --ifm-footer-color: auto;
+  --ifm-footer-padding-horizontal: calc(var(--ifm-spacing-horizontal) * 2);
+  --ifm-footer-padding-vertical: calc(var(--ifm-spacing-vertical) * 2);
+
+  --pswp-docs-main-content-width: 1100px;
+
+  --ifm-heading-font-weight: var(--ifm-font-weight-semibold);
+
+
+}
+
+a {
+  transition: none;
+}
+
+a:hover {
+  color: var(--ifm-link-hover-color);
+  /* autoprefixer: ignore next */
+  text-decoration: var(--ifm-link-hover-decoration);
+}
+
+pre code,
+.pswp-example__preview {
+  background: var(--ifm-code-background);
+}
+
+code {
+  border: 0;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+.ukraine-flag {
+  width: 21px;
+  height: 14px;
+  position: relative;
+  background: #ffcc00;
+  top: 2px;
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 2px;
+}
+.ukraine-flag:before {
+ content:'';
+ position: absolute;
+ width: 21px;
+ height: 7px;
+ left:0;
+ top:0;
+ background: #0066cc;
+}
+
+a.hash-link {
+  text-decoration: none;
+  transition: none;
+  padding: 0.5rem 0.7rem;
+}
+
+.theme-code-block--hidden {
+  display: none;
+}
+
+
+.navbar,
+.footer,
+.main-wrapper {
+  width: 100%;
+  max-width: var(--pswp-docs-main-content-width);
+  margin: 0 auto;
+}
+.navbar {
+  z-index: 20;
+  box-shadow: none;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+.footer {
+  margin-top: 60px;
+  border-top: 1px solid var(--ifm-toc-border-color);
+}
+.docs-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+}
+.pswp-docs__main-column > article {
+  max-width: 700px;
+}
+.pswp-docs__sidebar-menu {
+  width: 30%;
+  width: 250px;
+}
+
+/*.pswp-docs__main-column {
+  width: 70%;
+} */
+.theme-doc-markdown {
+  /* max-width: 670px; */
+}
+
+@import './sidebar-menu.css';
+@import './docs-page.css';
+@import './example-code-block.css';
+@import './scrollbar.css';
+@import './header.css';
+@import './home.css';

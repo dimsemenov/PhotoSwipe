@@ -1,98 +1,30 @@
-> # 🇺🇦 UKRAINE NEEDS YOUR HELP NOW!
->
-> I'm the creator of this project and I'm Ukrainian.
->
-> **My country, Ukraine, [is being invaded by the Russian Federation, right now](https://www.bbc.com/news/world-europe-60504334)**. I've fled Kyiv and now I'm safe with my family in the western part of Ukraine. At least for now.
-> Russia is hitting target all over my country by ballistic missiles.
->
-> **Please, save me and help to save my country!**
->
-> Ukrainian National Bank opened [an account to Raise Funds for Ukraine’s Armed Forces](https://bank.gov.ua/en/news/all/natsionalniy-bank-vidkriv-spetsrahunok-dlya-zboru-koshtiv-na-potrebi-armiyi):
->
-> ```
-> SWIFT Code NBU: NBUA UA UX
-> JP MORGAN CHASE BANK, New York
-> SWIFT Code: CHASUS33
-> Account: 400807238
-> 383 Madison Avenue, New York, NY 10179, USA
-> IBAN: UA843000010000000047330992708
-> ```
->
-> You can also donate to [charity supporting Ukrainian army](https://savelife.in.ua/en/donate/).
->
-> **THANK YOU!**
+```
+npm install photoswipe#beta
+```
+
+[![Sponsor via OpenCollective](https://img.shields.io/opencollective/all/photoswipe?label=Sponsor%20via%20OpenCollective)](https://opencollective.com/photoswipe)
+[![Follow on Twitter](https://img.shields.io/twitter/follow/photoswipe?style=social)](https://twitter.com/intent/user?screen_name=photoswipe)
 
 
-:exclamation: **Important note** v5 beta is now available for testing, [read announcement here](https://github.com/dimsemenov/PhotoSwipe/issues/1749) and report any issues that you find, code is within `v5-beta` branch.
+### Repo structure
 
-## PhotoSwipe Repository 
+- `dist/` - main JS and CSS
+- `src/` - source JS and CSS.
+  - `src/js/photoswipe.js` - entry for PhotoSwipe Core.
+  - `src/js/lightbox/lightbox.js` - entry for PhotoSwipe Lightbox.
+- `docs/` - documentation markdown files.
+- `website/` - website with documentation, demos and manual tests.
+- `build/` - rollup build config.
 
-[![Build Status](https://travis-ci.org/dimsemenov/PhotoSwipe.svg)](https://travis-ci.org/dimsemenov/PhotoSwipe) 
+### Build
 
-JavaScript image gallery for mobile and desktop. 
+- `npm run build` - builds and minifies JS and CSS to `dist/` directory. 
+- `npm run lint` - lints JS files in `src/` with eslint (`npm run lint-auto-fix` to fix auto-fixable issues).
 
-- [Documentation and getting started guide](http://photoswipe.com/documentation/getting-started.html).
-- [Demo and script home page](http://photoswipe.com).
-- [NPM](https://www.npmjs.com/package/photoswipe) `npm install photoswipe`.
-- Bower `bower install photoswipe`.
+### Build docs and demos
 
-## Location of files
-
-- Compiled PhotoSwipe JS and CSS files, SVG and PNG sprites are in the [dist/](https://github.com/dimsemenov/PhotoSwipe/tree/master/dist) folder.
-- Source files (.JS and .SCSS) are in the [src/](https://github.com/dimsemenov/PhotoSwipe/tree/master/src) folder.  Note that PhotoSwipe uses Autoprefixer when compiling SASS files.
-- Demo website is in the [website/](https://github.com/dimsemenov/PhotoSwipe/tree/master/website) folder.
-- Documentation markdown files are in [website/documentation/](https://github.com/dimsemenov/PhotoSwipe/tree/master/website/documentation).
-
-## Plugins / extensions / addons
-
-- [Ruby gem](https://rubygems.org/gems/photoswipe-rails).
-- Ember.js addons: [ember-photoswipe](https://github.com/kaermorchen/ember-photoswipe), [ember-cli-photoswipe](https://github.com/poetic/ember-cli-photoswipe).
-- [Eager app](https://eager.io/app/DvuKIoU8iTOt).
-- [Koken CMS plugin](https://github.com/DanielMuller/koken-plugin-photoswipe).
-- [Orchard CMS module](https://gallery.orchardproject.net/List/Modules/Orchard.Module.Cascade.PhotoSwipe).
-- [Yellow CMS plugin](https://github.com/datenstrom/yellow-plugins/tree/master/gallery).
-- [Kirby CMS plugin](https://github.com/SiteMarina/guggenheim).
-- [Drupal CMF module](https://www.drupal.org/project/photoswipe).
-- [ProcessWire CMS module](https://github.com/blynx/MarkupProcesswirePhotoswipe).
-- [SPIP CMS module](https://plugins.spip.net/photoswipe.html).
-- [Fork CMS MediaLibrary widget](https://github.com/forkcms/forkcms).
-
-Coded something useful? <a href='mailto:diiiimaaaa@gmail.com?subject="PhotoSwipe Plugin"'>Email me</a> and I’ll post a link to it here.
-
-## Build 
-
-To compile PhotoSwipe by yourself, make sure that you have [Node.js](http://nodejs.org/), [Grunt.js](https://github.com/cowboy/grunt), [Ruby](http://www.ruby-lang.org/) and [Jekyll](https://github.com/mojombo/jekyll/) installed, then:
-
-1) Clone the repository
-
-	git clone https://github.com/dimsemenov/PhotoSwipe.git
-
-2) Go inside the PhotoSwipe folder that you fetched and install Node dependencies
-
-	cd PhotoSwipe && npm install
-
-3) Run `grunt` to generate the JS and CSS files in the `dist` folder and the site in the `_site/` folder
-
-	grunt
-
-Optionally:
-
-- Run `grunt watch` to automatically rebuild files (JS, CSS, demo website and documentation) when you change files in `src/` or in `website/`.
-- Run `grunt nosite` to build just JS and CSS files (output is folder `dist/`).
-- Run `grunt pswpbuild` to build just JS files. Param `--pswp-exclude` allows to exclude modules, for example `grunt pswpbuild --pswp-exclude=history` will exclude history module.
-
-## Using PhotoSwipe?
-
-If you’ve used PhotoSwipe in some interesting way, or on the site of a popular brand, I’d be very grateful if you <a href='mailto:diiiimaaaa@gmail.com?subject="Site that uses PhotoSwipe"'>shoot me</a> a link to it.
-
-## License
-
-Script is licensed under MIT license with one exception: Do not create a public WordPress plugin based on it, as I will develop it. If you need to use it for a public WordPress plugin right now, please ask me by email first. Thanks!
-
-Attribution is not required, but much appreciated, especially if you’re making a product for developers.
-
-## About
-
-PhotoSwipe 4.0+ is developed by [Dmitry Semenov](http://twitter.com/dimsemenov). But initially script was created in 2011 by [Code Computerlove](http://www.codecomputerlove.com/), a digital agency in Manchester, they [passed](https://twitter.com/PhotoSwipe/status/444134042787930113) on development in March 2014. You can view [source and documentation](https://github.com/dimsemenov/PhotoSwipe/tree/v3.0.3) of old PhotoSwipe (<4.0) in history of this repo.
+- `npm install` in root
+- `npm install` in `/website/` directory to get docusaurus (if you also need to build docs)
+- `npm run watch` - watches changes for files in `src/` and `docs/`, starts Docusaurus - demo website with many examples where you perform manual tests, at 3000 port (visit [http://localhost:3000](http://localhost:3000)).
 
 
