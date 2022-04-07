@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.2.3 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.2.4 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /**
@@ -95,11 +95,15 @@ function getElementsFromOption(option, legacySelector, parent = document) {
 }
 
 /**
- * @param {*} v
+ * Check if variable is PhotoSwipe class
+ *
+ * @param {*} fn
  * @returns Boolean
  */
-function isClass(fn) {
-  return typeof fn === 'function' && /^\s*class\s+/.test(fn.toString());
+function isPswpClass(fn) {
+  return typeof fn === 'function'
+    && fn.prototype
+    && fn.prototype.goTo;
 }
 
 /**
@@ -1276,7 +1280,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     const promiseArray = [];
 
     const pswpModuleType = typeof options.pswpModule;
-    if (isClass(options.pswpModule)) {
+    if (isPswpClass(options.pswpModule)) {
       promiseArray.push(options.pswpModule);
     } else if (pswpModuleType === 'string') {
       throw new Error('pswpModule as string is no longer supported');
