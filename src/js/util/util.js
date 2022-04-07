@@ -189,9 +189,13 @@ export function getElementsFromOption(option, legacySelector, parent = document)
 }
 
 /**
- * @param {*} v
+ * Check if variable is PhotoSwipe class
+ *
+ * @param {*} fn
  * @returns Boolean
  */
-export function isClass(fn) {
-  return typeof fn === 'function' && /^\s*class\s+/.test(fn.toString());
+export function isPswpClass(fn) {
+  return typeof fn === 'function'
+    && fn.prototype
+    && fn.prototype.goTo;
 }

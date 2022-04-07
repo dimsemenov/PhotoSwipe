@@ -17,7 +17,7 @@
 import {
   specialKeyUsed,
   getElementsFromOption,
-  isClass
+  isPswpClass
 } from '../util/util.js';
 
 import PhotoSwipeBase from '../core/base.js';
@@ -145,7 +145,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     const promiseArray = [];
 
     const pswpModuleType = typeof options.pswpModule;
-    if (isClass(options.pswpModule)) {
+    if (isPswpClass(options.pswpModule)) {
       promiseArray.push(options.pswpModule);
     } else if (pswpModuleType === 'string') {
       throw new Error('pswpModule as string is no longer supported');
