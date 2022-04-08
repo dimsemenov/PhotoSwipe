@@ -6,6 +6,9 @@ sidebar_label: Opening or closing transition
 
 To adjust opening or closing transition type use lightbox option `showHideAnimationType` (`String`). It supports three values - `zoom` (default), `fade` (default if there is no thumbnail) and `none`.
 
+Animations are automatically disabled if user `(prefers-reduced-motion: reduce)`.
+
+
 ## zoom
 
 <PswpCodePreview galleryID="zoom-transition">
