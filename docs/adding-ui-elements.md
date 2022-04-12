@@ -291,6 +291,6 @@ pswp.ui.registerElement({
 
 All default buttons and elements also use this syntax, so you can look up more examples in folder `/src/js/ui/` within the repository.
 
-If you need to override or slightly adjust existing buttons - feel free to use [`uiElement` filter](filters#uielement).
+If you need to override or slightly adjust existing buttons - feel free to use [`uiElement` filter](/filters#uielement).
 
 `registerElement` is not the only method to add various UI elements, it's just an optional shortcut. Feel free to append elements manually.

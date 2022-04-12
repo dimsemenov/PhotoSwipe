@@ -8,7 +8,7 @@ Filters allow to modify data, they expect to have something returned back to the
 
 ### numItems
 
-Modify the total amount of slides. Example on [Data sources](data-sources#custom-last-slide) page.
+Modify the total amount of slides. Example on [Data sources](/data-sources#custom-last-slide) page.
 
 ```js
 lightbox.addFilter('numItems', (numItems, dataSource) => {
@@ -18,7 +18,7 @@ lightbox.addFilter('numItems', (numItems, dataSource) => {
 
 ### itemData
 
-Modify slide item data. Example on [Data sources](data-sources#custom-last-slide) page.
+Modify slide item data. Example on [Data sources](/data-sources#custom-last-slide) page.
 
 ```js
 lightbox.addFilter('itemData', (itemData, index) => {
@@ -28,7 +28,7 @@ lightbox.addFilter('itemData', (itemData, index) => {
 
 ### domItemData
 
-Modify item data when it's parsed from DOM element.  Example on [Data sources](data-sources#custom-html-markup) page.
+Modify item data when it's parsed from DOM element.  Example on [Data sources](/data-sources#custom-html-markup) page.
 
 ```js
 lightbox.addFilter('domItemData', (itemData, element, linkEl) => {

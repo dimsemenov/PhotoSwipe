@@ -153,7 +153,7 @@ lightbox.init();
 
 ## Slide content events
 
-Refer to [Custom Content](custom-content) section of docs for examples.
+Refer to [Custom Content](/custom-content) section of docs for examples.
 
 <PswpCodePreview galleryID="test-content-events">
 

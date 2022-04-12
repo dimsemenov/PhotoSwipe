@@ -26,7 +26,7 @@ lightbox.init();
 
 </PswpCodePreview>
 
-If you're using a different datasource, for example Array of images and you still want to use zoom transition, please refer to [Separate DOM and data](data-sources#separate-dom-and-data) guide.
+If you're using a different datasource, for example Array of images and you still want to use zoom transition, please refer to [Separate DOM and data](/data-sources#separate-dom-and-data) guide.
 
 ## fade
 

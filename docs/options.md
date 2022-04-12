@@ -369,7 +369,7 @@ lightbox.init();
 
 String, `'The image cannot be loaded'`.
 
-Message to display when the image wasn't able to load. If you need to display HTML - use [contentErrorElement filter](filters#contenterrorelement).
+Message to display when the image wasn't able to load. If you need to display HTML - use [contentErrorElement filter](/filters#contenterrorelement).
 
 <PswpCodePreview>
 
@@ -426,7 +426,7 @@ lightbox.init();
 
 ### mainClass
 
-String, `undefined`. Class that will be added to the root element of PhotoSwipe, may contain multiple separated by space. Example on [Styling](styling#modifying-icons) page.
+String, `undefined`. Class that will be added to the root element of PhotoSwipe, may contain multiple separated by space. Example on [Styling](/styling#modifying-icons) page.
 
 ### appendToEl
 
