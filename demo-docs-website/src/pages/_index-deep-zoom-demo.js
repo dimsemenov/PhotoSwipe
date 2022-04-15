@@ -62,37 +62,41 @@ export default function DeepZoomGalleryDemo() {
 
   useEffect(() => {
     let deepZoomPlugin;
-      let lightbox = new Lightbox({
-        gallery: '#gallery--deep-zoom',
-        children: 'figure > a',
-        pswpModule: () => import('../../static/photoswipe/photoswipe.esm.js'),
+    let lightbox = new Lightbox({
+      gallery: '#gallery--deep-zoom',
+      children: 'figure > a',
+      pswpModule: () => import('../../static/photoswipe/photoswipe.esm.js'),
 
-        // dynamically load deep zoom plugin
-        openPromise: () => {
-          // make sure it's initialized only once per lightbox
-          if (!deepZoomPlugin) {
-            return import('photoswipe-deep-zoom-plugin').then((deepZoomPluginModule) => {
-              deepZoomPlugin = new deepZoomPluginModule.default(lightbox, {
-                // deep zoom plugin options
-              });
-            })
-          }
-        },
-        
-        // Recommended PhotoSwipe options for this plugin
-        allowPanToNext: false, // prevent swiping to the next slide when image is zoomed
-        allowMouseDrag: true, // display dragging cursor at max zoom level
-        wheelToZoom: true, // enable wheel-based zoom
-        zoom: false // disable default zoom button
-      });
-      lightbox.init();
+      // dynamically load deep zoom plugin
+      openPromise: () => {
+        // make sure it's initialized only once per lightbox
+        if (!deepZoomPlugin) {
+          return import('photoswipe-deep-zoom-plugin').then((deepZoomPluginModule) => {
+            deepZoomPlugin = new deepZoomPluginModule.default(lightbox, {
+              // deep zoom plugin options
+            });
+          })
+        }
+      },
+      
+      // Recommended PhotoSwipe options for this plugin
+      allowPanToNext: false, // prevent swiping to the next slide when image is zoomed
+      allowMouseDrag: true, // display dragging cursor at max zoom level
+      wheelToZoom: true, // enable wheel-based zoom
+      zoom: false // disable default zoom button
+    });
+    lightbox.init();
 
     return function cleanup() {
-      lightbox.destroy();
-      lightbox = null;
-
-      deepZoomPlugin.destroy();
-      deepZoomPlugin = null;
+      if (lightbox) {
+        lightbox.destroy();
+        lightbox = null;
+      }
+      
+      if (deepZoomPlugin) {
+        deepZoomPlugin.destroy();
+        deepZoomPlugin = null;
+      }
     };
   }, []);
 

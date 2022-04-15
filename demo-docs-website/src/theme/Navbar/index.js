@@ -7,7 +7,6 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import clsx from 'clsx';
 import Translate from '@docusaurus/Translate';
-import SearchBar from '@theme/SearchBar';
 import ColorModeToggle from '@theme/ColorModeToggle';
 import {
   useThemeConfig,
@@ -26,6 +25,10 @@ import IconMenu from '@theme/IconMenu';
 import IconClose from '@theme/IconClose';
 import styles from './styles.module.css'; // retrocompatible with v1
 import ReactGithubStars from './github-stars';
+
+import { DocSearch } from '@docsearch/react';
+
+import '@docsearch/css';
 
 const DefaultNavItemPosition = 'right';
 
@@ -222,7 +225,6 @@ export default function Navbar() {
   const activeDocPlugin = useActivePlugin();
   const {navbarRef, isNavbarVisible} = useHideableNavbar(hideOnScroll);
   const items = useNavbarItems();
-  const hasSearchNavbarItem = items.some((item) => item.type === 'search');
   const {leftItems, rightItems} = splitNavItemsByPosition(items);
   return (
     <nav
@@ -255,6 +257,11 @@ export default function Navbar() {
           {leftItems.map((item, i) => (
             <NavbarItem {...item} key={i} />
           ))}
+          <DocSearch
+            appId="M9RBCSJL4H"
+            indexName="photoswipe"
+            apiKey="a8151d869decf80b4e64c7103b1ea00a"
+          />
         </div>
         <div className="navbar__items navbar__items--right">
           <TwitterLink />
@@ -269,7 +276,6 @@ export default function Navbar() {
               onChange={colorModeToggle.toggle}
             />
           )}
-          {!hasSearchNavbarItem && <SearchBar />}
         </div>
       </div>
 
