@@ -62,7 +62,7 @@ class PhotoSwipeBase extends Eventable {
     } else if (dataSource && dataSource.gallery) {
       // dataSource has gallery property,
       // thus it was created by Lightbox, based on
-      // gallerySelecor and childSelector options
+      // gallery and children options
 
       // query DOM elements
       if (!dataSource.items) {
