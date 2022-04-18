@@ -78,8 +78,8 @@ export function getThumbBounds(index, itemData, instance) {
     } else {
       thumbBounds = getCroppedBoundsByElement(
         thumbnail,
-        itemData.w,
-        itemData.h
+        itemData.width || itemData.w,
+        itemData.height || itemData.h
       );
     }
   }
