@@ -1,7 +1,13 @@
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+
 /**
  * Base PhotoSwipe event object
  */
 class PhotoSwipeEvent {
+  /**
+   * @param {string} type
+   * @param {Record<string, any>} [details]
+   */
   constructor(type, details) {
     this.type = type;
     if (details) {
@@ -14,16 +20,35 @@ class PhotoSwipeEvent {
   }
 }
 
+/** @typedef {{ fn: () => any, priority: number }} Filter */
+
 /**
  * PhotoSwipe base class that can listen and dispatch for events.
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox, extended by base.js
  */
 class Eventable {
   constructor() {
+    /**
+     * @type {Record<string, (() => any)[]>}
+     * @private
+     */
     this._listeners = {};
+
+    /**
+     * @type {Record<string, Filter[]>}
+     * @private
+     */
     this._filters = {};
+
+    /** @type {PhotoSwipe=} */
+    this.pswp = undefined;
   }
 
+  /**
+   * @param {string} name
+   * @param {() => any} fn
+   * @param {number} priority
+   */
   addFilter(name, fn, priority = 100) {
     if (!this._filters[name]) {
       this._filters[name] = [];
@@ -37,6 +62,10 @@ class Eventable {
     }
   }
 
+  /**
+   * @param {string} name
+   * @param {() => any} fn
+   */
   removeFilter(name, fn) {
     if (this._filters[name]) {
       this._filters[name] = this._filters[name].filter(filter => (filter.fn !== fn));
@@ -47,15 +76,24 @@ class Eventable {
     }
   }
 
+  /**
+   * @param {string} name
+   * @param  {any[]} args
+   */
   applyFilters(name, ...args) {
     if (this._filters[name]) {
       this._filters[name].forEach((filter) => {
+        // @ts-expect-error TODO
         args[0] = filter.fn.apply(this, args);
       });
     }
     return args[0];
   }
 
+  /**
+   * @param {string} name
+   * @param {() => any} fn
+   */
   on(name, fn) {
     if (!this._listeners[name]) {
       this._listeners[name] = [];
@@ -70,6 +108,10 @@ class Eventable {
     }
   }
 
+  /**
+   * @param {string} name
+   * @param {() => any} fn
+   */
   off(name, fn) {
     if (this._listeners[name]) {
       this._listeners[name] = this._listeners[name].filter(listener => (fn !== listener));
@@ -80,6 +122,11 @@ class Eventable {
     }
   }
 
+  /**
+   * @param {string} name
+   * @param {Record<string, any>} [details]
+   * @returns {PhotoSwipeEvent}
+   */
   dispatch(name, details) {
     if (this.pswp) {
       return this.pswp.dispatch(name, details);
@@ -93,6 +140,7 @@ class Eventable {
 
     if (this._listeners[name]) {
       this._listeners[name].forEach((listener) => {
+        // @ts-expect-error TODO
         listener.call(this, event);
       });
     }

@@ -1,9 +1,11 @@
+/** @typedef {import("../photoswipe").Point} Point */
+
 /**
   * Creates element and optionally appends it to another.
   *
   * @param {String} className
-  * @param {String | null} tagName
-  * @param {HTMLElement | null} appendToEl
+  * @param {String | false} [tagName]
+  * @param {HTMLElement=} appendToEl
   */
 export function createElement(className, tagName, appendToEl) {
   const el = document.createElement(tagName || 'div');
@@ -15,8 +17,6 @@ export function createElement(className, tagName, appendToEl) {
   }
   return el;
 }
-
-/** @typedef {{ x: number; y: number; id?: string }} Point */
 
 /**
  * @param {Point} p1
@@ -76,8 +76,8 @@ export function clamp(val, min, max) {
  * Get transform string
  *
  * @param {number} x
- * @param {number | null} y
- * @param {number | null} scale
+ * @param {number=} y
+ * @param {number=} scale
  */
 export function toTransformString(x, y, scale) {
   let propValue = 'translate3d('
@@ -98,8 +98,8 @@ export function toTransformString(x, y, scale) {
  *
  * @param {HTMLElement} el
  * @param {number} x
- * @param {number | null} y
- * @param {number | null} scale
+ * @param {number=} y
+ * @param {number=} scale
  */
 export function setTransform(el, x, y, scale) {
   el.style.transform = toTransformString(x, y, scale);
@@ -113,7 +113,7 @@ const defaultCSSEasing = 'cubic-bezier(.4,0,.22,1)';
  * @param {HTMLElement} el
  * @param {string=} prop CSS property to animate
  * @param {number=} duration in ms
- * @param {string | null=} ease CSS easing function
+ * @param {string=} ease CSS easing function
  */
 export function setTransitionStyle(el, prop, duration, ease) {
   // inOut: 'cubic-bezier(.4, 0, .22, 1)', // for "toggle state" transitions
@@ -186,8 +186,8 @@ export function specialKeyUsed(e) {
  * Parse `gallery` or `children` options.
  *
  * @param {HTMLElement | NodeListOf<HTMLElement> | string} option
- * @param {string | null} legacySelector
- * @param {HTMLElement | Document | null=} parent
+ * @param {string=} legacySelector
+ * @param {HTMLElement | Document} [parent]
  * @returns HTMLElement[]
  */
 export function getElementsFromOption(option, legacySelector, parent = document) {

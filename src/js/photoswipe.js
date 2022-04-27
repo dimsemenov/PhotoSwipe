@@ -20,6 +20,90 @@ import PhotoSwipeBase from './core/base.js';
 import Opener from './opener.js';
 import ContentLoader from './slide/loader.js';
 
+/** @typedef {any} PhotoSwipeLightbox TODO */
+/** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: any) => any)} ZoomLevel TODO */
+/** @typedef {{ x?: number; y?: number; id?: string }} Point */
+/** @typedef {{ x: number; y: number }} Size */
+/** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
+
+/**
+ * @typedef {Object} PhotoSwipeOptions
+ *
+ * @prop {PhotoSwipeItem[]} dataSource
+ * @prop {boolean=} allowPanToNext
+ * @prop {number=} spacing
+ * @prop {boolean=} loop
+ * @prop {boolean=} pinchToClose
+ * @prop {boolean=} closeOnVerticalDrag
+ * @prop {Padding=} padding
+ * @prop {(viewportSize: Size, itemData: PhotoSwipeItem, index: number) => Padding} [paddingFn]
+ * @prop {number=} hideAnimationDuration
+ * @prop {number=} showAnimationDuration
+ * @prop {number=} zoomAnimationDuration
+ * @prop {'zoom' | 'fade' | 'none'} [showHideAnimationType]
+ * @prop {boolean=} escKey
+ * @prop {boolean=} arrowKeys
+ * @prop {boolean=} returnFocus
+ * @prop {number=} maxWidthToAnimate
+ * @prop {boolean=} clickToCloseNonZoomable
+ * @prop {string=} imageClickAction
+ * @prop {string=} bgClickAction
+ * @prop {string=} tapAction
+ * @prop {string=} doubleTapAction
+ * @prop {string=} indexIndicatorSep
+ * @prop {number=} preloaderDelay
+ * @prop {number=} panPaddingRatio
+ * @prop {number=} bgOpacity
+ * @prop {number=} index
+ * @prop {string=} errorMsg
+ * @prop {[number, number]=} preload
+ * @prop {string=} easing
+ * @prop {number=} paddingTop
+ * @prop {number=} paddingBottom
+ * @prop {number=} paddingLeft
+ * @prop {number=} paddingRight
+ * @prop {string=} gallerySelector
+ * @prop {string=} childSelector
+ * @prop {(pswp: PhotoSwipeLightbox, e: Event) => number} [getClickedIndexFn]
+ * @prop {string=} arrowPrevSVG
+ * @prop {string=} arrowNextSVG
+ * @prop {string=} mainClass
+ * @prop {string=} closeTitle
+ * @prop {string=} zoomTitle
+ * @prop {string=} arrowPrevTitle
+ * @prop {string=} arrowNextTitle
+ * @prop {boolean=} arrowPrev
+ * @prop {boolean=} arrowNext
+ * @prop {boolean=} zoom
+ * @prop {boolean=} close
+ * @prop {boolean=} counter
+ * @prop {ZoomLevel=} initialZoomLevel
+ * @prop {ZoomLevel=} secondaryZoomLevel
+ * @prop {ZoomLevel=} maxZoomLevel
+ * @prop {boolean=} mouseMovePan
+ * @prop {Promise<any>} [openPromise] // TODO
+ * @prop {HTMLElement=} appendToEl
+ * @prop {Point | null} [initialPointerPos]
+ * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipe) => { x: number; y: number }} [getViewportSizeFn]
+ */
+
+/**
+ * @typedef {_PhotoSwipeItemProps & Record<string, any>} PhotoSwipeItem
+ * @typedef {Object} _PhotoSwipeItemProps
+ * @prop {HTMLElement=} element
+ * @prop {string=} src
+ * @prop {string=} srcset
+ * @prop {number=} w
+ * @prop {number=} h
+ * @prop {string=} msrc
+ * @prop {string=} alt
+ * @prop {boolean=} thumbCropped
+ * @prop {string=} html
+ * @prop {'image' | 'html'} [type]
+ * @prop {'image' | 'html'} [type]
+ */
+
+/** @type {Partial<PhotoSwipeOptions>} */
 const defaultOptions = {
   allowPanToNext: true,
   spacing: 0.1,
@@ -49,20 +133,39 @@ const defaultOptions = {
 };
 
 class PhotoSwipe extends PhotoSwipeBase {
+  /**
+   * @param {PhotoSwipeOptions} options
+   */
   constructor(options) {
     super();
 
     this._prepareOptions(options);
 
-    // offset of viewport relative to document
+    /**
+     * offset of viewport relative to document
+     *
+     * @type {{ x?: number; y?: number }}
+     */
     this.offset = {};
 
+    /**
+     * @type {{ x?: number; y?: number }}
+     * @private
+     */
     this._prevViewportSize = {};
 
-    // Size of scrollable PhotoSwipe viewport
+    /**
+     * Size of scrollable PhotoSwipe viewport
+     *
+     * @type {{ x?: number; y?: number }}
+     */
     this.viewportSize = {};
 
-    // background (backdrop) opacity
+    /**
+     * background (backdrop) opacity
+     *
+     * @type {number}
+     */
     this.bgOpacity = 1;
 
     this.events = new DOMEvents();
@@ -123,6 +226,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.offset.y = window.pageYOffset;
 
     this._initialItemData = this.getItemData(this.currIndex);
+    // @ts-expect-error TODO
     this.dispatch('gettingData', this.currIndex, this._initialItemData, true);
 
     // *Layout* - calculate size and position of elements here
@@ -161,7 +265,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    * Get looped slide index
    * (for example, -1 will return the last slide)
    *
-   * @param {Integer} index
+   * @param {number} index
    */
   getLoopedIndex(index) {
     const numSlides = this.getNumItems();
@@ -191,7 +295,7 @@ class PhotoSwipe extends PhotoSwipeBase {
 
   /**
    * Change the slide
-   * @param  {Integer} New index
+   * @param  {number} index New index
    */
   goTo(index) {
     this.mainScroll.moveIndexBy(
@@ -215,6 +319,9 @@ class PhotoSwipe extends PhotoSwipeBase {
 
   /**
    * @see slide/slide.js zoomTo
+   * TODO
+   *
+   * @param {any[]} args
    */
   zoomTo(...args) {
     this.currSlide.zoomTo(...args);
@@ -280,7 +387,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   /**
    * Refresh/reload content of a slide by its index
    *
-   * @param {Integer} slideIndex
+   * @param {number} slideIndex
    */
   refreshSlideContent(slideIndex) {
     this.contentLoader.removeByIndex(slideIndex);
@@ -308,9 +415,9 @@ class PhotoSwipe extends PhotoSwipeBase {
   /**
    * Set slide content
    *
-   * @param {Object} holder mainScroll.itemHolders array item
-   * @param {Integer} index Slide index
-   * @param {Boolean} force If content should be set even if index wasn't changed
+   * @param {Record<string, any>} holder TODO mainScroll.itemHolders array item
+   * @param {number} index Slide index
+   * @param {boolean=} force If content should be set even if index wasn't changed
    */
   setContent(holder, index, force) {
     if (this.canLoop()) {
@@ -356,7 +463,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    * Update size of all elements.
    * Executed on init and on page resize.
    *
-   * @param  {Boolean} force Update size even if size of viewport was not changed.
+   * @param {boolean=} force Update size even if size of viewport was not changed.
    */
   updateSize(force) {
     // let item;
@@ -401,9 +508,12 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.dispatch('resize');
   }
 
+  /**
+   * @param {number} opacity
+   */
   applyBgOpacity(opacity) {
     this.bgOpacity = Math.max(opacity, 0);
-    this.bg.style.opacity = this.bgOpacity * this.options.bgOpacity;
+    this.bg.style.opacity = String(this.bgOpacity * this.options.bgOpacity);
   }
 
   /**
@@ -418,6 +528,8 @@ class PhotoSwipe extends PhotoSwipeBase {
 
   /**
    * Page resize event handler
+   *
+   * @private
    */
   _handlePageResize() {
     this.updateSize();
@@ -438,11 +550,17 @@ class PhotoSwipe extends PhotoSwipeBase {
    * Page scroll offset is used
    * to get correct coordinates
    * relative to PhotoSwipe viewport.
+   *
+   * @private
    */
   _updatePageScrollOffset() {
     this.setScrollOffset(0, window.pageYOffset);
   }
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
   setScrollOffset(x, y) {
     this.offset.x = x;
     this.offset.y = y;
@@ -452,11 +570,13 @@ class PhotoSwipe extends PhotoSwipeBase {
   /**
    * Create main HTML structure of PhotoSwipe,
    * and add it to DOM
+   *
+   * @private
    */
   _createMainStructure() {
     // root DOM element of PhotoSwipe (.pswp)
     this.element = createElement('pswp');
-    this.element.setAttribute('tabindex', -1);
+    this.element.setAttribute('tabindex', '-1');
     this.element.setAttribute('role', 'dialog');
 
     // template is legacy prop
@@ -500,12 +620,17 @@ class PhotoSwipe extends PhotoSwipeBase {
     return (this.options.loop && this.getNumItems() > 2);
   }
 
+  /**
+   * @param {PhotoSwipeOptions} options
+   * @private
+   */
   _prepareOptions(options) {
     if (window.matchMedia('(prefers-reduced-motion), (update: slow)').matches) {
       options.showHideAnimationType = 'none';
       options.zoomAnimationDuration = 0;
     }
 
+    /** @type {PhotoSwipeOptions}*/
     this.options = {
       ...defaultOptions,
       ...options
