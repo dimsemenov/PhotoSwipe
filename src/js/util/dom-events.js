@@ -15,7 +15,7 @@ try {
  * @typedef {Object} PoolItem
  * @prop {HTMLElement | Window | Document} target
  * @prop {string} type
- * @prop {() => void} listener
+ * @prop {(e: any) => void} listener
  * @prop {boolean} passive
  */
 
@@ -33,7 +33,7 @@ class DOMEvents {
    *
    * @param {HTMLElement | Window | Document} target
    * @param {string} type Can be multiple, separated by space.
-   * @param {() => void} listener
+   * @param {(e: any) => void} listener
    * @param {boolean=} passive
    */
   add(target, type, listener, passive) {
@@ -45,7 +45,7 @@ class DOMEvents {
    *
    * @param {HTMLElement | Window | Document} target
    * @param {string} type
-   * @param {() => void} listener
+   * @param {(e: any) => void} listener
    * @param {boolean=} passive
    */
   remove(target, type, listener, passive) {
@@ -74,7 +74,7 @@ class DOMEvents {
    *
    * @param {HTMLElement | Window | Document} target
    * @param {string} type
-   * @param {() => void} listener
+   * @param {(e: any) => void} listener
    * @param {boolean} passive
    * @param {boolean=} unbind Whether the event should be added or removed
    * @param {boolean=} skipPool Whether events pool should be skipped

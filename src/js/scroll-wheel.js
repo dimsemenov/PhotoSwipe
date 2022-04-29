@@ -1,13 +1,22 @@
+/** @typedef {import("./photoswipe").default} PhotoSwipe */
+
 /**
  * Handles scroll wheel.
  * Can pan and zoom current slide image.
  */
 class ScrollWheel {
+  /**
+   * @param {PhotoSwipe} pswp
+   */
   constructor(pswp) {
     this.pswp = pswp;
     pswp.events.add(pswp.element, 'wheel', this._onWheel.bind(this));
   }
 
+  /**
+   * @private
+   * @param {WheelEvent} e
+   */
   _onWheel(e) {
     e.preventDefault();
     const { currSlide } = this.pswp;

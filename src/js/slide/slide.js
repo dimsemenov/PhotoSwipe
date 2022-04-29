@@ -1,5 +1,20 @@
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").Point} Point */
+
 /**
- * Renders and allows to control a single slide
+ * @typedef {_SlideData & Record<string, any>} SlideData
+ * @typedef {Object} _SlideData
+ * @prop {HTMLElement=} element
+ * @prop {string=} src
+ * @prop {string=} srcset
+ * @prop {number=} w
+ * @prop {number=} h
+ * @prop {string=} msrc
+ * @prop {string=} alt
+ * @prop {boolean=} thumbCropped
+ * @prop {string=} html
+ * @prop {'image' | 'html'} [type]
+ * @prop {'image' | 'html'} [type]
  */
 
 import {
@@ -15,13 +30,22 @@ import PanBounds from './pan-bounds.js';
 import ZoomLevel from './zoom-level.js';
 import { getPanAreaSize } from '../util/viewport-size.js';
 
+/**
+ * Renders and allows to control a single slide
+ */
 class Slide {
+  /**
+   * @param {SlideData} data
+   * @param {number} index
+   * @param {PhotoSwipe} pswp
+   */
   constructor(data, index, pswp) {
     this.data = data;
     this.index = index;
     this.pswp = pswp;
     this.isActive = (index === pswp.currIndex);
     this.currentResolution = 0;
+    /** @type {Point} */
     this.panAreaSize = {};
 
     this.isFirstSlide = (this.isActive && !pswp.opener.isOpen);
@@ -43,7 +67,9 @@ class Slide {
     this.container = createElement('pswp__zoom-wrap');
 
     this.currZoomLevel = 1;
+    /** @type {number} */
     this.width = this.content.width;
+    /** @type {number} */
     this.height = this.content.height;
 
     this.bounds = new PanBounds(this);
@@ -57,7 +83,7 @@ class Slide {
   /**
    * If this slide is active/current/visible
    *
-   * @param {Boolean} isActive
+   * @param {boolean} isActive
    */
   setIsActive(isActive) {
     if (isActive && !this.isActive) {
@@ -71,6 +97,8 @@ class Slide {
 
   /**
    * Appends slide content to DOM
+   *
+   * @param {HTMLElement} holderElement
    */
   append(holderElement) {
     this.holderElement = holderElement;
@@ -83,6 +111,7 @@ class Slide {
 
     this.calculateSize();
 
+    // @ts-expect-error: should be `this.container.style.transformOrigin`?
     this.container.transformOrigin = '0 0';
 
     this.load();
@@ -204,7 +233,7 @@ class Slide {
    * Apply size to current slide content,
    * based on the current resolution and scale.
    *
-   * @param {Boolean} force if size should be updated even if dimensions weren't changed
+   * @param {boolean=} force if size should be updated even if dimensions weren't changed
    */
   updateContentSize(force) {
     // Use initial zoom level
@@ -224,6 +253,10 @@ class Slide {
     this.content.setDisplayedSize(width, height);
   }
 
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
   sizeChanged(width, height) {
     if (width !== this.prevDisplayedWidth
         || height !== this.prevDisplayedHeight) {
@@ -244,12 +277,12 @@ class Slide {
   /**
    * Zoom current slide image to...
    *
-   * @param  {Number} destZoomLevel      Destination zoom level.
-   * @param  {Object|false} centerPoint  Transform origin center point,
-   *                                     or false if viewport center should be used.
-   * @param  {Number} transitionDuration Transition duration, may be set to 0.
-   * @param  {Boolean|null} ignoreBounds Minimum and maximum zoom levels will be ignored.
-   * @return {Boolean|null}              Returns true if animated.
+   * @param {number} destZoomLevel Destination zoom level.
+   * @param {{ x: number; y: number }} centerPoint
+   * Transform origin center point, or false if viewport center should be used.
+   * @param {number=} transitionDuration Transition duration, may be set to 0.
+   * @param {boolean=} ignoreBounds Minimum and maximum zoom levels will be ignored.
+   * @return {boolean=} Returns true if animated.
    */
   zoomTo(destZoomLevel, centerPoint, transitionDuration, ignoreBounds) {
     const { pswp } = this;
@@ -304,6 +337,9 @@ class Slide {
     }
   }
 
+  /**
+   * @param {{ x: number, y: number }} [centerPoint]
+   */
   toggleZoom(centerPoint) {
     this.zoomTo(
       this.currZoomLevel === this.zoomLevels.initial
@@ -317,7 +353,7 @@ class Slide {
    * Updates zoom level property and recalculates new pan bounds,
    * unlike zoomTo it does not apply transform (use applyCurrentZoomPan)
    *
-   * @param {Number} currZoomLevel
+   * @param {number} currZoomLevel
    */
   setZoomLevel(currZoomLevel) {
     this.currZoomLevel = currZoomLevel;
@@ -330,11 +366,11 @@ class Slide {
    * Always call setZoomLevel(newZoomLevel) beforehand to recalculate
    * pan bounds according to the new zoom level.
    *
-   * @param {String} axis
-   * @param {Object|null} centerPoint point based on which zoom is performed,
-   *                                  usually refers to the current mouse position,
-   *                                  if false - viewport center will be used.
-   * @param {Number|null} prevZoomLevel Zoom level before new zoom was applied.
+   * @param {'x' | 'y'} axis
+   * @param {{ x: number; y: number }} [point]
+   * point based on which zoom is performed, usually refers to the current mouse position,
+   * if false - viewport center will be used.
+   * @param {number=} prevZoomLevel Zoom level before new zoom was applied.
    */
   calculateZoomToPanOffset(axis, point, prevZoomLevel) {
     const totalPanDistance = this.bounds.max[axis] - this.bounds.min[axis];
@@ -356,8 +392,8 @@ class Slide {
   /**
    * Apply pan and keep it within bounds.
    *
-   * @param {Number} panX
-   * @param {Number} panY
+   * @param {number} panX
+   * @param {number} panY
    */
   panTo(panX, panY) {
     this.pan.x = this.bounds.correctPan('x', panX);
@@ -402,9 +438,9 @@ class Slide {
   /**
    * Set translate and scale based on current resolution
    *
-   * @param {Number} x
-   * @param {Number} y
-   * @param {Number} zoom
+   * @param {number} x
+   * @param {number} y
+   * @param {number} zoom
    */
   _applyZoomTransform(x, y, zoom) {
     zoom /= this.currentResolution || this.zoomLevels.initial;
@@ -444,7 +480,7 @@ class Slide {
    * sure that browser renders image in highest quality.
    * Also used by responsive images to load the correct one.
    *
-   * @param {Number} newResolution
+   * @param {number} newResolution
    */
   _setResolution(newResolution) {
     if (newResolution === this.currentResolution) {

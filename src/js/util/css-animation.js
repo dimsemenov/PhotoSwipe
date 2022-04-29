@@ -6,8 +6,14 @@ import { setTransitionStyle, removeTransitionStyle } from './util.js';
 
 const DEFAULT_EASING = 'cubic-bezier(.4,0,.22,1)';
 
+/** @typedef {import("./animations").AnimationProps} AnimationProps */
+
 class CSSAnimation {
-  // onComplete can be unpredictable, be careful about current state
+  /**
+   * onComplete can be unpredictable, be careful about current state
+   *
+   * @param {AnimationProps} props
+   */
   constructor(props) {
     this.props = props;
     const {
@@ -50,15 +56,23 @@ class CSSAnimation {
     }, 0);
   }
 
+  /**
+   * @private
+   * @param {TransitionEvent} e
+   */
   _onTransitionEnd(e) {
     if (e.target === this._target) {
       this._finalizeAnimation();
     }
   }
 
+  /**
+   * @private
+   */
   _finalizeAnimation() {
     if (!this._finished) {
       this._finished = true;
+      // @ts-expect-error defined from the outside, maybe it should be defined more explicit?
       this.onFinish();
       if (this._onComplete) {
         this._onComplete();

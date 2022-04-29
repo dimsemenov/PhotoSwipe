@@ -1,6 +1,6 @@
 /** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").PhotoSwipeItem} PhotoSwipeItem */
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../slide/slide").SlideData} SlideData */
 
 /**
  * @param {PhotoSwipeOptions} options
@@ -55,8 +55,8 @@ export function getViewportSize(options, pswp) {
  *
  * @param {'left' | 'top' | 'bottom' | 'right'} prop
  * @param {PhotoSwipeOptions} options PhotoSwipe options
- * @param {{ x: number; y: number }} viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
- * @param {PhotoSwipeItem} itemData Data about the slide
+ * @param {{ x?: number; y?: number }} viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
+ * @param {SlideData} itemData Data about the slide
  * @param {number} index Slide index
  * @returns {number}
  */
@@ -82,8 +82,8 @@ export function parsePaddingOption(prop, options, viewportSize, itemData, index)
 
 /**
  * @param {PhotoSwipeOptions} options
- * @param {{ x: number; y: number }} viewportSize
- * @param {PhotoSwipeItem} itemData
+ * @param {{ x?: number; y?: number }} viewportSize
+ * @param {SlideData} itemData
  * @param {number} index
  */
 export function getPanAreaSize(options, viewportSize, itemData, index) {

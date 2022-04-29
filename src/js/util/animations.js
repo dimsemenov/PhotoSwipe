@@ -1,37 +1,82 @@
 import CSSAnimation from './css-animation.js';
 import SpringAnimation from './spring-animation.js';
 
+/** @typedef {SpringAnimation & CSSAnimation} Animation */
+
+/**
+ * @typedef {Object} AnimationProps
+ *
+ * @prop {HTMLElement=} target
+ *
+ * @prop {string=} name
+ *
+ * @prop {number=} start
+ * @prop {number=} end
+ * @prop {number=} duration
+ * @prop {number=} velocity
+ * @prop {number=} dampingRatio
+ * @prop {number=} naturalFrequency
+ *
+ * @prop {(end: number) => void} [onUpdate]
+ * @prop {() => void} onComplete
+ * @prop {() => void} [onFinish]
+ *
+ * @prop {string=} transform
+ * @prop {string=} opacity
+ * @prop {string=} easing
+ *
+ * @prop {boolean=} isPan
+ * @prop {boolean=} isMainScroll
+ */
+
 /**
  * Manages animations
  */
-
 class Animations {
   constructor() {
+    /** @type {Animation[]} */
     this.activeAnimations = [];
   }
 
+  /**
+   * @param {AnimationProps} props
+   */
   startSpring(props) {
     this._start(props, true);
   }
 
+  /**
+   * @param {AnimationProps} props
+   */
   startTransition(props) {
     this._start(props);
   }
 
+  /**
+   * @param {AnimationProps} props
+   * @param {boolean=} isSpring
+   */
   _start(props, isSpring) {
+    /** @type {Animation} */
     let animation;
     if (isSpring) {
+      // @ts-expect-error
       animation = new SpringAnimation(props);
     } else {
+      // @ts-expect-error
       animation = new CSSAnimation(props);
     }
 
     this.activeAnimations.push(animation);
+    // @ts-expect-error TODO: rework this
     animation.onFinish = () => this.stop(animation);
 
     return animation;
   }
 
+  /**
+   * @param {Animation} animation
+   */
   stop(animation) {
     animation.destroy();
     const index = this.activeAnimations.indexOf(animation);

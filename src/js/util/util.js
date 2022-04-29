@@ -1,14 +1,20 @@
 /** @typedef {import("../photoswipe").Point} Point */
 
+/** @typedef {undefined | null | false | '' | 0} Falsy */
+
 /**
-  * Creates element and optionally appends it to another.
-  *
-  * @param {String} className
-  * @param {String | false} [tagName]
-  * @param {HTMLElement=} appendToEl
-  */
+ * Shoud be done using overloading
+ * but it's not supported by TS-in-JSDoc currently
+ * https://github.com/microsoft/TypeScript/issues/25590
+ */
+/**
+ * @template {keyof HTMLElementTagNameMap} T
+ * @param {string=} className
+ * @param {T | Falsy} [tagName]
+ * @param {HTMLElement=} appendToEl
+ */
 export function createElement(className, tagName, appendToEl) {
-  const el = document.createElement(tagName || 'div');
+  const el = /** @type {HTMLElementTagNameMap[T]} */ (document.createElement(tagName || 'div'));
   if (className) {
     el.className = className;
   }
