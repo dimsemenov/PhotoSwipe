@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "types",
     "declaration": true,
+    "emitDeclarationOnly": true,
     "strict": true,
     "strictNullChecks": false,
     "skipLibCheck": true,
@@ -9,6 +10,7 @@
     "allowJs": true,
     "checkJs": true,
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/js/**/*"
+  ],
 }
