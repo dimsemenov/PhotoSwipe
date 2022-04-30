@@ -38,6 +38,7 @@
   "devDependencies": {
     "@babel/core": "^7.13.16",
     "@babel/eslint-parser": "^7.13.14",
+    "@babel/plugin-syntax-class-properties": "^7.12.13",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^6.0.2",
     "copyfiles": "^2.4.1",

@@ -7,7 +7,10 @@
     "parser": "@babel/eslint-parser",
     "parserOptions": {
         "sourceType": "module",
-        "requireConfigFile": false
+        "requireConfigFile": false,
+        "babelOptions": {
+          "plugins": ["@babel/plugin-syntax-class-properties"]
+        }
     },
     "overrides": [
         {
