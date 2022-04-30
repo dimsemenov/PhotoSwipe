@@ -1,3 +1,4 @@
+/** @type {import("./ui-element").UIElementData} UIElementData */
 export const counterIndicator = {
   name: 'counter',
   order: 5,

@@ -56,9 +56,9 @@ function addElementHTML(htmlData) {
 
 /**
  * @typedef {Object} UIElementData
- * @prop {DefaultUIElements=} name
+ * @prop {DefaultUIElements | string} [name]
  * @prop {string=} className
- * @prop {UIElementMarkup} html
+ * @prop {UIElementMarkup=} html
  * @prop {boolean=} isButton
  * @prop {keyof HTMLElementTagNameMap} [tagName]
  * @prop {string=} title
@@ -66,6 +66,7 @@ function addElementHTML(htmlData) {
  * @prop {(element: HTMLElement, pswp: PhotoSwipe) => void} [onInit]
  * @prop {Methods<PhotoSwipe> | ((e: MouseEvent, element: HTMLElement, pswp: PhotoSwipe) => void)} [onClick]
  * @prop {'bar' | 'wrapper'} [appendTo]
+ * @prop {number=} order
  */
 
 class UIElement {

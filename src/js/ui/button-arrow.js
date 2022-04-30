@@ -2,19 +2,31 @@
   Backward and forward arrow buttons
  */
 
+/** @typedef {import("./ui-element").UIElementData} UIElementData */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+
+/**
+ *
+ * @param {HTMLElement} element
+ * @param {PhotoSwipe} pswp
+ * @param {boolean=} isNextButton
+ */
 function initArrowButton(element, pswp, isNextButton) {
   element.classList.add('pswp__button--arrow');
   pswp.on('change', () => {
     if (!pswp.options.loop) {
       if (isNextButton) {
-        element.disabled = !(pswp.currIndex < pswp.getNumItems() - 1);
+        /** @type {HTMLButtonElement} */
+        (element).disabled = !(pswp.currIndex < pswp.getNumItems() - 1);
       } else {
-        element.disabled = !(pswp.currIndex > 0);
+        /** @type {HTMLButtonElement} */
+        (element).disabled = !(pswp.currIndex > 0);
       }
     }
   });
 }
 
+/** @type {UIElementData} */
 export const arrowPrev = {
   name: 'arrowPrev',
   className: 'pswp__button--arrow--prev',
@@ -32,6 +44,7 @@ export const arrowPrev = {
   onInit: initArrowButton
 };
 
+/** @type {UIElementData} */
 export const arrowNext = {
   name: 'arrowNext',
   className: 'pswp__button--arrow--next',

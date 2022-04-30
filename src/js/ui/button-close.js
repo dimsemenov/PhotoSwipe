@@ -1,3 +1,4 @@
+/** @type {import("./ui-element").UIElementData} UIElementData */
 const closeButton = {
   name: 'close',
   title: 'Close',
