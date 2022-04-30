@@ -155,14 +155,23 @@ import ContentLoader from './slide/loader.js';
  *
  * @prop {(pswp: PhotoSwipeLightbox, e: Event) => number} [getClickedIndexFn]
  *
- * @prop {string=} arrowPrevSVG
- * @prop {string=} arrowNextSVG
- *
  * @prop {boolean=} arrowPrev
  * @prop {boolean=} arrowNext
  * @prop {boolean=} zoom
  * @prop {boolean=} close
  * @prop {boolean=} counter
+ *
+ * @prop {string=} arrowPrevSVG
+ * @prop {string=} arrowNextSVG
+ * @prop {string=} zoomSVG
+ * @prop {string=} closeSVG
+ * @prop {string=} counterSVG
+ *
+ * @prop {string=} arrowPrevTitle
+ * @prop {string=} arrowNextTitle
+ * @prop {string=} zoomTitle
+ * @prop {string=} closeTitle
+ * @prop {string=} counterTitle
  *
  * @prop {ZoomLevelOption=} initialZoomLevel
  * @prop {ZoomLevelOption=} secondaryZoomLevel
@@ -203,6 +212,9 @@ const defaultOptions = {
 };
 
 class PhotoSwipe extends PhotoSwipeBase {
+  /** @type {HTMLDivElement} */
+  topBar;
+
   /**
    * @param {PhotoSwipeOptions} options
    */
