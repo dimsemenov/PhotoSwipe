@@ -11,6 +11,7 @@
     "checkJs": true,
   },
   "include": [
+    "declarations.d.ts",
     "src/js/**/*"
   ],
 }
