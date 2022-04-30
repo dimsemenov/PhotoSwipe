@@ -1,26 +1,25 @@
 /** @typedef {import("../photoswipe").Point} Point */
 
 /** @typedef {undefined | null | false | '' | 0} Falsy */
+/** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */
 
 /**
- * Shoud be done using overloading
- * but it's not supported by TS-in-JSDoc currently
- * https://github.com/microsoft/TypeScript/issues/25590
- */
-/**
- * @template {keyof HTMLElementTagNameMap} T
+ * @template {HTMLElementTagName | Falsy} [T="div"]
+ * @template {Node | undefined} [NodeToAppendElementTo=undefined]
  * @param {string=} className
- * @param {T | Falsy} [tagName]
- * @param {HTMLElement=} appendToEl
+ * @param {T=} [tagName]
+ * @param {NodeToAppendElementTo=} appendToEl
+ * @returns {T extends HTMLElementTagName ? HTMLElementTagNameMap[T] : HTMLElementTagNameMap['div']}
  */
 export function createElement(className, tagName, appendToEl) {
-  const el = /** @type {HTMLElementTagNameMap[T]} */ (document.createElement(tagName || 'div'));
+  const el = document.createElement(tagName || 'div');
   if (className) {
     el.className = className;
   }
   if (appendToEl) {
     appendToEl.appendChild(el);
   }
+  // @ts-expect-error
   return el;
 }
 
