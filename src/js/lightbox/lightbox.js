@@ -23,7 +23,12 @@ import {
 import PhotoSwipeBase from '../core/base.js';
 import { lazyLoadSlide } from '../slide/loader.js';
 
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+
 class PhotoSwipeLightbox extends PhotoSwipeBase {
+  /**
+   * @param {PhotoSwipeOptions} options
+   */
   constructor(options) {
     super();
     this.options = options || {};

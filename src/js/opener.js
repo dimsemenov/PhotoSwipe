@@ -11,6 +11,10 @@ import {
   toTransformString
 } from './util/util.js';
 
+/** @typedef {import("./photoswipe").default} PhotoSwipe */
+/** @typedef {import("./slide/get-thumb-bounds").Bounds} Bounds */
+/** @typedef {import("./util/animations").AnimationProps} AnimationProps */
+
 // some browsers do not paint
 // elements which opacity is set to 0,
 // since we need to pre-render elements for the animation -
@@ -18,6 +22,12 @@ import {
 const MIN_OPACITY = 0.003;
 
 class Opener {
+  /** @type {false | Bounds} */
+  _thumbBounds;
+
+  /**
+   * @param {PhotoSwipe} pswp
+   */
   constructor(pswp) {
     this.pswp = pswp;
     this.isClosed = true;
@@ -120,13 +130,13 @@ class Opener {
       this._animateBgOpacity = false;
       this._animateRootOpacity = true;
       if (this.isOpening) {
-        pswp.element.style.opacity = MIN_OPACITY;
+        pswp.element.style.opacity = String(MIN_OPACITY);
         pswp.applyBgOpacity(1);
       }
       return;
     }
 
-    if (this._animateZoom && this._thumbBounds.innerRect) {
+    if (this._animateZoom && this._thumbBounds && this._thumbBounds.innerRect) {
       // Properties are used when animation from cropped thumbnail
       this._croppedZoom = true;
       this._cropContainer1 = this.pswp.container;
@@ -141,24 +151,25 @@ class Opener {
     if (this.isOpening) {
       // Apply styles before opening transition
       if (this._animateRootOpacity) {
-        pswp.element.style.opacity = MIN_OPACITY;
+        pswp.element.style.opacity = String(MIN_OPACITY);
         pswp.applyBgOpacity(1);
       } else {
         if (this._animateBgOpacity) {
-          pswp.bg.style.opacity = MIN_OPACITY;
+          pswp.bg.style.opacity = String(MIN_OPACITY);
         }
-        pswp.element.style.opacity = 1;
+        pswp.element.style.opacity = '1';
       }
 
       if (this._animateZoom) {
         this._setClosedStateZoomPan();
         if (this._placeholder) {
           // tell browser that we plan to animate the placeholder
+          // @ts-expect-error should be style.willChange maybe?
           this._placeholder.willChange = 'transform';
 
           // hide placeholder to allow hiding of
           // elements that overlap it (such as icons over the thumbnail)
-          this._placeholder.style.opacity = MIN_OPACITY;
+          this._placeholder.style.opacity = String(MIN_OPACITY);
         }
       }
     } else if (this.isClosing) {
@@ -191,7 +202,7 @@ class Opener {
       new Promise((resolve) => {
         let decoded = false;
         let isDelaying = true;
-        decodeImage(this._placeholder).finally(() => {
+        decodeImage(/** @type {HTMLImageElement} */ (this._placeholder)).finally(() => {
           decoded = true;
           if (!isDelaying) {
             resolve();
@@ -225,7 +236,7 @@ class Opener {
     if (this.isOpening) {
       if (this._placeholder) {
         // unhide the placeholder
-        this._placeholder.style.opacity = 1;
+        this._placeholder.style.opacity = '1';
       }
       this._animateToOpenState();
     } else if (this.isClosing) {
@@ -279,11 +290,11 @@ class Opener {
     }
 
     if (this._animateBgOpacity) {
-      this._animateTo(pswp.bg, 'opacity', pswp.options.bgOpacity);
+      this._animateTo(pswp.bg, 'opacity', String(pswp.options.bgOpacity));
     }
 
     if (this._animateRootOpacity) {
-      this._animateTo(pswp.element, 'opacity', 1);
+      this._animateTo(pswp.element, 'opacity', '1');
     }
   }
 
@@ -296,15 +307,20 @@ class Opener {
 
     if (this._animateBgOpacity
         && pswp.bgOpacity > 0.01) { // do not animate opacity if it's already at 0
-      this._animateTo(pswp.bg, 'opacity', 0);
+      this._animateTo(pswp.bg, 'opacity', '0');
     }
 
     if (this._animateRootOpacity) {
-      this._animateTo(pswp.element, 'opacity', 0);
+      this._animateTo(pswp.element, 'opacity', '0');
     }
   }
 
+  /**
+   * @param {boolean=} animate
+   */
   _setClosedStateZoomPan(animate) {
+    if (!this._thumbBounds) return;
+
     const { pswp } = this;
     const { innerRect } = this._thumbBounds;
     const { currSlide, viewportSize } = pswp;
@@ -345,9 +361,9 @@ class Opener {
   }
 
   /**
-   * @param {Element} target
-   * @param {String} prop
-   * @param {String} propValue
+   * @param {HTMLElement} target
+   * @param {'transform' | 'opacity'} prop
+   * @param {string} propValue
    */
   _animateTo(target, prop, propValue) {
     if (!this._duration) {
@@ -356,6 +372,7 @@ class Opener {
     }
 
     const { animations } = this.pswp;
+    /** @type {AnimationProps} */
     const animProps = {
       duration: this._duration,
       easing: this.pswp.options.easing,

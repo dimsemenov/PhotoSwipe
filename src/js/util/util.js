@@ -167,6 +167,8 @@ export function decodeImage(img) {
   });
 }
 
+/** @typedef {LOAD_STATE[keyof LOAD_STATE]} LoadState */
+/** @type {{ IDLE: 'idle'; LOADING: 'loading'; LOADED: 'loaded'; ERROR: 'error' }} */
 export const LOAD_STATE = {
   IDLE: 'idle',
   LOADING: 'loading',
@@ -179,7 +181,7 @@ export const LOAD_STATE = {
  * Check if click or keydown event was dispatched
  * with a special key or via mouse wheel.
  *
- * @param {PointerEvent} e
+ * @param {KeyboardEvent} e
  */
 export function specialKeyUsed(e) {
   if (e.which === 2 || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {

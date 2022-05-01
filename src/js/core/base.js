@@ -8,8 +8,13 @@ import {
 } from '../util/util.js';
 import Content from '../slide/content';
 
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/slide").SlideData} SlideData */
 
 class PhotoSwipeBase extends Eventable {
+  /** @type {PhotoSwipeOptions} */
+  options;
+
   /**
    * Get total number of slides
    */
@@ -18,10 +23,10 @@ class PhotoSwipeBase extends Eventable {
     const { dataSource } = this.options;
     if (!dataSource) {
       numItems = 0;
-    } else if (dataSource.length) {
+    } else if ('length' in dataSource) {
       // may be an array or just object with length property
       numItems = dataSource.length;
-    } else if (dataSource.gallery) {
+    } else if ('gallery' in dataSource) {
       // query DOM elements
       if (!dataSource.items) {
         dataSource.items = this._getGalleryDOMElements(dataSource.gallery);
@@ -37,9 +42,15 @@ class PhotoSwipeBase extends Eventable {
       dataSource,
       numItems
     });
+    // @ts-expect-error TODO
     return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
+  /**
+   *
+   * @param {SlideData} slideData
+   * @param {number} index
+   */
   createContentFromData(slideData, index) {
     return new Content(slideData, this, index);
   }
@@ -51,7 +62,7 @@ class PhotoSwipeBase extends Eventable {
    * For example, it may contain properties like
    * `src`, `srcset`, `w`, `h`, which will be used to generate a slide with image.
    *
-   * @param {Integer} index
+   * @param {number} index
    */
   getItemData(index) {
     const { dataSource } = this.options;
@@ -85,6 +96,7 @@ class PhotoSwipeBase extends Eventable {
       index
     });
 
+    // @ts-expect-error TODO
     return this.applyFilters('itemData', event.itemData, index);
   }
 
@@ -92,7 +104,7 @@ class PhotoSwipeBase extends Eventable {
    * Get array of gallery DOM elements,
    * based on childSelector and gallery element.
    *
-   * @param {Element} galleryElement
+   * @param {HTMLElement} galleryElement
    */
   _getGalleryDOMElements(galleryElement) {
     if (this.options.children || this.options.childSelector) {
@@ -109,20 +121,22 @@ class PhotoSwipeBase extends Eventable {
   /**
    * Converts DOM element to item data object.
    *
-   * @param {Element} element DOM element
+   * @param {HTMLElement} element DOM element
    */
   // eslint-disable-next-line class-methods-use-this
   _domElementToItemData(element) {
+    /** @type {SlideData} */
     const itemData = {
       element
     };
 
+    /** @type {HTMLElement | HTMLAnchorElement} */
     const linkEl = element.tagName === 'A' ? element : element.querySelector('a');
 
     if (linkEl) {
       // src comes from data-pswp-src attribute,
       // if it's empty link href is used
-      itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
+      itemData.src = linkEl.dataset.pswpSrc || /** @type {HTMLAnchorElement} */ (linkEl).href;
 
       if (linkEl.dataset.pswpSrcset) {
         itemData.srcset = linkEl.dataset.pswpSrcset;

@@ -7,14 +7,15 @@
  * @prop {HTMLElement=} element
  * @prop {string=} src
  * @prop {string=} srcset
- * @prop {number=} w
- * @prop {number=} h
+ * @prop {number=} w deprecated
+ * @prop {number=} h deprecated
+ * @prop {number=} width
+ * @prop {number=} height
  * @prop {string=} msrc
  * @prop {string=} alt
  * @prop {boolean=} thumbCropped
  * @prop {string=} html
- * @prop {'image' | 'html'} [type]
- * @prop {'image' | 'html'} [type]
+ * @prop {'image' | 'html' | string} [type]
  */
 
 import {

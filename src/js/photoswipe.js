@@ -27,10 +27,13 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {{ x?: number; y?: number }} Size */
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
 
+/** @typedef {SlideData[]} DataSourceArray */
+/** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
+
 /**
  * @typedef {Object} PhotoSwipeOptions
  *
- * @prop {SlideData[]} dataSource
+ * @prop {DataSourceArray | DataSourceObject} dataSource
  * Pass an array of any items via dataSource option. Its length will determine amount of slides
  * (which may be modified further from numItems event).
  *
@@ -180,6 +183,12 @@ import ContentLoader from './slide/loader.js';
  * @prop {boolean=} mouseMovePan
  * @prop {Promise<any>} [openPromise] // TODO
  * @prop {Point | null} [initialPointerPos]
+ * @prop {boolean=} showHideOpacity
+ *
+ * @prop {string=} gallery
+ * @prop {string=} children
+ * @prop {string=} childSelector
+ * @prop {string | false} [thumbSelector]
  */
 
 /** @type {Partial<PhotoSwipeOptions>} */

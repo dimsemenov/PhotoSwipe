@@ -1,6 +1,11 @@
 import { getViewportSize, getPanAreaSize } from '../util/viewport-size.js';
 import ZoomLevel from './zoom-level.js';
 
+/** @typedef {import("./content").default} Content */
+/** @typedef {import("./slide").default} Slide */
+/** @typedef {import("./slide").SlideData} SlideData */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+
 const MIN_SLIDES_TO_CACHE = 5;
 
 /**
@@ -8,10 +13,10 @@ const MIN_SLIDES_TO_CACHE = 5;
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
  *
- * @param {Object} itemData Data about the slide
- * @param {PhotoSwipeBase}  instance PhotoSwipe or PhotoSwipeLightbox
- * @param {Integer} index
- * @returns {Object|Boolean} Image that is being decoded or false.
+ * @param {SlideData} itemData Data about the slide
+ * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox
+ * @param {number} index
+ * @returns Image that is being decoded or false.
  */
 export function lazyLoadData(itemData, instance, index) {
   // src/slide/content/content.js
@@ -25,6 +30,7 @@ export function lazyLoadData(itemData, instance, index) {
 
   // We need to know dimensions of the image to preload it,
   // as it might use srcset and we need to define sizes
+  // @ts-expect-error should provide pswp instance?
   const viewportSize = instance.viewportSize || getViewportSize(options);
   const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
 
@@ -48,8 +54,8 @@ export function lazyLoadData(itemData, instance, index) {
  *
  * By default it loads image based on viewport size and initial zoom level.
  *
- * @param {Integer} index Slide index
- * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @param {number} index Slide index
+ * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
  */
 export function lazyLoadSlide(index, instance) {
   const itemData = instance.getItemData(index);
@@ -63,6 +69,9 @@ export function lazyLoadSlide(index, instance) {
 
 
 class ContentLoader {
+  /**
+   * @param {PhotoSwipe} pswp
+   */
   constructor(pswp) {
     this.pswp = pswp;
     // Total amount of cached images
@@ -70,13 +79,14 @@ class ContentLoader {
       pswp.options.preload[0] + pswp.options.preload[1] + 1,
       MIN_SLIDES_TO_CACHE
     );
+    /** @type {Content[]} */
     this._cachedItems = [];
   }
 
   /**
    * Lazy load nearby slides based on `preload` option.
    *
-   * @param {Integer} diff Difference between slide indexes that was changed recently, or 0.
+   * @param {number=} diff Difference between slide indexes that was changed recently, or 0.
    */
   updateLazy(diff) {
     const { pswp } = this;
@@ -100,6 +110,9 @@ class ContentLoader {
     }
   }
 
+  /**
+   * @param {number} index
+   */
   loadSlideByIndex(index) {
     index = this.pswp.getLoopedIndex(index);
     // try to get cached content
@@ -114,6 +127,9 @@ class ContentLoader {
     }
   }
 
+  /**
+   * @param {Slide} slide
+   */
   getContentBySlide(slide) {
     let content = this.getContentByIndex(slide.index);
     if (!content) {
@@ -154,7 +170,7 @@ class ContentLoader {
   /**
    * Removes an image from cache, does not destroy() it, just removes.
    *
-   * @param {Integer} index
+   * @param {number} index
    */
   removeByIndex(index) {
     const indexToRemove = this._cachedItems.findIndex(item => item.index === index);
@@ -163,6 +179,9 @@ class ContentLoader {
     }
   }
 
+  /**
+   * @param {number} index
+   */
   getContentByIndex(index) {
     return this._cachedItems.find(content => content.index === index);
   }

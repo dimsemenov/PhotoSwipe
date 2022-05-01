@@ -31,7 +31,7 @@ class MainScroll {
    * Position the scroller and slide containers
    * according to viewport size.
    *
-   * @param {Boolean} resizeSlides Whether slides content should resized
+   * @param {boolean=} resizeSlides Whether slides content should resized
    */
   resize(resizeSlides) {
     const { pswp } = this;
