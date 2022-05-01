@@ -23,12 +23,15 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {import("./slide/slide").SlideData} SlideData */
 /** @typedef {import("./slide/zoom-level").ZoomLevelOption} ZoomLevelOption */
 /** @typedef {any} PhotoSwipeLightbox TODO */
-/** @typedef {{ x?: number; y?: number; id?: string }} Point */
+/** @typedef {{ x?: number; y?: number; id?: string | number }} Point */
 /** @typedef {{ x?: number; y?: number }} Size */
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
 
 /** @typedef {SlideData[]} DataSourceArray */
 /** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
+
+/** @typedef {(point: Point, originalEvent: PointerEvent) => void} ActionFn */
+/** @typedef {'close' | 'next' | 'zoom' | 'zoom-or-close' | 'toggle-controls'} ActionType */
 
 /**
  * @typedef {Object} PhotoSwipeOptions
@@ -94,16 +97,16 @@ import ContentLoader from './slide/loader.js';
  * @prop {boolean=} clickToCloseNonZoomable
  * If image is not zoomable (for example, smaller than viewport) it can be closed by clicking on it.
  *
- * @prop {string=} imageClickAction
+ * @prop {ActionType | ActionFn} [imageClickAction]
  * Refer to click and tap actions page.
  *
- * @prop {string=} bgClickAction
+ * @prop {ActionType | ActionFn} [bgClickAction]
  * Refer to click and tap actions page.
  *
- * @prop {string=} tapAction
+ * @prop {ActionType | ActionFn} [tapAction]
  * Refer to click and tap actions page.
  *
- * @prop {string=} doubleTapAction
+ * @prop {ActionType | ActionFn} [doubleTapAction]
  * Refer to click and tap actions page.
  *
  * @prop {number=} preloaderDelay

@@ -279,7 +279,7 @@ class Slide {
    * Zoom current slide image to...
    *
    * @param {number} destZoomLevel Destination zoom level.
-   * @param {{ x: number; y: number }} centerPoint
+   * @param {{ x?: number; y?: number }} centerPoint
    * Transform origin center point, or false if viewport center should be used.
    * @param {number=} transitionDuration Transition duration, may be set to 0.
    * @param {boolean=} ignoreBounds Minimum and maximum zoom levels will be ignored.
@@ -339,7 +339,7 @@ class Slide {
   }
 
   /**
-   * @param {{ x: number, y: number }} [centerPoint]
+   * @param {{ x?: number, y?: number }} [centerPoint]
    */
   toggleZoom(centerPoint) {
     this.zoomTo(
@@ -368,7 +368,7 @@ class Slide {
    * pan bounds according to the new zoom level.
    *
    * @param {'x' | 'y'} axis
-   * @param {{ x: number; y: number }} [point]
+   * @param {{ x?: number; y?: number }} [point]
    * point based on which zoom is performed, usually refers to the current mouse position,
    * if false - viewport center will be used.
    * @param {number=} prevZoomLevel Zoom level before new zoom was applied.

@@ -17,6 +17,8 @@ class PhotoSwipeBase extends Eventable {
 
   /**
    * Get total number of slides
+   *
+   * @returns {number}
    */
   getNumItems() {
     let numItems;

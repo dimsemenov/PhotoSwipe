@@ -2,6 +2,9 @@ import {
   equalizePoints, getDistanceBetween, clamp, pointsEqual
 } from '../util/util.js';
 
+/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import("./gestures").default} Gestures */
+
 const UPPER_ZOOM_FRICTION = 0.05;
 const LOWER_ZOOM_FRICTION = 0.15;
 
@@ -20,12 +23,18 @@ function getZoomPointsCenter(p, p1, p2) {
 }
 
 class ZoomHandler {
+  /**
+   * @param {Gestures} gestures
+   */
   constructor(gestures) {
     this.gestures = gestures;
     this.pswp = this.gestures.pswp;
+    /** @type {Point} */
     this._startPan = {};
 
+    /** @type {Point} */
     this._startZoomPoint = {};
+    /** @type {Point} */
     this._zoomPoint = {};
   }
 
@@ -95,6 +104,11 @@ class ZoomHandler {
     }
   }
 
+  /**
+   * @private
+   * @param {'x' | 'y'} axis
+   * @param {number} currZoomLevel
+   */
   _calculatePanForZoomLevel(axis, currZoomLevel) {
     const zoomFactor = currZoomLevel / this._startZoomLevel;
     return this._zoomPoint[axis]
@@ -106,8 +120,8 @@ class ZoomHandler {
    * beyond minimum or maximum values.
    * With animation.
    *
-   * @param {Boolean} ignoreGesture Wether gesture coordinates should be ignored
-   *                                when calculating destination pan position.
+   * @param {boolean=} ignoreGesture
+   * Wether gesture coordinates should be ignored when calculating destination pan position.
    */
   correctZoomPan(ignoreGesture) {
     const { pswp } = this;
@@ -123,6 +137,7 @@ class ZoomHandler {
 
     const prevZoomLevel = currSlide.currZoomLevel;
 
+    /** @type {number} */
     let destinationZoomLevel;
     let currZoomLevelNeedsChange = true;
 

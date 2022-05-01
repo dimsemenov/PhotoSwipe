@@ -18,7 +18,7 @@ import SpringAnimation from './spring-animation.js';
  * @prop {number=} naturalFrequency
  *
  * @prop {(end: number) => void} [onUpdate]
- * @prop {() => void} onComplete
+ * @prop {() => void} [onComplete]
  * @prop {() => void} [onFinish]
  *
  * @prop {string=} transform

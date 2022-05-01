@@ -9,6 +9,9 @@ import {
   createElement,
 } from './util/util.js';
 
+/** @typedef {import("./photoswipe").default} PhotoSwipe */
+/** @typedef {import("./slide/slide").default} Slide */
+
 const MAIN_SCROLL_END_FRICTION = 0.35;
 
 
@@ -17,6 +20,12 @@ const MAIN_SCROLL_END_FRICTION = 0.35;
 // const DEFAULT_SWIPE_TRANSITION_DURATION = 333;
 
 class MainScroll {
+  /** @type {number} */
+  slideWidth;
+
+  /** @type {{ el: HTMLDivElement; slide?: Slide }[]} */
+  itemHolders;
+
   /**
    * @param {PhotoSwipe} pswp
    */
@@ -115,8 +124,10 @@ class MainScroll {
    * If loop option is enabled - index will be automatically looped too,
    * (for example `-1` will move to the last slide of the gallery).
    *
-   * @param {Integer} diff
-   * @returns {Boolean} whether index was changed or not
+   * @param {number} diff
+   * @param {boolean=} animate
+   * @param {number=} velocityX
+   * @returns {boolean} whether index was changed or not
    */
   moveIndexBy(diff, animate, velocityX) {
     const { pswp } = this;
@@ -284,11 +295,13 @@ class MainScroll {
   /**
    * Move the X position of the main scroll container
    *
-   * @param {Number} x
-   * @param {Boolean} dragging
+   * @param {number} x
+   * @param {boolean=} dragging
    */
   moveTo(x, dragging) {
+    /** @type {number} */
     let newSlideIndexOffset;
+    /** @type {number} */
     let delta;
 
     if (!this.pswp.canLoop() && dragging) {
