@@ -181,7 +181,7 @@ export const LOAD_STATE = {
  * Check if click or keydown event was dispatched
  * with a special key or via mouse wheel.
  *
- * @param {KeyboardEvent} e
+ * @param {MouseEvent | KeyboardEvent} e
  */
 export function specialKeyUsed(e) {
   if (e.which === 2 || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {

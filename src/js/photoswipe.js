@@ -159,7 +159,7 @@ import ContentLoader from './slide/loader.js';
  * @prop {number=} index
  * Defines start slide index.
  *
- * @prop {(pswp: PhotoSwipeLightbox, e: Event) => number} [getClickedIndexFn]
+ * @prop {(e: MouseEvent) => number} [getClickedIndexFn]
  *
  * @prop {boolean=} arrowPrev
  * @prop {boolean=} arrowNext
@@ -184,11 +184,14 @@ import ContentLoader from './slide/loader.js';
  * @prop {ZoomLevelOption=} maxZoomLevel
  *
  * @prop {boolean=} mouseMovePan
- * @prop {Promise<any>} [openPromise] // TODO
  * @prop {Point | null} [initialPointerPos]
  * @prop {boolean=} showHideOpacity
  *
+ * @prop {Promise<PhotoSwipe> | (() => Promise<PhotoSwipe>)} [pswpModule]
+ * @prop {() => Promise<any>} [openPromise]
+ * @prop {boolean=} preloadFirstSlide
  * @prop {string=} gallery
+ * @prop {string=} gallerySelector
  * @prop {string=} children
  * @prop {string=} childSelector
  * @prop {string | false} [thumbSelector]

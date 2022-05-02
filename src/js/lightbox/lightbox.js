@@ -23,7 +23,9 @@ import {
 import PhotoSwipeBase from '../core/base.js';
 import { lazyLoadSlide } from '../slide/loader.js';
 
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
 /** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/content").default} Content */
 
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
@@ -31,6 +33,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    */
   constructor(options) {
     super();
+    /** @type {Partial<PhotoSwipeOptions>} */
     this.options = options || {};
     this._uid = 0;
   }
@@ -45,6 +48,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       });
   }
 
+  /**
+   * @param {MouseEvent} e
+   */
   onThumbnailsClick(e) {
     // Exit and allow default browser action if:
     if (specialKeyUsed(e) // ... if clicked with a special key (ctrl/cmd...)
@@ -69,7 +75,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     let clickedIndex = this.getClickedIndex(e);
     clickedIndex = this.applyFilters('clickedIndex', clickedIndex, e, this);
     const dataSource = {
-      gallery: e.currentTarget
+      gallery: /** @type {HTMLElement} */ (e.currentTarget)
     };
 
     if (clickedIndex >= 0) {
@@ -81,7 +87,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Get index of gallery item that was clicked.
    *
-   * @param {Event} e click event
+   * @param {MouseEvent} e click event
    */
   getClickedIndex(e) {
     // legacy option
@@ -89,11 +95,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       return this.options.getClickedIndexFn.call(this, e);
     }
 
-    const clickedTarget = e.target;
+    const clickedTarget = /** @type {HTMLElement} */ (e.target);
     const childElements = getElementsFromOption(
       this.options.children,
       this.options.childSelector,
-      e.currentTarget
+      /** @type {HTMLElement} */ (e.currentTarget)
     );
     const clickedChildIndex = childElements.findIndex(
       child => child === clickedTarget || child.contains(clickedTarget)
@@ -113,9 +119,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Load and open PhotoSwipe
    *
-   * @param {Integer} index
-   * @param {Array|Object|null} dataSource
-   * @param {Point|null} initialPoint
+   * @param {number} index
+   * @param {PhotoSwipeOptions['dataSource']} dataSource
+   * @param {{ x?: number; y?: number }} [initialPoint]
    */
   loadAndOpen(index, dataSource, initialPoint) {
     // Check if the gallery is already open
@@ -137,7 +143,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Load the main module and the slide content by index
    *
-   * @param {Integer} index
+   * @param {number} index
+   * @param {PhotoSwipeOptions['dataSource']} dataSource
    */
   preload(index, dataSource) {
     const { options } = this;
@@ -147,15 +154,17 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     // Add the main module
+    // PhotoSwipeOptions['pswpModule'][]
+    /** @type {Promise<PhotoSwipe>[]} */
     const promiseArray = [];
 
     const pswpModuleType = typeof options.pswpModule;
     if (isPswpClass(options.pswpModule)) {
-      promiseArray.push(options.pswpModule);
+      promiseArray.push(/** @type {Promise<PhotoSwipe>} */ (options.pswpModule));
     } else if (pswpModuleType === 'string') {
       throw new Error('pswpModule as string is no longer supported');
     } else if (pswpModuleType === 'function') {
-      promiseArray.push(options.pswpModule());
+      promiseArray.push(/** @type {() => Promise<PhotoSwipe>} */ (options.pswpModule)());
     } else {
       throw new Error('pswpModule is not valid');
     }
@@ -167,6 +176,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     if (options.preloadFirstSlide !== false && index >= 0) {
+      /** @type {Content} */
+      // @ts-expect-error
       this._preloadedContent = lazyLoadSlide(index, this);
     }
 
@@ -180,6 +191,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     });
   }
 
+  /**
+   * @private
+   * @param {PhotoSwipe | { default: PhotoSwipe }} module
+   * @param {number} uid
+   */
   _openPhotoswipe(module, uid) {
     // Cancel opening if UID doesn't match the current one
     // (if user clicked on another gallery item before current was loaded).
@@ -197,9 +213,15 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       return;
     }
 
-    // Pass data to PhotoSwipe and open init
+    /**
+     * Pass data to PhotoSwipe and open init
+     *
+     * @type {PhotoSwipe}
+     */
     const pswp = typeof module === 'object'
+    // @ts-expect-error
         ? new module.default(this.options) // eslint-disable-line
+    // @ts-expect-error
         : new module(this.options); // eslint-disable-line
 
     this.pswp = pswp;

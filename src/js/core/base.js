@@ -8,11 +8,12 @@ import {
 } from '../util/util.js';
 import Content from '../slide/content';
 
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
 /** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../slide/slide").SlideData} SlideData */
 
 class PhotoSwipeBase extends Eventable {
-  /** @type {PhotoSwipeOptions} */
+  /** @type {Partial<PhotoSwipeOptions>} */
   options;
 
   /**
@@ -49,11 +50,11 @@ class PhotoSwipeBase extends Eventable {
   }
 
   /**
-   *
    * @param {SlideData} slideData
    * @param {number} index
    */
   createContentFromData(slideData, index) {
+    // @ts-expect-error
     return new Content(slideData, this, index);
   }
 

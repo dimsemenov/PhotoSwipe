@@ -30,13 +30,11 @@ class Eventable {
   constructor() {
     /**
      * @type {Record<string, (() => any)[]>}
-     * @private
      */
     this._listeners = {};
 
     /**
      * @type {Record<string, Filter[]>}
-     * @private
      */
     this._filters = {};
 
