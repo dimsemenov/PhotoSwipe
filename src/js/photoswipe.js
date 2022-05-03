@@ -32,6 +32,7 @@ import ContentLoader from './slide/loader.js';
 
 /** @typedef {(point: Point, originalEvent: PointerEvent) => void} ActionFn */
 /** @typedef {'close' | 'next' | 'zoom' | 'zoom-or-close' | 'toggle-controls'} ActionType */
+/** @typedef {import("./ui/ui-element").UIElementData} UIElementData */
 
 /**
  * @typedef {Object} PhotoSwipeOptions

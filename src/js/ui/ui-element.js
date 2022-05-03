@@ -10,6 +10,21 @@ import { createElement } from '../util/util.js';
  * @prop {number | string} [size]
  */
 
+/**
+ * @typedef {Object} UIElementData
+ * @prop {DefaultUIElements | string} [name]
+ * @prop {string=} className
+ * @prop {UIElementMarkup=} html
+ * @prop {boolean=} isButton
+ * @prop {keyof HTMLElementTagNameMap} [tagName]
+ * @prop {string=} title
+ * @prop {string=} ariaLabel
+ * @prop {(element: HTMLElement, pswp: PhotoSwipe) => void} [onInit]
+ * @prop {Methods<PhotoSwipe> | ((e: MouseEvent, element: HTMLElement, pswp: PhotoSwipe) => void)} [onClick]
+ * @prop {'bar' | 'wrapper' | 'root'} [appendTo]
+ * @prop {number=} order
+ */
+
 /** @typedef {'arrowPrev' | 'arrowNext' | 'close' | 'zoom' | 'counter'} DefaultUIElements */
 
 /** @typedef {string | UIElementMarkupProps} UIElementMarkup */
@@ -53,21 +68,6 @@ function addElementHTML(htmlData) {
 
   return out;
 }
-
-/**
- * @typedef {Object} UIElementData
- * @prop {DefaultUIElements | string} [name]
- * @prop {string=} className
- * @prop {UIElementMarkup=} html
- * @prop {boolean=} isButton
- * @prop {keyof HTMLElementTagNameMap} [tagName]
- * @prop {string=} title
- * @prop {string=} ariaLabel
- * @prop {(element: HTMLElement, pswp: PhotoSwipe) => void} [onInit]
- * @prop {Methods<PhotoSwipe> | ((e: MouseEvent, element: HTMLElement, pswp: PhotoSwipe) => void)} [onClick]
- * @prop {'bar' | 'wrapper'} [appendTo]
- * @prop {number=} order
- */
 
 class UIElement {
   /**
