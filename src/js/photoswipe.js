@@ -34,6 +34,7 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
 /** @typedef {SlideData[]} DataSourceArray */
 /** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
+/** @typedef {DataSourceArray | DataSourceObject} DataSource */
 /** @typedef {(point: Point, originalEvent: PointerEvent) => void} ActionFn */
 /** @typedef {'close' | 'next' | 'zoom' | 'zoom-or-close' | 'toggle-controls'} ActionType */
 
@@ -44,7 +45,7 @@ import ContentLoader from './slide/loader.js';
 /**
  * @typedef {Object} PhotoSwipeOptions
  *
- * @prop {DataSourceArray | DataSourceObject} [dataSource]
+ * @prop {DataSource} [dataSource]
  * Pass an array of any items via dataSource option. Its length will determine amount of slides
  * (which may be modified further from numItems event).
  *
@@ -331,7 +332,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.offset.y = window.pageYOffset;
 
     this._initialItemData = this.getItemData(this.currIndex);
-    // @ts-expect-error TODO
+    // @ts-expect-error Expected 1-2 arguments, but got 4 ¯\_(ツ)_/¯
     this.dispatch('gettingData', this.currIndex, this._initialItemData, true);
 
     // *Layout* - calculate size and position of elements here

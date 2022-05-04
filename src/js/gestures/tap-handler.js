@@ -77,10 +77,10 @@ class TapHandler {
   _doClickOrTapAction(actionName, point, originalEvent) {
     const { pswp } = this.gestures;
     const { currSlide } = pswp;
-    // eslint-disable-next-line max-len
-    const optionValue = pswp.options[/** @type {AddPostfix<Actions, 'Action'>} */ (actionName + 'Action')];
+    const actionFullName = /** @type {AddPostfix<Actions, 'Action'>} */ (actionName + 'Action');
+    const optionValue = pswp.options[actionFullName];
 
-    if (pswp.dispatch(actionName + 'Action', { point, originalEvent }).defaultPrevented) {
+    if (pswp.dispatch(actionFullName, { point, originalEvent }).defaultPrevented) {
       return;
     }
 

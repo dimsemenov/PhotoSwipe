@@ -54,7 +54,6 @@ export const loadingIndicator = {
 
     pswp.on('change', updatePreloaderVisibility);
 
-    // @ts-expect-error TODO
     pswp.on('loadComplete', (e) => {
       if (pswp.currSlide === e.slide) {
         updatePreloaderVisibility();

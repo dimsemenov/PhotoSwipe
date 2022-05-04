@@ -309,6 +309,7 @@ class Content {
    */
   displayError() {
     if (this.slide) {
+      /** @type {HTMLElement} */
       let errorMsgEl = createElement('pswp__error-msg');
       errorMsgEl.innerText = this.instance.options.errorMsg;
       errorMsgEl = this.instance.applyFilters(

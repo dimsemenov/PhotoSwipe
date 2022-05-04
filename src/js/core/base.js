@@ -45,7 +45,6 @@ class PhotoSwipeBase extends Eventable {
       dataSource,
       numItems
     });
-    // @ts-expect-error TODO
     return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
@@ -99,7 +98,6 @@ class PhotoSwipeBase extends Eventable {
       index
     });
 
-    // @ts-expect-error TODO
     return this.applyFilters('itemData', event.itemData, index);
   }
 

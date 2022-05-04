@@ -20,7 +20,7 @@
         }
     ],
     "rules": {
-        "max-len": ["error", { "code": 100, "comments": 120 }],
+        "max-len": ["error", { "code": 100, "comments": 140 }],
         "comma-dangle": "off",
         "no-param-reassign": 0,
         "import/extensions": 0,

@@ -81,6 +81,7 @@ export function getThumbBounds(index, itemData, instance) {
 
   const { element } = itemData;
   let thumbBounds;
+  /** @type {HTMLElement} */
   let thumbnail;
 
   if (element && instance.options.thumbSelector !== false) {

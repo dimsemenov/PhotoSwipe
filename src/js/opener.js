@@ -229,7 +229,10 @@ class Opener {
     );
 
     // legacy event
-    this.pswp.dispatch('initialZoom' + (this.isOpening ? 'In' : 'Out'));
+    this.pswp.dispatch(
+      /** @type {'initialZoomIn' | 'initialZoomOut'} */
+      ('initialZoom' + (this.isOpening ? 'In' : 'Out'))
+    );
 
     this.pswp.element.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
@@ -260,7 +263,10 @@ class Opener {
     );
 
     // legacy event
-    pswp.dispatch('initialZoom' + (this.isOpen ? 'InEnd' : 'OutEnd'));
+    pswp.dispatch(
+      /** @type {'initialZoomInEnd' | 'initialZoomOutEnd'} */
+      ('initialZoom' + (this.isOpen ? 'InEnd' : 'OutEnd'))
+    );
 
     if (this.isClosed) {
       pswp.destroy();

@@ -31,6 +31,8 @@ import { lazyLoadSlide } from '../slide/loader.js';
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
 /** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../slide/content").default} Content */
+/** @typedef {import("../core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
+/** @typedef {import("../core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
@@ -230,15 +232,24 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     this.pswp = pswp;
     window.pswp = pswp;
 
-    // map listeners from Lightbox to PhotoSwipe Core
-    Object.keys(this._listeners).forEach((name) => {
+    /**
+     * map listeners from Lightbox to PhotoSwipe Core
+     *
+     * @type {(keyof PhotoSwipeEventsMap)[]}
+     */
+    (Object.keys(this._listeners)).forEach((name) => {
       this._listeners[name].forEach((fn) => {
+        // @ts-expect-error TODO: weird things
         pswp.on(name, fn);
       });
     });
 
-    // same with filters
-    Object.keys(this._filters).forEach((name) => {
+    /**
+     * same with filters
+     *
+     * @type {(keyof PhotoSwipeFiltersMap)[]}
+     */
+    (Object.keys(this._filters)).forEach((name) => {
       this._filters[name].forEach((filter) => {
         pswp.addFilter(name, filter.fn, filter.priority);
       });
