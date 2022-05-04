@@ -13,7 +13,7 @@ import Content from '../slide/content';
 /** @typedef {import("../slide/slide").SlideData} SlideData */
 
 class PhotoSwipeBase extends Eventable {
-  /** @type {Partial<PhotoSwipeOptions>} */
+  /** @type {PhotoSwipeOptions} */
   options;
 
   /**

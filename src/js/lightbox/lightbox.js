@@ -23,6 +23,11 @@ import {
 import PhotoSwipeBase from '../core/base.js';
 import { lazyLoadSlide } from '../slide/loader.js';
 
+/**
+ * @template T
+ * @typedef {import("../types").Type<T>} Type<T>
+ */
+
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
 /** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../slide/content").default} Content */
@@ -33,7 +38,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    */
   constructor(options) {
     super();
-    /** @type {Partial<PhotoSwipeOptions>} */
+    /** @type {PhotoSwipeOptions} */
     this.options = options || {};
     this._uid = 0;
   }
@@ -155,16 +160,16 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     // Add the main module
     // PhotoSwipeOptions['pswpModule'][]
-    /** @type {Promise<PhotoSwipe>[]} */
+    /** @type {Promise<Type<PhotoSwipe>>[]} */
     const promiseArray = [];
 
     const pswpModuleType = typeof options.pswpModule;
     if (isPswpClass(options.pswpModule)) {
-      promiseArray.push(/** @type {Promise<PhotoSwipe>} */ (options.pswpModule));
+      promiseArray.push(Promise.resolve(/** @type {Type<PhotoSwipe>} */ (options.pswpModule)));
     } else if (pswpModuleType === 'string') {
       throw new Error('pswpModule as string is no longer supported');
     } else if (pswpModuleType === 'function') {
-      promiseArray.push(/** @type {() => Promise<PhotoSwipe>} */ (options.pswpModule)());
+      promiseArray.push(/** @type {() => Promise<Type<PhotoSwipe>>} */ (options.pswpModule)());
     } else {
       throw new Error('pswpModule is not valid');
     }
@@ -193,7 +198,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
   /**
    * @private
-   * @param {PhotoSwipe | { default: PhotoSwipe }} module
+   * @param {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} module
    * @param {number} uid
    */
   _openPhotoswipe(module, uid) {
@@ -219,9 +224,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
      * @type {PhotoSwipe}
      */
     const pswp = typeof module === 'object'
-    // @ts-expect-error
         ? new module.default(this.options) // eslint-disable-line
-    // @ts-expect-error
         : new module(this.options); // eslint-disable-line
 
     this.pswp = pswp;

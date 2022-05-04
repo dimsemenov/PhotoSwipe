@@ -20,24 +20,31 @@ import PhotoSwipeBase from './core/base.js';
 import Opener from './opener.js';
 import ContentLoader from './slide/loader.js';
 
+/**
+ * @template T
+ * @typedef {import("./types").Type<T>} Type<T>
+ */
+
 /** @typedef {import("./slide/slide").SlideData} SlideData */
 /** @typedef {import("./slide/zoom-level").ZoomLevelOption} ZoomLevelOption */
-/** @typedef {any} PhotoSwipeLightbox TODO */
+/** @typedef {import("./ui/ui-element").UIElementData} UIElementData */
+
 /** @typedef {{ x?: number; y?: number; id?: string | number }} Point */
 /** @typedef {{ x?: number; y?: number }} Size */
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
-
 /** @typedef {SlideData[]} DataSourceArray */
 /** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
-
 /** @typedef {(point: Point, originalEvent: PointerEvent) => void} ActionFn */
 /** @typedef {'close' | 'next' | 'zoom' | 'zoom-or-close' | 'toggle-controls'} ActionType */
-/** @typedef {import("./ui/ui-element").UIElementData} UIElementData */
+
+/** @typedef {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} PhotoSwipeModule */
+// eslint-disable-next-line max-len
+/** @typedef {PhotoSwipeModule | Promise<PhotoSwipeModule> | (() => Promise<PhotoSwipeModule>)} PhotoSwipeModuleOption */
 
 /**
  * @typedef {Object} PhotoSwipeOptions
  *
- * @prop {DataSourceArray | DataSourceObject} dataSource
+ * @prop {DataSourceArray | DataSourceObject} [dataSource]
  * Pass an array of any items via dataSource option. Its length will determine amount of slides
  * (which may be modified further from numItems event).
  *
@@ -188,7 +195,7 @@ import ContentLoader from './slide/loader.js';
  * @prop {Point | null} [initialPointerPos]
  * @prop {boolean=} showHideOpacity
  *
- * @prop {Promise<PhotoSwipe> | (() => Promise<PhotoSwipe>)} [pswpModule]
+ * @prop {PhotoSwipeModuleOption} [pswpModule]
  * @prop {() => Promise<any>} [openPromise]
  * @prop {boolean=} preloadFirstSlide
  * @prop {string=} gallery
@@ -198,7 +205,7 @@ import ContentLoader from './slide/loader.js';
  * @prop {string | false} [thumbSelector]
  */
 
-/** @type {Partial<PhotoSwipeOptions>} */
+/** @type {PhotoSwipeOptions} */
 const defaultOptions = {
   allowPanToNext: true,
   spacing: 0.1,

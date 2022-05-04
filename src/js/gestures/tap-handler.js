@@ -2,7 +2,12 @@
  * Tap, double-tap handler.
  */
 
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/**
+ * @template T
+ * @template P
+ * @typedef {import("../types").AddPostfix<T, P>} AddPostfix<T, P>
+ */
+
 /** @typedef {import("./gestures").default} Gestures */
 
 /** @typedef {{ x?: number; y?: number }} Point */

@@ -11,6 +11,11 @@ import { specialKeyUsed } from './util/util.js';
 
 /** @typedef {import("./photoswipe").default} PhotoSwipe */
 
+/**
+ * @template T
+ * @typedef {import("./types").Methods<T>} Methods<T>
+ */
+
 class Keyboard {
   /**
    * @param {PhotoSwipe} pswp

@@ -3,6 +3,11 @@ import { createElement } from '../util/util.js';
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
 
 /**
+ * @template T
+ * @typedef {import("../types").Methods<T>} Methods<T>
+ */
+
+/**
  * @typedef {Object} UIElementMarkupProps
  * @prop {boolean=} isCustomSVG
  * @prop {string} inner
