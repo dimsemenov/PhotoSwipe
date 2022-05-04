@@ -127,7 +127,7 @@ And optionally:
 - `<img>` thumbnail within the link element that will be displayed before the large image is loaded (applied only for the first image, can be adjusted via `thumbSelector`).
 - Optional `data-cropped="true"` attribute if thumbnail is cropped. See also [Animating from Cropped Thumbnail](/opening-or-closing-transition#animating-from-cropped-thumbnail).
 
-PhotoSwipe API supports almost any markup and any data source, [read more about it here](data-sources#custom-html-markup).
+PhotoSwipe API supports almost any markup and any data source, [read more about it here](/data-sources#custom-html-markup).
 
 ## Open each image individually
 
