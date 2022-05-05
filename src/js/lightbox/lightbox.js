@@ -127,7 +127,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Load and open PhotoSwipe
    *
    * @param {number} index
-   * @param {PhotoSwipeOptions['dataSource']} dataSource
+   * @param {PhotoSwipeOptions['dataSource']} [dataSource]
    * @param {{ x?: number; y?: number }} [initialPoint]
    */
   loadAndOpen(index, dataSource, initialPoint) {
