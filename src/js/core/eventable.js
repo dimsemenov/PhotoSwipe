@@ -11,7 +11,7 @@
 /** @typedef {{ x?: number; y?: number }} Point */
 
 /**
- * @typedef {Object} PhotoSwipeEventsMap
+ * @typedef {Object} PhotoSwipeEventsMap https://photoswipe.com/events/
  *
  *
  * https://photoswipe.com/adding-ui-elements/
@@ -119,7 +119,7 @@
  */
 
 /**
- * @typedef {Object} PhotoSwipeFiltersMap
+ * @typedef {Object} PhotoSwipeFiltersMap https://photoswipe.com/filters/
  *
  * @prop {(numItems: number, dataSource: DataSource) => number} numItems
  * Modify the total amount of slides. Example on Data sources page.

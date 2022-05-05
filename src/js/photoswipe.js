@@ -37,15 +37,13 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {DataSourceArray | DataSourceObject} DataSource */
 /** @typedef {(point: Point, originalEvent: PointerEvent) => void} ActionFn */
 /** @typedef {'close' | 'next' | 'zoom' | 'zoom-or-close' | 'toggle-controls'} ActionType */
-
 /** @typedef {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} PhotoSwipeModule */
-// eslint-disable-next-line max-len
 /** @typedef {PhotoSwipeModule | Promise<PhotoSwipeModule> | (() => Promise<PhotoSwipeModule>)} PhotoSwipeModuleOption */
 
 /**
- * @typedef {Object} PhotoSwipeOptions
+ * @typedef {Object} PhotoSwipeOptions https://photoswipe.com/options/
  *
- * @prop {DataSource} [dataSource]
+ * @prop {DataSource=} dataSource
  * Pass an array of any items via dataSource option. Its length will determine amount of slides
  * (which may be modified further from numItems event).
  *
