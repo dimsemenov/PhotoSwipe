@@ -1,7 +1,7 @@
 import CSSAnimation from './css-animation.js';
 import SpringAnimation from './spring-animation.js';
 
-/** @typedef {SpringAnimation & CSSAnimation} Animation */
+/** @typedef {SpringAnimation | CSSAnimation} Animation */
 
 /**
  * @typedef {Object} AnimationProps
@@ -60,15 +60,12 @@ class Animations {
     /** @type {Animation} */
     let animation;
     if (isSpring) {
-      // @ts-expect-error
       animation = new SpringAnimation(props);
     } else {
-      // @ts-expect-error
       animation = new CSSAnimation(props);
     }
 
     this.activeAnimations.push(animation);
-    // @ts-expect-error TODO: rework this
     animation.onFinish = () => this.stop(animation);
 
     return animation;

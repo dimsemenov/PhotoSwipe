@@ -9,6 +9,9 @@ const DEFAULT_EASING = 'cubic-bezier(.4,0,.22,1)';
 /** @typedef {import("./animations").AnimationProps} AnimationProps */
 
 class CSSAnimation {
+  /** @type {() => void} */
+  onFinish;
+
   /**
    * onComplete can be unpredictable, be careful about current state
    *
@@ -32,12 +35,15 @@ class CSSAnimation {
     const prop = transform ? 'transform' : 'opacity';
     const propValue = props[prop];
 
+    /** @private */
     this._target = target;
+    /** @private */
     this._onComplete = onComplete;
 
     duration = duration || 333;
     easing = easing || DEFAULT_EASING;
 
+    /** @private */
     this._onTransitionEnd = this._onTransitionEnd.bind(this);
 
     // Using timeout hack to make sure that animation
@@ -46,6 +52,7 @@ class CSSAnimation {
     // https://drafts.csswg.org/css-transitions/#starting
     //
     // ¯\_(ツ)_/¯
+    /** @private */
     this._firstFrameTimeout = setTimeout(() => {
       setTransitionStyle(target, prop, duration, easing);
       this._firstFrameTimeout = setTimeout(() => {
@@ -72,7 +79,6 @@ class CSSAnimation {
   _finalizeAnimation() {
     if (!this._finished) {
       this._finished = true;
-      // @ts-expect-error defined from the outside, maybe it should be defined more explicit?
       this.onFinish();
       if (this._onComplete) {
         this._onComplete();

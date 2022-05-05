@@ -3,6 +3,9 @@ import SpringEaser from './spring-easer.js';
 /** @typedef {import("./animations").AnimationProps} AnimationProps */
 
 class SpringAnimation {
+  /** @type {() => void} */
+  onFinish;
+
   /**
    * @param {AnimationProps} props
    */
@@ -37,7 +40,6 @@ class SpringAnimation {
           if (onComplete) {
             onComplete();
           }
-          // @ts-expect-error defined from the outside, maybe it should be defined more explicit?
           this.onFinish();
         } else {
           prevTime = Date.now();
