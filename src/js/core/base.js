@@ -131,13 +131,13 @@ class PhotoSwipeBase extends Eventable {
       element
     };
 
-    /** @type {HTMLElement | HTMLAnchorElement} */
-    const linkEl = element.tagName === 'A' ? element : element.querySelector('a');
+    // eslint-disable-next-line max-len
+    const linkEl = /** @type {HTMLAnchorElement} */ (element.tagName === 'A' ? element : element.querySelector('a'));
 
     if (linkEl) {
       // src comes from data-pswp-src attribute,
       // if it's empty link href is used
-      itemData.src = linkEl.dataset.pswpSrc || /** @type {HTMLAnchorElement} */ (linkEl).href;
+      itemData.src = linkEl.dataset.pswpSrc || linkEl.href;
 
       if (linkEl.dataset.pswpSrcset) {
         itemData.srcset = linkEl.dataset.pswpSrcset;

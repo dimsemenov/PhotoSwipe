@@ -134,7 +134,7 @@
  * Modify slide item data. Example on Data sources page.
  * https://photoswipe.com/filters/#itemdata
  *
- * @prop {(itemData: SlideData, element: HTMLElement, linkEl: HTMLElement) => SlideData} domItemData
+ * @prop {(itemData: SlideData, element: HTMLElement, linkEl: HTMLAnchorElement) => SlideData} domItemData
  * Modify item data when it's parsed from DOM element. Example on Data sources page.
  * https://photoswipe.com/filters/#domitemdata
  *
