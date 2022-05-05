@@ -86,10 +86,6 @@
 	height: 100%;
 }
 
-.pswp {
-	position: fixed;
-}
-
 .pswp__img,
 .pswp__zoom-wrap {
 	width: auto;
