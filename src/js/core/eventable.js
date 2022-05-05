@@ -2,12 +2,17 @@
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
 /** @typedef {import("../photoswipe").DataSource} DataSource */
 /** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
-/** @typedef {import("../slide/content").default} Content */
+/** @typedef {import("../slide/content").default} ContentDefault */
 /** @typedef {import("../slide/slide").default} Slide */
 /** @typedef {import("../slide/slide").SlideData} SlideData */
 /** @typedef {import("../slide/zoom-level").default} ZoomLevel */
 /** @typedef {import("../slide/get-thumb-bounds").Bounds} Bounds */
 
+/**
+ * Allow adding an arbitrary props to the Content
+ * https://photoswipe.com/custom-content/#using-webp-image-format
+ * @typedef {ContentDefault & Record<string, any>} Content
+ */
 /** @typedef {{ x?: number; y?: number }} Point */
 
 /**
