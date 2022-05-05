@@ -93,7 +93,7 @@
  * @prop {{ slide: Slide }} slideActivate
  * @prop {{ slide: Slide }} slideDeactivate
  * @prop {{ slide: Slide }} slideDestroy
- * @prop {{ destZoomLevel: number, centerPoint: Point, transitionDuration: number }} beforeZoomTo
+ * @prop {{ destZoomLevel: number, centerPoint: Point, transitionDuration: number | false }} beforeZoomTo
  * @prop {{ slide: Slide }} zoomPanUpdate
  * @prop {{ slide: Slide }} initialZoomPan
  * @prop {{ slide: Slide }} calcSlideSize

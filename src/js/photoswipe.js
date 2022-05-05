@@ -80,13 +80,13 @@ import ContentLoader from './slide/loader.js';
  * @prop {(viewportSize: Size, itemData: SlideData, index: number) => Padding} [paddingFn]
  * The option is checked frequently, so make sure it's performant. Overrides padding option if defined. For example:
  *
- * @prop {number=} hideAnimationDuration
+ * @prop {number | false} [hideAnimationDuration]
  * Transition duration in milliseconds, can be 0.
  *
- * @prop {number=} showAnimationDuration
+ * @prop {number | false} [showAnimationDuration]
  * Transition duration in milliseconds, can be 0.
  *
- * @prop {number=} zoomAnimationDuration
+ * @prop {number | false} [zoomAnimationDuration]
  * Transition duration in milliseconds, can be 0.
  *
  * @prop {string=} easing
@@ -104,16 +104,16 @@ import ContentLoader from './slide/loader.js';
  * @prop {boolean=} clickToCloseNonZoomable
  * If image is not zoomable (for example, smaller than viewport) it can be closed by clicking on it.
  *
- * @prop {ActionType | ActionFn} [imageClickAction]
+ * @prop {ActionType | ActionFn | false} [imageClickAction]
  * Refer to click and tap actions page.
  *
- * @prop {ActionType | ActionFn} [bgClickAction]
+ * @prop {ActionType | ActionFn | false} [bgClickAction]
  * Refer to click and tap actions page.
  *
- * @prop {ActionType | ActionFn} [tapAction]
+ * @prop {ActionType | ActionFn | false} [tapAction]
  * Refer to click and tap actions page.
  *
- * @prop {ActionType | ActionFn} [doubleTapAction]
+ * @prop {ActionType | ActionFn | false} [doubleTapAction]
  * Refer to click and tap actions page.
  *
  * @prop {number=} preloaderDelay

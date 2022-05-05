@@ -281,7 +281,7 @@ class Slide {
    * @param {number} destZoomLevel Destination zoom level.
    * @param {{ x?: number; y?: number }} centerPoint
    * Transform origin center point, or false if viewport center should be used.
-   * @param {number=} transitionDuration Transition duration, may be set to 0.
+   * @param {number | false} [transitionDuration] Transition duration, may be set to 0.
    * @param {boolean=} ignoreBounds Minimum and maximum zoom levels will be ignored.
    * @return {boolean=} Returns true if animated.
    */
