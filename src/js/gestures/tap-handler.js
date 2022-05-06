@@ -10,6 +10,7 @@
 
 /** @typedef {import("./gestures").default} Gestures */
 
+/** @typedef {'imageClick' | 'bgClick' | 'tap' | 'doubleTap'} Actions */
 /** @typedef {{ x?: number; y?: number }} Point */
 
 /**
@@ -66,8 +67,6 @@ class TapHandler {
       this._doClickOrTapAction('doubleTap', point, originalEvent);
     }
   }
-
-  /** @typedef {'imageClick' | 'bgClick' | 'tap' | 'doubleTap'} Actions */
 
   /**
    * @param {Actions} actionName
