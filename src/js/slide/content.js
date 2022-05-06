@@ -374,8 +374,9 @@ class Content {
         });
       } else {
         if (this.placeholder
-          // @ts-expect-error
-          && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+          // eslint-disable-next-line max-len
+          && (this.state === LOAD_STATE.LOADED || /** @type {LoadState} */ (this.state) === LOAD_STATE.ERROR)
+        ) {
           this.removePlaceholder();
         }
         this.appendImage();
