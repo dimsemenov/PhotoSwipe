@@ -28,6 +28,7 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {import("./slide/slide").SlideData} SlideData */
 /** @typedef {import("./slide/zoom-level").ZoomLevelOption} ZoomLevelOption */
 /** @typedef {import("./ui/ui-element").UIElementData} UIElementData */
+/** @typedef {import("./main-scroll").ItemHolder} ItemHolder */
 
 /** @typedef {{ x?: number; y?: number; id?: string | number }} Point */
 /** @typedef {{ x?: number; y?: number }} Size */
@@ -519,7 +520,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   /**
    * Set slide content
    *
-   * @param {Record<string, any>} holder TODO mainScroll.itemHolders array item
+   * @param {ItemHolder} holder mainScroll.itemHolders array item
    * @param {number} index Slide index
    * @param {boolean=} force If content should be set even if index wasn't changed
    */

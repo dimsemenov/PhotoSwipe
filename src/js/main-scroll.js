@@ -12,6 +12,8 @@ import {
 /** @typedef {import("./photoswipe").default} PhotoSwipe */
 /** @typedef {import("./slide/slide").default} Slide */
 
+/** @typedef {{ el: HTMLDivElement; slide?: Slide }} ItemHolder */
+
 const MAIN_SCROLL_END_FRICTION = 0.35;
 
 
@@ -23,7 +25,7 @@ class MainScroll {
   /** @type {number} */
   slideWidth;
 
-  /** @type {{ el: HTMLDivElement; slide?: Slide }[]} */
+  /** @type {ItemHolder[]} */
   itemHolders;
 
   /**
