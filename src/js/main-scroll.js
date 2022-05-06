@@ -1,9 +1,3 @@
-/**
- * Handles movement of the main scrolling container
- * (for example, it repositions when user swipes left or right).
- *
- * Also stores its state.
- */
 import {
   setTransform,
   createElement,
@@ -21,6 +15,12 @@ const MAIN_SCROLL_END_FRICTION = 0.35;
 // const MAX_SWIPE_TRABSITION_DURATION = 500;
 // const DEFAULT_SWIPE_TRANSITION_DURATION = 333;
 
+/**
+ * Handles movement of the main scrolling container
+ * (for example, it repositions when user swipes left or right).
+ *
+ * Also stores its state.
+ */
 class MainScroll {
   /** @type {number} */
   slideWidth;

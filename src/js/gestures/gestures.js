@@ -1,10 +1,3 @@
-/**
- * Gestures class bind touch, pointer or mouse events
- * and emits drag to drag-handler and zoom events zoom-handler.
- *
- * Drag and zoom events are emited in requestAnimationFrame,
- * and only when one of pointers was actually changed.
- */
 import {
   equalizePoints, pointsEqual, getDistanceBetween
 } from '../util/util.js';
@@ -24,6 +17,13 @@ const AXIS_SWIPE_HYSTERISIS = 10;
 const DOUBLE_TAP_DELAY = 300; // ms
 const MIN_TAP_DISTANCE = 25; // px
 
+/**
+ * Gestures class bind touch, pointer or mouse events
+ * and emits drag to drag-handler and zoom events zoom-handler.
+ *
+ * Drag and zoom events are emited in requestAnimationFrame,
+ * and only when one of pointers was actually changed.
+ */
 class Gestures {
   /** @type {'x' | 'y'} */
   dragAxis;

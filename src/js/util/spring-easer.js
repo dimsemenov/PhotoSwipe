@@ -1,10 +1,9 @@
-/**
- * Spring easing helper
- */
-
 const DEFAULT_NATURAL_FREQUENCY = 12;
 const DEFAULT_DAMPING_RATIO = 0.75;
 
+/**
+ * Spring easing helper
+ */
 class SpringEaser {
   /**
    * @param {number} initialVelocity Initial velocity, px per ms.

@@ -1,7 +1,3 @@
-/**
- * PhotoSwipe base class that can retrieve data about every slide.
- * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
- */
 import Eventable from './eventable';
 import {
   getElementsFromOption
@@ -12,6 +8,10 @@ import Content from '../slide/content';
 /** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../slide/slide").SlideData} SlideData */
 
+/**
+ * PhotoSwipe base class that can retrieve data about every slide.
+ * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
+ */
 class PhotoSwipeBase extends Eventable {
   /** @type {PhotoSwipeOptions} */
   options;

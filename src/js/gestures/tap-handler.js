@@ -1,8 +1,4 @@
 /**
- * Tap, double-tap handler.
- */
-
-/**
  * @template T
  * @template P
  * @typedef {import("../types").AddPostfix<T, P>} AddPostfix<T, P>
@@ -23,6 +19,9 @@ function didTapOnMainContent(event) {
   return !!(/** @type {HTMLElement} */ (event.target).closest('.pswp__container'));
 }
 
+/**
+ * Tap, double-tap handler.
+ */
 class TapHandler {
   /**
    * @param {Gestures} gestures

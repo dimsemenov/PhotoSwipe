@@ -1,6 +1,3 @@
-/**
- * Calculates minimum, maximum and initial (center) bounds of a slide
- */
 import {
   clamp
 } from '../util/util.js';
@@ -10,6 +7,9 @@ import { parsePaddingOption } from '../util/viewport-size.js';
 /** @typedef {{ x?: number; y?: number }} Point */
 /** @typedef {'x' | 'y'} Axis */
 
+/**
+ * Calculates minimum, maximum and initial (center) bounds of a slide
+ */
 class PanBounds {
   /**
    * @param {Slide} slide

@@ -1,19 +1,3 @@
-/**
- * PhotoSwipe lightbox
- *
- * - If user has unsupported browser it falls back to default browser action (just opens URL)
- * - Binds click event to links that should open PhotoSwipe
- * - parses DOM strcture for PhotoSwipe (retrieves large image URLs and sizes)
- * - Initializes PhotoSwipe
- *
- *
- * Loader options use the same object as PhotoSwipe, and supports such options:
- *
- * gallery - Element | Element[] | NodeList | string selector for the gallery element
- * children - Element | Element[] | NodeList | string selector for the gallery children
- *
- */
-
 import {
   specialKeyUsed,
   getElementsFromOption,
@@ -40,6 +24,21 @@ import { lazyLoadSlide } from '../slide/loader.js';
  * @typedef {import("../core/eventable").EventCallback<T>} EventCallback<T>
  */
 
+/**
+ * PhotoSwipe Lightbox
+ *
+ * - If user has unsupported browser it falls back to default browser action (just opens URL)
+ * - Binds click event to links that should open PhotoSwipe
+ * - parses DOM strcture for PhotoSwipe (retrieves large image URLs and sizes)
+ * - Initializes PhotoSwipe
+ *
+ *
+ * Loader options use the same object as PhotoSwipe, and supports such options:
+ *
+ * gallery - Element | Element[] | NodeList | string selector for the gallery element
+ * children - Element | Element[] | NodeList | string selector for the gallery children
+ *
+ */
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * @param {PhotoSwipeOptions} options
@@ -51,6 +50,10 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     this._uid = 0;
   }
 
+  /**
+   * Initialize lightbox, should be called only once.
+   * It's not included in the main constructor, so you may bind events before it.
+   */
   init() {
     this.onThumbnailsClick = this.onThumbnailsClick.bind(this);
 
@@ -265,6 +268,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     pswp.init();
   }
 
+  /**
+   * Unbinds all events, closes PhotoSwipe if it's open.
+   */
   destroy() {
     if (this.pswp) {
       this.pswp.destroy();

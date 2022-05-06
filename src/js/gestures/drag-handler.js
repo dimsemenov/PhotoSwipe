@@ -1,7 +1,3 @@
-/**
- * Handles single pointer dragging
- */
-
 import {
   equalizePoints, roundPoint, clamp
 } from '../util/util.js';
@@ -27,6 +23,9 @@ function project(initialVelocity, decelerationRate) {
   return initialVelocity * decelerationRate / (1 - decelerationRate);
 }
 
+/**
+ * Handles single pointer dragging
+ */
 class DragHandler {
   /**
    * @param {Gestures} gestures

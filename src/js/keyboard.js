@@ -1,12 +1,3 @@
-/**
- *
- * keyboard.js
- *
- * - Manages keyboard shortcuts.
- * - Heps trap focus within photoswipe.
- *
- */
-
 import { specialKeyUsed } from './util/util.js';
 
 /** @typedef {import("./photoswipe").default} PhotoSwipe */
@@ -16,6 +7,10 @@ import { specialKeyUsed } from './util/util.js';
  * @typedef {import("./types").Methods<T>} Methods<T>
  */
 
+/**
+ * - Manages keyboard shortcuts.
+ * - Heps trap focus within photoswipe.
+ */
 class Keyboard {
   /**
    * @param {PhotoSwipe} pswp

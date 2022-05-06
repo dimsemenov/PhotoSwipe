@@ -234,6 +234,9 @@ const defaultOptions = {
   easing: 'cubic-bezier(.4,0,.22,1)'
 };
 
+/**
+ * PhotoSwipe Core
+ */
 class PhotoSwipe extends PhotoSwipeBase {
   /** @type {HTMLDivElement} */
   topBar;
@@ -400,7 +403,7 @@ class PhotoSwipe extends PhotoSwipeBase {
 
   /**
    * Change the slide
-   * @param  {number} index New index
+   * @param {number} index New index
    */
   goTo(index) {
     this.mainScroll.moveIndexBy(

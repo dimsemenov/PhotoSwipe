@@ -1,13 +1,12 @@
-/**
- * Runs CSS transition.
- */
-
 import { setTransitionStyle, removeTransitionStyle } from './util.js';
 
 const DEFAULT_EASING = 'cubic-bezier(.4,0,.22,1)';
 
 /** @typedef {import("./animations").AnimationProps} AnimationProps */
 
+/**
+ * Runs CSS transition.
+ */
 class CSSAnimation {
   /** @type {() => void} */
   onFinish;

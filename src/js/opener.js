@@ -1,9 +1,3 @@
-/**
- * Manages opening and closing transitions of the PhotoSwipe.
- *
- * It can perform zoom, fade or no transition.
- */
-
 import {
   setTransform,
   equalizePoints,
@@ -21,6 +15,11 @@ import {
 // we set it to the minimum amount
 const MIN_OPACITY = 0.003;
 
+/**
+ * Manages opening and closing transitions of the PhotoSwipe.
+ *
+ * It can perform zoom, fade or no transition.
+ */
 class Opener {
   /** @type {false | Bounds} */
   _thumbBounds;
