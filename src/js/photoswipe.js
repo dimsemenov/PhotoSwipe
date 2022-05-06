@@ -29,6 +29,16 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {import("./slide/zoom-level").ZoomLevelOption} ZoomLevelOption */
 /** @typedef {import("./ui/ui-element").UIElementData} UIElementData */
 /** @typedef {import("./main-scroll").ItemHolder} ItemHolder */
+/** @typedef {import("./core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
+/** @typedef {import("./core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+/**
+ * @template T
+ * @typedef {import("./core/eventable").EventCallback<T>} EventCallback<T>
+ */
+/**
+ * @template T
+ * @typedef {import("./core/eventable").AugmentedEvent<T>} AugmentedEvent<T>
+ */
 
 /** @typedef {{ x?: number; y?: number; id?: string | number }} Point */
 /** @typedef {{ x?: number; y?: number }} Size */
