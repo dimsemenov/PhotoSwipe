@@ -35,6 +35,11 @@ import { lazyLoadSlide } from '../slide/loader.js';
 /** @typedef {import("../core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
 /** @typedef {import("../core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 
+/**
+ * @template T
+ * @typedef {import("../core/eventable").EventCallback<T>} EventCallback<T>
+ */
+
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * @param {PhotoSwipeOptions} options
@@ -230,23 +235,16 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     this.pswp = pswp;
     window.pswp = pswp;
 
-    /**
-     * map listeners from Lightbox to PhotoSwipe Core
-     *
-     * @type {(keyof PhotoSwipeEventsMap)[]}
-     */
+    // map listeners from Lightbox to PhotoSwipe Core
+    /** @type {(keyof PhotoSwipeEventsMap)[]} */
     (Object.keys(this._listeners)).forEach((name) => {
       this._listeners[name].forEach((fn) => {
-        // @ts-expect-error TODO: weird things
-        pswp.on(name, fn);
+        pswp.on(name, /** @type {EventCallback<typeof name>} */(fn));
       });
     });
 
-    /**
-     * same with filters
-     *
-     * @type {(keyof PhotoSwipeFiltersMap)[]}
-     */
+    // same with filters
+    /** @type {(keyof PhotoSwipeFiltersMap)[]} */
     (Object.keys(this._filters)).forEach((name) => {
       this._filters[name].forEach((filter) => {
         pswp.addFilter(name, filter.fn, filter.priority);

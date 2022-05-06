@@ -191,6 +191,11 @@
  */
 
 /**
+ * @template {keyof PhotoSwipeEventsMap} T
+ * @typedef {(event: AugmentedEvent<T>) => void} EventCallback<T>
+ */
+
+/**
  * Base PhotoSwipe event object
  *
  * @template {keyof PhotoSwipeEventsMap} T
@@ -286,7 +291,7 @@ class Eventable {
   /**
    * @template {keyof PhotoSwipeEventsMap} T
    * @param {T} name
-   * @param {(event: AugmentedEvent<T>) => void} fn
+   * @param {EventCallback<T>} fn
    */
   on(name, fn) {
     if (!this._listeners[name]) {
@@ -305,7 +310,7 @@ class Eventable {
   /**
    * @template {keyof PhotoSwipeEventsMap} T
    * @param {T} name
-   * @param {(event: AugmentedEvent<T>) => void} fn
+   * @param {EventCallback<T>} fn
    */
   off(name, fn) {
     if (this._listeners[name]) {
