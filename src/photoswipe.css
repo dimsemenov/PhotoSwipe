@@ -28,6 +28,10 @@
 
 .pswp {
 	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 	z-index: var(--pswp-root-z-index);
 	display: none;
 	touch-action: none;
@@ -71,7 +75,6 @@
 	overflow: hidden;
 }
 
-.pswp,
 .pswp__scroll-wrap,
 .pswp__bg,
 .pswp__container,
@@ -84,10 +87,6 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-}
-
-.pswp {
-	position: fixed;
 }
 
 .pswp__img,
