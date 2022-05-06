@@ -30,6 +30,7 @@ import { lazyLoadSlide } from '../slide/loader.js';
 
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
 /** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../photoswipe").DataSource} DataSource */
 /** @typedef {import("../slide/content").default} Content */
 /** @typedef {import("../core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
 /** @typedef {import("../core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
@@ -127,7 +128,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Load and open PhotoSwipe
    *
    * @param {number} index
-   * @param {PhotoSwipeOptions['dataSource']} [dataSource]
+   * @param {DataSource=} dataSource
    * @param {{ x?: number; y?: number }} [initialPoint]
    */
   loadAndOpen(index, dataSource, initialPoint) {
@@ -151,7 +152,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Load the main module and the slide content by index
    *
    * @param {number} index
-   * @param {PhotoSwipeOptions['dataSource']} dataSource
+   * @param {DataSource=} dataSource
    */
   preload(index, dataSource) {
     const { options } = this;
