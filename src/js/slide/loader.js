@@ -5,6 +5,7 @@ import ZoomLevel from './zoom-level.js';
 /** @typedef {import("./slide").default} Slide */
 /** @typedef {import("./slide").SlideData} SlideData */
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
 
 const MIN_SLIDES_TO_CACHE = 5;
 
@@ -14,7 +15,7 @@ const MIN_SLIDES_TO_CACHE = 5;
  * thus it can be called before dialog is opened.
  *
  * @param {SlideData} itemData Data about the slide
- * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox
+ * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox
  * @param {number} index
  * @returns Image that is being decoded or false.
  */
@@ -55,7 +56,7 @@ export function lazyLoadData(itemData, instance, index) {
  * By default it loads image based on viewport size and initial zoom level.
  *
  * @param {number} index Slide index
- * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
  */
 export function lazyLoadSlide(index, instance) {
   const itemData = instance.getItemData(index);

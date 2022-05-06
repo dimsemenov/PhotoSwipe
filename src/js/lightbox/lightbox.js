@@ -162,7 +162,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     // Add the main module
-    // PhotoSwipeOptions['pswpModule'][]
     /** @type {Promise<Type<PhotoSwipe>>[]} */
     const promiseArray = [];
 
@@ -184,8 +183,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     if (options.preloadFirstSlide !== false && index >= 0) {
-      /** @type {Content} */
-      // @ts-expect-error
       this._preloadedContent = lazyLoadSlide(index, this);
     }
 
