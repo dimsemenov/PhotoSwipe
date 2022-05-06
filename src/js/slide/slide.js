@@ -4,18 +4,18 @@
 /**
  * @typedef {_SlideData & Record<string, any>} SlideData
  * @typedef {Object} _SlideData
- * @prop {HTMLElement=} element
- * @prop {string=} src
- * @prop {string=} srcset
- * @prop {number=} w deprecated
- * @prop {number=} h deprecated
- * @prop {number=} width
- * @prop {number=} height
- * @prop {string=} msrc
- * @prop {string=} alt
- * @prop {boolean=} thumbCropped
- * @prop {string=} html
- * @prop {'image' | 'html' | string} [type]
+ * @prop {HTMLElement=} element thumbnail element
+ * @prop {string=} src image URL
+ * @prop {string=} srcset image srcset
+ * @prop {number=} w image width (deprecated)
+ * @prop {number=} h image height (deprecated)
+ * @prop {number=} width image width
+ * @prop {number=} height image height
+ * @prop {string=} msrc placeholder image URL that's displayed before large image is loaded
+ * @prop {string=} alt image alt text
+ * @prop {boolean=} thumbCropped whether thumbnail is cropped client-side or not
+ * @prop {string=} html html content of a slide
+ * @prop {'image' | 'html' | string} [type] slide type
  */
 
 import {
