@@ -175,5 +175,5 @@ lightbox.init();
 
 - The PhotoSwipe supports all browsers that [support ES6 modules](https://caniuse.com/#search=module).
   - Thus, it might not work in IE11, Opera Mini, UC browser, and old versions of Chrome, Safari, and Firefox. Check your website/region statistics before deciding whether you should use PhotoSwipe or not.
-- Users in unsupported browsers will still be able to view the large image if you use recommended HTML markup - link to image, or link to pa age that contains image.
+- Users in unsupported browsers will still be able to view the large image if you use recommended HTML markup - link to image, or link to page that contains image.
 - You may add any fallback via `script type="nomodule"`.
