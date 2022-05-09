@@ -1,5 +1,31 @@
+import {
+  specialKeyUsed,
+  getElementsFromOption,
+  isPswpClass
+} from '../util/util.js';
+
+import PhotoSwipeBase from '../core/base.js';
+import { lazyLoadSlide } from '../slide/loader.js';
+
 /**
- * PhotoSwipe lightbox
+ * @template T
+ * @typedef {import("../types").Type<T>} Type<T>
+ */
+
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../photoswipe").DataSource} DataSource */
+/** @typedef {import("../slide/content").default} Content */
+/** @typedef {import("../core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
+/** @typedef {import("../core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+
+/**
+ * @template T
+ * @typedef {import("../core/eventable").EventCallback<T>} EventCallback<T>
+ */
+
+/**
+ * PhotoSwipe Lightbox
  *
  * - If user has unsupported browser it falls back to default browser action (just opens URL)
  * - Binds click event to links that should open PhotoSwipe
@@ -13,23 +39,21 @@
  * children - Element | Element[] | NodeList | string selector for the gallery children
  *
  */
-
-import {
-  specialKeyUsed,
-  getElementsFromOption,
-  isPswpClass
-} from '../util/util.js';
-
-import PhotoSwipeBase from '../core/base.js';
-import { lazyLoadSlide } from '../slide/loader.js';
-
 class PhotoSwipeLightbox extends PhotoSwipeBase {
+  /**
+   * @param {PhotoSwipeOptions} options
+   */
   constructor(options) {
     super();
+    /** @type {PhotoSwipeOptions} */
     this.options = options || {};
     this._uid = 0;
   }
 
+  /**
+   * Initialize lightbox, should be called only once.
+   * It's not included in the main constructor, so you may bind events before it.
+   */
   init() {
     this.onThumbnailsClick = this.onThumbnailsClick.bind(this);
 
@@ -40,6 +64,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       });
   }
 
+  /**
+   * @param {MouseEvent} e
+   */
   onThumbnailsClick(e) {
     // Exit and allow default browser action if:
     if (specialKeyUsed(e) // ... if clicked with a special key (ctrl/cmd...)
@@ -64,7 +91,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     let clickedIndex = this.getClickedIndex(e);
     clickedIndex = this.applyFilters('clickedIndex', clickedIndex, e, this);
     const dataSource = {
-      gallery: e.currentTarget
+      gallery: /** @type {HTMLElement} */ (e.currentTarget)
     };
 
     if (clickedIndex >= 0) {
@@ -76,7 +103,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Get index of gallery item that was clicked.
    *
-   * @param {Event} e click event
+   * @param {MouseEvent} e click event
    */
   getClickedIndex(e) {
     // legacy option
@@ -84,11 +111,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       return this.options.getClickedIndexFn.call(this, e);
     }
 
-    const clickedTarget = e.target;
+    const clickedTarget = /** @type {HTMLElement} */ (e.target);
     const childElements = getElementsFromOption(
       this.options.children,
       this.options.childSelector,
-      e.currentTarget
+      /** @type {HTMLElement} */ (e.currentTarget)
     );
     const clickedChildIndex = childElements.findIndex(
       child => child === clickedTarget || child.contains(clickedTarget)
@@ -108,9 +135,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Load and open PhotoSwipe
    *
-   * @param {Integer} index
-   * @param {Array|Object|null} dataSource
-   * @param {Point|null} initialPoint
+   * @param {number} index
+   * @param {DataSource=} dataSource
+   * @param {{ x?: number; y?: number }} [initialPoint]
    */
   loadAndOpen(index, dataSource, initialPoint) {
     // Check if the gallery is already open
@@ -132,7 +159,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Load the main module and the slide content by index
    *
-   * @param {Integer} index
+   * @param {number} index
+   * @param {DataSource=} dataSource
    */
   preload(index, dataSource) {
     const { options } = this;
@@ -142,15 +170,16 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     // Add the main module
+    /** @type {Promise<Type<PhotoSwipe>>[]} */
     const promiseArray = [];
 
     const pswpModuleType = typeof options.pswpModule;
     if (isPswpClass(options.pswpModule)) {
-      promiseArray.push(options.pswpModule);
+      promiseArray.push(Promise.resolve(/** @type {Type<PhotoSwipe>} */ (options.pswpModule)));
     } else if (pswpModuleType === 'string') {
       throw new Error('pswpModule as string is no longer supported');
     } else if (pswpModuleType === 'function') {
-      promiseArray.push(options.pswpModule());
+      promiseArray.push(/** @type {() => Promise<Type<PhotoSwipe>>} */ (options.pswpModule)());
     } else {
       throw new Error('pswpModule is not valid');
     }
@@ -175,6 +204,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     });
   }
 
+  /**
+   * @private
+   * @param {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} module
+   * @param {number} uid
+   */
   _openPhotoswipe(module, uid) {
     // Cancel opening if UID doesn't match the current one
     // (if user clicked on another gallery item before current was loaded).
@@ -192,7 +226,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       return;
     }
 
-    // Pass data to PhotoSwipe and open init
+    /**
+     * Pass data to PhotoSwipe and open init
+     *
+     * @type {PhotoSwipe}
+     */
     const pswp = typeof module === 'object'
         ? new module.default(this.options) // eslint-disable-line
         : new module(this.options); // eslint-disable-line
@@ -201,14 +239,16 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     window.pswp = pswp;
 
     // map listeners from Lightbox to PhotoSwipe Core
-    Object.keys(this._listeners).forEach((name) => {
+    /** @type {(keyof PhotoSwipeEventsMap)[]} */
+    (Object.keys(this._listeners)).forEach((name) => {
       this._listeners[name].forEach((fn) => {
-        pswp.on(name, fn);
+        pswp.on(name, /** @type {EventCallback<typeof name>} */(fn));
       });
     });
 
     // same with filters
-    Object.keys(this._filters).forEach((name) => {
+    /** @type {(keyof PhotoSwipeFiltersMap)[]} */
+    (Object.keys(this._filters)).forEach((name) => {
       this._filters[name].forEach((filter) => {
         pswp.addFilter(name, filter.fn, filter.priority);
       });
@@ -228,6 +268,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     pswp.init();
   }
 
+  /**
+   * Unbinds all events, closes PhotoSwipe if it's open.
+   */
   destroy() {
     if (this.pswp) {
       this.pswp.destroy();

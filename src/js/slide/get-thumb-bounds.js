@@ -1,3 +1,11 @@
+/** @typedef {import("./slide").SlideData} SlideData */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+
+/** @typedef {{ x: number; y: number; w: number; innerRect?: { w: number; h: number; x: number; y: number } }} Bounds */
+
+/**
+ * @param {HTMLElement} el
+ */
 function getBoundsByElement(el) {
   const thumbAreaRect = el.getBoundingClientRect();
   return {
@@ -7,6 +15,11 @@ function getBoundsByElement(el) {
   };
 }
 
+/**
+ * @param {HTMLElement} el
+ * @param {number} imageWidth
+ * @param {number} imageHeight
+ */
 function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
   const thumbAreaRect = el.getBoundingClientRect();
 
@@ -19,9 +32,13 @@ function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
   const offsetX = (thumbAreaRect.width - imageWidth * fillZoomLevel) / 2;
   const offsetY = (thumbAreaRect.height - imageHeight * fillZoomLevel) / 2;
 
-  // Coordinates of the image,
-  // as if it was not cropped,
-  // height is calculated automatically
+  /**
+   * Coordinates of the image,
+   * as if it was not cropped,
+   * height is calculated automatically
+   *
+   * @type {Bounds}
+   */
   const bounds = {
     x: thumbAreaRect.left + offsetX,
     y: thumbAreaRect.top + offsetY,
@@ -44,10 +61,10 @@ function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
  * Get dimensions of thumbnail image
  * (click on which opens photoswipe or closes photoswipe to)
  *
- * @param {Integer} index
- * @param {Object} itemData
+ * @param {number} index
+ * @param {SlideData} itemData
  * @param {PhotoSwipe} instance PhotoSwipe instance
- * @returns Object|undefined
+ * @returns {Bounds | undefined}
  */
 export function getThumbBounds(index, itemData, instance) {
   // legacy event, before filters were introduced
@@ -56,12 +73,15 @@ export function getThumbBounds(index, itemData, instance) {
     itemData,
     instance
   });
+  // @ts-expect-error
   if (event.thumbBounds) {
+    // @ts-expect-error
     return event.thumbBounds;
   }
 
   const { element } = itemData;
   let thumbBounds;
+  /** @type {HTMLElement} */
   let thumbnail;
 
   if (element && instance.options.thumbSelector !== false) {

@@ -7,7 +7,10 @@
     "parser": "@babel/eslint-parser",
     "parserOptions": {
         "sourceType": "module",
-        "requireConfigFile": false
+        "requireConfigFile": false,
+        "babelOptions": {
+          "plugins": ["@babel/plugin-syntax-class-properties"]
+        }
     },
     "overrides": [
         {
@@ -17,6 +20,7 @@
         }
     ],
     "rules": {
+        "max-len": ["error", { "code": 100, "comments": 140 }],
         "comma-dangle": "off",
         "no-param-reassign": 0,
         "import/extensions": 0,

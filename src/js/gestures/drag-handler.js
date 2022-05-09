@@ -1,10 +1,9 @@
-/**
- * Handles single pointer dragging
- */
-
 import {
   equalizePoints, roundPoint, clamp
 } from '../util/util.js';
+
+/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import("./gestures").default} Gestures */
 
 const PAN_END_FRICTION = 0.35;
 const VERTICAL_DRAG_FRICTION = 0.6;
@@ -16,14 +15,25 @@ const MIN_RATIO_TO_CLOSE = 0.4;
 // to next or previous slide
 const MIN_NEXT_SLIDE_SPEED = 0.5;
 
+/**
+ * @param {number} initialVelocity
+ * @param {number} decelerationRate
+ */
 function project(initialVelocity, decelerationRate) {
   return initialVelocity * decelerationRate / (1 - decelerationRate);
 }
 
+/**
+ * Handles single pointer dragging
+ */
 class DragHandler {
+  /**
+   * @param {Gestures} gestures
+   */
   constructor(gestures) {
     this.gestures = gestures;
     this.pswp = gestures.pswp;
+    /** @type {Point} */
     this.startPan = {};
   }
 
@@ -114,6 +124,10 @@ class DragHandler {
     }
   }
 
+  /**
+   * @private
+   * @param {'x' | 'y'} axis
+   */
   _finishPanGestureForAxis(axis) {
     const { pswp } = this;
     const { currSlide } = pswp;
@@ -192,7 +206,8 @@ class DragHandler {
    *
    * Should return true if it changes (or can change) main scroll.
    *
-   * @param {String} axis
+   * @private
+   * @param {'x' | 'y'} axis
    */
   _panOrMoveMainScroll(axis) {
     const { p1, pswp, dragAxis, prevP1, isMultitouch } = this.gestures;
@@ -292,7 +307,8 @@ class DragHandler {
    * if position is shifted upwards - the ratio is negative,
    * if position is shifted downwards - the ratio is positive.
    *
-   * @param {Number} panY The current pan Y position.
+   * @private
+   * @param {number} panY The current pan Y position.
    */
   _getVerticalDragRatio(panY) {
     return (panY - this.pswp.currSlide.bounds.center.y)
@@ -304,9 +320,10 @@ class DragHandler {
    * Apply friction if the position is beyond the pan bounds,
    * or if custom friction is defined.
    *
-   * @param {String} axis
-   * @param {Number} potentialPan
-   * @param {Number|null} customFriction (0.1 - 1)
+   * @private
+   * @param {'x' | 'y'} axis
+   * @param {number} potentialPan
+   * @param {number=} customFriction (0.1 - 1)
    */
   _setPanWithFriction(axis, potentialPan, customFriction) {
     const { pan, bounds } = this.pswp.currSlide;

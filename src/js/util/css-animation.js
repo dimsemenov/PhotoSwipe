@@ -1,13 +1,21 @@
-/**
- * Runs CSS transition.
- */
-
 import { setTransitionStyle, removeTransitionStyle } from './util.js';
 
 const DEFAULT_EASING = 'cubic-bezier(.4,0,.22,1)';
 
+/** @typedef {import("./animations").AnimationProps} AnimationProps */
+
+/**
+ * Runs CSS transition.
+ */
 class CSSAnimation {
-  // onComplete can be unpredictable, be careful about current state
+  /** @type {() => void} */
+  onFinish;
+
+  /**
+   * onComplete can be unpredictable, be careful about current state
+   *
+   * @param {AnimationProps} props
+   */
   constructor(props) {
     this.props = props;
     const {
@@ -26,12 +34,15 @@ class CSSAnimation {
     const prop = transform ? 'transform' : 'opacity';
     const propValue = props[prop];
 
+    /** @private */
     this._target = target;
+    /** @private */
     this._onComplete = onComplete;
 
     duration = duration || 333;
     easing = easing || DEFAULT_EASING;
 
+    /** @private */
     this._onTransitionEnd = this._onTransitionEnd.bind(this);
 
     // Using timeout hack to make sure that animation
@@ -40,6 +51,7 @@ class CSSAnimation {
     // https://drafts.csswg.org/css-transitions/#starting
     //
     // ¯\_(ツ)_/¯
+    /** @private */
     this._firstFrameTimeout = setTimeout(() => {
       setTransitionStyle(target, prop, duration, easing);
       this._firstFrameTimeout = setTimeout(() => {
@@ -50,12 +62,19 @@ class CSSAnimation {
     }, 0);
   }
 
+  /**
+   * @private
+   * @param {TransitionEvent} e
+   */
   _onTransitionEnd(e) {
     if (e.target === this._target) {
       this._finalizeAnimation();
     }
   }
 
+  /**
+   * @private
+   */
   _finalizeAnimation() {
     if (!this._finished) {
       this._finished = true;

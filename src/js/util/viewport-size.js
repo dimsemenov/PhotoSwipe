@@ -1,3 +1,11 @@
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../slide/slide").SlideData} SlideData */
+
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {PhotoSwipe} pswp
+ */
 export function getViewportSize(options, pswp) {
   if (options.getViewportSizeFn) {
     const newViewportSize = options.getViewportSizeFn(options, pswp);
@@ -45,14 +53,15 @@ export function getViewportSize(options, pswp) {
  * paddingTop: 0,
  * paddingBottom: 0,
  *
- * @param {String}  prop 'left', 'top', 'bottom', 'right'
- * @param {Object}  options PhotoSwipe options
- * @param {Object}  viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
- * @param {Object}  itemData Data about the slide
- * @param {Integer} index Slide index
- * @returns {Number}
+ * @param {'left' | 'top' | 'bottom' | 'right'} prop
+ * @param {PhotoSwipeOptions} options PhotoSwipe options
+ * @param {{ x?: number; y?: number }} viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
+ * @param {SlideData} itemData Data about the slide
+ * @param {number} index Slide index
+ * @returns {number}
  */
 export function parsePaddingOption(prop, options, viewportSize, itemData, index) {
+  /** @type {number} */
   let paddingValue;
 
   if (options.paddingFn) {
@@ -61,7 +70,9 @@ export function parsePaddingOption(prop, options, viewportSize, itemData, index)
     paddingValue = options.padding[prop];
   } else {
     const legacyPropName = 'padding' + prop[0].toUpperCase() + prop.slice(1);
+    // @ts-expect-error
     if (options[legacyPropName]) {
+      // @ts-expect-error
       paddingValue = options[legacyPropName];
     }
   }
@@ -69,7 +80,12 @@ export function parsePaddingOption(prop, options, viewportSize, itemData, index)
   return paddingValue || 0;
 }
 
-
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {{ x?: number; y?: number }} viewportSize
+ * @param {SlideData} itemData
+ * @param {number} index
+ */
 export function getPanAreaSize(options, viewportSize, itemData, index) {
   return {
     x: viewportSize.x

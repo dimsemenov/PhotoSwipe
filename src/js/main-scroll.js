@@ -1,13 +1,12 @@
-/**
- * Handles movement of the main scrolling container
- * (for example, it repositions when user swipes left or right).
- *
- * Also stores its state.
- */
 import {
   setTransform,
   createElement,
 } from './util/util.js';
+
+/** @typedef {import("./photoswipe").default} PhotoSwipe */
+/** @typedef {import("./slide/slide").default} Slide */
+
+/** @typedef {{ el: HTMLDivElement; slide?: Slide }} ItemHolder */
 
 const MAIN_SCROLL_END_FRICTION = 0.35;
 
@@ -16,7 +15,19 @@ const MAIN_SCROLL_END_FRICTION = 0.35;
 // const MAX_SWIPE_TRABSITION_DURATION = 500;
 // const DEFAULT_SWIPE_TRANSITION_DURATION = 333;
 
+/**
+ * Handles movement of the main scrolling container
+ * (for example, it repositions when user swipes left or right).
+ *
+ * Also stores its state.
+ */
 class MainScroll {
+  /** @type {number} */
+  slideWidth;
+
+  /** @type {ItemHolder[]} */
+  itemHolders;
+
   /**
    * @param {PhotoSwipe} pswp
    */
@@ -31,7 +42,7 @@ class MainScroll {
    * Position the scroller and slide containers
    * according to viewport size.
    *
-   * @param {Boolean} resizeSlides Whether slides content should resized
+   * @param {boolean=} resizeSlides Whether slides content should resized
    */
   resize(resizeSlides) {
     const { pswp } = this;
@@ -115,8 +126,10 @@ class MainScroll {
    * If loop option is enabled - index will be automatically looped too,
    * (for example `-1` will move to the last slide of the gallery).
    *
-   * @param {Integer} diff
-   * @returns {Boolean} whether index was changed or not
+   * @param {number} diff
+   * @param {boolean=} animate
+   * @param {number=} velocityX
+   * @returns {boolean} whether index was changed or not
    */
   moveIndexBy(diff, animate, velocityX) {
     const { pswp } = this;
@@ -284,11 +297,13 @@ class MainScroll {
   /**
    * Move the X position of the main scroll container
    *
-   * @param {Number} x
-   * @param {Boolean} dragging
+   * @param {number} x
+   * @param {boolean=} dragging
    */
   moveTo(x, dragging) {
+    /** @type {number} */
     let newSlideIndexOffset;
+    /** @type {number} */
     let delta;
 
     if (!this.pswp.canLoop() && dragging) {

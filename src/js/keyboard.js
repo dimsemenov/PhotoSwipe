@@ -1,15 +1,20 @@
-/**
- *
- * keyboard.js
- *
- * - Manages keyboard shortcuts.
- * - Heps trap focus within photoswipe.
- *
- */
-
 import { specialKeyUsed } from './util/util.js';
 
+/** @typedef {import("./photoswipe").default} PhotoSwipe */
+
+/**
+ * @template T
+ * @typedef {import("./types").Methods<T>} Methods<T>
+ */
+
+/**
+ * - Manages keyboard shortcuts.
+ * - Heps trap focus within photoswipe.
+ */
 class Keyboard {
+  /**
+   * @param {PhotoSwipe} pswp
+   */
   constructor(pswp) {
     this.pswp = pswp;
 
@@ -26,7 +31,7 @@ class Keyboard {
       pswp.events.add(document, 'keydown', this._onKeyDown.bind(this));
     });
 
-    const lastActiveElement = document.activeElement;
+    const lastActiveElement = /** @type {HTMLElement} */ (document.activeElement);
     pswp.on('destroy', () => {
       if (pswp.options.returnFocus
           && lastActiveElement
@@ -43,6 +48,9 @@ class Keyboard {
     }
   }
 
+  /**
+   * @param {KeyboardEvent} e
+   */
   _onKeyDown(e) {
     const { pswp } = this;
 
@@ -57,7 +65,9 @@ class Keyboard {
       return;
     }
 
+    /** @type {Methods<PhotoSwipe>} */
     let keydownAction;
+    /** @type {'x' | 'y'} */
     let axis;
     let isForward;
 
@@ -120,13 +130,13 @@ class Keyboard {
   /**
    * Trap focus inside photoswipe
    *
-   * @param {Event} e
+   * @param {FocusEvent} e
    */
   _onFocusIn(e) {
     const { template } = this.pswp;
     if (document !== e.target
         && template !== e.target
-        && !template.contains(e.target)) {
+        && !template.contains(/** @type {Node} */ (e.target))) {
       // focus root element
       template.focus();
     }

@@ -1,10 +1,3 @@
-/**
- * Gestures class bind touch, pointer or mouse events
- * and emits drag to drag-handler and zoom events zoom-handler.
- *
- * Drag and zoom events are emited in requestAnimationFrame,
- * and only when one of pointers was actually changed.
- */
 import {
   equalizePoints, pointsEqual, getDistanceBetween
 } from '../util/util.js';
@@ -12,6 +5,9 @@ import {
 import DragHandler from './drag-handler.js';
 import ZoomHandler from './zoom-handler.js';
 import TapHandler from './tap-handler.js';
+
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").Point} Point */
 
 // How far should user should drag
 // until we can determine that the gesture is swipe and its direction
@@ -21,24 +17,47 @@ const AXIS_SWIPE_HYSTERISIS = 10;
 const DOUBLE_TAP_DELAY = 300; // ms
 const MIN_TAP_DISTANCE = 25; // px
 
+/**
+ * Gestures class bind touch, pointer or mouse events
+ * and emits drag to drag-handler and zoom events zoom-handler.
+ *
+ * Drag and zoom events are emited in requestAnimationFrame,
+ * and only when one of pointers was actually changed.
+ */
 class Gestures {
+  /** @type {'x' | 'y'} */
+  dragAxis;
+
+  /**
+   * @param {PhotoSwipe} pswp
+   */
   constructor(pswp) {
     this.pswp = pswp;
 
 
     // point objects are defined once and reused
     // PhotoSwipe keeps track only of two pointers, others are ignored
+    /** @type {Point} */
     this.p1 = {}; // the first pressed pointer
+    /** @type {Point} */
     this.p2 = {}; // the second pressed pointer
+    /** @type {Point} */
     this.prevP1 = {};
+    /** @type {Point} */
     this.prevP2 = {};
+    /** @type {Point} */
     this.startP1 = {};
+    /** @type {Point} */
     this.startP2 = {};
+    /** @type {Point} */
     this.velocity = {};
 
+    /** @type {Point} */
     this._lastStartP1 = {};
+    /** @type {Point} */
     this._intervalP1 = {};
     this._numActivePoints = 0;
+    /** @type {Point[]} */
     this._ongoingPointers = [];
 
     this._touchEventEnabled = 'ontouchstart' in window;
@@ -79,6 +98,13 @@ class Gestures {
     });
   }
 
+  /**
+   *
+   * @param {'mouse' | 'touch' | 'pointer'} pref
+   * @param {'down' | 'start'} down
+   * @param {'up' | 'end'} up
+   * @param {'cancel'} [cancel]
+   */
   _bindEvents(pref, down, up, cancel) {
     const { pswp } = this;
     const { events } = pswp;
@@ -93,7 +119,9 @@ class Gestures {
     }
   }
 
-
+  /**
+   * @param {PointerEvent} e
+   */
   onPointerDown(e) {
     // We do not call preventDefault for touch events
     // to allow browser to show native dialog on longpress
@@ -155,6 +183,9 @@ class Gestures {
     }
   }
 
+  /**
+   * @param {PointerEvent} e
+   */
   onPointerMove(e) {
     e.preventDefault(); // always preventDefault move event
 
@@ -211,6 +242,9 @@ class Gestures {
     }
   }
 
+  /**
+   * @private
+   */
   _finishDrag() {
     if (this.isDragging) {
       this.isDragging = false;
@@ -226,7 +260,9 @@ class Gestures {
     }
   }
 
-
+  /**
+   * @param {PointerEvent} e
+   */
   onPointerUp(e) {
     if (!this._numActivePoints) {
       return;
@@ -262,7 +298,9 @@ class Gestures {
     }
   }
 
-
+  /**
+   * @private
+   */
   _rafRenderLoop() {
     if (this.isDragging || this.isZooming) {
       this._updateVelocity();
@@ -286,6 +324,8 @@ class Gestures {
 
   /**
    * Update velocity at 50ms interval
+   *
+   * @param {boolean=} force
    */
   _updateVelocity(force) {
     const time = Date.now();
@@ -304,6 +344,10 @@ class Gestures {
     this._velocityCalculated = true;
   }
 
+  /**
+   * @private
+   * @param {PointerEvent} e
+   */
   _finishTap(e) {
     const { mainScroll } = this.pswp;
 
@@ -347,6 +391,9 @@ class Gestures {
     }
   }
 
+  /**
+   * @private
+   */
   _clearTapTimer() {
     if (this._tapTimer) {
       clearTimeout(this._tapTimer);
@@ -357,8 +404,9 @@ class Gestures {
   /**
    * Get velocity for axis
    *
-   * @param {Number} axis
-   * @param {Number} duration
+   * @private
+   * @param {'x' | 'y'} axis
+   * @param {number} duration
    */
   _getVelocity(axis, duration) {
     // displacement is like distance, but can be negative.
@@ -371,6 +419,9 @@ class Gestures {
     return 0;
   }
 
+  /**
+   * @private
+   */
   _rafStopLoop() {
     if (this.raf) {
       cancelAnimationFrame(this.raf);
@@ -378,7 +429,10 @@ class Gestures {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  /**
+   * @private
+   * @param {PointerEvent} e
+   */
   _preventPointerEventBehaviour(e) {
     // TODO find a way to disable e.preventDefault on some elements
     //      via event or some class or something
@@ -390,14 +444,16 @@ class Gestures {
    * Parses and normalizes points from the touch, mouse or pointer event.
    * Updates p1 and p2.
    *
-   * @param {Event} e
-   * @param {String} pointerType Normalized pointer type ('up', 'down' or 'move')
+   * @private
+   * @param {PointerEvent | TouchEvent} e
+   * @param {'up' | 'down' | 'move'} pointerType Normalized pointer type
    */
   _updatePoints(e, pointerType) {
     if (this._pointerEventEnabled) {
+      const pointerEvent = /** @type {PointerEvent} */ (e);
       // Try to find the current pointer in ongoing pointers by its ID
       const pointerIndex = this._ongoingPointers.findIndex((ongoingPoiner) => {
-        return ongoingPoiner.id === e.pointerId;
+        return ongoingPoiner.id === pointerEvent.pointerId;
       });
 
       if (pointerType === 'up' && pointerIndex > -1) {
@@ -405,10 +461,10 @@ class Gestures {
         this._ongoingPointers.splice(pointerIndex, 1);
       } else if (pointerType === 'down' && pointerIndex === -1) {
         // add new pointer
-        this._ongoingPointers.push(this._convertEventPosToPoint(e, {}));
+        this._ongoingPointers.push(this._convertEventPosToPoint(pointerEvent, {}));
       } else if (pointerIndex > -1) {
         // update existing pointer
-        this._convertEventPosToPoint(e, this._ongoingPointers[pointerIndex]);
+        this._convertEventPosToPoint(pointerEvent, this._ongoingPointers[pointerIndex]);
       }
 
       this._numActivePoints = this._ongoingPointers.length;
@@ -423,21 +479,23 @@ class Gestures {
         equalizePoints(this.p2, this._ongoingPointers[1]);
       }
     } else {
+      const touchEvent = /** @type {TouchEvent} */ (e);
+
       this._numActivePoints = 0;
-      if (e.type.indexOf('touch') > -1) {
+      if (touchEvent.type.indexOf('touch') > -1) {
         // Touch Event
         // https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
-        if (e.touches && e.touches.length > 0) {
-          this._convertEventPosToPoint(e.touches[0], this.p1);
+        if (touchEvent.touches && touchEvent.touches.length > 0) {
+          this._convertEventPosToPoint(touchEvent.touches[0], this.p1);
           this._numActivePoints++;
-          if (e.touches.length > 1) {
-            this._convertEventPosToPoint(e.touches[1], this.p2);
+          if (touchEvent.touches.length > 1) {
+            this._convertEventPosToPoint(touchEvent.touches[1], this.p2);
             this._numActivePoints++;
           }
         }
       } else {
         // Mouse Event
-        this._convertEventPosToPoint(e, this.p1);
+        this._convertEventPosToPoint(/** @type {PointerEvent} */ (e), this.p1);
         if (pointerType === 'up') {
           // clear all points on mouseup
           this._numActivePoints = 0;
@@ -484,15 +542,15 @@ class Gestures {
    * Converts touch, pointer or mouse event
    * to PhotoSwipe point.
    *
-   * @param {Event} e
+   * @private
+   * @param {Touch | PointerEvent} e
    * @param {Point} p
    */
   _convertEventPosToPoint(e, p) {
     p.x = e.pageX - this.pswp.offset.x;
     p.y = e.pageY - this.pswp.offset.y;
 
-    // e.pointerId can be zero
-    if (e.pointerId !== undefined) {
+    if ('pointerId' in e) {
       p.id = e.pointerId;
     } else if (e.identifier !== undefined) {
       p.id = e.identifier;
@@ -501,6 +559,10 @@ class Gestures {
     return p;
   }
 
+  /**
+   * @private
+   * @param {PointerEvent} e
+   */
   _onClick(e) {
     // Do not allow click event to pass through after drag
     if (this.pswp.mainScroll.isShifted()) {

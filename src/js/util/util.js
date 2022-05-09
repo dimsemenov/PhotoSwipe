@@ -1,10 +1,16 @@
+/** @typedef {import("../photoswipe").Point} Point */
+
+/** @typedef {undefined | null | false | '' | 0} Falsy */
+/** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */
+
 /**
-  * Creates element and optionally appends it to another.
-  *
-  * @param {String} className
-  * @param {String|NULL} tagName
-  * @param {Element|NULL} appendToEl
-  */
+ * @template {HTMLElementTagName | Falsy} [T="div"]
+ * @template {Node | undefined} [NodeToAppendElementTo=undefined]
+ * @param {string=} className
+ * @param {T=} [tagName]
+ * @param {NodeToAppendElementTo=} appendToEl
+ * @returns {T extends HTMLElementTagName ? HTMLElementTagNameMap[T] : HTMLElementTagNameMap['div']}
+ */
 export function createElement(className, tagName, appendToEl) {
   const el = document.createElement(tagName || 'div');
   if (className) {
@@ -13,9 +19,14 @@ export function createElement(className, tagName, appendToEl) {
   if (appendToEl) {
     appendToEl.appendChild(el);
   }
+  // @ts-expect-error
   return el;
 }
 
+/**
+ * @param {Point} p1
+ * @param {Point} p2
+ */
 export function equalizePoints(p1, p2) {
   p1.x = p2.x;
   p1.y = p2.y;
@@ -25,7 +36,9 @@ export function equalizePoints(p1, p2) {
   return p1;
 }
 
-
+/**
+ * @param {Point} p
+ */
 export function roundPoint(p) {
   p.x = Math.round(p.x);
   p.y = Math.round(p.y);
@@ -34,8 +47,8 @@ export function roundPoint(p) {
 /**
  * Returns distance between two points.
  *
- * @param {Object} p1 Point
- * @param {Object} p2 Point
+ * @param {Point} p1
+ * @param {Point} p2
  */
 export function getDistanceBetween(p1, p2) {
   const x = Math.abs(p1.x - p2.x);
@@ -46,8 +59,8 @@ export function getDistanceBetween(p1, p2) {
 /**
  * Whether X and Y positions of points are qual
  *
- * @param {Object} p1
- * @param {Object} p2
+ * @param {Point} p1
+ * @param {Point} p2
  */
 export function pointsEqual(p1, p2) {
   return p1.x === p2.x && p1.y === p2.y;
@@ -56,9 +69,9 @@ export function pointsEqual(p1, p2) {
 /**
  * The float result between the min and max values.
  *
- * @param {Number} val
- * @param {Number} min
- * @param {Number} max
+ * @param {number} val
+ * @param {number} min
+ * @param {number} max
  */
 export function clamp(val, min, max) {
   return Math.min(Math.max(val, min), max);
@@ -67,9 +80,9 @@ export function clamp(val, min, max) {
 /**
  * Get transform string
  *
- * @param {Number} x
- * @param {Number|null} y
- * @param {Number|null} scale
+ * @param {number} x
+ * @param {number=} y
+ * @param {number=} scale
  */
 export function toTransformString(x, y, scale) {
   let propValue = 'translate3d('
@@ -88,10 +101,10 @@ export function toTransformString(x, y, scale) {
 /**
  * Apply transform:translate(x, y) scale(scale) to element
  *
- * @param {DOMElement} el
- * @param {Number} x
- * @param {Number|null} y
- * @param {Number|null} scale
+ * @param {HTMLElement} el
+ * @param {number} x
+ * @param {number=} y
+ * @param {number=} scale
  */
 export function setTransform(el, x, y, scale) {
   el.style.transform = toTransformString(x, y, scale);
@@ -102,10 +115,10 @@ const defaultCSSEasing = 'cubic-bezier(.4,0,.22,1)';
 /**
  * Apply CSS transition to element
  *
- * @param {Element} el
- * @param {String} prop CSS property to animate
- * @param {Number} duration in ms
- * @param {String|NULL} ease CSS easing function
+ * @param {HTMLElement} el
+ * @param {string=} prop CSS property to animate
+ * @param {number=} duration in ms
+ * @param {string=} ease CSS easing function
  */
 export function setTransitionStyle(el, prop, duration, ease) {
   // inOut: 'cubic-bezier(.4, 0, .22, 1)', // for "toggle state" transitions
@@ -118,16 +131,27 @@ export function setTransitionStyle(el, prop, duration, ease) {
 
 /**
  * Apply width and height CSS properties to element
+ *
+ * @param {HTMLElement} el
+ * @param {string | number} w
+ * @param {string | number} h
  */
 export function setWidthHeight(el, w, h) {
   el.style.width = (typeof w === 'number') ? (w + 'px') : w;
   el.style.height = (typeof h === 'number') ? (h + 'px') : h;
 }
 
+/**
+ * @param {HTMLElement} el
+ */
 export function removeTransitionStyle(el) {
   setTransitionStyle(el);
 }
 
+/**
+ * @param {HTMLImageElement} img
+ * @returns {Promise<HTMLImageElement | void>}
+ */
 export function decodeImage(img) {
   if ('decode' in img) {
     return img.decode();
@@ -143,6 +167,8 @@ export function decodeImage(img) {
   });
 }
 
+/** @typedef {LOAD_STATE[keyof LOAD_STATE]} LoadState */
+/** @type {{ IDLE: 'idle'; LOADING: 'loading'; LOADED: 'loaded'; ERROR: 'error' }} */
 export const LOAD_STATE = {
   IDLE: 'idle',
   LOADING: 'loading',
@@ -155,7 +181,7 @@ export const LOAD_STATE = {
  * Check if click or keydown event was dispatched
  * with a special key or via mouse wheel.
  *
- * @param {Event} e
+ * @param {MouseEvent | KeyboardEvent} e
  */
 export function specialKeyUsed(e) {
   if (e.which === 2 || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
@@ -166,12 +192,13 @@ export function specialKeyUsed(e) {
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {Element|NodeList|String} option
- * @param {String|null} legacySelector
- * @param {Element|null} parent
- * @returns Element[]
+ * @param {HTMLElement | NodeListOf<HTMLElement> | string} option
+ * @param {string=} legacySelector
+ * @param {HTMLElement | Document} [parent]
+ * @returns HTMLElement[]
  */
 export function getElementsFromOption(option, legacySelector, parent = document) {
+  /** @type {HTMLElement[]} */
   let elements = [];
 
   if (option instanceof Element) {
@@ -191,8 +218,7 @@ export function getElementsFromOption(option, legacySelector, parent = document)
 /**
  * Check if variable is PhotoSwipe class
  *
- * @param {*} fn
- * @returns Boolean
+ * @param {any} fn
  */
 export function isPswpClass(fn) {
   return typeof fn === 'function'

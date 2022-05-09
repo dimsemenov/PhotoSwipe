@@ -10,18 +10,31 @@ try {
 } catch (e) {}
 /* eslint-enable */
 
+
+/**
+ * @typedef {Object} PoolItem
+ * @prop {HTMLElement | Window | Document} target
+ * @prop {string} type
+ * @prop {(e: any) => void} listener
+ * @prop {boolean} passive
+ */
+
 class DOMEvents {
   constructor() {
+    /**
+     * @type {PoolItem[]}
+     * @private
+     */
     this._pool = [];
   }
 
   /**
    * Adds event listeners
    *
-   * @param {DOMElement} target
-   * @param {String} type Can be multiple, separated by space.
-   * @param {Function} listener
-   * @param {Boolean} passive
+   * @param {HTMLElement | Window | Document} target
+   * @param {string} type Can be multiple, separated by space.
+   * @param {(e: any) => void} listener
+   * @param {boolean=} passive
    */
   add(target, type, listener, passive) {
     this._toggleListener(target, type, listener, passive);
@@ -30,10 +43,10 @@ class DOMEvents {
   /**
    * Removes event listeners
    *
-   * @param {DOMElement} target
-   * @param {String} type
-   * @param {Function} listener
-   * @param {Boolean} passive
+   * @param {HTMLElement | Window | Document} target
+   * @param {string} type
+   * @param {(e: any) => void} listener
+   * @param {boolean=} passive
    */
   remove(target, type, listener, passive) {
     this._toggleListener(target, type, listener, passive, true);
@@ -59,21 +72,21 @@ class DOMEvents {
   /**
    * Adds or removes event
    *
-   * @param {DOMElement} target
-   * @param {String} type
-   * @param {Function} listener
-   * @param {Boolean} passive
-   * @param {Boolean} unbind Whether the event should be added or removed
-   * @param {Boolean} skipPool Whether events pool should be skipped
+   * @param {HTMLElement | Window | Document} target
+   * @param {string} type
+   * @param {(e: any) => void} listener
+   * @param {boolean} passive
+   * @param {boolean=} unbind Whether the event should be added or removed
+   * @param {boolean=} skipPool Whether events pool should be skipped
    */
   _toggleListener(target, type, listener, passive, unbind, skipPool) {
     if (!target) {
       return;
     }
 
-    const methodName = (unbind ? 'remove' : 'add') + 'EventListener';
-    type = type.split(' ');
-    type.forEach((eType) => {
+    const methodName = unbind ? 'removeEventListener' : 'addEventListener';
+    const types = type.split(' ');
+    types.forEach((eType) => {
       if (eType) {
         // Events pool is used to easily unbind all events when PhotoSwipe is closed,
         // so developer doesn't need to do this manually

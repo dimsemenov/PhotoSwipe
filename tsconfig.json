@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "dist/types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "strict": true,
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "checkJs": true,
+  },
+  "include": [
+    "global.d.ts",
+    "src/js/**/*"
+  ],
+}

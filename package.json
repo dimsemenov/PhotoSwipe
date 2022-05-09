@@ -4,12 +4,26 @@
   "main": "dist/photoswipe.esm.js",
   "style": "dist/photoswipe.css",
   "type": "module",
+  "types": "./dist/types/photoswipe.d.ts",
   "exports": {
-    ".": "./dist/photoswipe.esm.js",
-    "./lightbox": "./dist/photoswipe-lightbox.esm.js",
+    ".": {
+      "types": "./dist/types/photoswipe.d.ts",
+      "import": "./dist/photoswipe.esm.js"
+    },
+    "./lightbox": {
+      "types": "./dist/types/lightbox/lightbox.d.ts",
+      "import": "./dist/photoswipe-lightbox.esm.js"
+    },
     "./dist/photoswipe.css": "./dist/photoswipe.css",
     "./photoswipe.css": "./dist/photoswipe.css",
     "./style.css": "./dist/photoswipe.css"
+  },
+  "typesVersions": {
+    "<4.7": {
+      "lightbox": [
+        "dist/types/lightbox/lightbox.d.ts"
+      ]
+    }
   },
   "files": [
     "dist",
@@ -23,7 +37,7 @@
     "build": "npm run build-and-minify-js && npm run build-css && npm run copy-to-dist",
     "watch": "concurrently \"npm:watch-js\" \"npm:watch-css\" \"npm:watch-docs\"",
     "watch-local": "concurrently \"npm:watch-js\" \"npm:watch-css\" \"npm:watch-docs-local\"",
-    "build-and-minify-js": "rollup --config build/rollup.config.js",
+    "build-and-minify-js": "rollup --config build/rollup.config.js && npm run tsc",
     "watch-js": "rollup --config build/rollup.config.watch.js --watch",
     "build-css": "copyfiles -f src/*.css dist/ && copyfiles -f src/*.css demo-docs-website/static/photoswipe/",
     "watch-css": "chokidar \"src/*.css\" --command \"npm run build-css\"",
@@ -32,11 +46,13 @@
     "copy-to-dist": "copyfiles -f demo-docs-website/static/photoswipe/* dist/",
     "lint": "eslint src/js/**/*.js",
     "lint-auto-fix": "eslint src/js/**/*.js --fix",
-    "test": "npm run lint"
+    "test": "npm run lint",
+    "tsc": "tsc"
   },
   "devDependencies": {
     "@babel/core": "^7.13.16",
     "@babel/eslint-parser": "^7.13.14",
+    "@babel/plugin-syntax-class-properties": "^7.12.13",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^6.0.2",
     "copyfiles": "^2.4.1",
@@ -45,7 +61,8 @@
     "eslint-plugin-import": "^2.22.1",
     "rollup": "^2.46.0",
     "rollup-plugin-copy": "^3.4.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.6.4"
   },
   "repository": {
     "type": "git",
@@ -66,6 +83,5 @@
     "zoom"
   ],
   "author": "Dmytro Semenov (https://dimsemenov.com)",
-  "license": "MIT",
-  "dependencies": {}
+  "license": "MIT"
 }

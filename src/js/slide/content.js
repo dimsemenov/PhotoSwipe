@@ -1,13 +1,19 @@
 import { createElement, LOAD_STATE, setWidthHeight } from '../util/util.js';
 import Placeholder from './placeholder.js';
 
+/** @typedef {import("./slide").default} Slide */
+/** @typedef {import("./slide").SlideData} SlideData */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../util/util").LoadState} LoadState */
+
 class Content {
+  /** @type {HTMLImageElement | HTMLDivElement} */
+  element;
+
   /**
-   * @param {Object} itemData Slide data
-   * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox instance
-   * @param {Slide|undefined} slide Slide that requested the image,
-   *                                can be undefined if image was requested by something else
-   *                                (for example by lazy-loader)
+   * @param {SlideData} itemData Slide data
+   * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox instance
+   * @param {number} index
    */
   constructor(itemData, instance, index) {
     this.instance = instance;
@@ -19,6 +25,7 @@ class Content {
 
     this.isAttached = false;
     this.hasSlide = false;
+    /** @type {LoadState} */
     this.state = LOAD_STATE.IDLE;
 
     if (this.data.type) {
@@ -47,7 +54,8 @@ class Content {
   /**
    * Preload content
    *
-   * @param {Boolean} isLazy
+   * @param {boolean=} isLazy
+   * @param {boolean=} reload
    */
   load(isLazy, reload) {
     if (!this.placeholder && this.slide && this.usePlaceholder()) {
@@ -87,33 +95,34 @@ class Content {
   /**
    * Preload image
    *
-   * @param {Boolean} isLazy
+   * @param {boolean} isLazy
    */
   loadImage(isLazy) {
-    this.element = createElement('pswp__img', 'img');
+    const imageElement = createElement('pswp__img', 'img');
+    this.element = imageElement;
 
     if (this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
       return;
     }
 
     if (this.data.srcset) {
-      this.element.srcset = this.data.srcset;
+      imageElement.srcset = this.data.srcset;
     }
 
-    this.element.src = this.data.src;
+    imageElement.src = this.data.src;
 
-    this.element.alt = this.data.alt || '';
+    imageElement.alt = this.data.alt || '';
 
     this.state = LOAD_STATE.LOADING;
 
-    if (this.element.complete) {
+    if (imageElement.complete) {
       this.onLoaded();
     } else {
-      this.element.onload = () => {
+      imageElement.onload = () => {
         this.onLoaded();
       };
 
-      this.element.onerror = () => {
+      imageElement.onerror = () => {
         this.onError();
       };
     }
@@ -181,7 +190,7 @@ class Content {
   }
 
   /**
-   * @returns {Boolean} If the content is image
+   * @returns {boolean} If the content is image
    */
   isImageContent() {
     return this.type === 'image';
@@ -202,6 +211,7 @@ class Content {
       this.placeholder.setDisplayedSize(width, height);
     }
 
+    // eslint-disable-next-line max-len
     if (this.instance.dispatch('contentResize', { content: this, width, height }).defaultPrevented) {
       return;
     }
@@ -209,26 +219,29 @@ class Content {
     setWidthHeight(this.element, width, height);
 
     if (this.isImageContent() && !this.isError()) {
-      const image = this.element;
+      const image = /** @type HTMLImageElement */ (this.element);
+
       // Handle srcset sizes attribute.
       //
       // Never lower quality, if it was increased previously.
       // Chrome does this automatically, Firefox and Safari do not,
       // so we store largest used size in dataset.
       if (image.srcset
-          && (!image.dataset.largestUsedSize || width > image.dataset.largestUsedSize)) {
+          // eslint-disable-next-line max-len
+          && (!image.dataset.largestUsedSize || width > parseInt(image.dataset.largestUsedSize, 10))) {
         image.sizes = width + 'px';
-        image.dataset.largestUsedSize = width;
+        image.dataset.largestUsedSize = String(width);
       }
 
       if (this.slide) {
+        // eslint-disable-next-line max-len
         this.instance.dispatch('imageSizeChange', { slide: this.slide, width, height, content: this });
       }
     }
   }
 
   /**
-   * @returns {Boolean} If the content can be zoomed
+   * @returns {boolean} If the content can be zoomed
    */
   isZoomable() {
     return this.instance.applyFilters(
@@ -239,7 +252,7 @@ class Content {
   }
 
   /**
-   * @returns {Boolean} If content should use a placeholder (from msrc by default)
+   * @returns {boolean} If content should use a placeholder (from msrc by default)
    */
   usePlaceholder() {
     return this.instance.applyFilters(
@@ -251,8 +264,6 @@ class Content {
 
   /**
    * Preload content with lazy-loading param
-   *
-   * @param {Boolean} isLazy
    */
   lazyLoad() {
     if (this.instance.dispatch('contentLazyLoad', { content: this }).defaultPrevented) {
@@ -263,7 +274,7 @@ class Content {
   }
 
   /**
-   * @returns {Boolean} If placeholder should be kept after content is loaded
+   * @returns {boolean} If placeholder should be kept after content is loaded
    */
   keepPlaceholder() {
     return this.instance.applyFilters(
@@ -298,6 +309,7 @@ class Content {
    */
   displayError() {
     if (this.slide) {
+      /** @type {HTMLElement} */
       let errorMsgEl = createElement('pswp__error-msg');
       errorMsgEl.innerText = this.instance.options.errorMsg;
       errorMsgEl = this.instance.applyFilters(
@@ -349,7 +361,8 @@ class Content {
         requestAnimationFrame(() => {
           // element might change
           if (this.element && this.element.tagName === 'IMG') {
-            this.element.decode().then(() => {
+            /** @type {HTMLImageElement} */
+            (this.element).decode().then(() => {
               this.isDecoding = false;
               requestAnimationFrame(() => {
                 this.appendImage();
@@ -361,7 +374,9 @@ class Content {
         });
       } else {
         if (this.placeholder
-          && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+          // eslint-disable-next-line max-len
+          && (this.state === LOAD_STATE.LOADED || /** @type {LoadState} */ (this.state) === LOAD_STATE.ERROR)
+        ) {
           this.removePlaceholder();
         }
         this.appendImage();

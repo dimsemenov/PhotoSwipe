@@ -1,23 +1,24 @@
-/**
- * Spring easing helper
- */
-
 const DEFAULT_NATURAL_FREQUENCY = 12;
 const DEFAULT_DAMPING_RATIO = 0.75;
 
+/**
+ * Spring easing helper
+ */
 class SpringEaser {
   /**
-   * @param {Number} initialVelocity Initial velocity, px per ms.
+   * @param {number} initialVelocity Initial velocity, px per ms.
    *
-   * @param {Number} dampingRatio Determines how bouncy animation will be.
-   *                              From 0 to 1, 0 - always overshoot, 1 - do not overshoot.
-   *                              "overshoot" refers to part of animation that
-   *                              goes beyond the final value.
+   * @param {number} dampingRatio
+   * Determines how bouncy animation will be.
+   * From 0 to 1, 0 - always overshoot, 1 - do not overshoot.
+   * "overshoot" refers to part of animation that
+   * goes beyond the final value.
    *
-   * @param {Number} naturalFrequency Determines how fast animation will slow down.
-   *                                  The higher value - the stiffer the transition will be,
-   *                                  and the faster it will slow down.
-   *                                  Recommended value from 10 to 50
+   * @param {number} naturalFrequency
+   * Determines how fast animation will slow down.
+   * The higher value - the stiffer the transition will be,
+   * and the faster it will slow down.
+   * Recommended value from 10 to 50
    */
   constructor(initialVelocity, dampingRatio, naturalFrequency) {
     this.velocity = initialVelocity * 1000; // convert to "pixels per second"
@@ -35,10 +36,10 @@ class SpringEaser {
   }
 
   /**
-   * @param {Number} deltaPosition Difference between current and end position of the animation
-   * @param {Number} deltaTime Frame duration in milliseconds
+   * @param {number} deltaPosition Difference between current and end position of the animation
+   * @param {number} deltaTime Frame duration in milliseconds
    *
-   * @returns {Number} Displacement, relative to the end position.
+   * @returns {number} Displacement, relative to the end position.
    */
   easeFrame(deltaPosition, deltaTime) {
     // Inspired by Apple Webkit and Android spring function implementation

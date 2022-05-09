@@ -5,19 +5,32 @@ import zoomButton from './button-zoom.js';
 import { loadingIndicator } from './loading-indicator.js';
 import { counterIndicator } from './counter-indicator.js';
 
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("./ui-element").UIElementData} UIElementData */
+
 /**
  * Set special class on element when image is zoomed.
  *
  * By default it is used to adjust
  * zoom icon and zoom cursor via CSS.
  *
- * @param {Boolean} isZoomedIn
+ * @param {HTMLElement} el
+ * @param {boolean} isZoomedIn
  */
 function setZoomedIn(el, isZoomedIn) {
   el.classList[isZoomedIn ? 'add' : 'remove']('pswp--zoomed-in');
 }
 
 class UI {
+  /** @type {() => void} */
+  updatePreloaderVisibility;
+
+  /** @type {number} */
+  _lastUpdatedZoomLevel;
+
+  /**
+   * @param {PhotoSwipe} pswp
+   */
   constructor(pswp) {
     this.pswp = pswp;
   }
@@ -25,6 +38,7 @@ class UI {
   init() {
     const { pswp } = this;
     this.isRegistered = false;
+    /** @type {UIElementData[]} */
     this.uiElementsData = [
       closeButton,
       arrowPrev,
@@ -42,6 +56,7 @@ class UI {
       return (a.order || 0) - (b.order || 0);
     });
 
+    /** @type {(UIElement | UIElementData)[]} */
     this.items = [];
 
     this.isRegistered = true;
@@ -56,6 +71,9 @@ class UI {
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());
   }
 
+  /**
+   * @param {UIElementData} elementData
+   */
   registerElement(elementData) {
     if (this.isRegistered) {
       this.items.push(

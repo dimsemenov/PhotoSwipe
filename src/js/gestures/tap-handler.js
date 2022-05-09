@@ -1,25 +1,41 @@
 /**
- * Tap, double-tap handler.
+ * @template T
+ * @template P
+ * @typedef {import("../types").AddPostfix<T, P>} AddPostfix<T, P>
  */
+
+/** @typedef {import("./gestures").default} Gestures */
+
+/** @typedef {'imageClick' | 'bgClick' | 'tap' | 'doubleTap'} Actions */
+/** @typedef {{ x?: number; y?: number }} Point */
 
 /**
  * Whether the tap was performed on the main slide
  * (rather than controls or caption).
  *
- * @param {Event} event
+ * @param {PointerEvent} event
  */
 function didTapOnMainContent(event) {
-  return !!(event.target.closest('.pswp__container'));
+  return !!(/** @type {HTMLElement} */ (event.target).closest('.pswp__container'));
 }
 
+/**
+ * Tap, double-tap handler.
+ */
 class TapHandler {
+  /**
+   * @param {Gestures} gestures
+   */
   constructor(gestures) {
     this.gestures = gestures;
   }
 
-
+  /**
+   * @param {Point} point
+   * @param {PointerEvent} originalEvent
+   */
   click(point, originalEvent) {
-    const targetClassList = originalEvent.target.classList;
+    const targetClassList = /** @type {HTMLElement} */ (originalEvent.target).classList;
     const isImageClick = targetClassList.contains('pswp__img');
     const isBackgroundClick = targetClassList.contains('pswp__item')
                               || targetClassList.contains('pswp__zoom-wrap');
@@ -31,24 +47,38 @@ class TapHandler {
     }
   }
 
+  /**
+   * @param {Point} point
+   * @param {PointerEvent} originalEvent
+   */
   tap(point, originalEvent) {
     if (didTapOnMainContent(originalEvent)) {
       this._doClickOrTapAction('tap', point, originalEvent);
     }
   }
 
+  /**
+   * @param {Point} point
+   * @param {PointerEvent} originalEvent
+   */
   doubleTap(point, originalEvent) {
     if (didTapOnMainContent(originalEvent)) {
       this._doClickOrTapAction('doubleTap', point, originalEvent);
     }
   }
 
+  /**
+   * @param {Actions} actionName
+   * @param {Point} point
+   * @param {PointerEvent} originalEvent
+   */
   _doClickOrTapAction(actionName, point, originalEvent) {
     const { pswp } = this.gestures;
     const { currSlide } = pswp;
-    const optionValue = pswp.options[actionName + 'Action'];
+    const actionFullName = /** @type {AddPostfix<Actions, 'Action'>} */ (actionName + 'Action');
+    const optionValue = pswp.options[actionFullName];
 
-    if (pswp.dispatch(actionName + 'Action', { point, originalEvent }).defaultPrevented) {
+    if (pswp.dispatch(actionFullName, { point, originalEvent }).defaultPrevented) {
       return;
     }
 

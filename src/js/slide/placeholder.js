@@ -2,8 +2,8 @@ import { createElement, setWidthHeight, toTransformString } from '../util/util.j
 
 class Placeholder {
   /**
-   * @param {String|false} imageSrc
-   * @param {Element} container
+   * @param {string | false} imageSrc
+   * @param {HTMLElement} container
    */
   constructor(imageSrc, container) {
     // Create placeholder
@@ -15,15 +15,22 @@ class Placeholder {
     );
 
     if (imageSrc) {
-      this.element.decoding = 'async';
-      this.element.alt = '';
-      this.element.src = imageSrc;
+      /** @type {HTMLImageElement} */
+      (this.element).decoding = 'async';
+      /** @type {HTMLImageElement} */
+      (this.element).alt = '';
+      /** @type {HTMLImageElement} */
+      (this.element).src = imageSrc;
       this.element.setAttribute('role', 'presentation');
     }
 
     this.element.setAttribute('aria-hiden', 'true');
   }
 
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
   setDisplayedSize(width, height) {
     if (!this.element) {
       return;

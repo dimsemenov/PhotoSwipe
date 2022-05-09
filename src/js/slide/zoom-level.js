@@ -1,16 +1,21 @@
+const MAX_IMAGE_WIDTH = 4000;
+
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/slide").SlideData} SlideData */
+
+/** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
+
 /**
  * Calculates zoom levels for specific slide.
  * Depends on viewport size and image size.
  */
-
-const MAX_IMAGE_WIDTH = 4000;
-
 class ZoomLevel {
   /**
-   * @param {Object} options PhotoSwipe options
-   * @param {Object} itemData Slide data
-   * @param {Integer} index Slide index
-   * @param {PhotoSwipe|undefined} pswp PhotoSwipe instance, can be undefined if not initialized yet
+   * @param {PhotoSwipeOptions} options PhotoSwipe options
+   * @param {SlideData} itemData Slide data
+   * @param {number} index Slide index
+   * @param {PhotoSwipe=} pswp PhotoSwipe instance, can be undefined if not initialized yet
    */
   constructor(options, itemData, index, pswp) {
     this.pswp = pswp;
@@ -24,7 +29,9 @@ class ZoomLevel {
    *
    * It should be called when either image or viewport size changes.
    *
-   * @param {Slide} slide
+   * @param {number} maxWidth
+   * @param {number} maxHeight
+   * @param {{ x?: number; y?: number }} panAreaSize
    */
   update(maxWidth, maxHeight, panAreaSize) {
     this.elementSize = {
@@ -66,13 +73,13 @@ class ZoomLevel {
   /**
    * Parses user-defined zoom option.
    *
-   * @param {Mixed} optionPrefix Zoom level option prefix (initial, secondary, max)
+   * @private
+   * @param {'initial' | 'secondary' | 'max'} optionPrefix Zoom level option prefix (initial, secondary, max)
    */
   _parseZoomLevelOption(optionPrefix) {
-    // zoom.initial
-    // zoom.secondary
-    // zoom.max
-    const optionValue = this.options[optionPrefix + 'ZoomLevel'];
+    // eslint-disable-next-line max-len
+    const optionName = /** @type {'initialZoomLevel' | 'secondaryZoomLevel' | 'maxZoomLevel'} */ (optionPrefix + 'ZoomLevel');
+    const optionValue = this.options[optionName];
 
     if (!optionValue) {
       return;
@@ -99,7 +106,8 @@ class ZoomLevel {
    * or mouse-click on image itself.
    * If you return 1 image will be zoomed to its original size.
    *
-   * @return {Number}
+   * @private
+   * @return {number}
    */
   _getSecondary() {
     let currZoomLevel = this._parseZoomLevelOption('secondary');
@@ -121,7 +129,8 @@ class ZoomLevel {
   /**
    * Get initial image zoom level.
    *
-   * @return {Number}
+   * @private
+   * @return {number}
    */
   _getInitial() {
     return this._parseZoomLevelOption('initial') || this.fit;
@@ -132,7 +141,8 @@ class ZoomLevel {
    * via zoom/pinch gesture,
    * via cmd/ctrl-wheel or via trackpad.
    *
-   * @return {Number}
+   * @private
+   * @return {number}
    */
   _getMax() {
     const currZoomLevel = this._parseZoomLevelOption('max');
