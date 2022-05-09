@@ -1,14 +1,20 @@
 /*!
-  * PhotoSwipe Lightbox 5.2.4 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.2.5 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
+/** @typedef {import("../photoswipe").Point} Point */
+
+/** @typedef {undefined | null | false | '' | 0} Falsy */
+/** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */
+
 /**
-  * Creates element and optionally appends it to another.
-  *
-  * @param {String} className
-  * @param {String|NULL} tagName
-  * @param {Element|NULL} appendToEl
-  */
+ * @template {HTMLElementTagName | Falsy} [T="div"]
+ * @template {Node | undefined} [NodeToAppendElementTo=undefined]
+ * @param {string=} className
+ * @param {T=} [tagName]
+ * @param {NodeToAppendElementTo=} appendToEl
+ * @returns {T extends HTMLElementTagName ? HTMLElementTagNameMap[T] : HTMLElementTagNameMap['div']}
+ */
 function createElement(className, tagName, appendToEl) {
   const el = document.createElement(tagName || 'div');
   if (className) {
@@ -17,15 +23,16 @@ function createElement(className, tagName, appendToEl) {
   if (appendToEl) {
     appendToEl.appendChild(el);
   }
+  // @ts-expect-error
   return el;
 }
 
 /**
  * Get transform string
  *
- * @param {Number} x
- * @param {Number|null} y
- * @param {Number|null} scale
+ * @param {number} x
+ * @param {number=} y
+ * @param {number=} scale
  */
 function toTransformString(x, y, scale) {
   let propValue = 'translate3d('
@@ -43,12 +50,18 @@ function toTransformString(x, y, scale) {
 
 /**
  * Apply width and height CSS properties to element
+ *
+ * @param {HTMLElement} el
+ * @param {string | number} w
+ * @param {string | number} h
  */
 function setWidthHeight(el, w, h) {
   el.style.width = (typeof w === 'number') ? (w + 'px') : w;
   el.style.height = (typeof h === 'number') ? (h + 'px') : h;
 }
 
+/** @typedef {LOAD_STATE[keyof LOAD_STATE]} LoadState */
+/** @type {{ IDLE: 'idle'; LOADING: 'loading'; LOADED: 'loaded'; ERROR: 'error' }} */
 const LOAD_STATE = {
   IDLE: 'idle',
   LOADING: 'loading',
@@ -61,7 +74,7 @@ const LOAD_STATE = {
  * Check if click or keydown event was dispatched
  * with a special key or via mouse wheel.
  *
- * @param {Event} e
+ * @param {MouseEvent | KeyboardEvent} e
  */
 function specialKeyUsed(e) {
   if (e.which === 2 || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
@@ -72,12 +85,13 @@ function specialKeyUsed(e) {
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {Element|NodeList|String} option
- * @param {String|null} legacySelector
- * @param {Element|null} parent
- * @returns Element[]
+ * @param {HTMLElement | NodeListOf<HTMLElement> | string} option
+ * @param {string=} legacySelector
+ * @param {HTMLElement | Document} [parent]
+ * @returns HTMLElement[]
  */
 function getElementsFromOption(option, legacySelector, parent = document) {
+  /** @type {HTMLElement[]} */
   let elements = [];
 
   if (option instanceof Element) {
@@ -97,8 +111,7 @@ function getElementsFromOption(option, legacySelector, parent = document) {
 /**
  * Check if variable is PhotoSwipe class
  *
- * @param {*} fn
- * @returns Boolean
+ * @param {any} fn
  */
 function isPswpClass(fn) {
   return typeof fn === 'function'
@@ -106,10 +119,213 @@ function isPswpClass(fn) {
     && fn.prototype.goTo;
 }
 
+/** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").DataSource} DataSource */
+/** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
+/** @typedef {import("../slide/content").default} ContentDefault */
+/** @typedef {import("../slide/slide").default} Slide */
+/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import("../slide/zoom-level").default} ZoomLevel */
+/** @typedef {import("../slide/get-thumb-bounds").Bounds} Bounds */
+
+/**
+ * Allow adding an arbitrary props to the Content
+ * https://photoswipe.com/custom-content/#using-webp-image-format
+ * @typedef {ContentDefault & Record<string, any>} Content
+ */
+/** @typedef {{ x?: number; y?: number }} Point */
+
+/**
+ * @typedef {Object} PhotoSwipeEventsMap https://photoswipe.com/events/
+ *
+ *
+ * https://photoswipe.com/adding-ui-elements/
+ *
+ * @prop {undefined} uiRegister
+ * @prop {{ data: UIElementData }} uiElementCreate
+ *
+ *
+ * https://photoswipe.com/events/#initialization-events
+ *
+ * @prop {undefined} beforeOpen
+ * @prop {undefined} firstUpdate
+ * @prop {undefined} initialLayout
+ * @prop {undefined} change
+ * @prop {undefined} afterInit
+ * @prop {undefined} bindEvents
+ *
+ *
+ * https://photoswipe.com/events/#opening-or-closing-transition-events
+ *
+ * @prop {undefined} openingAnimationStart
+ * @prop {undefined} openingAnimationEnd
+ * @prop {undefined} closingAnimationStart
+ * @prop {undefined} closingAnimationEnd
+ *
+ *
+ * https://photoswipe.com/events/#closing-events
+ *
+ * @prop {undefined} close
+ * @prop {undefined} destroy
+ *
+ *
+ * https://photoswipe.com/events/#pointer-and-gesture-events
+ *
+ * @prop {{ originalEvent: PointerEvent }} pointerDown
+ * @prop {{ originalEvent: PointerEvent }} pointerMove
+ * @prop {{ originalEvent: PointerEvent }} pointerUp
+ * @prop {{ bgOpacity: number }} pinchClose can be default prevented
+ * @prop {{ panY: number }} verticalDrag can be default prevented
+ *
+ *
+ * https://photoswipe.com/events/#slide-content-events
+ *
+ * @prop {{ content: Content }} contentInit
+ * @prop {{ content: Content; isLazy: boolean }} contentLoad can be default prevented
+ * @prop {{ content: Content; isLazy: boolean }} contentLoadImage can be default prevented
+ * @prop {{ content: Content; slide: Slide; isError?: boolean }} loadComplete
+ * @prop {{ content: Content; slide: Slide }} loadError
+ * @prop {{ content: Content; width: number; height: number }} contentResize can be default prevented
+ * @prop {{ content: Content; width: number; height: number; slide: Slide }} imageSizeChange
+ * @prop {{ content: Content }} contentLazyLoad can be default prevented
+ * @prop {{ content: Content }} contentAppend can be default prevented
+ * @prop {{ content: Content }} contentActivate can be default prevented
+ * @prop {{ content: Content }} contentDeactivate can be default prevented
+ * @prop {{ content: Content }} contentRemove can be default prevented
+ * @prop {{ content: Content }} contentDestroy can be default prevented
+ *
+ *
+ * undocumented
+ *
+ * @prop {{ point: Point; originalEvent: PointerEvent }} imageClickAction can be default prevented
+ * @prop {{ point: Point; originalEvent: PointerEvent }} bgClickAction can be default prevented
+ * @prop {{ point: Point; originalEvent: PointerEvent }} tapAction can be default prevented
+ * @prop {{ point: Point; originalEvent: PointerEvent }} doubleTapAction can be default prevented
+ *
+ * @prop {{ originalEvent: KeyboardEvent }} keydown can be default prevented
+ * @prop {{ x: number; dragging: boolean }} moveMainScroll
+ * @prop {{ slide: Slide }} firstZoomPan
+ * @prop {{ slide: Slide, data: SlideData, index: number }} gettingData
+ * @prop {undefined} beforeResize
+ * @prop {undefined} resize
+ * @prop {undefined} viewportSize
+ * @prop {undefined} updateScrollOffset
+ * @prop {{ slide: Slide }} slideInit
+ * @prop {{ slide: Slide }} afterSetContent
+ * @prop {{ slide: Slide }} slideLoad
+ * @prop {{ slide: Slide }} appendHeavy can be default prevented
+ * @prop {{ slide: Slide }} appendHeavyContent
+ * @prop {{ slide: Slide }} slideActivate
+ * @prop {{ slide: Slide }} slideDeactivate
+ * @prop {{ slide: Slide }} slideDestroy
+ * @prop {{ destZoomLevel: number, centerPoint: Point, transitionDuration: number | false }} beforeZoomTo
+ * @prop {{ slide: Slide }} zoomPanUpdate
+ * @prop {{ slide: Slide }} initialZoomPan
+ * @prop {{ slide: Slide }} calcSlideSize
+ * @prop {undefined} resolutionChanged
+ * @prop {{ originalEvent: WheelEvent }} wheel can be default prevented
+ * @prop {{ content: Content }} contentAppendImage can be default prevented
+ * @prop {{ index: number; itemData: SlideData }} lazyLoadSlide can be default prevented
+ * @prop {undefined} lazyLoad
+ * @prop {{ slide: Slide }} calcBounds
+ * @prop {{ zoomLevels: ZoomLevel, slideData: SlideData }} zoomLevelsUpdate
+ *
+ *
+ * legacy
+ *
+ * @prop {undefined} init
+ * @prop {undefined} initialZoomIn
+ * @prop {undefined} initialZoomOut
+ * @prop {undefined} initialZoomInEnd
+ * @prop {undefined} initialZoomOutEnd
+ * @prop {{ dataSource: DataSource, numItems: number }} numItems
+ * @prop {{ itemData: SlideData; index: number }} itemData
+ * @prop {{ index: number, itemData: SlideData, instance: PhotoSwipe }} thumbBounds
+ */
+
+/**
+ * @typedef {Object} PhotoSwipeFiltersMap https://photoswipe.com/filters/
+ *
+ * @prop {(numItems: number, dataSource: DataSource) => number} numItems
+ * Modify the total amount of slides. Example on Data sources page.
+ * https://photoswipe.com/filters/#numitems
+ *
+ * @prop {(itemData: SlideData, index: number) => SlideData} itemData
+ * Modify slide item data. Example on Data sources page.
+ * https://photoswipe.com/filters/#itemdata
+ *
+ * @prop {(itemData: SlideData, element: HTMLElement, linkEl: HTMLAnchorElement) => SlideData} domItemData
+ * Modify item data when it's parsed from DOM element. Example on Data sources page.
+ * https://photoswipe.com/filters/#domitemdata
+ *
+ * @prop {(clickedIndex: number, e: MouseEvent, instance: PhotoSwipeLightbox) => number} clickedIndex
+ * Modify clicked gallery item index.
+ * https://photoswipe.com/filters/#clickedindex
+ *
+ * @prop {(placeholderSrc: string | false, content: Content) => string | false} placeholderSrc
+ * Modify placeholder image source.
+ * https://photoswipe.com/filters/#placeholdersrc
+ *
+ * @prop {(isContentLoading: boolean, content: Content) => boolean} isContentLoading
+ * Modify if the content is currently loading.
+ * https://photoswipe.com/filters/#iscontentloading
+ *
+ * @prop {(isContentZoomable: boolean, content: Content) => boolean} isContentZoomable
+ * Modify if the content can be zoomed.
+ * https://photoswipe.com/filters/#iscontentzoomable
+ *
+ * @prop {(useContentPlaceholder: boolean, content: Content) => boolean} useContentPlaceholder
+ * Modify if the placeholder should be used for the content.
+ * https://photoswipe.com/filters/#usecontentplaceholder
+ *
+ * @prop {(isKeepingPlaceholder: boolean, content: Content) => boolean} isKeepingPlaceholder
+ * Modify if the placeholder should be kept after the content is loaded.
+ * https://photoswipe.com/filters/#iskeepingplaceholder
+ *
+ *
+ * @prop {(contentErrorElement: HTMLElement, content: Content) => HTMLElement} contentErrorElement
+ * Modify an element when the content has error state (for example, if image cannot be loaded).
+ * https://photoswipe.com/filters/#contenterrorelement
+ *
+ * @prop {(element: HTMLElement, data: UIElementData) => HTMLElement} uiElement
+ * Modify a UI element that's being created.
+ * https://photoswipe.com/filters/#uielement
+ *
+ * @prop {(thumbnail: HTMLElement, itemData: SlideData, index: number) => HTMLElement} thumbEl
+ * Modify the thubmnail element from which opening zoom animation starts or ends.
+ * https://photoswipe.com/filters/#thumbel
+ *
+ * @prop {(thumbBounds: Bounds, itemData: SlideData, index: number) => Bounds} thumbBounds
+ * Modify the thubmnail bounds from which opening zoom animation starts or ends.
+ * https://photoswipe.com/filters/#thumbbounds
+ */
+
+/**
+ * @template {keyof PhotoSwipeFiltersMap} T
+ * @typedef {{ fn: PhotoSwipeFiltersMap[T], priority: number }} Filter<T>
+ */
+
+/**
+ * @template {keyof PhotoSwipeEventsMap} T
+ * @typedef {PhotoSwipeEventsMap[T] extends undefined ? PhotoSwipeEvent<T> : PhotoSwipeEvent<T> & PhotoSwipeEventsMap[T]} AugmentedEvent
+ */
+
+/**
+ * @template {keyof PhotoSwipeEventsMap} T
+ * @typedef {(event: AugmentedEvent<T>) => void} EventCallback<T>
+ */
+
 /**
  * Base PhotoSwipe event object
+ *
+ * @template {keyof PhotoSwipeEventsMap} T
  */
 class PhotoSwipeEvent {
+  /**
+   * @param {T} type
+   * @param {PhotoSwipeEventsMap[T]} [details]
+   */
   constructor(type, details) {
     this.type = type;
     if (details) {
@@ -128,10 +344,26 @@ class PhotoSwipeEvent {
  */
 class Eventable {
   constructor() {
+    /**
+     * @type {{ [T in keyof PhotoSwipeEventsMap]?: ((event: AugmentedEvent<T>) => void)[] }}
+     */
     this._listeners = {};
+
+    /**
+     * @type {{ [T in keyof PhotoSwipeFiltersMap]?: Filter<T>[] }}
+     */
     this._filters = {};
+
+    /** @type {PhotoSwipe=} */
+    this.pswp = undefined;
   }
 
+  /**
+   * @template {keyof PhotoSwipeFiltersMap} T
+   * @param {T} name
+   * @param {PhotoSwipeFiltersMap[T]} fn
+   * @param {number} priority
+   */
   addFilter(name, fn, priority = 100) {
     if (!this._filters[name]) {
       this._filters[name] = [];
@@ -145,8 +377,14 @@ class Eventable {
     }
   }
 
+  /**
+   * @template {keyof PhotoSwipeFiltersMap} T
+   * @param {T} name
+   * @param {PhotoSwipeFiltersMap[T]} fn
+   */
   removeFilter(name, fn) {
     if (this._filters[name]) {
+      // @ts-expect-error
       this._filters[name] = this._filters[name].filter(filter => (filter.fn !== fn));
     }
 
@@ -155,15 +393,27 @@ class Eventable {
     }
   }
 
+  /**
+   * @template {keyof PhotoSwipeFiltersMap} T
+   * @param {T} name
+   * @param {Parameters<PhotoSwipeFiltersMap[T]>} args
+   * @returns {Parameters<PhotoSwipeFiltersMap[T]>[0]}
+   */
   applyFilters(name, ...args) {
     if (this._filters[name]) {
       this._filters[name].forEach((filter) => {
+        // @ts-expect-error
         args[0] = filter.fn.apply(this, args);
       });
     }
     return args[0];
   }
 
+  /**
+   * @template {keyof PhotoSwipeEventsMap} T
+   * @param {T} name
+   * @param {EventCallback<T>} fn
+   */
   on(name, fn) {
     if (!this._listeners[name]) {
       this._listeners[name] = [];
@@ -178,8 +428,14 @@ class Eventable {
     }
   }
 
+  /**
+   * @template {keyof PhotoSwipeEventsMap} T
+   * @param {T} name
+   * @param {EventCallback<T>} fn
+   */
   off(name, fn) {
     if (this._listeners[name]) {
+      // @ts-expect-error
       this._listeners[name] = this._listeners[name].filter(listener => (fn !== listener));
     }
 
@@ -188,12 +444,18 @@ class Eventable {
     }
   }
 
+  /**
+   * @template {keyof PhotoSwipeEventsMap} T
+   * @param {T} name
+   * @param {PhotoSwipeEventsMap[T]} [details]
+   * @returns {AugmentedEvent<T>}
+   */
   dispatch(name, details) {
     if (this.pswp) {
       return this.pswp.dispatch(name, details);
     }
 
-    const event = new PhotoSwipeEvent(name, details);
+    const event = /** @type {AugmentedEvent<T>} */ (new PhotoSwipeEvent(name, details));
 
     if (!this._listeners) {
       return event;
@@ -211,8 +473,8 @@ class Eventable {
 
 class Placeholder {
   /**
-   * @param {String|false} imageSrc
-   * @param {Element} container
+   * @param {string | false} imageSrc
+   * @param {HTMLElement} container
    */
   constructor(imageSrc, container) {
     // Create placeholder
@@ -224,15 +486,22 @@ class Placeholder {
     );
 
     if (imageSrc) {
-      this.element.decoding = 'async';
-      this.element.alt = '';
-      this.element.src = imageSrc;
+      /** @type {HTMLImageElement} */
+      (this.element).decoding = 'async';
+      /** @type {HTMLImageElement} */
+      (this.element).alt = '';
+      /** @type {HTMLImageElement} */
+      (this.element).src = imageSrc;
       this.element.setAttribute('role', 'presentation');
     }
 
     this.element.setAttribute('aria-hiden', 'true');
   }
 
+  /**
+   * @param {number} width
+   * @param {number} height
+   */
   setDisplayedSize(width, height) {
     if (!this.element) {
       return;
@@ -258,13 +527,19 @@ class Placeholder {
   }
 }
 
+/** @typedef {import("./slide").default} Slide */
+/** @typedef {import("./slide").SlideData} SlideData */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../util/util").LoadState} LoadState */
+
 class Content {
+  /** @type {HTMLImageElement | HTMLDivElement} */
+  element;
+
   /**
-   * @param {Object} itemData Slide data
-   * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox instance
-   * @param {Slide|undefined} slide Slide that requested the image,
-   *                                can be undefined if image was requested by something else
-   *                                (for example by lazy-loader)
+   * @param {SlideData} itemData Slide data
+   * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox instance
+   * @param {number} index
    */
   constructor(itemData, instance, index) {
     this.instance = instance;
@@ -276,6 +551,7 @@ class Content {
 
     this.isAttached = false;
     this.hasSlide = false;
+    /** @type {LoadState} */
     this.state = LOAD_STATE.IDLE;
 
     if (this.data.type) {
@@ -304,7 +580,8 @@ class Content {
   /**
    * Preload content
    *
-   * @param {Boolean} isLazy
+   * @param {boolean=} isLazy
+   * @param {boolean=} reload
    */
   load(isLazy, reload) {
     if (!this.placeholder && this.slide && this.usePlaceholder()) {
@@ -344,33 +621,34 @@ class Content {
   /**
    * Preload image
    *
-   * @param {Boolean} isLazy
+   * @param {boolean} isLazy
    */
   loadImage(isLazy) {
-    this.element = createElement('pswp__img', 'img');
+    const imageElement = createElement('pswp__img', 'img');
+    this.element = imageElement;
 
     if (this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
       return;
     }
 
     if (this.data.srcset) {
-      this.element.srcset = this.data.srcset;
+      imageElement.srcset = this.data.srcset;
     }
 
-    this.element.src = this.data.src;
+    imageElement.src = this.data.src;
 
-    this.element.alt = this.data.alt || '';
+    imageElement.alt = this.data.alt || '';
 
     this.state = LOAD_STATE.LOADING;
 
-    if (this.element.complete) {
+    if (imageElement.complete) {
       this.onLoaded();
     } else {
-      this.element.onload = () => {
+      imageElement.onload = () => {
         this.onLoaded();
       };
 
-      this.element.onerror = () => {
+      imageElement.onerror = () => {
         this.onError();
       };
     }
@@ -438,7 +716,7 @@ class Content {
   }
 
   /**
-   * @returns {Boolean} If the content is image
+   * @returns {boolean} If the content is image
    */
   isImageContent() {
     return this.type === 'image';
@@ -459,6 +737,7 @@ class Content {
       this.placeholder.setDisplayedSize(width, height);
     }
 
+    // eslint-disable-next-line max-len
     if (this.instance.dispatch('contentResize', { content: this, width, height }).defaultPrevented) {
       return;
     }
@@ -466,26 +745,29 @@ class Content {
     setWidthHeight(this.element, width, height);
 
     if (this.isImageContent() && !this.isError()) {
-      const image = this.element;
+      const image = /** @type HTMLImageElement */ (this.element);
+
       // Handle srcset sizes attribute.
       //
       // Never lower quality, if it was increased previously.
       // Chrome does this automatically, Firefox and Safari do not,
       // so we store largest used size in dataset.
       if (image.srcset
-          && (!image.dataset.largestUsedSize || width > image.dataset.largestUsedSize)) {
+          // eslint-disable-next-line max-len
+          && (!image.dataset.largestUsedSize || width > parseInt(image.dataset.largestUsedSize, 10))) {
         image.sizes = width + 'px';
-        image.dataset.largestUsedSize = width;
+        image.dataset.largestUsedSize = String(width);
       }
 
       if (this.slide) {
+        // eslint-disable-next-line max-len
         this.instance.dispatch('imageSizeChange', { slide: this.slide, width, height, content: this });
       }
     }
   }
 
   /**
-   * @returns {Boolean} If the content can be zoomed
+   * @returns {boolean} If the content can be zoomed
    */
   isZoomable() {
     return this.instance.applyFilters(
@@ -496,7 +778,7 @@ class Content {
   }
 
   /**
-   * @returns {Boolean} If content should use a placeholder (from msrc by default)
+   * @returns {boolean} If content should use a placeholder (from msrc by default)
    */
   usePlaceholder() {
     return this.instance.applyFilters(
@@ -508,8 +790,6 @@ class Content {
 
   /**
    * Preload content with lazy-loading param
-   *
-   * @param {Boolean} isLazy
    */
   lazyLoad() {
     if (this.instance.dispatch('contentLazyLoad', { content: this }).defaultPrevented) {
@@ -520,7 +800,7 @@ class Content {
   }
 
   /**
-   * @returns {Boolean} If placeholder should be kept after content is loaded
+   * @returns {boolean} If placeholder should be kept after content is loaded
    */
   keepPlaceholder() {
     return this.instance.applyFilters(
@@ -555,6 +835,7 @@ class Content {
    */
   displayError() {
     if (this.slide) {
+      /** @type {HTMLElement} */
       let errorMsgEl = createElement('pswp__error-msg');
       errorMsgEl.innerText = this.instance.options.errorMsg;
       errorMsgEl = this.instance.applyFilters(
@@ -606,7 +887,8 @@ class Content {
         requestAnimationFrame(() => {
           // element might change
           if (this.element && this.element.tagName === 'IMG') {
-            this.element.decode().then(() => {
+            /** @type {HTMLImageElement} */
+            (this.element).decode().then(() => {
               this.isDecoding = false;
               requestAnimationFrame(() => {
                 this.appendImage();
@@ -618,7 +900,9 @@ class Content {
         });
       } else {
         if (this.placeholder
-          && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
+          // eslint-disable-next-line max-len
+          && (this.state === LOAD_STATE.LOADED || /** @type {LoadState} */ (this.state) === LOAD_STATE.ERROR)
+        ) {
           this.removePlaceholder();
         }
         this.appendImage();
@@ -696,25 +980,32 @@ class Content {
   }
 }
 
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/slide").SlideData} SlideData */
+
 /**
  * PhotoSwipe base class that can retrieve data about every slide.
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
  */
-
-
 class PhotoSwipeBase extends Eventable {
+  /** @type {PhotoSwipeOptions} */
+  options;
+
   /**
    * Get total number of slides
+   *
+   * @returns {number}
    */
   getNumItems() {
     let numItems;
     const { dataSource } = this.options;
     if (!dataSource) {
       numItems = 0;
-    } else if (dataSource.length) {
+    } else if ('length' in dataSource) {
       // may be an array or just object with length property
       numItems = dataSource.length;
-    } else if (dataSource.gallery) {
+    } else if ('gallery' in dataSource) {
       // query DOM elements
       if (!dataSource.items) {
         dataSource.items = this._getGalleryDOMElements(dataSource.gallery);
@@ -733,7 +1024,12 @@ class PhotoSwipeBase extends Eventable {
     return this.applyFilters('numItems', event.numItems, dataSource);
   }
 
+  /**
+   * @param {SlideData} slideData
+   * @param {number} index
+   */
   createContentFromData(slideData, index) {
+    // @ts-expect-error
     return new Content(slideData, this, index);
   }
 
@@ -744,7 +1040,7 @@ class PhotoSwipeBase extends Eventable {
    * For example, it may contain properties like
    * `src`, `srcset`, `w`, `h`, which will be used to generate a slide with image.
    *
-   * @param {Integer} index
+   * @param {number} index
    */
   getItemData(index) {
     const { dataSource } = this.options;
@@ -755,7 +1051,7 @@ class PhotoSwipeBase extends Eventable {
     } else if (dataSource && dataSource.gallery) {
       // dataSource has gallery property,
       // thus it was created by Lightbox, based on
-      // gallerySelecor and childSelector options
+      // gallery and children options
 
       // query DOM elements
       if (!dataSource.items) {
@@ -785,7 +1081,7 @@ class PhotoSwipeBase extends Eventable {
    * Get array of gallery DOM elements,
    * based on childSelector and gallery element.
    *
-   * @param {Element} galleryElement
+   * @param {HTMLElement} galleryElement
    */
   _getGalleryDOMElements(galleryElement) {
     if (this.options.children || this.options.childSelector) {
@@ -802,15 +1098,17 @@ class PhotoSwipeBase extends Eventable {
   /**
    * Converts DOM element to item data object.
    *
-   * @param {Element} element DOM element
+   * @param {HTMLElement} element DOM element
    */
   // eslint-disable-next-line class-methods-use-this
   _domElementToItemData(element) {
+    /** @type {SlideData} */
     const itemData = {
       element
     };
 
-    const linkEl = element.tagName === 'A' ? element : element.querySelector('a');
+    // eslint-disable-next-line max-len
+    const linkEl = /** @type {HTMLAnchorElement} */ (element.tagName === 'A' ? element : element.querySelector('a'));
 
     if (linkEl) {
       // src comes from data-pswp-src attribute,
@@ -852,6 +1150,14 @@ class PhotoSwipeBase extends Eventable {
   }
 }
 
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../slide/slide").SlideData} SlideData */
+
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {PhotoSwipe} pswp
+ */
 function getViewportSize(options, pswp) {
   if (options.getViewportSizeFn) {
     const newViewportSize = options.getViewportSizeFn(options, pswp);
@@ -899,14 +1205,15 @@ function getViewportSize(options, pswp) {
  * paddingTop: 0,
  * paddingBottom: 0,
  *
- * @param {String}  prop 'left', 'top', 'bottom', 'right'
- * @param {Object}  options PhotoSwipe options
- * @param {Object}  viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
- * @param {Object}  itemData Data about the slide
- * @param {Integer} index Slide index
- * @returns {Number}
+ * @param {'left' | 'top' | 'bottom' | 'right'} prop
+ * @param {PhotoSwipeOptions} options PhotoSwipe options
+ * @param {{ x?: number; y?: number }} viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
+ * @param {SlideData} itemData Data about the slide
+ * @param {number} index Slide index
+ * @returns {number}
  */
 function parsePaddingOption(prop, options, viewportSize, itemData, index) {
+  /** @type {number} */
   let paddingValue;
 
   if (options.paddingFn) {
@@ -915,7 +1222,9 @@ function parsePaddingOption(prop, options, viewportSize, itemData, index) {
     paddingValue = options.padding[prop];
   } else {
     const legacyPropName = 'padding' + prop[0].toUpperCase() + prop.slice(1);
+    // @ts-expect-error
     if (options[legacyPropName]) {
+      // @ts-expect-error
       paddingValue = options[legacyPropName];
     }
   }
@@ -923,7 +1232,12 @@ function parsePaddingOption(prop, options, viewportSize, itemData, index) {
   return paddingValue || 0;
 }
 
-
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {{ x?: number; y?: number }} viewportSize
+ * @param {SlideData} itemData
+ * @param {number} index
+ */
 function getPanAreaSize(options, viewportSize, itemData, index) {
   return {
     x: viewportSize.x
@@ -935,19 +1249,24 @@ function getPanAreaSize(options, viewportSize, itemData, index) {
   };
 }
 
+const MAX_IMAGE_WIDTH = 4000;
+
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/slide").SlideData} SlideData */
+
+/** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
+
 /**
  * Calculates zoom levels for specific slide.
  * Depends on viewport size and image size.
  */
-
-const MAX_IMAGE_WIDTH = 4000;
-
 class ZoomLevel {
   /**
-   * @param {Object} options PhotoSwipe options
-   * @param {Object} itemData Slide data
-   * @param {Integer} index Slide index
-   * @param {PhotoSwipe|undefined} pswp PhotoSwipe instance, can be undefined if not initialized yet
+   * @param {PhotoSwipeOptions} options PhotoSwipe options
+   * @param {SlideData} itemData Slide data
+   * @param {number} index Slide index
+   * @param {PhotoSwipe=} pswp PhotoSwipe instance, can be undefined if not initialized yet
    */
   constructor(options, itemData, index, pswp) {
     this.pswp = pswp;
@@ -961,7 +1280,9 @@ class ZoomLevel {
    *
    * It should be called when either image or viewport size changes.
    *
-   * @param {Slide} slide
+   * @param {number} maxWidth
+   * @param {number} maxHeight
+   * @param {{ x?: number; y?: number }} panAreaSize
    */
   update(maxWidth, maxHeight, panAreaSize) {
     this.elementSize = {
@@ -1003,13 +1324,13 @@ class ZoomLevel {
   /**
    * Parses user-defined zoom option.
    *
-   * @param {Mixed} optionPrefix Zoom level option prefix (initial, secondary, max)
+   * @private
+   * @param {'initial' | 'secondary' | 'max'} optionPrefix Zoom level option prefix (initial, secondary, max)
    */
   _parseZoomLevelOption(optionPrefix) {
-    // zoom.initial
-    // zoom.secondary
-    // zoom.max
-    const optionValue = this.options[optionPrefix + 'ZoomLevel'];
+    // eslint-disable-next-line max-len
+    const optionName = /** @type {'initialZoomLevel' | 'secondaryZoomLevel' | 'maxZoomLevel'} */ (optionPrefix + 'ZoomLevel');
+    const optionValue = this.options[optionName];
 
     if (!optionValue) {
       return;
@@ -1036,7 +1357,8 @@ class ZoomLevel {
    * or mouse-click on image itself.
    * If you return 1 image will be zoomed to its original size.
    *
-   * @return {Number}
+   * @private
+   * @return {number}
    */
   _getSecondary() {
     let currZoomLevel = this._parseZoomLevelOption('secondary');
@@ -1058,7 +1380,8 @@ class ZoomLevel {
   /**
    * Get initial image zoom level.
    *
-   * @return {Number}
+   * @private
+   * @return {number}
    */
   _getInitial() {
     return this._parseZoomLevelOption('initial') || this.fit;
@@ -1069,7 +1392,8 @@ class ZoomLevel {
    * via zoom/pinch gesture,
    * via cmd/ctrl-wheel or via trackpad.
    *
-   * @return {Number}
+   * @private
+   * @return {number}
    */
   _getMax() {
     const currZoomLevel = this._parseZoomLevelOption('max');
@@ -1089,10 +1413,10 @@ class ZoomLevel {
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
  *
- * @param {Object} itemData Data about the slide
- * @param {PhotoSwipeBase}  instance PhotoSwipe or PhotoSwipeLightbox
- * @param {Integer} index
- * @returns {Object|Boolean} Image that is being decoded or false.
+ * @param {SlideData} itemData Data about the slide
+ * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox
+ * @param {number} index
+ * @returns Image that is being decoded or false.
  */
 function lazyLoadData(itemData, instance, index) {
   // src/slide/content/content.js
@@ -1106,7 +1430,8 @@ function lazyLoadData(itemData, instance, index) {
 
   // We need to know dimensions of the image to preload it,
   // as it might use srcset and we need to define sizes
-  const viewportSize = instance.viewportSize || getViewportSize(options);
+  // @ts-expect-error should provide pswp instance?
+  const viewportSize = instance.viewportSize || getViewportSize(options, instance);
   const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
 
   const zoomLevel = new ZoomLevel(options, itemData, -1);
@@ -1129,8 +1454,8 @@ function lazyLoadData(itemData, instance, index) {
  *
  * By default it loads image based on viewport size and initial zoom level.
  *
- * @param {Integer} index Slide index
- * @param {Object}  instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @param {number} index Slide index
+ * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
  */
 function lazyLoadSlide(index, instance) {
   const itemData = instance.getItemData(index);
@@ -1143,7 +1468,24 @@ function lazyLoadSlide(index, instance) {
 }
 
 /**
- * PhotoSwipe lightbox
+ * @template T
+ * @typedef {import("../types").Type<T>} Type<T>
+ */
+
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../photoswipe").DataSource} DataSource */
+/** @typedef {import("../slide/content").default} Content */
+/** @typedef {import("../core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
+/** @typedef {import("../core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+
+/**
+ * @template T
+ * @typedef {import("../core/eventable").EventCallback<T>} EventCallback<T>
+ */
+
+/**
+ * PhotoSwipe Lightbox
  *
  * - If user has unsupported browser it falls back to default browser action (just opens URL)
  * - Binds click event to links that should open PhotoSwipe
@@ -1157,14 +1499,21 @@ function lazyLoadSlide(index, instance) {
  * children - Element | Element[] | NodeList | string selector for the gallery children
  *
  */
-
 class PhotoSwipeLightbox extends PhotoSwipeBase {
+  /**
+   * @param {PhotoSwipeOptions} options
+   */
   constructor(options) {
     super();
+    /** @type {PhotoSwipeOptions} */
     this.options = options || {};
     this._uid = 0;
   }
 
+  /**
+   * Initialize lightbox, should be called only once.
+   * It's not included in the main constructor, so you may bind events before it.
+   */
   init() {
     this.onThumbnailsClick = this.onThumbnailsClick.bind(this);
 
@@ -1175,6 +1524,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       });
   }
 
+  /**
+   * @param {MouseEvent} e
+   */
   onThumbnailsClick(e) {
     // Exit and allow default browser action if:
     if (specialKeyUsed(e) // ... if clicked with a special key (ctrl/cmd...)
@@ -1199,7 +1551,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     let clickedIndex = this.getClickedIndex(e);
     clickedIndex = this.applyFilters('clickedIndex', clickedIndex, e, this);
     const dataSource = {
-      gallery: e.currentTarget
+      gallery: /** @type {HTMLElement} */ (e.currentTarget)
     };
 
     if (clickedIndex >= 0) {
@@ -1211,7 +1563,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Get index of gallery item that was clicked.
    *
-   * @param {Event} e click event
+   * @param {MouseEvent} e click event
    */
   getClickedIndex(e) {
     // legacy option
@@ -1219,11 +1571,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       return this.options.getClickedIndexFn.call(this, e);
     }
 
-    const clickedTarget = e.target;
+    const clickedTarget = /** @type {HTMLElement} */ (e.target);
     const childElements = getElementsFromOption(
       this.options.children,
       this.options.childSelector,
-      e.currentTarget
+      /** @type {HTMLElement} */ (e.currentTarget)
     );
     const clickedChildIndex = childElements.findIndex(
       child => child === clickedTarget || child.contains(clickedTarget)
@@ -1243,9 +1595,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Load and open PhotoSwipe
    *
-   * @param {Integer} index
-   * @param {Array|Object|null} dataSource
-   * @param {Point|null} initialPoint
+   * @param {number} index
+   * @param {DataSource=} dataSource
+   * @param {{ x?: number; y?: number }} [initialPoint]
    */
   loadAndOpen(index, dataSource, initialPoint) {
     // Check if the gallery is already open
@@ -1267,7 +1619,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
    * Load the main module and the slide content by index
    *
-   * @param {Integer} index
+   * @param {number} index
+   * @param {DataSource=} dataSource
    */
   preload(index, dataSource) {
     const { options } = this;
@@ -1277,15 +1630,16 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     // Add the main module
+    /** @type {Promise<Type<PhotoSwipe>>[]} */
     const promiseArray = [];
 
     const pswpModuleType = typeof options.pswpModule;
     if (isPswpClass(options.pswpModule)) {
-      promiseArray.push(options.pswpModule);
+      promiseArray.push(Promise.resolve(/** @type {Type<PhotoSwipe>} */ (options.pswpModule)));
     } else if (pswpModuleType === 'string') {
       throw new Error('pswpModule as string is no longer supported');
     } else if (pswpModuleType === 'function') {
-      promiseArray.push(options.pswpModule());
+      promiseArray.push(/** @type {() => Promise<Type<PhotoSwipe>>} */ (options.pswpModule)());
     } else {
       throw new Error('pswpModule is not valid');
     }
@@ -1310,6 +1664,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     });
   }
 
+  /**
+   * @private
+   * @param {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} module
+   * @param {number} uid
+   */
   _openPhotoswipe(module, uid) {
     // Cancel opening if UID doesn't match the current one
     // (if user clicked on another gallery item before current was loaded).
@@ -1327,7 +1686,11 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
       return;
     }
 
-    // Pass data to PhotoSwipe and open init
+    /**
+     * Pass data to PhotoSwipe and open init
+     *
+     * @type {PhotoSwipe}
+     */
     const pswp = typeof module === 'object'
         ? new module.default(this.options) // eslint-disable-line
         : new module(this.options); // eslint-disable-line
@@ -1336,14 +1699,16 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     window.pswp = pswp;
 
     // map listeners from Lightbox to PhotoSwipe Core
-    Object.keys(this._listeners).forEach((name) => {
+    /** @type {(keyof PhotoSwipeEventsMap)[]} */
+    (Object.keys(this._listeners)).forEach((name) => {
       this._listeners[name].forEach((fn) => {
-        pswp.on(name, fn);
+        pswp.on(name, /** @type {EventCallback<typeof name>} */(fn));
       });
     });
 
     // same with filters
-    Object.keys(this._filters).forEach((name) => {
+    /** @type {(keyof PhotoSwipeFiltersMap)[]} */
+    (Object.keys(this._filters)).forEach((name) => {
       this._filters[name].forEach((filter) => {
         pswp.addFilter(name, filter.fn, filter.priority);
       });
@@ -1363,6 +1728,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     pswp.init();
   }
 
+  /**
+   * Unbinds all events, closes PhotoSwipe if it's open.
+   */
   destroy() {
     if (this.pswp) {
       this.pswp.destroy();
@@ -1378,5 +1746,5 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   }
 }
 
-export default PhotoSwipeLightbox;
+export { PhotoSwipeLightbox as default };
 //# sourceMappingURL=photoswipe-lightbox.esm.js.map

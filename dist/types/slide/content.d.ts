@@ -1,0 +1,123 @@
+export default Content;
+export type Slide = import("./slide").default;
+export type SlideData = import("./slide").SlideData;
+export type PhotoSwipe = import("../photoswipe").default;
+export type LoadState = import("../util/util").LoadState;
+/** @typedef {import("./slide").default} Slide */
+/** @typedef {import("./slide").SlideData} SlideData */
+/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../util/util").LoadState} LoadState */
+declare class Content {
+    /**
+     * @param {SlideData} itemData Slide data
+     * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox instance
+     * @param {number} index
+     */
+    constructor(itemData: SlideData, instance: PhotoSwipe, index: number);
+    /** @type {HTMLImageElement | HTMLDivElement} */
+    element: HTMLImageElement | HTMLDivElement;
+    instance: import("../photoswipe").default;
+    data: import("./slide").SlideData;
+    index: number;
+    width: number;
+    height: number;
+    isAttached: boolean;
+    hasSlide: boolean;
+    /** @type {LoadState} */
+    state: LoadState;
+    type: string;
+    removePlaceholder(): void;
+    placeholder: Placeholder;
+    /**
+     * Preload content
+     *
+     * @param {boolean=} isLazy
+     * @param {boolean=} reload
+     */
+    load(isLazy?: boolean | undefined, reload?: boolean | undefined): void;
+    /**
+     * Preload image
+     *
+     * @param {boolean} isLazy
+     */
+    loadImage(isLazy: boolean): void;
+    /**
+     * Assign slide to content
+     *
+     * @param {Slide} slide
+     */
+    setSlide(slide: Slide): void;
+    slide: import("./slide").default;
+    /**
+     * Content load success handler
+     */
+    onLoaded(): void;
+    /**
+     * Content load error handler
+     */
+    onError(): void;
+    /**
+     * @returns {Boolean} If the content is currently loading
+     */
+    isLoading(): boolean;
+    isError(): boolean;
+    /**
+     * @returns {boolean} If the content is image
+     */
+    isImageContent(): boolean;
+    /**
+     * Update content size
+     *
+     * @param {Number} width
+     * @param {Number} height
+     */
+    setDisplayedSize(width: number, height: number): void;
+    /**
+     * @returns {boolean} If the content can be zoomed
+     */
+    isZoomable(): boolean;
+    /**
+     * @returns {boolean} If content should use a placeholder (from msrc by default)
+     */
+    usePlaceholder(): boolean;
+    /**
+     * Preload content with lazy-loading param
+     */
+    lazyLoad(): void;
+    /**
+     * @returns {boolean} If placeholder should be kept after content is loaded
+     */
+    keepPlaceholder(): boolean;
+    /**
+     * Destroy the content
+     */
+    destroy(): void;
+    /**
+     * Display error message
+     */
+    displayError(): void;
+    /**
+     * Append the content
+     */
+    append(): void;
+    isDecoding: boolean;
+    /**
+     * Activate the slide,
+     * active slide is generally the current one,
+     * meaning the user can see it.
+     */
+    activate(): void;
+    /**
+     * Deactivate the content
+     */
+    deactivate(): void;
+    /**
+     * Remove the content from DOM
+     */
+    remove(): void;
+    /**
+     * Append the image content to slide container
+     */
+    appendImage(): void;
+}
+import Placeholder from "./placeholder.js";
