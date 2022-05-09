@@ -113,7 +113,7 @@ class Slide {
     this.calculateSize();
 
     // @ts-expect-error: should be `this.container.style.transformOrigin`?
-    this.container.transformOrigin = '0 0';
+    this.container.style.transformOrigin = '0 0';
 
     this.load();
     this.appendHeavy();
