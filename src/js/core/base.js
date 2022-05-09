@@ -165,9 +165,7 @@ class PhotoSwipeBase extends Eventable {
       }
     }
 
-    this.applyFilters('domItemData', itemData, element, linkEl);
-
-    return itemData;
+    return this.applyFilters('domItemData', itemData, element, linkEl);
   }
 }
 
