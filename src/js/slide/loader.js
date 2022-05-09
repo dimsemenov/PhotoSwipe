@@ -32,7 +32,7 @@ export function lazyLoadData(itemData, instance, index) {
   // We need to know dimensions of the image to preload it,
   // as it might use srcset and we need to define sizes
   // @ts-expect-error should provide pswp instance?
-  const viewportSize = instance.viewportSize || getViewportSize(options);
+  const viewportSize = instance.viewportSize || getViewportSize(options, instance);
   const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
 
   const zoomLevel = new ZoomLevel(options, itemData, -1);
