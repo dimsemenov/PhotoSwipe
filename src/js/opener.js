@@ -163,8 +163,7 @@ class Opener {
         this._setClosedStateZoomPan();
         if (this._placeholder) {
           // tell browser that we plan to animate the placeholder
-          // @ts-expect-error should be style.willChange maybe?
-          this._placeholder.willChange = 'transform';
+          this._placeholder.style.willChange = 'transform';
 
           // hide placeholder to allow hiding of
           // elements that overlap it (such as icons over the thumbnail)
