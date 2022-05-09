@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.2.6 - https://photoswipe.com
+  * PhotoSwipe 5.2.7 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import("../photoswipe").Point} Point */
@@ -3084,9 +3084,6 @@ class SpringEaser {
 /** @typedef {import("./animations").AnimationProps} AnimationProps */
 
 class SpringAnimation {
-  /** @type {() => void} */
-  onFinish;
-
   /**
    * @param {AnimationProps} props
    */
@@ -4966,9 +4963,7 @@ class PhotoSwipeBase extends Eventable {
       }
     }
 
-    this.applyFilters('domItemData', itemData, element, linkEl);
-
-    return itemData;
+    return this.applyFilters('domItemData', itemData, element, linkEl);
   }
 }
 
