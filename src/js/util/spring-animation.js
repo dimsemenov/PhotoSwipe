@@ -3,9 +3,6 @@ import SpringEaser from './spring-easer.js';
 /** @typedef {import("./animations").AnimationProps} AnimationProps */
 
 class SpringAnimation {
-  /** @type {() => void} */
-  onFinish;
-
   /**
    * @param {AnimationProps} props
    */
