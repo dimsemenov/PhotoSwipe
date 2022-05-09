@@ -14,11 +14,11 @@ declare class Content {
      * @param {number} index
      */
     constructor(itemData: SlideData, instance: PhotoSwipe, index: number);
-    /** @type {HTMLImageElement | HTMLDivElement} */
-    element: HTMLImageElement | HTMLDivElement;
     instance: import("../photoswipe").default;
     data: import("./slide").SlideData;
     index: number;
+    /** @type {HTMLImageElement | HTMLDivElement} */
+    element: HTMLImageElement | HTMLDivElement;
     width: number;
     height: number;
     isAttached: boolean;

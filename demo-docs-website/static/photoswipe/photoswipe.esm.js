@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.2.5 - https://photoswipe.com
+  * PhotoSwipe 5.2.6 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import("../photoswipe").Point} Point */
@@ -1883,15 +1883,14 @@ const MIN_TAP_DISTANCE = 25; // px
  * and only when one of pointers was actually changed.
  */
 class Gestures {
-  /** @type {'x' | 'y'} */
-  dragAxis;
-
   /**
    * @param {PhotoSwipe} pswp
    */
   constructor(pswp) {
     this.pswp = pswp;
 
+    /** @type {'x' | 'y'} */
+    this.dragAxis = undefined;
 
     // point objects are defined once and reused
     // PhotoSwipe keeps track only of two pointers, others are ignored
@@ -2449,18 +2448,18 @@ const MAIN_SCROLL_END_FRICTION = 0.35;
  * Also stores its state.
  */
 class MainScroll {
-  /** @type {number} */
-  slideWidth;
-
-  /** @type {ItemHolder[]} */
-  itemHolders;
-
   /**
    * @param {PhotoSwipe} pswp
    */
   constructor(pswp) {
     this.pswp = pswp;
     this.x = 0;
+
+    /** @type {number} */
+    this.slideWidth = undefined;
+
+    /** @type {ItemHolder[]} */
+    this.itemHolders = undefined;
 
     this.resetPosition();
   }
@@ -2902,9 +2901,6 @@ const DEFAULT_EASING = 'cubic-bezier(.4,0,.22,1)';
  * Runs CSS transition.
  */
 class CSSAnimation {
-  /** @type {() => void} */
-  onFinish;
-
   /**
    * onComplete can be unpredictable, be careful about current state
    *
@@ -2916,6 +2912,7 @@ class CSSAnimation {
       target,
       onComplete,
       transform,
+      onFinish
       // opacity
     } = props;
 
@@ -2923,6 +2920,9 @@ class CSSAnimation {
       duration,
       easing,
     } = props;
+
+    /** @type {() => void} */
+    this.onFinish = onFinish;
 
     // support only transform and opacity
     const prop = transform ? 'transform' : 'opacity';
@@ -3104,11 +3104,12 @@ class SpringAnimation {
       naturalFrequency
     } = props;
 
+    /** @type {() => void} */
+    this.onFinish = onFinish;
+
     const easer = new SpringEaser(velocity, dampingRatio, naturalFrequency);
     let prevTime = Date.now();
     let deltaPosition = start - end;
-
-    this._onFinish = onFinish;
 
     const animationLoop = () => {
       if (this._raf) {
@@ -3717,17 +3718,17 @@ function setZoomedIn(el, isZoomedIn) {
 }
 
 class UI {
-  /** @type {() => void} */
-  updatePreloaderVisibility;
-
-  /** @type {number} */
-  _lastUpdatedZoomLevel;
-
   /**
    * @param {PhotoSwipe} pswp
    */
   constructor(pswp) {
     this.pswp = pswp;
+
+    /** @type {() => void} */
+    this.updatePreloaderVisibility = undefined;
+
+    /** @type {number} */
+    this._lastUpdatedZoomLevel = undefined;
   }
 
   init() {
@@ -3941,6 +3942,7 @@ function getThumbBounds(index, itemData, instance) {
 
 /** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../photoswipe").DataSource} DataSource */
 /** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
 /** @typedef {import("../slide/content").default} ContentDefault */
@@ -4176,6 +4178,9 @@ class Eventable {
 
     /** @type {PhotoSwipe=} */
     this.pswp = undefined;
+
+    /** @type {PhotoSwipeOptions} */
+    this.options = undefined;
   }
 
   /**
@@ -4353,9 +4358,6 @@ class Placeholder {
 /** @typedef {import("../util/util").LoadState} LoadState */
 
 class Content {
-  /** @type {HTMLImageElement | HTMLDivElement} */
-  element;
-
   /**
    * @param {SlideData} itemData Slide data
    * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox instance
@@ -4365,6 +4367,9 @@ class Content {
     this.instance = instance;
     this.data = itemData;
     this.index = index;
+
+    /** @type {HTMLImageElement | HTMLDivElement} */
+    this.element = undefined;
 
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
@@ -4809,9 +4814,6 @@ class Content {
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
  */
 class PhotoSwipeBase extends Eventable {
-  /** @type {PhotoSwipeOptions} */
-  options;
-
   /**
    * Get total number of slides
    *
@@ -4986,9 +4988,6 @@ const MIN_OPACITY = 0.003;
  * It can perform zoom, fade or no transition.
  */
 class Opener {
-  /** @type {false | Bounds} */
-  _thumbBounds;
-
   /**
    * @param {PhotoSwipe} pswp
    */
@@ -4996,6 +4995,9 @@ class Opener {
     this.pswp = pswp;
     this.isClosed = true;
     this._prepareOpen = this._prepareOpen.bind(this);
+
+    /** @type {false | Bounds} */
+    this._thumbBounds = undefined;
 
     // Override initial zoom and pan position
     pswp.on('firstZoomPan', this._prepareOpen);
@@ -5777,9 +5779,6 @@ const defaultOptions = {
  * PhotoSwipe Core
  */
 class PhotoSwipe extends PhotoSwipeBase {
-  /** @type {HTMLDivElement} */
-  topBar;
-
   /**
    * @param {PhotoSwipeOptions} options
    */
@@ -5814,6 +5813,9 @@ class PhotoSwipe extends PhotoSwipeBase {
      * @type {number}
      */
     this.bgOpacity = 1;
+
+    /** @type {HTMLDivElement} */
+    this.topBar = undefined;
 
     this.events = new DOMEvents();
 

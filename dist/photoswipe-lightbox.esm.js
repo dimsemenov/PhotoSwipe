@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.2.5 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.2.6 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import("../photoswipe").Point} Point */
@@ -121,6 +121,7 @@ function isPswpClass(fn) {
 
 /** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../photoswipe").DataSource} DataSource */
 /** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
 /** @typedef {import("../slide/content").default} ContentDefault */
@@ -356,6 +357,9 @@ class Eventable {
 
     /** @type {PhotoSwipe=} */
     this.pswp = undefined;
+
+    /** @type {PhotoSwipeOptions} */
+    this.options = undefined;
   }
 
   /**
@@ -533,9 +537,6 @@ class Placeholder {
 /** @typedef {import("../util/util").LoadState} LoadState */
 
 class Content {
-  /** @type {HTMLImageElement | HTMLDivElement} */
-  element;
-
   /**
    * @param {SlideData} itemData Slide data
    * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox instance
@@ -545,6 +546,9 @@ class Content {
     this.instance = instance;
     this.data = itemData;
     this.index = index;
+
+    /** @type {HTMLImageElement | HTMLDivElement} */
+    this.element = undefined;
 
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
@@ -989,9 +993,6 @@ class Content {
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
  */
 class PhotoSwipeBase extends Eventable {
-  /** @type {PhotoSwipeOptions} */
-  options;
-
   /**
    * Get total number of slides
    *

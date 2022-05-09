@@ -6,11 +6,11 @@ declare class UI {
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
+    pswp: import("../photoswipe").default;
     /** @type {() => void} */
     updatePreloaderVisibility: () => void;
     /** @type {number} */
     _lastUpdatedZoomLevel: number;
-    pswp: import("../photoswipe").default;
     init(): void;
     isRegistered: boolean;
     /** @type {UIElementData[]} */

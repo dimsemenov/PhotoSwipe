@@ -245,8 +245,6 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      * @param {PhotoSwipeOptions} options
      */
     constructor(options: PhotoSwipeOptions);
-    /** @type {HTMLDivElement} */
-    topBar: HTMLDivElement;
     /**
      * offset of viewport relative to document
      *
@@ -276,6 +274,8 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      * @type {number}
      */
     bgOpacity: number;
+    /** @type {HTMLDivElement} */
+    topBar: HTMLDivElement;
     events: DOMEvents;
     /** @type {Animations} */
     animations: Animations;

@@ -16,12 +16,12 @@ declare class MainScroll {
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
+    pswp: import("./photoswipe").default;
+    x: number;
     /** @type {number} */
     slideWidth: number;
     /** @type {ItemHolder[]} */
     itemHolders: ItemHolder[];
-    pswp: import("./photoswipe").default;
-    x: number;
     /**
      * Position the scroller and slide containers
      * according to viewport size.

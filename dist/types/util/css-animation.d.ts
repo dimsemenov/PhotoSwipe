@@ -11,9 +11,9 @@ declare class CSSAnimation {
      * @param {AnimationProps} props
      */
     constructor(props: AnimationProps);
+    props: import("./animations").AnimationProps;
     /** @type {() => void} */
     onFinish: () => void;
-    props: import("./animations").AnimationProps;
     /** @private */
     private _target;
     /** @private */

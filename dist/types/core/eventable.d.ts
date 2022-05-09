@@ -1,6 +1,7 @@
 export default Eventable;
 export type PhotoSwipeLightbox = import("../lightbox/lightbox").default;
 export type PhotoSwipe = import("../photoswipe").default;
+export type PhotoSwipeOptions = import("../photoswipe").PhotoSwipeOptions;
 export type DataSource = import("../photoswipe").DataSource;
 export type UIElementData = import("../ui/ui-element").UIElementData;
 export type ContentDefault = import("../slide/content").default;
@@ -731,6 +732,8 @@ declare class Eventable {
     };
     /** @type {PhotoSwipe=} */
     pswp: PhotoSwipe | undefined;
+    /** @type {PhotoSwipeOptions} */
+    options: PhotoSwipeOptions;
     /**
      * @template {keyof PhotoSwipeFiltersMap} T
      * @param {T} name
@@ -773,6 +776,7 @@ declare class Eventable {
 }
 /** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../photoswipe").DataSource} DataSource */
 /** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
 /** @typedef {import("../slide/content").default} ContentDefault */

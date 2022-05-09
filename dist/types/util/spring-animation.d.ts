@@ -9,7 +9,6 @@ declare class SpringAnimation {
     /** @type {() => void} */
     onFinish: () => void;
     props: import("./animations").AnimationProps;
-    _onFinish: () => void;
     _raf: number;
     destroy(): void;
 }

@@ -13,9 +13,9 @@ declare class Gestures {
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
+    pswp: import("../photoswipe").default;
     /** @type {'x' | 'y'} */
     dragAxis: 'x' | 'y';
-    pswp: import("../photoswipe").default;
     /** @type {Point} */
     p1: Point;
     /** @type {Point} */

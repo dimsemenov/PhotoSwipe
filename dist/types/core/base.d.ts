@@ -10,8 +10,6 @@ export type SlideData = import("../slide/slide").SlideData;
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
  */
 declare class PhotoSwipeBase extends Eventable {
-    /** @type {PhotoSwipeOptions} */
-    options: PhotoSwipeOptions;
     /**
      * Get total number of slides
      *

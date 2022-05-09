@@ -12,11 +12,11 @@ declare class Opener {
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
-    /** @type {false | Bounds} */
-    _thumbBounds: false | Bounds;
     pswp: import("./photoswipe").default;
     isClosed: boolean;
     _prepareOpen(): void;
+    /** @type {false | Bounds} */
+    _thumbBounds: false | Bounds;
     open(): void;
     close(): boolean;
     isOpen: boolean;
