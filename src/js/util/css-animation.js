@@ -8,9 +8,6 @@ const DEFAULT_EASING = 'cubic-bezier(.4,0,.22,1)';
  * Runs CSS transition.
  */
 class CSSAnimation {
-  /** @type {() => void} */
-  onFinish;
-
   /**
    * onComplete can be unpredictable, be careful about current state
    *
@@ -22,6 +19,7 @@ class CSSAnimation {
       target,
       onComplete,
       transform,
+      onFinish
       // opacity
     } = props;
 
@@ -29,6 +27,9 @@ class CSSAnimation {
       duration,
       easing,
     } = props;
+
+    /** @type {() => void} */
+    this.onFinish = onFinish;
 
     // support only transform and opacity
     const prop = transform ? 'transform' : 'opacity';

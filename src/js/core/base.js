@@ -13,9 +13,6 @@ import Content from '../slide/content';
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
  */
 class PhotoSwipeBase extends Eventable {
-  /** @type {PhotoSwipeOptions} */
-  options;
-
   /**
    * Get total number of slides
    *

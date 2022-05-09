@@ -248,9 +248,6 @@ const defaultOptions = {
  * PhotoSwipe Core
  */
 class PhotoSwipe extends PhotoSwipeBase {
-  /** @type {HTMLDivElement} */
-  topBar;
-
   /**
    * @param {PhotoSwipeOptions} options
    */
@@ -285,6 +282,9 @@ class PhotoSwipe extends PhotoSwipeBase {
      * @type {number}
      */
     this.bgOpacity = 1;
+
+    /** @type {HTMLDivElement} */
+    this.topBar = undefined;
 
     this.events = new DOMEvents();
 

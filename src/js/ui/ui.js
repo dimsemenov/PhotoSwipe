@@ -22,17 +22,17 @@ function setZoomedIn(el, isZoomedIn) {
 }
 
 class UI {
-  /** @type {() => void} */
-  updatePreloaderVisibility;
-
-  /** @type {number} */
-  _lastUpdatedZoomLevel;
-
   /**
    * @param {PhotoSwipe} pswp
    */
   constructor(pswp) {
     this.pswp = pswp;
+
+    /** @type {() => void} */
+    this.updatePreloaderVisibility = undefined;
+
+    /** @type {number} */
+    this._lastUpdatedZoomLevel = undefined;
   }
 
   init() {

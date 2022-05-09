@@ -7,9 +7,6 @@ import Placeholder from './placeholder.js';
 /** @typedef {import("../util/util").LoadState} LoadState */
 
 class Content {
-  /** @type {HTMLImageElement | HTMLDivElement} */
-  element;
-
   /**
    * @param {SlideData} itemData Slide data
    * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox instance
@@ -19,6 +16,9 @@ class Content {
     this.instance = instance;
     this.data = itemData;
     this.index = index;
+
+    /** @type {HTMLImageElement | HTMLDivElement} */
+    this.element = undefined;
 
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;

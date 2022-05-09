@@ -22,18 +22,18 @@ const MAIN_SCROLL_END_FRICTION = 0.35;
  * Also stores its state.
  */
 class MainScroll {
-  /** @type {number} */
-  slideWidth;
-
-  /** @type {ItemHolder[]} */
-  itemHolders;
-
   /**
    * @param {PhotoSwipe} pswp
    */
   constructor(pswp) {
     this.pswp = pswp;
     this.x = 0;
+
+    /** @type {number} */
+    this.slideWidth = undefined;
+
+    /** @type {ItemHolder[]} */
+    this.itemHolders = undefined;
 
     this.resetPosition();
   }

@@ -23,11 +23,12 @@ class SpringAnimation {
       naturalFrequency
     } = props;
 
+    /** @type {() => void} */
+    this.onFinish = onFinish;
+
     const easer = new SpringEaser(velocity, dampingRatio, naturalFrequency);
     let prevTime = Date.now();
     let deltaPosition = start - end;
-
-    this._onFinish = onFinish;
 
     const animationLoop = () => {
       if (this._raf) {

@@ -1,5 +1,6 @@
 /** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
 /** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../photoswipe").DataSource} DataSource */
 /** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
 /** @typedef {import("../slide/content").default} ContentDefault */
@@ -235,6 +236,9 @@ class Eventable {
 
     /** @type {PhotoSwipe=} */
     this.pswp = undefined;
+
+    /** @type {PhotoSwipeOptions} */
+    this.options = undefined;
   }
 
   /**

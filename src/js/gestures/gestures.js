@@ -25,15 +25,14 @@ const MIN_TAP_DISTANCE = 25; // px
  * and only when one of pointers was actually changed.
  */
 class Gestures {
-  /** @type {'x' | 'y'} */
-  dragAxis;
-
   /**
    * @param {PhotoSwipe} pswp
    */
   constructor(pswp) {
     this.pswp = pswp;
 
+    /** @type {'x' | 'y'} */
+    this.dragAxis = undefined;
 
     // point objects are defined once and reused
     // PhotoSwipe keeps track only of two pointers, others are ignored

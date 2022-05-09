@@ -21,9 +21,6 @@ const MIN_OPACITY = 0.003;
  * It can perform zoom, fade or no transition.
  */
 class Opener {
-  /** @type {false | Bounds} */
-  _thumbBounds;
-
   /**
    * @param {PhotoSwipe} pswp
    */
@@ -31,6 +28,9 @@ class Opener {
     this.pswp = pswp;
     this.isClosed = true;
     this._prepareOpen = this._prepareOpen.bind(this);
+
+    /** @type {false | Bounds} */
+    this._thumbBounds = undefined;
 
     // Override initial zoom and pan position
     pswp.on('firstZoomPan', this._prepareOpen);
