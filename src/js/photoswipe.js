@@ -344,8 +344,11 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.offset.y = window.pageYOffset;
 
     this._initialItemData = this.getItemData(this.currIndex);
-    // @ts-expect-error Expected 1-2 arguments, but got 4 ¯\_(ツ)_/¯
-    this.dispatch('gettingData', this.currIndex, this._initialItemData, true);
+    this.dispatch('gettingData', {
+      index: this.currIndex,
+      data: this._initialItemData,
+      slide: undefined
+    });
 
     // *Layout* - calculate size and position of elements here
     this._initialThumbBounds = this.getThumbBounds();
