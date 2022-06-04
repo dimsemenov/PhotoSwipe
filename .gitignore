@@ -27,5 +27,6 @@ aws-keys.json
 website/dist/
 *.idea
 /.idea
+.vscode
 .node-version
 .sass-cache/
