@@ -37,6 +37,11 @@
         "no-lonely-if": 0,
         "default-case": 0,
         "linebreak-style": 0,
-        "class-methods-use-this": 0
+        "class-methods-use-this": 0,
+        "max-classes-per-file": 0,
+        "arrow-parens": 0,
+        "no-multiple-empty-lines": 0,
+        "no-mixed-operators": 0,
+        "function-paren-newline": 0
     }
 }
