@@ -1,5 +1,5 @@
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').Point} Point */
 
 /**
  * @typedef {_SlideData & Record<string, any>} SlideData

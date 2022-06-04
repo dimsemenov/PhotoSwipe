@@ -1,10 +1,10 @@
 import { createElement } from '../util/util.js';
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 
 /**
  * @template T
- * @typedef {import("../types").Methods<T>} Methods<T>
+ * @typedef {import('../types.js').Methods<T>} Methods<T>
  */
 
 /**

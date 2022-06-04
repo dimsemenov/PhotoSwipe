@@ -3,8 +3,8 @@ import {
   createElement,
 } from './util/util.js';
 
-/** @typedef {import("./photoswipe").default} PhotoSwipe */
-/** @typedef {import("./slide/slide").default} Slide */
+/** @typedef {import('./photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('./slide/slide.js').default} Slide */
 
 /** @typedef {{ el: HTMLDivElement; slide?: Slide }} ItemHolder */
 

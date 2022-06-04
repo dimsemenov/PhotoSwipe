@@ -1,12 +1,12 @@
-import Eventable from './eventable';
+import Eventable from './eventable.js';
 import {
   getElementsFromOption
 } from '../util/util.js';
-import Content from '../slide/content';
+import Content from '../slide/content.js';
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import("../photoswipe.js").default} PhotoSwipe */
+/** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/slide.js").SlideData} SlideData */
 
 /**
  * PhotoSwipe base class that can retrieve data about every slide.

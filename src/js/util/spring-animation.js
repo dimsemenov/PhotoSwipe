@@ -1,6 +1,6 @@
 import SpringEaser from './spring-easer.js';
 
-/** @typedef {import("./animations").AnimationProps} AnimationProps */
+/** @typedef {import('./animations.js').AnimationProps} AnimationProps */
 
 class SpringAnimation {
   /**

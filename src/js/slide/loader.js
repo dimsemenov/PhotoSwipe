@@ -1,11 +1,11 @@
 import { getViewportSize, getPanAreaSize } from '../util/viewport-size.js';
 import ZoomLevel from './zoom-level.js';
 
-/** @typedef {import("./content").default} Content */
-/** @typedef {import("./slide").default} Slide */
-/** @typedef {import("./slide").SlideData} SlideData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
+/** @typedef {import('./content.js').default} Content */
+/** @typedef {import('./slide.js').default} Slide */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
 
 const MIN_SLIDES_TO_CACHE = 5;
 

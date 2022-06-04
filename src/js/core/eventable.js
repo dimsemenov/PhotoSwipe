@@ -1,13 +1,13 @@
-/** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").DataSource} DataSource */
-/** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
-/** @typedef {import("../slide/content").default} ContentDefault */
-/** @typedef {import("../slide/slide").default} Slide */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
-/** @typedef {import("../slide/zoom-level").default} ZoomLevel */
-/** @typedef {import("../slide/get-thumb-bounds").Bounds} Bounds */
+/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../ui/ui-element.js').UIElementData} UIElementData */
+/** @typedef {import('../slide/content.js').default} ContentDefault */
+/** @typedef {import('../slide/slide.js').default} Slide */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
+/** @typedef {import('../slide/zoom-level.js').default} ZoomLevel */
+/** @typedef {import('../slide/get-thumb-bounds.js').Bounds} Bounds */
 
 /**
  * Allow adding an arbitrary props to the Content

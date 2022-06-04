@@ -1,8 +1,8 @@
 const MAX_IMAGE_WIDTH = 4000;
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
 

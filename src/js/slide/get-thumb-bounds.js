@@ -1,5 +1,5 @@
-/** @typedef {import("./slide").SlideData} SlideData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 
 /** @typedef {{ x: number; y: number; w: number; innerRect?: { w: number; h: number; x: number; y: number } }} Bounds */
 

@@ -1,10 +1,10 @@
 /**
  * @template T
  * @template P
- * @typedef {import("../types").AddPostfix<T, P>} AddPostfix<T, P>
+ * @typedef {import('../types.js').AddPostfix<T, P>} AddPostfix<T, P>
  */
 
-/** @typedef {import("./gestures").default} Gestures */
+/** @typedef {import('./gestures.js').default} Gestures */
 
 /** @typedef {'imageClick' | 'bgClick' | 'tap' | 'doubleTap'} Actions */
 /** @typedef {{ x?: number; y?: number }} Point */

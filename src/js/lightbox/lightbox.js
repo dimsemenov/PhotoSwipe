@@ -9,19 +9,19 @@ import { lazyLoadSlide } from '../slide/loader.js';
 
 /**
  * @template T
- * @typedef {import("../types").Type<T>} Type<T>
+ * @typedef {import('../types.js').Type<T>} Type<T>
  */
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").DataSource} DataSource */
-/** @typedef {import("../slide/content").default} Content */
-/** @typedef {import("../core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
-/** @typedef {import("../core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../slide/content.js').default} Content */
+/** @typedef {import('../core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
+/** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 
 /**
  * @template T
- * @typedef {import("../core/eventable").EventCallback<T>} EventCallback<T>
+ * @typedef {import('../core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 
 /**

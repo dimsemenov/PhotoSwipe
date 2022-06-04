@@ -1,4 +1,4 @@
-/** @type {import("./ui-element").UIElementData} UIElementData */
+/** @type {import('./ui-element.js').UIElementData} UIElementData */
 const zoomButton = {
   name: 'zoom',
   title: 'Zoom',

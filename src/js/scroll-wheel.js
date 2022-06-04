@@ -1,4 +1,4 @@
-/** @typedef {import("./photoswipe").default} PhotoSwipe */
+/** @typedef {import('./photoswipe.js').default} PhotoSwipe */
 
 /**
  * Handles scroll wheel.

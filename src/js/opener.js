@@ -5,9 +5,9 @@ import {
   toTransformString
 } from './util/util.js';
 
-/** @typedef {import("./photoswipe").default} PhotoSwipe */
-/** @typedef {import("./slide/get-thumb-bounds").Bounds} Bounds */
-/** @typedef {import("./util/animations").AnimationProps} AnimationProps */
+/** @typedef {import('./photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('./slide/get-thumb-bounds.js').Bounds} Bounds */
+/** @typedef {import('./util/animations.js').AnimationProps} AnimationProps */
 
 // some browsers do not paint
 // elements which opacity is set to 0,
