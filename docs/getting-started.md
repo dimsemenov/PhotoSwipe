@@ -64,6 +64,8 @@ lightbox.init();
 
 Playgrounds: [StackBlitz](https://stackblitz.com/edit/js-o1vrod?file=index.js), [CodeSandbox](https://codesandbox.io/s/vigorous-matan-zxok9x?file=/src/index.js), [CodePen (with unpkg)](https://codepen.io/dimsemenov/pen/ZEvypBw).
 
+If you are unable to use ES modules, the transpiled version can be found in [dist/umd/](https://github.com/dimsemenov/PhotoSwipe/tree/master/dist/umd) folder of the repository.
+
 ### Basic vanilla JS example
 
 import { gettingStartedTemplate } from '@site/src/components/PswpCodePreview/gallery-templates/getting-started.js';
