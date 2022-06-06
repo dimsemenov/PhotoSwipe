@@ -43,7 +43,7 @@
     "watch-css": "chokidar \"src/*.css\" --command \"npm run build-css\"",
     "watch-docs": "cd demo-docs-website/ && npm start",
     "watch-docs-local": "cd demo-docs-website/ && npm start -- --host 192.168.1.120",
-    "copy-to-dist": "copyfiles -f demo-docs-website/static/photoswipe/* dist/",
+    "copy-to-dist": "copyfiles -f demo-docs-website/static/photoswipe/* dist/ && copyfiles -f demo-docs-website/static/photoswipe/umd/* dist/umd/",
     "lint": "eslint src/js/**/*.js",
     "lint-auto-fix": "eslint src/js/**/*.js --fix",
     "test": "npm run lint",

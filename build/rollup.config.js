@@ -1,3 +1,10 @@
-import { lightboxJS, coreJS, minLightboxJS, minCoreJS } from './config-builder';
+import { 
+  lightboxJS,
+  coreJS,
+  minLightboxJS,
+  minCoreJS,
+  umdMinLightboxJS,
+  umdMinCoreJS
+} from './config-builder';
 
-export default [lightboxJS, coreJS, minLightboxJS, minCoreJS];
+export default [lightboxJS, coreJS, minLightboxJS, minCoreJS, umdMinLightboxJS, umdMinCoreJS];
