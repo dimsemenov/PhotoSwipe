@@ -2,21 +2,21 @@ export default PhotoSwipe;
 /**
  * <T>
  */
-export type Type<T> = import("./types").Type<T>;
-export type SlideData = import("./slide/slide").SlideData;
-export type ZoomLevelOption = import("./slide/zoom-level").ZoomLevelOption;
-export type UIElementData = import("./ui/ui-element").UIElementData;
-export type ItemHolder = import("./main-scroll").ItemHolder;
-export type PhotoSwipeEventsMap = import("./core/eventable").PhotoSwipeEventsMap;
-export type PhotoSwipeFiltersMap = import("./core/eventable").PhotoSwipeFiltersMap;
+export type Type<T> = import('./types.js').Type<T>;
+export type SlideData = import('./slide/slide.js').SlideData;
+export type ZoomLevelOption = import('./slide/zoom-level.js').ZoomLevelOption;
+export type UIElementData = import('./ui/ui-element.js').UIElementData;
+export type ItemHolder = import('./main-scroll.js').ItemHolder;
+export type PhotoSwipeEventsMap = import('./core/eventable.js').PhotoSwipeEventsMap;
+export type PhotoSwipeFiltersMap = import('./core/eventable.js').PhotoSwipeFiltersMap;
 /**
  * <T>
  */
-export type EventCallback<T> = import("./core/eventable").EventCallback<T>;
+export type EventCallback<T> = import('./core/eventable.js').EventCallback<T>;
 /**
  * <T>
  */
-export type AugmentedEvent<T> = import("./core/eventable").AugmentedEvent<T>;
+export type AugmentedEvent<T> = import('./core/eventable.js').AugmentedEvent<T>;
 export type Point = {
     x?: number;
     y?: number;

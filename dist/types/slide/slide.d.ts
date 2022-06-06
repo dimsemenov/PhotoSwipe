@@ -1,6 +1,6 @@
 export default Slide;
-export type PhotoSwipe = import("../photoswipe").default;
-export type Point = import("../photoswipe").Point;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type Point = import('../photoswipe.js').Point;
 export type SlideData = _SlideData & Record<string, any>;
 export type _SlideData = {
     /**
@@ -64,7 +64,7 @@ declare class Slide {
     constructor(data: SlideData, index: number, pswp: PhotoSwipe);
     data: SlideData;
     index: number;
-    pswp: import("../photoswipe").default;
+    pswp: import("../photoswipe.js").default;
     isActive: boolean;
     currentResolution: number;
     /** @type {Point} */

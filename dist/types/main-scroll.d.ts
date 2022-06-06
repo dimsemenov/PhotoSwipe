@@ -1,6 +1,6 @@
 export default MainScroll;
-export type PhotoSwipe = import("./photoswipe").default;
-export type Slide = import("./slide/slide").default;
+export type PhotoSwipe = import('./photoswipe.js').default;
+export type Slide = import('./slide/slide.js').default;
 export type ItemHolder = {
     el: HTMLDivElement;
     slide?: Slide;
@@ -16,7 +16,7 @@ declare class MainScroll {
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
-    pswp: import("./photoswipe").default;
+    pswp: import("./photoswipe.js").default;
     x: number;
     /** @type {number} */
     slideWidth: number;

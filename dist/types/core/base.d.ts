@@ -1,10 +1,10 @@
 export default PhotoSwipeBase;
-export type PhotoSwipe = import("../photoswipe").default;
-export type PhotoSwipeOptions = import("../photoswipe").PhotoSwipeOptions;
-export type SlideData = import("../slide/slide").SlideData;
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+export type PhotoSwipe = import("../photoswipe.js").default;
+export type PhotoSwipeOptions = import("../photoswipe.js").PhotoSwipeOptions;
+export type SlideData = import("../slide/slide.js").SlideData;
+/** @typedef {import("../photoswipe.js").default} PhotoSwipe */
+/** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/slide.js").SlideData} SlideData */
 /**
  * PhotoSwipe base class that can retrieve data about every slide.
  * Shared by PhotoSwipe Core and PhotoSwipe Lightbox
@@ -30,7 +30,7 @@ declare class PhotoSwipeBase extends Eventable {
      *
      * @param {number} index
      */
-    getItemData(index: number): import("../slide/slide").SlideData;
+    getItemData(index: number): import("../slide/slide.js").SlideData;
     /**
      * Get array of gallery DOM elements,
      * based on childSelector and gallery element.
@@ -43,7 +43,7 @@ declare class PhotoSwipeBase extends Eventable {
      *
      * @param {HTMLElement} element DOM element
      */
-    _domElementToItemData(element: HTMLElement): import("../slide/slide").SlideData;
+    _domElementToItemData(element: HTMLElement): import("../slide/slide.js").SlideData;
 }
-import Eventable from "./eventable";
-import Content from "../slide/content";
+import Eventable from "./eventable.js";
+import Content from "../slide/content.js";

@@ -2,7 +2,7 @@
   * PhotoSwipe 5.2.7 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
-/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import('../photoswipe.js').Point} Point */
 
 /** @typedef {undefined | null | false | '' | 0} Falsy */
 /** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */
@@ -345,9 +345,9 @@ class DOMEvents {
   }
 }
 
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /**
  * @param {PhotoSwipeOptions} options
@@ -444,7 +444,7 @@ function getPanAreaSize(options, viewportSize, itemData, index) {
   };
 }
 
-/** @typedef {import("./slide").default} Slide */
+/** @typedef {import('./slide.js').default} Slide */
 /** @typedef {{ x?: number; y?: number }} Point */
 /** @typedef {'x' | 'y'} Axis */
 
@@ -544,9 +544,9 @@ class PanBounds {
 
 const MAX_IMAGE_WIDTH = 4000;
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
 
@@ -701,7 +701,7 @@ class ZoomLevel {
   }
 }
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 
 /**
  * Renders and allows to control a single slide
@@ -1166,8 +1166,8 @@ class Slide {
   }
 }
 
-/** @typedef {import("../photoswipe").Point} Point */
-/** @typedef {import("./gestures").default} Gestures */
+/** @typedef {import('../photoswipe.js').Point} Point */
+/** @typedef {import('./gestures.js').default} Gestures */
 
 const PAN_END_FRICTION = 0.35;
 const VERTICAL_DRAG_FRICTION = 0.6;
@@ -1502,8 +1502,8 @@ class DragHandler {
   }
 }
 
-/** @typedef {import("../photoswipe").Point} Point */
-/** @typedef {import("./gestures").default} Gestures */
+/** @typedef {import('../photoswipe.js').Point} Point */
+/** @typedef {import('./gestures.js').default} Gestures */
 
 const UPPER_ZOOM_FRICTION = 0.05;
 const LOWER_ZOOM_FRICTION = 0.15;
@@ -1748,10 +1748,10 @@ class ZoomHandler {
 /**
  * @template T
  * @template P
- * @typedef {import("../types").AddPostfix<T, P>} AddPostfix<T, P>
+ * @typedef {import('../types.js').AddPostfix<T, P>} AddPostfix<T, P>
  */
 
-/** @typedef {import("./gestures").default} Gestures */
+/** @typedef {import('./gestures.js').default} Gestures */
 
 /** @typedef {'imageClick' | 'bgClick' | 'tap' | 'doubleTap'} Actions */
 /** @typedef {{ x?: number; y?: number }} Point */
@@ -1864,8 +1864,8 @@ class TapHandler {
   }
 }
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').Point} Point */
 
 // How far should user should drag
 // until we can determine that the gesture is swipe and its direction
@@ -2429,8 +2429,8 @@ class Gestures {
   }
 }
 
-/** @typedef {import("./photoswipe").default} PhotoSwipe */
-/** @typedef {import("./slide/slide").default} Slide */
+/** @typedef {import('./photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('./slide/slide.js').default} Slide */
 
 /** @typedef {{ el: HTMLDivElement; slide?: Slide }} ItemHolder */
 
@@ -2751,11 +2751,11 @@ class MainScroll {
   }
 }
 
-/** @typedef {import("./photoswipe").default} PhotoSwipe */
+/** @typedef {import('./photoswipe.js').default} PhotoSwipe */
 
 /**
  * @template T
- * @typedef {import("./types").Methods<T>} Methods<T>
+ * @typedef {import('./types.js').Methods<T>} Methods<T>
  */
 
 /**
@@ -2895,7 +2895,7 @@ class Keyboard {
 
 const DEFAULT_EASING = 'cubic-bezier(.4,0,.22,1)';
 
-/** @typedef {import("./animations").AnimationProps} AnimationProps */
+/** @typedef {import('./animations.js').AnimationProps} AnimationProps */
 
 /**
  * Runs CSS transition.
@@ -3081,7 +3081,7 @@ class SpringEaser {
   }
 }
 
-/** @typedef {import("./animations").AnimationProps} AnimationProps */
+/** @typedef {import('./animations.js').AnimationProps} AnimationProps */
 
 class SpringAnimation {
   /**
@@ -3272,7 +3272,7 @@ class Animations {
   }
 }
 
-/** @typedef {import("./photoswipe").default} PhotoSwipe */
+/** @typedef {import('./photoswipe.js').default} PhotoSwipe */
 
 /**
  * Handles scroll wheel.
@@ -3339,11 +3339,11 @@ class ScrollWheel {
   }
 }
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 
 /**
  * @template T
- * @typedef {import("../types").Methods<T>} Methods<T>
+ * @typedef {import('../types.js').Methods<T>} Methods<T>
  */
 
 /**
@@ -3525,8 +3525,8 @@ class UIElement {
   Backward and forward arrow buttons
  */
 
-/** @typedef {import("./ui-element").UIElementData} UIElementData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import('./ui-element.js').UIElementData} UIElementData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 
 /**
  *
@@ -3587,7 +3587,7 @@ const arrowNext = {
   }
 };
 
-/** @type {import("./ui-element").UIElementData} UIElementData */
+/** @type {import('./ui-element.js').UIElementData} UIElementData */
 const closeButton = {
   name: 'close',
   title: 'Close',
@@ -3601,7 +3601,7 @@ const closeButton = {
   onClick: 'close'
 };
 
-/** @type {import("./ui-element").UIElementData} UIElementData */
+/** @type {import('./ui-element.js').UIElementData} UIElementData */
 const zoomButton = {
   name: 'zoom',
   title: 'Zoom',
@@ -3618,7 +3618,7 @@ const zoomButton = {
   onClick: 'toggleZoom'
 };
 
-/** @type {import("./ui-element").UIElementData} UIElementData */
+/** @type {import('./ui-element.js').UIElementData} UIElementData */
 const loadingIndicator = {
   name: 'preloader',
   appendTo: 'bar',
@@ -3685,7 +3685,7 @@ const loadingIndicator = {
   }
 };
 
-/** @type {import("./ui-element").UIElementData} UIElementData */
+/** @type {import('./ui-element.js').UIElementData} UIElementData */
 const counterIndicator = {
   name: 'counter',
   order: 5,
@@ -3698,8 +3698,8 @@ const counterIndicator = {
   }
 };
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("./ui-element").UIElementData} UIElementData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('./ui-element.js').UIElementData} UIElementData */
 
 /**
  * Set special class on element when image is zoomed.
@@ -3828,8 +3828,8 @@ class UI {
   }
 }
 
-/** @typedef {import("./slide").SlideData} SlideData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 
 /** @typedef {{ x: number; y: number; w: number; innerRect?: { w: number; h: number; x: number; y: number } }} Bounds */
 
@@ -3937,16 +3937,16 @@ function getThumbBounds(index, itemData, instance) {
   return instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
 }
 
-/** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").DataSource} DataSource */
-/** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
-/** @typedef {import("../slide/content").default} ContentDefault */
-/** @typedef {import("../slide/slide").default} Slide */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
-/** @typedef {import("../slide/zoom-level").default} ZoomLevel */
-/** @typedef {import("../slide/get-thumb-bounds").Bounds} Bounds */
+/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../ui/ui-element.js').UIElementData} UIElementData */
+/** @typedef {import('../slide/content.js').default} ContentDefault */
+/** @typedef {import('../slide/slide.js').default} Slide */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
+/** @typedef {import('../slide/zoom-level.js').default} ZoomLevel */
+/** @typedef {import('../slide/get-thumb-bounds.js').Bounds} Bounds */
 
 /**
  * Allow adding an arbitrary props to the Content
@@ -4349,10 +4349,10 @@ class Placeholder {
   }
 }
 
-/** @typedef {import("./slide").default} Slide */
-/** @typedef {import("./slide").SlideData} SlideData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../util/util").LoadState} LoadState */
+/** @typedef {import('./slide.js').default} Slide */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../util/util.js').LoadState} LoadState */
 
 class Content {
   /**
@@ -4802,9 +4802,9 @@ class Content {
   }
 }
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import("../photoswipe.js").default} PhotoSwipe */
+/** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/slide.js").SlideData} SlideData */
 
 /**
  * PhotoSwipe base class that can retrieve data about every slide.
@@ -4967,9 +4967,9 @@ class PhotoSwipeBase extends Eventable {
   }
 }
 
-/** @typedef {import("./photoswipe").default} PhotoSwipe */
-/** @typedef {import("./slide/get-thumb-bounds").Bounds} Bounds */
-/** @typedef {import("./util/animations").AnimationProps} AnimationProps */
+/** @typedef {import('./photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('./slide/get-thumb-bounds.js').Bounds} Bounds */
+/** @typedef {import('./util/animations.js').AnimationProps} AnimationProps */
 
 // some browsers do not paint
 // elements which opacity is set to 0,
@@ -5354,11 +5354,11 @@ class Opener {
   }
 }
 
-/** @typedef {import("./content").default} Content */
-/** @typedef {import("./slide").default} Slide */
-/** @typedef {import("./slide").SlideData} SlideData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
+/** @typedef {import('./content.js').default} Content */
+/** @typedef {import('./slide.js').default} Slide */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
 
 const MIN_SLIDES_TO_CACHE = 5;
 
@@ -5548,22 +5548,22 @@ class ContentLoader {
 
 /**
  * @template T
- * @typedef {import("./types").Type<T>} Type<T>
+ * @typedef {import('./types.js').Type<T>} Type<T>
  */
 
-/** @typedef {import("./slide/slide").SlideData} SlideData */
-/** @typedef {import("./slide/zoom-level").ZoomLevelOption} ZoomLevelOption */
-/** @typedef {import("./ui/ui-element").UIElementData} UIElementData */
-/** @typedef {import("./main-scroll").ItemHolder} ItemHolder */
-/** @typedef {import("./core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
-/** @typedef {import("./core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+/** @typedef {import('./slide/slide.js').SlideData} SlideData */
+/** @typedef {import('./slide/zoom-level.js').ZoomLevelOption} ZoomLevelOption */
+/** @typedef {import('./ui/ui-element.js').UIElementData} UIElementData */
+/** @typedef {import('./main-scroll.js').ItemHolder} ItemHolder */
+/** @typedef {import('./core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
+/** @typedef {import('./core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 /**
  * @template T
- * @typedef {import("./core/eventable").EventCallback<T>} EventCallback<T>
+ * @typedef {import('./core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 /**
  * @template T
- * @typedef {import("./core/eventable").AugmentedEvent<T>} AugmentedEvent<T>
+ * @typedef {import('./core/eventable.js').AugmentedEvent<T>} AugmentedEvent<T>
  */
 
 /** @typedef {{ x?: number; y?: number; id?: string | number }} Point */

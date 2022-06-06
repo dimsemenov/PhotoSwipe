@@ -1,12 +1,12 @@
 export default UI;
-export type PhotoSwipe = import("../photoswipe").default;
-export type UIElementData = import("./ui-element").UIElementData;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type UIElementData = import('./ui-element.js').UIElementData;
 declare class UI {
     /**
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
-    pswp: import("../photoswipe").default;
+    pswp: import("../photoswipe.js").default;
     /** @type {() => void} */
     updatePreloaderVisibility: () => void;
     /** @type {number} */

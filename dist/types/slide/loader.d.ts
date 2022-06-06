@@ -8,7 +8,7 @@
  * @param {number} index
  * @returns Image that is being decoded or false.
  */
-export function lazyLoadData(itemData: SlideData, instance: PhotoSwipe | PhotoSwipeLightbox, index: number): import("./content").default;
+export function lazyLoadData(itemData: SlideData, instance: PhotoSwipe | PhotoSwipeLightbox, index: number): import("./content.js").default;
 /**
  * Lazy-loads specific slide.
  * This function is used both by Lightbox and PhotoSwipe core,
@@ -19,19 +19,19 @@ export function lazyLoadData(itemData: SlideData, instance: PhotoSwipe | PhotoSw
  * @param {number} index Slide index
  * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
  */
-export function lazyLoadSlide(index: number, instance: PhotoSwipe | PhotoSwipeLightbox): import("./content").default;
+export function lazyLoadSlide(index: number, instance: PhotoSwipe | PhotoSwipeLightbox): import("./content.js").default;
 export default ContentLoader;
-export type Content = import("./content").default;
-export type Slide = import("./slide").default;
-export type SlideData = import("./slide").SlideData;
-export type PhotoSwipe = import("../photoswipe").default;
-export type PhotoSwipeLightbox = import("../lightbox/lightbox").default;
+export type Content = import('./content.js').default;
+export type Slide = import('./slide.js').default;
+export type SlideData = import('./slide.js').SlideData;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type PhotoSwipeLightbox = import('../lightbox/lightbox.js').default;
 declare class ContentLoader {
     /**
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
-    pswp: import("../photoswipe").default;
+    pswp: import("../photoswipe.js").default;
     limit: number;
     /** @type {Content[]} */
     _cachedItems: Content[];
@@ -48,7 +48,7 @@ declare class ContentLoader {
     /**
      * @param {Slide} slide
      */
-    getContentBySlide(slide: Slide): import("./content").default;
+    getContentBySlide(slide: Slide): import("./content.js").default;
     /**
      * @param {Content} content
      */
@@ -62,6 +62,6 @@ declare class ContentLoader {
     /**
      * @param {number} index
      */
-    getContentByIndex(index: number): import("./content").default;
+    getContentByIndex(index: number): import("./content.js").default;
     destroy(): void;
 }

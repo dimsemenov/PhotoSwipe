@@ -1,6 +1,6 @@
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
 /**
  * @param {PhotoSwipeOptions} options
  * @param {PhotoSwipe} pswp
@@ -61,6 +61,6 @@ export function getPanAreaSize(options: PhotoSwipeOptions, viewportSize: {
     x: number;
     y: number;
 };
-export type PhotoSwipeOptions = import("../photoswipe").PhotoSwipeOptions;
-export type PhotoSwipe = import("../photoswipe").default;
-export type SlideData = import("../slide/slide").SlideData;
+export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type SlideData = import('../slide/slide.js').SlideData;

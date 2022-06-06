@@ -1,12 +1,12 @@
 export default Content;
-export type Slide = import("./slide").default;
-export type SlideData = import("./slide").SlideData;
-export type PhotoSwipe = import("../photoswipe").default;
-export type LoadState = import("../util/util").LoadState;
-/** @typedef {import("./slide").default} Slide */
-/** @typedef {import("./slide").SlideData} SlideData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../util/util").LoadState} LoadState */
+export type Slide = import('./slide.js').default;
+export type SlideData = import('./slide.js').SlideData;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type LoadState = import('../util/util.js').LoadState;
+/** @typedef {import('./slide.js').default} Slide */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../util/util.js').LoadState} LoadState */
 declare class Content {
     /**
      * @param {SlideData} itemData Slide data
@@ -14,8 +14,8 @@ declare class Content {
      * @param {number} index
      */
     constructor(itemData: SlideData, instance: PhotoSwipe, index: number);
-    instance: import("../photoswipe").default;
-    data: import("./slide").SlideData;
+    instance: import("../photoswipe.js").default;
+    data: import("./slide.js").SlideData;
     index: number;
     /** @type {HTMLImageElement | HTMLDivElement} */
     element: HTMLImageElement | HTMLDivElement;
@@ -47,7 +47,7 @@ declare class Content {
      * @param {Slide} slide
      */
     setSlide(slide: Slide): void;
-    slide: import("./slide").default;
+    slide: import("./slide.js").default;
     /**
      * Content load success handler
      */

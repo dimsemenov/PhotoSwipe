@@ -8,8 +8,8 @@
  * @returns {Bounds | undefined}
  */
 export function getThumbBounds(index: number, itemData: SlideData, instance: PhotoSwipe): Bounds | undefined;
-export type SlideData = import("./slide").SlideData;
-export type PhotoSwipe = import("../photoswipe").default;
+export type SlideData = import('./slide.js').SlideData;
+export type PhotoSwipe = import('../photoswipe.js').default;
 export type Bounds = {
     x: number;
     y: number;

@@ -1,4 +1,4 @@
-/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {undefined | null | false | '' | 0} Falsy */
 /** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */
 /**
@@ -14,7 +14,7 @@ export function createElement<T extends Falsy | keyof HTMLElementTagNameMap = "d
  * @param {Point} p1
  * @param {Point} p2
  */
-export function equalizePoints(p1: Point, p2: Point): import("../photoswipe").Point;
+export function equalizePoints(p1: Point, p2: Point): import("../photoswipe.js").Point;
 /**
  * @param {Point} p
  */
@@ -114,7 +114,7 @@ export const LOAD_STATE: {
     LOADED: 'loaded';
     ERROR: 'error';
 };
-export type Point = import("../photoswipe").Point;
+export type Point = import('../photoswipe.js').Point;
 export type Falsy = undefined | null | false | '' | 0;
 export type HTMLElementTagName = keyof HTMLElementTagNameMap;
 export type LoadState = {

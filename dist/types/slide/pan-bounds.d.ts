@@ -1,11 +1,11 @@
 export default PanBounds;
-export type Slide = import("./slide").default;
+export type Slide = import('./slide.js').default;
 export type Point = {
     x?: number;
     y?: number;
 };
 export type Axis = 'x' | 'y';
-/** @typedef {import("./slide").default} Slide */
+/** @typedef {import('./slide.js').default} Slide */
 /** @typedef {{ x?: number; y?: number }} Point */
 /** @typedef {'x' | 'y'} Axis */
 /**
@@ -16,7 +16,7 @@ declare class PanBounds {
      * @param {Slide} slide
      */
     constructor(slide: Slide);
-    slide: import("./slide").default;
+    slide: import("./slide.js").default;
     currZoomLevel: number;
     /** @type {Point} */
     center: Point;

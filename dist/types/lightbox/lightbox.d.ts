@@ -2,30 +2,30 @@ export default PhotoSwipeLightbox;
 /**
  * <T>
  */
-export type Type<T> = import("../types").Type<T>;
-export type PhotoSwipe = import("../photoswipe").default;
-export type PhotoSwipeOptions = import("../photoswipe").PhotoSwipeOptions;
-export type DataSource = import("../photoswipe").DataSource;
-export type Content = import("../slide/content").default;
-export type PhotoSwipeEventsMap = import("../core/eventable").PhotoSwipeEventsMap;
-export type PhotoSwipeFiltersMap = import("../core/eventable").PhotoSwipeFiltersMap;
+export type Type<T> = import('../types.js').Type<T>;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
+export type DataSource = import('../photoswipe.js').DataSource;
+export type Content = import('../slide/content.js').default;
+export type PhotoSwipeEventsMap = import('../core/eventable.js').PhotoSwipeEventsMap;
+export type PhotoSwipeFiltersMap = import('../core/eventable.js').PhotoSwipeFiltersMap;
 /**
  * <T>
  */
-export type EventCallback<T> = import("../core/eventable").EventCallback<T>;
+export type EventCallback<T> = import('../core/eventable.js').EventCallback<T>;
 /**
  * @template T
- * @typedef {import("../types").Type<T>} Type<T>
+ * @typedef {import('../types.js').Type<T>} Type<T>
  */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").DataSource} DataSource */
-/** @typedef {import("../slide/content").default} Content */
-/** @typedef {import("../core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
-/** @typedef {import("../core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../slide/content.js').default} Content */
+/** @typedef {import('../core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
+/** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 /**
  * @template T
- * @typedef {import("../core/eventable").EventCallback<T>} EventCallback<T>
+ * @typedef {import('../core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 /**
  * PhotoSwipe Lightbox
@@ -82,7 +82,7 @@ declare class PhotoSwipeLightbox extends PhotoSwipeBase {
      * @param {DataSource=} dataSource
      */
     preload(index: number, dataSource?: DataSource | undefined): void;
-    _preloadedContent: import("../slide/content").default;
+    _preloadedContent: import("../slide/content.js").default;
     /**
      * @private
      * @param {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} module

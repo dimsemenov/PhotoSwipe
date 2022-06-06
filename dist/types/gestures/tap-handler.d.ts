@@ -2,8 +2,8 @@ export default TapHandler;
 /**
  * <T, P>
  */
-export type AddPostfix<T, P> = import("../types").AddPostfix<T, P>;
-export type Gestures = import("./gestures").default;
+export type AddPostfix<T, P> = import('../types.js').AddPostfix<T, P>;
+export type Gestures = import('./gestures.js').default;
 export type Actions = 'imageClick' | 'bgClick' | 'tap' | 'doubleTap';
 export type Point = {
     x?: number;
@@ -17,7 +17,7 @@ declare class TapHandler {
      * @param {Gestures} gestures
      */
     constructor(gestures: Gestures);
-    gestures: import("./gestures").default;
+    gestures: import("./gestures.js").default;
     /**
      * @param {Point} point
      * @param {PointerEvent} originalEvent

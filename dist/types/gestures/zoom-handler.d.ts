@@ -1,13 +1,13 @@
 export default ZoomHandler;
-export type Point = import("../photoswipe").Point;
-export type Gestures = import("./gestures").default;
+export type Point = import('../photoswipe.js').Point;
+export type Gestures = import('./gestures.js').default;
 declare class ZoomHandler {
     /**
      * @param {Gestures} gestures
      */
     constructor(gestures: Gestures);
-    gestures: import("./gestures").default;
-    pswp: import("../photoswipe").default;
+    gestures: import("./gestures.js").default;
+    pswp: import("../photoswipe.js").default;
     /** @type {Point} */
     _startPan: Point;
     /** @type {Point} */

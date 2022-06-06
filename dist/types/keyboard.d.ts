@@ -1,13 +1,13 @@
 export default Keyboard;
-export type PhotoSwipe = import("./photoswipe").default;
+export type PhotoSwipe = import('./photoswipe.js').default;
 /**
  * <T>
  */
-export type Methods<T> = import("./types").Methods<T>;
-/** @typedef {import("./photoswipe").default} PhotoSwipe */
+export type Methods<T> = import('./types.js').Methods<T>;
+/** @typedef {import('./photoswipe.js').default} PhotoSwipe */
 /**
  * @template T
- * @typedef {import("./types").Methods<T>} Methods<T>
+ * @typedef {import('./types.js').Methods<T>} Methods<T>
  */
 /**
  * - Manages keyboard shortcuts.
@@ -18,7 +18,7 @@ declare class Keyboard {
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
-    pswp: import("./photoswipe").default;
+    pswp: import("./photoswipe.js").default;
     _focusRoot(): void;
     _wasFocused: boolean;
     /**

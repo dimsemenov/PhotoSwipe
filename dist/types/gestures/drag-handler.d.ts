@@ -1,6 +1,6 @@
 export default DragHandler;
-export type Point = import("../photoswipe").Point;
-export type Gestures = import("./gestures").default;
+export type Point = import('../photoswipe.js').Point;
+export type Gestures = import('./gestures.js').default;
 /**
  * Handles single pointer dragging
  */
@@ -9,8 +9,8 @@ declare class DragHandler {
      * @param {Gestures} gestures
      */
     constructor(gestures: Gestures);
-    gestures: import("./gestures").default;
-    pswp: import("../photoswipe").default;
+    gestures: import("./gestures.js").default;
+    pswp: import("../photoswipe.js").default;
     /** @type {Point} */
     startPan: Point;
     start(): void;

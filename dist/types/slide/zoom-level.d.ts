@@ -1,11 +1,11 @@
 export default ZoomLevel;
-export type PhotoSwipe = import("../photoswipe").default;
-export type PhotoSwipeOptions = import("../photoswipe").PhotoSwipeOptions;
-export type SlideData = import("../slide/slide").SlideData;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
+export type SlideData = import('../slide/slide.js').SlideData;
 export type ZoomLevelOption = number | "fit" | "fill" | ((zoomLevelObject: ZoomLevel) => number);
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
 /** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
 /**
  * Calculates zoom levels for specific slide.
@@ -19,9 +19,9 @@ declare class ZoomLevel {
      * @param {PhotoSwipe=} pswp PhotoSwipe instance, can be undefined if not initialized yet
      */
     constructor(options: PhotoSwipeOptions, itemData: SlideData, index: number, pswp?: PhotoSwipe | undefined);
-    pswp: import("../photoswipe").default;
-    options: import("../photoswipe").PhotoSwipeOptions;
-    itemData: import("../slide/slide").SlideData;
+    pswp: import("../photoswipe.js").default;
+    options: import("../photoswipe.js").PhotoSwipeOptions;
+    itemData: import("../slide/slide.js").SlideData;
     index: number;
     /**
      * Calculate initial, secondary and maximum zoom level for the specified slide.

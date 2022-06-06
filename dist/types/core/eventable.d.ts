@@ -1,14 +1,14 @@
 export default Eventable;
-export type PhotoSwipeLightbox = import("../lightbox/lightbox").default;
-export type PhotoSwipe = import("../photoswipe").default;
-export type PhotoSwipeOptions = import("../photoswipe").PhotoSwipeOptions;
-export type DataSource = import("../photoswipe").DataSource;
-export type UIElementData = import("../ui/ui-element").UIElementData;
-export type ContentDefault = import("../slide/content").default;
-export type Slide = import("../slide/slide").default;
-export type SlideData = import("../slide/slide").SlideData;
-export type ZoomLevel = import("../slide/zoom-level").default;
-export type Bounds = import("../slide/get-thumb-bounds").Bounds;
+export type PhotoSwipeLightbox = import('../lightbox/lightbox.js').default;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
+export type DataSource = import('../photoswipe.js').DataSource;
+export type UIElementData = import('../ui/ui-element.js').UIElementData;
+export type ContentDefault = import('../slide/content.js').default;
+export type Slide = import('../slide/slide.js').default;
+export type SlideData = import('../slide/slide.js').SlideData;
+export type ZoomLevel = import('../slide/zoom-level.js').default;
+export type Bounds = import('../slide/get-thumb-bounds.js').Bounds;
 /**
  * Allow adding an arbitrary props to the Content
  * https://photoswipe.com/custom-content/#using-webp-image-format
@@ -393,7 +393,7 @@ declare class Eventable {
          * https://photoswipe.com/events/#initialization-events
          */
         uiElementCreate?: ((event: PhotoSwipeEvent<"uiElementCreate"> & {
-            data: import("../ui/ui-element").UIElementData;
+            data: import("../ui/ui-element.js").UIElementData;
         }) => void)[];
         beforeOpen?: ((event: PhotoSwipeEvent<"beforeOpen">) => void)[];
         firstUpdate?: ((event: PhotoSwipeEvent<"firstUpdate">) => void)[];
@@ -459,12 +459,12 @@ declare class Eventable {
         }) => void)[];
         loadComplete?: ((event: PhotoSwipeEvent<"loadComplete"> & {
             content: Content;
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
             isError?: boolean;
         }) => void)[];
         loadError?: ((event: PhotoSwipeEvent<"loadError"> & {
             content: Content;
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         /**
          * can be default prevented
@@ -478,7 +478,7 @@ declare class Eventable {
             content: Content;
             width: number;
             height: number;
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         /**
          * can be default prevented
@@ -558,11 +558,11 @@ declare class Eventable {
             dragging: boolean;
         }) => void)[];
         firstZoomPan?: ((event: PhotoSwipeEvent<"firstZoomPan"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         gettingData?: ((event: PhotoSwipeEvent<"gettingData"> & {
-            slide: import("../slide/slide").default;
-            data: import("../slide/slide").SlideData;
+            slide: import("../slide/slide.js").default;
+            data: import("../slide/slide.js").SlideData;
             index: number;
         }) => void)[];
         beforeResize?: ((event: PhotoSwipeEvent<"beforeResize">) => void)[];
@@ -570,31 +570,31 @@ declare class Eventable {
         viewportSize?: ((event: PhotoSwipeEvent<"viewportSize">) => void)[];
         updateScrollOffset?: ((event: PhotoSwipeEvent<"updateScrollOffset">) => void)[];
         slideInit?: ((event: PhotoSwipeEvent<"slideInit"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         afterSetContent?: ((event: PhotoSwipeEvent<"afterSetContent"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         slideLoad?: ((event: PhotoSwipeEvent<"slideLoad"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         /**
          * can be default prevented
          */
         appendHeavy?: ((event: PhotoSwipeEvent<"appendHeavy"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         appendHeavyContent?: ((event: PhotoSwipeEvent<"appendHeavyContent"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         slideActivate?: ((event: PhotoSwipeEvent<"slideActivate"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         slideDeactivate?: ((event: PhotoSwipeEvent<"slideDeactivate"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         slideDestroy?: ((event: PhotoSwipeEvent<"slideDestroy"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         beforeZoomTo?: ((event: PhotoSwipeEvent<"beforeZoomTo"> & {
             destZoomLevel: number;
@@ -602,13 +602,13 @@ declare class Eventable {
             transitionDuration: number | false;
         }) => void)[];
         zoomPanUpdate?: ((event: PhotoSwipeEvent<"zoomPanUpdate"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         initialZoomPan?: ((event: PhotoSwipeEvent<"initialZoomPan"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         calcSlideSize?: ((event: PhotoSwipeEvent<"calcSlideSize"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         resolutionChanged?: ((event: PhotoSwipeEvent<"resolutionChanged">) => void)[];
         /**
@@ -628,18 +628,18 @@ declare class Eventable {
          */
         lazyLoadSlide?: ((event: PhotoSwipeEvent<"lazyLoadSlide"> & {
             index: number;
-            itemData: import("../slide/slide").SlideData;
+            itemData: import("../slide/slide.js").SlideData;
         }) => void)[];
         lazyLoad?: ((event: PhotoSwipeEvent<"lazyLoad">) => void)[];
         calcBounds?: ((event: PhotoSwipeEvent<"calcBounds"> & {
-            slide: import("../slide/slide").default;
+            slide: import("../slide/slide.js").default;
         }) => void)[];
         /**
          * legacy
          */
         zoomLevelsUpdate?: ((event: PhotoSwipeEvent<"zoomLevelsUpdate"> & {
-            zoomLevels: import("../slide/zoom-level").default;
-            slideData: import("../slide/slide").SlideData;
+            zoomLevels: import("../slide/zoom-level.js").default;
+            slideData: import("../slide/slide.js").SlideData;
         }) => void)[];
         init?: ((event: PhotoSwipeEvent<"init">) => void)[];
         initialZoomIn?: ((event: PhotoSwipeEvent<"initialZoomIn">) => void)[];
@@ -647,17 +647,17 @@ declare class Eventable {
         initialZoomInEnd?: ((event: PhotoSwipeEvent<"initialZoomInEnd">) => void)[];
         initialZoomOutEnd?: ((event: PhotoSwipeEvent<"initialZoomOutEnd">) => void)[];
         numItems?: ((event: PhotoSwipeEvent<"numItems"> & {
-            dataSource: import("../photoswipe").DataSource;
+            dataSource: import("../photoswipe.js").DataSource;
             numItems: number;
         }) => void)[];
         itemData?: ((event: PhotoSwipeEvent<"itemData"> & {
-            itemData: import("../slide/slide").SlideData;
+            itemData: import("../slide/slide.js").SlideData;
             index: number;
         }) => void)[];
         thumbBounds?: ((event: PhotoSwipeEvent<"thumbBounds"> & {
             index: number;
-            itemData: import("../slide/slide").SlideData;
-            instance: import("../photoswipe").default;
+            itemData: import("../slide/slide.js").SlideData;
+            instance: import("../photoswipe.js").default;
         }) => void)[];
     };
     /**
@@ -774,16 +774,16 @@ declare class Eventable {
      */
     dispatch<T_5 extends keyof PhotoSwipeEventsMap>(name: T_5, details?: PhotoSwipeEventsMap[T_5]): AugmentedEvent<T_5>;
 }
-/** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").DataSource} DataSource */
-/** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
-/** @typedef {import("../slide/content").default} ContentDefault */
-/** @typedef {import("../slide/slide").default} Slide */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
-/** @typedef {import("../slide/zoom-level").default} ZoomLevel */
-/** @typedef {import("../slide/get-thumb-bounds").Bounds} Bounds */
+/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../ui/ui-element.js').UIElementData} UIElementData */
+/** @typedef {import('../slide/content.js').default} ContentDefault */
+/** @typedef {import('../slide/slide.js').default} Slide */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
+/** @typedef {import('../slide/zoom-level.js').default} ZoomLevel */
+/** @typedef {import('../slide/get-thumb-bounds.js').Bounds} Bounds */
 /**
  * Allow adding an arbitrary props to the Content
  * https://photoswipe.com/custom-content/#using-webp-image-format

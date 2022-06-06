@@ -1,6 +1,6 @@
 export default Gestures;
-export type PhotoSwipe = import("../photoswipe").default;
-export type Point = import("../photoswipe").Point;
+export type PhotoSwipe = import('../photoswipe.js').default;
+export type Point = import('../photoswipe.js').Point;
 /**
  * Gestures class bind touch, pointer or mouse events
  * and emits drag to drag-handler and zoom events zoom-handler.
@@ -13,7 +13,7 @@ declare class Gestures {
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
-    pswp: import("../photoswipe").default;
+    pswp: import("../photoswipe.js").default;
     /** @type {'x' | 'y'} */
     dragAxis: 'x' | 'y';
     /** @type {Point} */

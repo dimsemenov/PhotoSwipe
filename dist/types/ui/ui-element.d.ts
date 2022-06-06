@@ -1,9 +1,9 @@
 export default UIElement;
-export type PhotoSwipe = import("../photoswipe").default;
+export type PhotoSwipe = import('../photoswipe.js').default;
 /**
  * <T>
  */
-export type Methods<T> = import("../types").Methods<T>;
+export type Methods<T> = import('../types.js').Methods<T>;
 export type UIElementMarkupProps = {
     isCustomSVG?: boolean | undefined;
     inner: string;
@@ -19,7 +19,7 @@ export type UIElementData = {
     title?: string | undefined;
     ariaLabel?: string | undefined;
     onInit?: (element: HTMLElement, pswp: PhotoSwipe) => void;
-    onClick?: import("../types").Methods<import("../photoswipe").default> | ((e: MouseEvent, element: HTMLElement, pswp: PhotoSwipe) => void);
+    onClick?: import("../types.js").Methods<import("../photoswipe.js").default> | ((e: MouseEvent, element: HTMLElement, pswp: PhotoSwipe) => void);
     appendTo?: 'bar' | 'wrapper' | 'root';
     order?: number | undefined;
 };

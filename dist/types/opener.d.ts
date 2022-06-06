@@ -1,7 +1,7 @@
 export default Opener;
-export type PhotoSwipe = import("./photoswipe").default;
-export type Bounds = import("./slide/get-thumb-bounds").Bounds;
-export type AnimationProps = import("./util/animations").AnimationProps;
+export type PhotoSwipe = import('./photoswipe.js').default;
+export type Bounds = import('./slide/get-thumb-bounds.js').Bounds;
+export type AnimationProps = import('./util/animations.js').AnimationProps;
 /**
  * Manages opening and closing transitions of the PhotoSwipe.
  *
@@ -12,7 +12,7 @@ declare class Opener {
      * @param {PhotoSwipe} pswp
      */
     constructor(pswp: PhotoSwipe);
-    pswp: import("./photoswipe").default;
+    pswp: import("./photoswipe.js").default;
     isClosed: boolean;
     _prepareOpen(): void;
     /** @type {false | Bounds} */

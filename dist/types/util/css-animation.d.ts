@@ -1,6 +1,6 @@
 export default CSSAnimation;
-export type AnimationProps = import("./animations").AnimationProps;
-/** @typedef {import("./animations").AnimationProps} AnimationProps */
+export type AnimationProps = import('./animations.js').AnimationProps;
+/** @typedef {import('./animations.js').AnimationProps} AnimationProps */
 /**
  * Runs CSS transition.
  */
@@ -11,7 +11,7 @@ declare class CSSAnimation {
      * @param {AnimationProps} props
      */
     constructor(props: AnimationProps);
-    props: import("./animations").AnimationProps;
+    props: import("./animations.js").AnimationProps;
     /** @type {() => void} */
     onFinish: () => void;
     /** @private */

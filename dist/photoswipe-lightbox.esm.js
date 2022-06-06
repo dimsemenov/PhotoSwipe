@@ -2,7 +2,7 @@
   * PhotoSwipe Lightbox 5.2.7 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
-/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import('../photoswipe.js').Point} Point */
 
 /** @typedef {undefined | null | false | '' | 0} Falsy */
 /** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */
@@ -119,16 +119,16 @@ function isPswpClass(fn) {
     && fn.prototype.goTo;
 }
 
-/** @typedef {import("../lightbox/lightbox").default} PhotoSwipeLightbox */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").DataSource} DataSource */
-/** @typedef {import("../ui/ui-element").UIElementData} UIElementData */
-/** @typedef {import("../slide/content").default} ContentDefault */
-/** @typedef {import("../slide/slide").default} Slide */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
-/** @typedef {import("../slide/zoom-level").default} ZoomLevel */
-/** @typedef {import("../slide/get-thumb-bounds").Bounds} Bounds */
+/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../ui/ui-element.js').UIElementData} UIElementData */
+/** @typedef {import('../slide/content.js').default} ContentDefault */
+/** @typedef {import('../slide/slide.js').default} Slide */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
+/** @typedef {import('../slide/zoom-level.js').default} ZoomLevel */
+/** @typedef {import('../slide/get-thumb-bounds.js').Bounds} Bounds */
 
 /**
  * Allow adding an arbitrary props to the Content
@@ -531,10 +531,10 @@ class Placeholder {
   }
 }
 
-/** @typedef {import("./slide").default} Slide */
-/** @typedef {import("./slide").SlideData} SlideData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../util/util").LoadState} LoadState */
+/** @typedef {import('./slide.js').default} Slide */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../util/util.js').LoadState} LoadState */
 
 class Content {
   /**
@@ -984,9 +984,9 @@ class Content {
   }
 }
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import("../photoswipe.js").default} PhotoSwipe */
+/** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../slide/slide.js").SlideData} SlideData */
 
 /**
  * PhotoSwipe base class that can retrieve data about every slide.
@@ -1149,9 +1149,9 @@ class PhotoSwipeBase extends Eventable {
   }
 }
 
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /**
  * @param {PhotoSwipeOptions} options
@@ -1250,9 +1250,9 @@ function getPanAreaSize(options, viewportSize, itemData, index) {
 
 const MAX_IMAGE_WIDTH = 4000;
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../slide/slide").SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
 
@@ -1468,19 +1468,19 @@ function lazyLoadSlide(index, instance) {
 
 /**
  * @template T
- * @typedef {import("../types").Type<T>} Type<T>
+ * @typedef {import('../types.js').Type<T>} Type<T>
  */
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe").DataSource} DataSource */
-/** @typedef {import("../slide/content").default} Content */
-/** @typedef {import("../core/eventable").PhotoSwipeEventsMap} PhotoSwipeEventsMap */
-/** @typedef {import("../core/eventable").PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../slide/content.js').default} Content */
+/** @typedef {import('../core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
+/** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 
 /**
  * @template T
- * @typedef {import("../core/eventable").EventCallback<T>} EventCallback<T>
+ * @typedef {import('../core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 
 /**
