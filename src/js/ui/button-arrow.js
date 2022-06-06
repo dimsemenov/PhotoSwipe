@@ -2,8 +2,8 @@
   Backward and forward arrow buttons
  */
 
-/** @typedef {import("./ui-element").UIElementData} UIElementData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
+/** @typedef {import('./ui-element.js').UIElementData} UIElementData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 
 /**
  *

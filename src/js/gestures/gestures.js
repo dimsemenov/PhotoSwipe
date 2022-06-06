@@ -6,8 +6,8 @@ import DragHandler from './drag-handler.js';
 import ZoomHandler from './zoom-handler.js';
 import TapHandler from './tap-handler.js';
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').Point} Point */
 
 // How far should user should drag
 // until we can determine that the gesture is swipe and its direction

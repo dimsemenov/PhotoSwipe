@@ -1,4 +1,4 @@
-/** @typedef {import("../photoswipe").Point} Point */
+/** @typedef {import('../photoswipe.js').Point} Point */
 
 /** @typedef {undefined | null | false | '' | 0} Falsy */
 /** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */

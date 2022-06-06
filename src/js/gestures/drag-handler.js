@@ -2,8 +2,8 @@ import {
   equalizePoints, roundPoint, clamp
 } from '../util/util.js';
 
-/** @typedef {import("../photoswipe").Point} Point */
-/** @typedef {import("./gestures").default} Gestures */
+/** @typedef {import('../photoswipe.js').Point} Point */
+/** @typedef {import('./gestures.js').default} Gestures */
 
 const PAN_END_FRICTION = 0.35;
 const VERTICAL_DRAG_FRICTION = 0.6;

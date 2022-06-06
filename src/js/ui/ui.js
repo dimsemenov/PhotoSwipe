@@ -5,8 +5,8 @@ import zoomButton from './button-zoom.js';
 import { loadingIndicator } from './loading-indicator.js';
 import { counterIndicator } from './counter-indicator.js';
 
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("./ui-element").UIElementData} UIElementData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('./ui-element.js').UIElementData} UIElementData */
 
 /**
  * Set special class on element when image is zoomed.

@@ -1,10 +1,10 @@
 import { createElement, LOAD_STATE, setWidthHeight } from '../util/util.js';
 import Placeholder from './placeholder.js';
 
-/** @typedef {import("./slide").default} Slide */
-/** @typedef {import("./slide").SlideData} SlideData */
-/** @typedef {import("../photoswipe").default} PhotoSwipe */
-/** @typedef {import("../util/util").LoadState} LoadState */
+/** @typedef {import('./slide.js').default} Slide */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../util/util.js').LoadState} LoadState */
 
 class Content {
   /**

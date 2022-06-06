@@ -3,7 +3,7 @@ import {
 } from '../util/util.js';
 import { parsePaddingOption } from '../util/viewport-size.js';
 
-/** @typedef {import("./slide").default} Slide */
+/** @typedef {import('./slide.js').default} Slide */
 /** @typedef {{ x?: number; y?: number }} Point */
 /** @typedef {'x' | 'y'} Axis */
 

@@ -2,8 +2,8 @@ import {
   equalizePoints, getDistanceBetween, clamp, pointsEqual
 } from '../util/util.js';
 
-/** @typedef {import("../photoswipe").Point} Point */
-/** @typedef {import("./gestures").default} Gestures */
+/** @typedef {import('../photoswipe.js').Point} Point */
+/** @typedef {import('./gestures.js').default} Gestures */
 
 const UPPER_ZOOM_FRICTION = 0.05;
 const LOWER_ZOOM_FRICTION = 0.15;
