@@ -106,7 +106,7 @@ class Slide {
 
     // Slide appended to DOM
     if (!this.data) {
-      this.holderElement.innerHTML = '';
+      this.holderElement.innerText = '';
       return;
     }
 
@@ -118,7 +118,7 @@ class Slide {
     this.appendHeavy();
     this.updateContentSize();
 
-    this.holderElement.innerHTML = '';
+    this.holderElement.innerText = '';
     this.holderElement.appendChild(this.container);
 
     this.zoomAndPanToInitial();
