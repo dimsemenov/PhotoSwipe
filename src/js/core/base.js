@@ -3,6 +3,7 @@ import {
   getElementsFromOption
 } from '../util/util.js';
 import Content from '../slide/content.js';
+import { lazyLoadData } from '../slide/loader.js';
 
 /** @typedef {import("../photoswipe.js").default} PhotoSwipe */
 /** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
@@ -166,6 +167,17 @@ class PhotoSwipeBase extends Eventable {
     }
 
     return this.applyFilters('domItemData', itemData, element, linkEl);
+  }
+
+  /**
+   * Lazy-load by slide data
+   *
+   * @param {SlideData} itemData Data about the slide
+   * @param {number} index
+   * @returns Image that is being decoded or false.
+   */
+  lazyLoadData(itemData, index) {
+    return lazyLoadData(itemData, this, index);
   }
 }
 
