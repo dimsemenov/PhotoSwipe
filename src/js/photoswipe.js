@@ -355,12 +355,12 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.dispatch('initialLayout');
 
     this.on('openingAnimationEnd', () => {
+      this.mainScroll.itemHolders[0].el.style.display = 'block';
+      this.mainScroll.itemHolders[2].el.style.display = 'block';
+
       // Add content to the previous and next slide
       this.setContent(this.mainScroll.itemHolders[0], this.currIndex - 1);
       this.setContent(this.mainScroll.itemHolders[2], this.currIndex + 1);
-
-      this.mainScroll.itemHolders[0].el.style.display = 'block';
-      this.mainScroll.itemHolders[2].el.style.display = 'block';
 
       this.appendHeavy();
 
