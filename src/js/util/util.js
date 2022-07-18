@@ -225,3 +225,13 @@ export function isPswpClass(fn) {
     && fn.prototype
     && fn.prototype.goTo;
 }
+
+/**
+ * Check if browser is Safari
+ *
+ * @returns {boolean}
+ */
+export function isSafari() {
+  return !!(navigator.vendor && navigator.vendor.match(/apple/i));
+}
+
