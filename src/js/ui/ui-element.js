@@ -37,6 +37,7 @@ import { createElement } from '../util/util.js';
 /**
  * @param {UIElementMarkup} [htmlData]
  */
+ //rename create SVG
 function addElementHTML(htmlData) {
   if (typeof htmlData === 'string') {
     // Allow developers to provide full svg,
@@ -49,29 +50,29 @@ function addElementHTML(htmlData) {
     return htmlData;
   }
 
-  if (!htmlData || !htmlData.isCustomSVG) {
-    return '';
-  }
-
-  const svgData = htmlData;
-  let out = '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 %d %d" width="%d" height="%d">';
-  // replace all %d with size
-  out = out.split('%d').join(/** @type {string} */ (svgData.size || 32));
-
   // Icons may contain outline/shadow,
   // to make it we "clone" base icon shape and add border to it.
   // Icon itself and border are styled via CSS.
   //
   // Property shadowID defines ID of element that should be cloned.
-  if (svgData.outlineID) {
-    out += '<use class="pswp__icn-shadow" xlink:href="#' + svgData.outlineID + '"/>';
+
+  const svgData = document.createElementNS(htmlData.inner, 'svg');
+  svgData.setAttribute("aria-hidden","true");
+  svgData.setAttribute("class","pswp__icn");
+  var viewBoxSize = (htmlData.size || 32);
+  svgData.setAttribute("viewBox",`0 0 ${viewBoxSize} ${viewBoxSize}`);
+  svgData.setAttribute("width",`${viewBoxSize}`);
+  svgData.setAttribute("height",`${viewBoxSize}`);
+
+  if (htmlData.outlineID) {
+    var useElem = document.createElementNS(htmlData.inner, 'use');
+    useElem.setAttribute("class","pswp__icn-shadow");
+    useElem.setAttributeNS(htmlData.outlineID, 'xlink:href', '#down-arrow');
+    svgData.appendChild(useElem);
   }
 
-  out += svgData.inner;
-
-  out += '</svg>';
-
-  return out;
+  return svgData;
+  
 }
 
 class UIElement {
@@ -141,7 +142,13 @@ class UIElement {
       }
     }
 
-    element.innerHTML = addElementHTML(elementHTML);
+    if (typeof elementHTML === 'string') {
+      element.innerHTML = elementHTML;
+    } else if (!elementHTML || !elementHTML.isCustomSVG) {
+      element.innerText = '';
+    } else if (typeof elementHTML !== 'string') {
+        element.append(addElementHTML(elementHTML));
+    }
 
     if (data.onInit) {
       data.onInit(element, pswp);
