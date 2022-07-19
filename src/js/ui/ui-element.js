@@ -38,41 +38,31 @@ import { createElement } from '../util/util.js';
  * @param {UIElementMarkup} [htmlData]
  */
  //rename create SVG
-function addElementHTML(htmlData) {
-  if (typeof htmlData === 'string') {
-    // Allow developers to provide full svg,
-    // For example:
-    // <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" class="pswp__icn">
-    //   <path d="..." />
-    //   <circle ... />
-    // </svg>
-    // Can also be any HTML string.
-    return htmlData;
-  }
-
+ function addElementHTML(htmlData) {
   // Icons may contain outline/shadow,
   // to make it we "clone" base icon shape and add border to it.
   // Icon itself and border are styled via CSS.
   //
   // Property shadowID defines ID of element that should be cloned.
+  if (typeof htmlData !== 'string'){ 
+    const svgData = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+    
+    svgData.setAttribute("aria-hidden","true");
+    svgData.setAttribute("class",htmlData.outlineID);
+    var viewBoxSize = (htmlData.size || 32);
+    svgData.setAttribute("viewBox",`0 0 ${viewBoxSize} ${viewBoxSize}`);
+    svgData.setAttribute("width",`${viewBoxSize}`);
+    svgData.setAttribute("height",`${viewBoxSize}`);
 
-  const svgData = document.createElementNS(htmlData.inner, 'svg');
-  svgData.setAttribute("aria-hidden","true");
-  svgData.setAttribute("class","pswp__icn");
-  var viewBoxSize = (htmlData.size || 32);
-  svgData.setAttribute("viewBox",`0 0 ${viewBoxSize} ${viewBoxSize}`);
-  svgData.setAttribute("width",`${viewBoxSize}`);
-  svgData.setAttribute("height",`${viewBoxSize}`);
-
-  if (htmlData.outlineID) {
-    var useElem = document.createElementNS(htmlData.inner, 'use');
-    useElem.setAttribute("class","pswp__icn-shadow");
-    useElem.setAttributeNS(htmlData.outlineID, 'xlink:href', '#down-arrow');
-    svgData.appendChild(useElem);
+    if (htmlData.outlineID) {
+      var svgNS = svgData.namespaceURI;
+      var useElem = document.createElementNS("http://www.w3.org/2000/svg",'path');
+      useElem.setAttribute("class",htmlData.outlineID);
+      useElem.setAttribute("xlink:href",`# + ${htmlData.outlineID} + `);
+      svgData.appendChild(useElem);
+    }
+    return svgData;
   }
-
-  return svgData;
-  
 }
 
 class UIElement {
@@ -142,13 +132,16 @@ class UIElement {
       }
     }
 
-    if (typeof elementHTML === 'string') {
-      element.innerHTML = elementHTML;
-    } else if (!elementHTML || !elementHTML.isCustomSVG) {
+    if (elementHTML instanceof TrustedHTML) {
+      element.innerHTML = elementHTML.toString();
+    } else if (!elementHTML || (typeof elementHTML !== 'string' && !elementHTML.isCustomSVG)) {
       element.innerText = '';
-    } else if (typeof elementHTML !== 'string') {
+    } else {
         element.append(addElementHTML(elementHTML));
+        //element.innerHTML = addElementHTML(elementHTML).toString();
     }
+
+
 
     if (data.onInit) {
       data.onInit(element, pswp);
