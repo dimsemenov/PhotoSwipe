@@ -48,18 +48,18 @@ import { createElement } from '../util/util.js';
     const svgData = document.createElementNS("http://www.w3.org/2000/svg",'svg');
     
     svgData.setAttribute("aria-hidden","true");
-    svgData.setAttribute("class",htmlData.outlineID);
+    svgData.setAttribute("class","pswp__icn");
     var viewBoxSize = (htmlData.size || 32);
     svgData.setAttribute("viewBox",`0 0 ${viewBoxSize} ${viewBoxSize}`);
     svgData.setAttribute("width",`${viewBoxSize}`);
     svgData.setAttribute("height",`${viewBoxSize}`);
 
     if (htmlData.outlineID) {
-      var svgNS = svgData.namespaceURI;
-      var useElem = document.createElementNS("http://www.w3.org/2000/svg",'path');
-      useElem.setAttribute("class",htmlData.outlineID);
-      useElem.setAttribute("xlink:href",`# + ${htmlData.outlineID} + `);
-      svgData.appendChild(useElem);
+      //var svgNS = svgData.namespaceURI;
+      //var useElem = document.createElementNS("http://www.w3.org/2000/svg",'path');
+      svgData.setAttribute("class","pswp__icn-shadow");
+      svgData.setAttribute("href",`# + ${htmlData.outlineID} + `);
+      //svgData.appendChild(useElem);
     }
     return svgData;
   }
