@@ -1,4 +1,4 @@
-import { createElement, LOAD_STATE, setWidthHeight } from '../util/util.js';
+import { createElement, isSafari, LOAD_STATE, setWidthHeight } from '../util/util.js';
 import Placeholder from './placeholder.js';
 
 /** @typedef {import('./slide.js').default} Slide */
@@ -19,6 +19,9 @@ class Content {
 
     /** @type {HTMLImageElement | HTMLDivElement} */
     this.element = undefined;
+
+    this.displayedImageWidth = 0;
+    this.displayedImageHeight = 0;
 
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
@@ -81,7 +84,12 @@ class Content {
     }
 
     if (this.isImageContent()) {
-      this.loadImage(isLazy);
+      this.element = createElement('pswp__img', 'img');
+      // Start loading only after width is defined, as sizes might depend on it.
+      // Due to Safari feature, we must define sizes before srcset.
+      if (this.displayedImageWidth) {
+        this.loadImage(isLazy);
+      }
     } else {
       this.element = createElement('pswp__content');
       this.element.innerHTML = this.data.html || '';
@@ -98,12 +106,13 @@ class Content {
    * @param {boolean} isLazy
    */
   loadImage(isLazy) {
-    const imageElement = createElement('pswp__img', 'img');
-    this.element = imageElement;
+    const imageElement = /** @type HTMLImageElement */ (this.element);
 
     if (this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
       return;
     }
+
+    this.updateSrcsetSizes();
 
     if (this.data.srcset) {
       imageElement.srcset = this.data.srcset;
@@ -154,7 +163,6 @@ class Content {
       if (this.slide.isActive
           && this.slide.heavyAppended
           && !this.element.parentNode) {
-        this.slide.container.innerHTML = '';
         this.append();
         this.slide.updateContentSize(true);
       }
@@ -219,18 +227,15 @@ class Content {
     setWidthHeight(this.element, width, height);
 
     if (this.isImageContent() && !this.isError()) {
-      const image = /** @type HTMLImageElement */ (this.element);
+      const isInitialSizeUpdate = (!this.displayedImageWidth && width);
 
-      // Handle srcset sizes attribute.
-      //
-      // Never lower quality, if it was increased previously.
-      // Chrome does this automatically, Firefox and Safari do not,
-      // so we store largest used size in dataset.
-      if (image.srcset
-          // eslint-disable-next-line max-len
-          && (!image.dataset.largestUsedSize || width > parseInt(image.dataset.largestUsedSize, 10))) {
-        image.sizes = width + 'px';
-        image.dataset.largestUsedSize = String(width);
+      this.displayedImageWidth = width;
+      this.displayedImageHeight = height;
+
+      if (isInitialSizeUpdate) {
+        this.loadImage(false);
+      } else {
+        this.updateSrcsetSizes();
       }
 
       if (this.slide) {
@@ -360,6 +365,10 @@ class Content {
    * Append the content
    */
   append() {
+    if (this.isAttached) {
+      return;
+    }
+
     this.isAttached = true;
 
     if (this.state === LOAD_STATE.ERROR) {
