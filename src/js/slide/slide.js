@@ -190,6 +190,11 @@ class Slide {
     this.isActive = false;
     this.content.deactivate();
 
+    if (this.currZoomLevel !== this.zoomLevels.initial) {
+      // allow filtering
+      this.calculateSize();
+    }
+
     // reset zoom level
     this.currentResolution = 0;
     this.zoomAndPanToInitial();
