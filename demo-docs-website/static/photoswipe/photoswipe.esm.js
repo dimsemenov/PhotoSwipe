@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.2.8 - https://photoswipe.com
+  * PhotoSwipe 5.3.0 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -217,6 +217,15 @@ function getElementsFromOption(option, legacySelector, parent = document) {
   }
 
   return elements;
+}
+
+/**
+ * Check if browser is Safari
+ *
+ * @returns {boolean}
+ */
+function isSafari() {
+  return !!(navigator.vendor && navigator.vendor.match(/apple/i));
 }
 
 // Detect passive event listener support
@@ -776,21 +785,19 @@ class Slide {
   append(holderElement) {
     this.holderElement = holderElement;
 
+    this.container.style.transformOrigin = '0 0';
+
     // Slide appended to DOM
     if (!this.data) {
-      this.holderElement.innerHTML = '';
       return;
     }
 
     this.calculateSize();
 
-    this.container.style.transformOrigin = '0 0';
-
     this.load();
-    this.appendHeavy();
     this.updateContentSize();
+    this.appendHeavy();
 
-    this.holderElement.innerHTML = '';
     this.holderElement.appendChild(this.container);
 
     this.zoomAndPanToInitial();
@@ -862,6 +869,11 @@ class Slide {
     this.isActive = false;
     this.content.deactivate();
 
+    if (this.currZoomLevel !== this.zoomLevels.initial) {
+      // allow filtering
+      this.calculateSize();
+    }
+
     // reset zoom level
     this.currentResolution = 0;
     this.zoomAndPanToInitial();
@@ -878,6 +890,7 @@ class Slide {
   destroy() {
     this.content.hasSlide = false;
     this.content.remove();
+    this.container.remove();
     this.pswp.dispatch('slideDestroy', { slide: this });
   }
 
@@ -2946,11 +2959,19 @@ class CSSAnimation {
     //
     // ¯\_(ツ)_/¯
     /** @private */
-    this._firstFrameTimeout = setTimeout(() => {
+    this._helperTimeout = setTimeout(() => {
       setTransitionStyle(target, prop, duration, easing);
-      this._firstFrameTimeout = setTimeout(() => {
+      this._helperTimeout = setTimeout(() => {
         target.addEventListener('transitionend', this._onTransitionEnd, false);
         target.addEventListener('transitioncancel', this._onTransitionEnd, false);
+
+        // Safari occasionally does not emit transitionend event
+        // if element propery was modified during the transition,
+        // which may be caused by resize or third party component,
+        // using timeout as a safety fallback
+        this._helperTimeout = setTimeout(() => {
+          this._finalizeAnimation();
+        }, duration + 500);
         target.style[prop] = propValue;
       }, 30); // Do not reduce this number
     }, 0);
@@ -2981,8 +3002,8 @@ class CSSAnimation {
 
   // Destroy is called automatically onFinish
   destroy() {
-    if (this._firstFrameTimeout) {
-      clearTimeout(this._firstFrameTimeout);
+    if (this._helperTimeout) {
+      clearTimeout(this._helperTimeout);
     }
     removeTransitionStyle(this._target);
     this._target.removeEventListener('transitionend', this._onTransitionEnd, false);
@@ -3810,16 +3831,11 @@ class UI {
     }
 
     template.classList.add('pswp--zoom-allowed');
-    const secondaryIsHigher = (currZoomLevelDiff < 0);
 
-    if (currZoomLevel === currSlide.zoomLevels.secondary) {
-      setZoomedIn(template, secondaryIsHigher);
-    } else if (currZoomLevel > currSlide.zoomLevels.secondary) {
-      setZoomedIn(template, true);
-    } else {
-      //  if (currZoomLevel < currSlide.zoomLevels.secondary)
-      setZoomedIn(template, false);
-    }
+    const potentialZoomLevel = currZoomLevel === currSlide.zoomLevels.initial
+      ? currSlide.zoomLevels.secondary : currSlide.zoomLevels.initial;
+
+    setZoomedIn(template, potentialZoomLevel <= currZoomLevel);
 
     if (options.imageClickAction === 'zoom'
         || options.imageClickAction === 'zoom-or-close') {
@@ -4118,6 +4134,9 @@ function getThumbBounds(index, itemData, instance) {
  * @prop {(thumbBounds: Bounds, itemData: SlideData, index: number) => Bounds} thumbBounds
  * Modify the thubmnail bounds from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbbounds
+ *
+ * @prop {(srcsetSizesWidth: number, content: Content) => number} srcsetSizesWidth
+ *
  */
 
 /**
@@ -4368,6 +4387,9 @@ class Content {
     /** @type {HTMLImageElement | HTMLDivElement} */
     this.element = undefined;
 
+    this.displayedImageWidth = 0;
+    this.displayedImageHeight = 0;
+
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
 
@@ -4395,7 +4417,7 @@ class Content {
           this.placeholder.destroy();
           this.placeholder = null;
         }
-      }, 500);
+      }, 1000);
     }
   }
 
@@ -4429,7 +4451,12 @@ class Content {
     }
 
     if (this.isImageContent()) {
-      this.loadImage(isLazy);
+      this.element = createElement('pswp__img', 'img');
+      // Start loading only after width is defined, as sizes might depend on it.
+      // Due to Safari feature, we must define sizes before srcset.
+      if (this.displayedImageWidth) {
+        this.loadImage(isLazy);
+      }
     } else {
       this.element = createElement('pswp__content');
       this.element.innerHTML = this.data.html || '';
@@ -4446,12 +4473,13 @@ class Content {
    * @param {boolean} isLazy
    */
   loadImage(isLazy) {
-    const imageElement = createElement('pswp__img', 'img');
-    this.element = imageElement;
+    const imageElement = /** @type HTMLImageElement */ (this.element);
 
     if (this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
       return;
     }
+
+    this.updateSrcsetSizes();
 
     if (this.data.srcset) {
       imageElement.srcset = this.data.srcset;
@@ -4502,9 +4530,12 @@ class Content {
       if (this.slide.isActive
           && this.slide.heavyAppended
           && !this.element.parentNode) {
-        this.slide.container.innerHTML = '';
         this.append();
         this.slide.updateContentSize(true);
+      }
+
+      if (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR) {
+        this.removePlaceholder();
       }
     }
   }
@@ -4567,18 +4598,15 @@ class Content {
     setWidthHeight(this.element, width, height);
 
     if (this.isImageContent() && !this.isError()) {
-      const image = /** @type HTMLImageElement */ (this.element);
+      const isInitialSizeUpdate = (!this.displayedImageWidth && width);
 
-      // Handle srcset sizes attribute.
-      //
-      // Never lower quality, if it was increased previously.
-      // Chrome does this automatically, Firefox and Safari do not,
-      // so we store largest used size in dataset.
-      if (image.srcset
-          // eslint-disable-next-line max-len
-          && (!image.dataset.largestUsedSize || width > parseInt(image.dataset.largestUsedSize, 10))) {
-        image.sizes = width + 'px';
-        image.dataset.largestUsedSize = String(width);
+      this.displayedImageWidth = width;
+      this.displayedImageHeight = height;
+
+      if (isInitialSizeUpdate) {
+        this.loadImage(false);
+      } else {
+        this.updateSrcsetSizes();
       }
 
       if (this.slide) {
@@ -4597,6 +4625,36 @@ class Content {
       this.isImageContent() && (this.state !== LOAD_STATE.ERROR),
       this
     );
+  }
+
+  /**
+   * Update image srcset sizes attribute based on width and height
+   */
+  updateSrcsetSizes() {
+    // Handle srcset sizes attribute.
+    //
+    // Never lower quality, if it was increased previously.
+    // Chrome does this automatically, Firefox and Safari do not,
+    // so we store largest used size in dataset.
+    // Handle srcset sizes attribute.
+    //
+    // Never lower quality, if it was increased previously.
+    // Chrome does this automatically, Firefox and Safari do not,
+    // so we store largest used size in dataset.
+    if (this.data.srcset) {
+      const image = /** @type HTMLImageElement */ (this.element);
+      const sizesWidth = this.instance.applyFilters(
+        'srcsetSizesWidth',
+        this.displayedImageWidth,
+        this
+      );
+
+      if (!image.dataset.largestUsedSize
+          || sizesWidth > parseInt(image.dataset.largestUsedSize, 10)) {
+        image.sizes = sizesWidth + 'px';
+        image.dataset.largestUsedSize = String(sizesWidth);
+      }
+    }
   }
 
   /**
@@ -4667,7 +4725,7 @@ class Content {
       );
       this.element = createElement('pswp__content pswp__error-msg-container');
       this.element.appendChild(errorMsgEl);
-      this.slide.container.innerHTML = '';
+      this.slide.container.innerText = '';
       this.slide.container.appendChild(this.element);
       this.slide.updateContentSize(true);
       this.removePlaceholder();
@@ -4678,6 +4736,10 @@ class Content {
    * Append the content
    */
   append() {
+    if (this.isAttached) {
+      return;
+    }
+
     this.isAttached = true;
 
     if (this.state === LOAD_STATE.ERROR) {
@@ -4688,6 +4750,8 @@ class Content {
     if (this.instance.dispatch('contentAppend', { content: this }).defaultPrevented) {
       return;
     }
+
+    const supportsDecode = ('decode' in this.element);
 
     if (this.isImageContent()) {
       // Use decode() on nearby slides
@@ -4701,32 +4765,17 @@ class Content {
       // You might ask "why dont you just decode() and then append all images",
       // that's because I want to show image before it's fully loaded,
       // as browser can render parts of image while it is loading.
-      if (this.slide
-          && !this.slide.isActive
-          && ('decode' in this.element)) {
+      // We do not do this in Safari due to partial loading bug.
+      if (supportsDecode && this.slide && (!this.slide.isActive || isSafari())) {
         this.isDecoding = true;
-        // Make sure that we start decoding on the next frame
-        requestAnimationFrame(() => {
-          // element might change
-          if (this.element && this.element.tagName === 'IMG') {
-            /** @type {HTMLImageElement} */
-            (this.element).decode().then(() => {
-              this.isDecoding = false;
-              requestAnimationFrame(() => {
-                this.appendImage();
-              });
-            }).catch(() => {
-              this.isDecoding = false;
-            });
-          }
+        // purposefully using finally instead of then,
+        // as if srcset sizes changes dynamically - it may cause decode error
+        /** @type {HTMLImageElement} */
+        (this.element).decode().finally(() => {
+          this.isDecoding = false;
+          this.appendImage();
         });
       } else {
-        if (this.placeholder
-          // eslint-disable-next-line max-len
-          && (this.state === LOAD_STATE.LOADED || /** @type {LoadState} */ (this.state) === LOAD_STATE.ERROR)
-        ) {
-          this.removePlaceholder();
-        }
         this.appendImage();
       }
     } else if (this.element && !this.element.parentNode) {
@@ -4745,7 +4794,7 @@ class Content {
     }
 
     if (this.slide) {
-      if (this.isImageContent() && this.isDecoding) {
+      if (this.isImageContent() && this.isDecoding && !isSafari()) {
         // add image to slide when it becomes active,
         // even if it's not finished decoding
         this.appendImage();
@@ -4793,12 +4842,204 @@ class Content {
     // ensure that element exists and is not already appended
     if (this.slide && this.element && !this.element.parentNode) {
       this.slide.container.appendChild(this.element);
+    }
 
-      if (this.placeholder
-        && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
-        this.removePlaceholder();
+    if (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR) {
+      this.removePlaceholder();
+    }
+  }
+}
+
+/** @typedef {import('./content.js').default} Content */
+/** @typedef {import('./slide.js').default} Slide */
+/** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
+/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
+
+const MIN_SLIDES_TO_CACHE = 5;
+
+/**
+ * Lazy-load an image
+ * This function is used both by Lightbox and PhotoSwipe core,
+ * thus it can be called before dialog is opened.
+ *
+ * @param {SlideData} itemData Data about the slide
+ * @param {PhotoSwipe | PhotoSwipeLightbox | PhotoSwipeBase} instance PhotoSwipe instance
+ * @param {number} index
+ * @returns Image that is being decoded or false.
+ */
+function lazyLoadData(itemData, instance, index) {
+  // src/slide/content/content.js
+  const content = instance.createContentFromData(itemData, index);
+
+  if (!content || !content.lazyLoad) {
+    return;
+  }
+
+  const { options } = instance;
+
+  // We need to know dimensions of the image to preload it,
+  // as it might use srcset and we need to define sizes
+  // @ts-expect-error should provide pswp instance?
+  const viewportSize = instance.viewportSize || getViewportSize(options, instance);
+  const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
+
+  const zoomLevel = new ZoomLevel(options, itemData, -1);
+  zoomLevel.update(content.width, content.height, panAreaSize);
+
+  content.lazyLoad();
+  content.setDisplayedSize(
+    Math.ceil(content.width * zoomLevel.initial),
+    Math.ceil(content.height * zoomLevel.initial)
+  );
+
+  return content;
+}
+
+
+/**
+ * Lazy-loads specific slide.
+ * This function is used both by Lightbox and PhotoSwipe core,
+ * thus it can be called before dialog is opened.
+ *
+ * By default it loads image based on viewport size and initial zoom level.
+ *
+ * @param {number} index Slide index
+ * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ */
+function lazyLoadSlide(index, instance) {
+  const itemData = instance.getItemData(index);
+
+  if (instance.dispatch('lazyLoadSlide', { index, itemData }).defaultPrevented) {
+    return;
+  }
+
+  return lazyLoadData(itemData, instance, index);
+}
+
+
+class ContentLoader {
+  /**
+   * @param {PhotoSwipe} pswp
+   */
+  constructor(pswp) {
+    this.pswp = pswp;
+    // Total amount of cached images
+    this.limit = Math.max(
+      pswp.options.preload[0] + pswp.options.preload[1] + 1,
+      MIN_SLIDES_TO_CACHE
+    );
+    /** @type {Content[]} */
+    this._cachedItems = [];
+  }
+
+  /**
+   * Lazy load nearby slides based on `preload` option.
+   *
+   * @param {number=} diff Difference between slide indexes that was changed recently, or 0.
+   */
+  updateLazy(diff) {
+    const { pswp } = this;
+
+    if (pswp.dispatch('lazyLoad').defaultPrevented) {
+      return;
+    }
+
+    const { preload } = pswp.options;
+    const isForward = diff === undefined ? true : (diff >= 0);
+    let i;
+
+    // preload[1] - num items to preload in forward direction
+    for (i = 0; i <= preload[1]; i++) {
+      this.loadSlideByIndex(pswp.currIndex + (isForward ? i : (-i)));
+    }
+
+    // preload[0] - num items to preload in backward direction
+    for (i = 1; i <= preload[0]; i++) {
+      this.loadSlideByIndex(pswp.currIndex + (isForward ? (-i) : i));
+    }
+  }
+
+  /**
+   * @param {number} index
+   */
+  loadSlideByIndex(index) {
+    index = this.pswp.getLoopedIndex(index);
+    // try to get cached content
+    let content = this.getContentByIndex(index);
+    if (!content) {
+      // no cached content, so try to load from scratch:
+      content = lazyLoadSlide(index, this.pswp);
+      // if content can be loaded, add it to cache:
+      if (content) {
+        this.addToCache(content);
       }
     }
+  }
+
+  /**
+   * @param {Slide} slide
+   */
+  getContentBySlide(slide) {
+    let content = this.getContentByIndex(slide.index);
+    if (!content) {
+      // create content if not found in cache
+      content = this.pswp.createContentFromData(slide.data, slide.index);
+      if (content) {
+        this.addToCache(content);
+      }
+    }
+
+    if (content) {
+      // assign slide to content
+      content.setSlide(slide);
+    }
+    return content;
+  }
+
+  /**
+   * @param {Content} content
+   */
+  addToCache(content) {
+    // move to the end of array
+    this.removeByIndex(content.index);
+    this._cachedItems.push(content);
+
+    if (this._cachedItems.length > this.limit) {
+      // Destroy the first content that's not attached
+      const indexToRemove = this._cachedItems.findIndex((item) => {
+        return !item.isAttached && !item.hasSlide;
+      });
+      if (indexToRemove !== -1) {
+        const removedItem = this._cachedItems.splice(indexToRemove, 1)[0];
+        removedItem.destroy();
+      }
+    }
+  }
+
+  /**
+   * Removes an image from cache, does not destroy() it, just removes.
+   *
+   * @param {number} index
+   */
+  removeByIndex(index) {
+    const indexToRemove = this._cachedItems.findIndex(item => item.index === index);
+    if (indexToRemove !== -1) {
+      this._cachedItems.splice(indexToRemove, 1);
+    }
+  }
+
+  /**
+   * @param {number} index
+   */
+  getContentByIndex(index) {
+    return this._cachedItems.find(content => content.index === index);
+  }
+
+  destroy() {
+    this._cachedItems.forEach(content => content.destroy());
+    this._cachedItems = null;
   }
 }
 
@@ -4964,6 +5205,17 @@ class PhotoSwipeBase extends Eventable {
     }
 
     return this.applyFilters('domItemData', itemData, element, linkEl);
+  }
+
+  /**
+   * Lazy-load by slide data
+   *
+   * @param {SlideData} itemData Data about the slide
+   * @param {number} index
+   * @returns Image that is being decoded or false.
+   */
+  lazyLoadData(itemData, index) {
+    return lazyLoadData(itemData, this, index);
   }
 }
 
@@ -5354,198 +5606,6 @@ class Opener {
   }
 }
 
-/** @typedef {import('./content.js').default} Content */
-/** @typedef {import('./slide.js').default} Slide */
-/** @typedef {import('./slide.js').SlideData} SlideData */
-/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
-/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
-
-const MIN_SLIDES_TO_CACHE = 5;
-
-/**
- * Lazy-load an image
- * This function is used both by Lightbox and PhotoSwipe core,
- * thus it can be called before dialog is opened.
- *
- * @param {SlideData} itemData Data about the slide
- * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox
- * @param {number} index
- * @returns Image that is being decoded or false.
- */
-function lazyLoadData(itemData, instance, index) {
-  // src/slide/content/content.js
-  const content = instance.createContentFromData(itemData, index);
-
-  if (!content || !content.lazyLoad) {
-    return;
-  }
-
-  const { options } = instance;
-
-  // We need to know dimensions of the image to preload it,
-  // as it might use srcset and we need to define sizes
-  // @ts-expect-error should provide pswp instance?
-  const viewportSize = instance.viewportSize || getViewportSize(options, instance);
-  const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
-
-  const zoomLevel = new ZoomLevel(options, itemData, -1);
-  zoomLevel.update(content.width, content.height, panAreaSize);
-
-  content.lazyLoad();
-  content.setDisplayedSize(
-    Math.ceil(content.width * zoomLevel.initial),
-    Math.ceil(content.height * zoomLevel.initial)
-  );
-
-  return content;
-}
-
-
-/**
- * Lazy-loads specific slide.
- * This function is used both by Lightbox and PhotoSwipe core,
- * thus it can be called before dialog is opened.
- *
- * By default it loads image based on viewport size and initial zoom level.
- *
- * @param {number} index Slide index
- * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
- */
-function lazyLoadSlide(index, instance) {
-  const itemData = instance.getItemData(index);
-
-  if (instance.dispatch('lazyLoadSlide', { index, itemData }).defaultPrevented) {
-    return;
-  }
-
-  return lazyLoadData(itemData, instance, index);
-}
-
-
-class ContentLoader {
-  /**
-   * @param {PhotoSwipe} pswp
-   */
-  constructor(pswp) {
-    this.pswp = pswp;
-    // Total amount of cached images
-    this.limit = Math.max(
-      pswp.options.preload[0] + pswp.options.preload[1] + 1,
-      MIN_SLIDES_TO_CACHE
-    );
-    /** @type {Content[]} */
-    this._cachedItems = [];
-  }
-
-  /**
-   * Lazy load nearby slides based on `preload` option.
-   *
-   * @param {number=} diff Difference between slide indexes that was changed recently, or 0.
-   */
-  updateLazy(diff) {
-    const { pswp } = this;
-
-    if (pswp.dispatch('lazyLoad').defaultPrevented) {
-      return;
-    }
-
-    const { preload } = pswp.options;
-    const isForward = diff === undefined ? true : (diff >= 0);
-    let i;
-
-    // preload[1] - num items to preload in forward direction
-    for (i = 0; i <= preload[1]; i++) {
-      this.loadSlideByIndex(pswp.currIndex + (isForward ? i : (-i)));
-    }
-
-    // preload[0] - num items to preload in backward direction
-    for (i = 1; i <= preload[0]; i++) {
-      this.loadSlideByIndex(pswp.currIndex + (isForward ? (-i) : i));
-    }
-  }
-
-  /**
-   * @param {number} index
-   */
-  loadSlideByIndex(index) {
-    index = this.pswp.getLoopedIndex(index);
-    // try to get cached content
-    let content = this.getContentByIndex(index);
-    if (!content) {
-      // no cached content, so try to load from scratch:
-      content = lazyLoadSlide(index, this.pswp);
-      // if content can be loaded, add it to cache:
-      if (content) {
-        this.addToCache(content);
-      }
-    }
-  }
-
-  /**
-   * @param {Slide} slide
-   */
-  getContentBySlide(slide) {
-    let content = this.getContentByIndex(slide.index);
-    if (!content) {
-      // create content if not found in cache
-      content = this.pswp.createContentFromData(slide.data, slide.index);
-      if (content) {
-        this.addToCache(content);
-      }
-    }
-
-    if (content) {
-      // assign slide to content
-      content.setSlide(slide);
-    }
-    return content;
-  }
-
-  /**
-   * @param {Content} content
-   */
-  addToCache(content) {
-    // move to the end of array
-    this.removeByIndex(content.index);
-    this._cachedItems.push(content);
-
-    if (this._cachedItems.length > this.limit) {
-      // Destroy the first content that's not attached
-      const indexToRemove = this._cachedItems.findIndex((item) => {
-        return !item.isAttached && !item.hasSlide;
-      });
-      if (indexToRemove !== -1) {
-        const removedItem = this._cachedItems.splice(indexToRemove, 1)[0];
-        removedItem.destroy();
-      }
-    }
-  }
-
-  /**
-   * Removes an image from cache, does not destroy() it, just removes.
-   *
-   * @param {number} index
-   */
-  removeByIndex(index) {
-    const indexToRemove = this._cachedItems.findIndex(item => item.index === index);
-    if (indexToRemove !== -1) {
-      this._cachedItems.splice(indexToRemove, 1);
-    }
-  }
-
-  /**
-   * @param {number} index
-   */
-  getContentByIndex(index) {
-    return this._cachedItems.find(content => content.index === index);
-  }
-
-  destroy() {
-    this._cachedItems.forEach(content => content.destroy());
-    this._cachedItems = null;
-  }
-}
-
 /**
  * @template T
  * @typedef {import('./types.js').Type<T>} Type<T>
@@ -5881,12 +5941,12 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.dispatch('initialLayout');
 
     this.on('openingAnimationEnd', () => {
+      this.mainScroll.itemHolders[0].el.style.display = 'block';
+      this.mainScroll.itemHolders[2].el.style.display = 'block';
+
       // Add content to the previous and next slide
       this.setContent(this.mainScroll.itemHolders[0], this.currIndex - 1);
       this.setContent(this.mainScroll.itemHolders[2], this.currIndex + 1);
-
-      this.mainScroll.itemHolders[0].el.style.display = 'block';
-      this.mainScroll.itemHolders[2].el.style.display = 'block';
 
       this.appendHeavy();
 
