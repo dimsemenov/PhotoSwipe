@@ -4,11 +4,11 @@
  * thus it can be called before dialog is opened.
  *
  * @param {SlideData} itemData Data about the slide
- * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox
+ * @param {PhotoSwipe | PhotoSwipeLightbox | PhotoSwipeBase} instance PhotoSwipe instance
  * @param {number} index
  * @returns Image that is being decoded or false.
  */
-export function lazyLoadData(itemData: SlideData, instance: PhotoSwipe | PhotoSwipeLightbox, index: number): import("./content.js").default;
+export function lazyLoadData(itemData: SlideData, instance: PhotoSwipe | PhotoSwipeLightbox | PhotoSwipeBase, index: number): import("./content.js").default;
 /**
  * Lazy-loads specific slide.
  * This function is used both by Lightbox and PhotoSwipe core,
@@ -24,6 +24,7 @@ export default ContentLoader;
 export type Content = import('./content.js').default;
 export type Slide = import('./slide.js').default;
 export type SlideData = import('./slide.js').SlideData;
+export type PhotoSwipeBase = import('../core/base.js').default;
 export type PhotoSwipe = import('../photoswipe.js').default;
 export type PhotoSwipeLightbox = import('../lightbox/lightbox.js').default;
 declare class ContentLoader {

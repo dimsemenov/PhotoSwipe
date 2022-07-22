@@ -106,6 +106,12 @@ export function getElementsFromOption(option: HTMLElement | NodeListOf<HTMLEleme
  * @param {any} fn
  */
 export function isPswpClass(fn: any): any;
+/**
+ * Check if browser is Safari
+ *
+ * @returns {boolean}
+ */
+export function isSafari(): boolean;
 /** @typedef {LOAD_STATE[keyof LOAD_STATE]} LoadState */
 /** @type {{ IDLE: 'idle'; LOADING: 'loading'; LOADED: 'loaded'; ERROR: 'error' }} */
 export const LOAD_STATE: {

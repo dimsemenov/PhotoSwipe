@@ -44,6 +44,14 @@ declare class PhotoSwipeBase extends Eventable {
      * @param {HTMLElement} element DOM element
      */
     _domElementToItemData(element: HTMLElement): import("../slide/slide.js").SlideData;
+    /**
+     * Lazy-load by slide data
+     *
+     * @param {SlideData} itemData Data about the slide
+     * @param {number} index
+     * @returns Image that is being decoded or false.
+     */
+    lazyLoadData(itemData: SlideData, index: number): Content;
 }
 import Eventable from "./eventable.js";
 import Content from "../slide/content.js";
