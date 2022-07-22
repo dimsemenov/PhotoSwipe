@@ -1,10 +1,10 @@
-import PhotoSwipeBase from '../core/base.js';
 import { getViewportSize, getPanAreaSize } from '../util/viewport-size.js';
 import ZoomLevel from './zoom-level.js';
 
 /** @typedef {import('./content.js').default} Content */
 /** @typedef {import('./slide.js').default} Slide */
 /** @typedef {import('./slide.js').SlideData} SlideData */
+/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 /** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
 
@@ -16,7 +16,7 @@ const MIN_SLIDES_TO_CACHE = 5;
  * thus it can be called before dialog is opened.
  *
  * @param {SlideData} itemData Data about the slide
- * @param {PhotoSwipe | PhotoSwipeLightbox | PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox
+ * @param {PhotoSwipe | PhotoSwipeLightbox | PhotoSwipeBase} instance PhotoSwipe instance
  * @param {number} index
  * @returns Image that is being decoded or false.
  */
