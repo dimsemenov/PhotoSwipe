@@ -104,6 +104,8 @@ class Slide {
   append(holderElement) {
     this.holderElement = holderElement;
 
+    this.container.style.transformOrigin = '0 0';
+
     // Slide appended to DOM
     if (!this.data) {
       return;
@@ -111,13 +113,10 @@ class Slide {
 
     this.calculateSize();
 
-    this.container.style.transformOrigin = '0 0';
-
     this.load();
-    this.appendHeavy();
     this.updateContentSize();
+    this.appendHeavy();
 
-    this.holderElement.innerHTML = '';
     this.holderElement.appendChild(this.container);
 
     this.zoomAndPanToInitial();
