@@ -117,16 +117,11 @@ class UI {
     }
 
     template.classList.add('pswp--zoom-allowed');
-    const secondaryIsHigher = (currZoomLevelDiff < 0);
 
-    if (currZoomLevel === currSlide.zoomLevels.secondary) {
-      setZoomedIn(template, secondaryIsHigher);
-    } else if (currZoomLevel > currSlide.zoomLevels.secondary) {
-      setZoomedIn(template, true);
-    } else {
-      //  if (currZoomLevel < currSlide.zoomLevels.secondary)
-      setZoomedIn(template, false);
-    }
+    const potentialZoomLevel = currZoomLevel === currSlide.zoomLevels.initial
+      ? currSlide.zoomLevels.secondary : currSlide.zoomLevels.initial;
+
+    setZoomedIn(template, potentialZoomLevel <= currZoomLevel);
 
     if (options.imageClickAction === 'zoom'
         || options.imageClickAction === 'zoom-or-close') {
