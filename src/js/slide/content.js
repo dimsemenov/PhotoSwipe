@@ -380,6 +380,8 @@ class Content {
       return;
     }
 
+    const supportsDecode = ('decode' in this.element);
+
     if (this.isImageContent()) {
       // Use decode() on nearby slides
       //
@@ -392,32 +394,17 @@ class Content {
       // You might ask "why dont you just decode() and then append all images",
       // that's because I want to show image before it's fully loaded,
       // as browser can render parts of image while it is loading.
-      if (this.slide
-          && !this.slide.isActive
-          && ('decode' in this.element)) {
+      // We do not do this in Safari due to partial loading bug.
+      if (supportsDecode && this.slide && (!this.slide.isActive || isSafari())) {
         this.isDecoding = true;
-        // Make sure that we start decoding on the next frame
-        requestAnimationFrame(() => {
-          // element might change
-          if (this.element && this.element.tagName === 'IMG') {
-            /** @type {HTMLImageElement} */
-            (this.element).decode().then(() => {
-              this.isDecoding = false;
-              requestAnimationFrame(() => {
-                this.appendImage();
-              });
-            }).catch(() => {
-              this.isDecoding = false;
-            });
-          }
+        // purposefully using finally instead of then,
+        // as if srcset sizes changes dynamically - it may cause decode error
+        /** @type {HTMLImageElement} */
+        (this.element).decode().finally(() => {
+          this.isDecoding = false;
+          this.appendImage();
         });
       } else {
-        if (this.placeholder
-          // eslint-disable-next-line max-len
-          && (this.state === LOAD_STATE.LOADED || /** @type {LoadState} */ (this.state) === LOAD_STATE.ERROR)
-        ) {
-          this.removePlaceholder();
-        }
         this.appendImage();
       }
     } else if (this.element && !this.element.parentNode) {
@@ -436,7 +423,7 @@ class Content {
     }
 
     if (this.slide) {
-      if (this.isImageContent() && this.isDecoding) {
+      if (this.isImageContent() && this.isDecoding && !isSafari()) {
         // add image to slide when it becomes active,
         // even if it's not finished decoding
         this.appendImage();
