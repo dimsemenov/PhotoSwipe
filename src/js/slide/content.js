@@ -50,7 +50,7 @@ class Content {
           this.placeholder.destroy();
           this.placeholder = null;
         }
-      }, 500);
+      }, 1000);
     }
   }
 
@@ -165,6 +165,10 @@ class Content {
           && !this.element.parentNode) {
         this.append();
         this.slide.updateContentSize(true);
+      }
+
+      if (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR) {
+        this.removePlaceholder();
       }
     }
   }
@@ -471,11 +475,10 @@ class Content {
     // ensure that element exists and is not already appended
     if (this.slide && this.element && !this.element.parentNode) {
       this.slide.container.appendChild(this.element);
+    }
 
-      if (this.placeholder
-        && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
-        this.removePlaceholder();
-      }
+    if (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR) {
+      this.removePlaceholder();
     }
   }
 }
