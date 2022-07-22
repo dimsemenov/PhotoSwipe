@@ -179,6 +179,9 @@
  * @prop {(thumbBounds: Bounds, itemData: SlideData, index: number) => Bounds} thumbBounds
  * Modify the thubmnail bounds from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbbounds
+ *
+ * @prop {(srcsetSizesWidth: number, content: Content) => number} srcsetSizesWidth
+ *
  */
 
 /**

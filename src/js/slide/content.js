@@ -252,6 +252,36 @@ class Content {
   }
 
   /**
+   * Update image srcset sizes attribute based on width and height
+   */
+  updateSrcsetSizes() {
+    // Handle srcset sizes attribute.
+    //
+    // Never lower quality, if it was increased previously.
+    // Chrome does this automatically, Firefox and Safari do not,
+    // so we store largest used size in dataset.
+    // Handle srcset sizes attribute.
+    //
+    // Never lower quality, if it was increased previously.
+    // Chrome does this automatically, Firefox and Safari do not,
+    // so we store largest used size in dataset.
+    if (this.data.srcset) {
+      const image = /** @type HTMLImageElement */ (this.element);
+      const sizesWidth = this.instance.applyFilters(
+        'srcsetSizesWidth',
+        this.displayedImageWidth,
+        this
+      );
+
+      if (!image.dataset.largestUsedSize
+          || sizesWidth > parseInt(image.dataset.largestUsedSize, 10)) {
+        image.sizes = sizesWidth + 'px';
+        image.dataset.largestUsedSize = String(sizesWidth);
+      }
+    }
+  }
+
+  /**
    * @returns {boolean} If content should use a placeholder (from msrc by default)
    */
   usePlaceholder() {
