@@ -386,7 +386,7 @@ lightbox.init();
 
 ```html pswpcode 
 <div class="pswp-gallery pswp-gallery--single-column" id="gallery--errorMsg">
-  <a data-pswp-width="1000" data-pswp-height="1000" href="https://picsum.photos/1000/1000" target="_blank">
+  <a data-pswp-width="1200" data-pswp-height="800" href="https://picsum.photos/1200/800" target="_blank">
     <img src="https://dummyimage.com/300x200/555/fff/?text=0-random-image" alt="">
   </a>
 
