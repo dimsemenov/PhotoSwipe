@@ -106,7 +106,6 @@ class Slide {
 
     // Slide appended to DOM
     if (!this.data) {
-      this.holderElement.innerHTML = '';
       return;
     }
 
@@ -211,6 +210,7 @@ class Slide {
   destroy() {
     this.content.hasSlide = false;
     this.content.remove();
+    this.container.remove();
     this.pswp.dispatch('slideDestroy', { slide: this });
   }
 

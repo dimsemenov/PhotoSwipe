@@ -349,7 +349,7 @@ class Content {
       );
       this.element = createElement('pswp__content pswp__error-msg-container');
       this.element.appendChild(errorMsgEl);
-      this.slide.container.innerHTML = '';
+      this.slide.container.innerText = '';
       this.slide.container.appendChild(this.element);
       this.slide.updateContentSize(true);
       this.removePlaceholder();
