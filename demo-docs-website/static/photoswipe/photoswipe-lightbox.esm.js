@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.3.0 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.3.1 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -603,18 +603,26 @@ class Content {
    * @param {boolean=} reload
    */
   load(isLazy, reload) {
-    if (!this.placeholder && this.slide && this.usePlaceholder()) {
-      // use   -based placeholder only for the first slide,
-      // as rendering (even small stretched thumbnail) is an expensive operation
-      const placeholderSrc = this.instance.applyFilters(
-        'placeholderSrc',
-        (this.data.msrc && this.slide.isFirstSlide) ? this.data.msrc : false,
-        this
-      );
-      this.placeholder = new Placeholder(
-        placeholderSrc,
-        this.slide.container
-      );
+    if (this.slide && this.usePlaceholder()) {
+      if (!this.placeholder) {
+        const placeholderSrc = this.instance.applyFilters(
+          'placeholderSrc',
+          // use  image-based placeholder only for the first slide,
+          // as rendering (even small stretched thumbnail) is an expensive operation
+          (this.data.msrc && this.slide.isFirstSlide) ? this.data.msrc : false,
+          this
+        );
+        this.placeholder = new Placeholder(
+          placeholderSrc,
+          this.slide.container
+        );
+      } else {
+        const placeholderEl = this.placeholder.element;
+        // Add placeholder to DOM if it was already created
+        if (placeholderEl && !placeholderEl.parentElement) {
+          this.slide.container.prepend(placeholderEl);
+        }
+      }
     }
 
     if (this.element && !reload) {
@@ -878,6 +886,11 @@ class Content {
 
     this.remove();
 
+    if (this.placeholder) {
+      this.placeholder.destroy();
+      this.placeholder = null;
+    }
+
     if (this.isImageContent() && this.element) {
       this.element.onload = null;
       this.element.onerror = null;
@@ -999,6 +1012,10 @@ class Content {
 
     if (this.element && this.element.parentNode) {
       this.element.remove();
+    }
+
+    if (this.placeholder && this.placeholder.element) {
+      this.placeholder.element.remove();
     }
   }
 
