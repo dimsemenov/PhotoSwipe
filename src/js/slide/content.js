@@ -1,4 +1,4 @@
-import { createElement, LOAD_STATE, setWidthHeight } from '../util/util.js';
+import { createElement, isSafari, LOAD_STATE, setWidthHeight } from '../util/util.js';
 import Placeholder from './placeholder.js';
 
 /** @typedef {import('./slide.js').default} Slide */
@@ -19,6 +19,9 @@ class Content {
 
     /** @type {HTMLImageElement | HTMLDivElement} */
     this.element = undefined;
+
+    this.displayedImageWidth = 0;
+    this.displayedImageHeight = 0;
 
     this.width = Number(this.data.w) || Number(this.data.width) || 0;
     this.height = Number(this.data.h) || Number(this.data.height) || 0;
@@ -47,7 +50,7 @@ class Content {
           this.placeholder.destroy();
           this.placeholder = null;
         }
-      }, 500);
+      }, 1000);
     }
   }
 
@@ -58,18 +61,26 @@ class Content {
    * @param {boolean=} reload
    */
   load(isLazy, reload) {
-    if (!this.placeholder && this.slide && this.usePlaceholder()) {
-      // use   -based placeholder only for the first slide,
-      // as rendering (even small stretched thumbnail) is an expensive operation
-      const placeholderSrc = this.instance.applyFilters(
-        'placeholderSrc',
-        (this.data.msrc && this.slide.isFirstSlide) ? this.data.msrc : false,
-        this
-      );
-      this.placeholder = new Placeholder(
-        placeholderSrc,
-        this.slide.container
-      );
+    if (this.slide && this.usePlaceholder()) {
+      if (!this.placeholder) {
+        const placeholderSrc = this.instance.applyFilters(
+          'placeholderSrc',
+          // use  image-based placeholder only for the first slide,
+          // as rendering (even small stretched thumbnail) is an expensive operation
+          (this.data.msrc && this.slide.isFirstSlide) ? this.data.msrc : false,
+          this
+        );
+        this.placeholder = new Placeholder(
+          placeholderSrc,
+          this.slide.container
+        );
+      } else {
+        const placeholderEl = this.placeholder.element;
+        // Add placeholder to DOM if it was already created
+        if (placeholderEl && !placeholderEl.parentElement) {
+          this.slide.container.prepend(placeholderEl);
+        }
+      }
     }
 
     if (this.element && !reload) {
@@ -81,7 +92,12 @@ class Content {
     }
 
     if (this.isImageContent()) {
-      this.loadImage(isLazy);
+      this.element = createElement('pswp__img', 'img');
+      // Start loading only after width is defined, as sizes might depend on it.
+      // Due to Safari feature, we must define sizes before srcset.
+      if (this.displayedImageWidth) {
+        this.loadImage(isLazy);
+      }
     } else {
       this.element = createElement('pswp__content');
       this.element.innerHTML = this.data.html || '';
@@ -98,12 +114,13 @@ class Content {
    * @param {boolean} isLazy
    */
   loadImage(isLazy) {
-    const imageElement = createElement('pswp__img', 'img');
-    this.element = imageElement;
+    const imageElement = /** @type HTMLImageElement */ (this.element);
 
     if (this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
       return;
     }
+
+    this.updateSrcsetSizes();
 
     if (this.data.srcset) {
       imageElement.srcset = this.data.srcset;
@@ -154,9 +171,12 @@ class Content {
       if (this.slide.isActive
           && this.slide.heavyAppended
           && !this.element.parentNode) {
-        this.slide.container.innerHTML = '';
         this.append();
         this.slide.updateContentSize(true);
+      }
+
+      if (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR) {
+        this.removePlaceholder();
       }
     }
   }
@@ -219,18 +239,15 @@ class Content {
     setWidthHeight(this.element, width, height);
 
     if (this.isImageContent() && !this.isError()) {
-      const image = /** @type HTMLImageElement */ (this.element);
+      const isInitialSizeUpdate = (!this.displayedImageWidth && width);
 
-      // Handle srcset sizes attribute.
-      //
-      // Never lower quality, if it was increased previously.
-      // Chrome does this automatically, Firefox and Safari do not,
-      // so we store largest used size in dataset.
-      if (image.srcset
-          // eslint-disable-next-line max-len
-          && (!image.dataset.largestUsedSize || width > parseInt(image.dataset.largestUsedSize, 10))) {
-        image.sizes = width + 'px';
-        image.dataset.largestUsedSize = String(width);
+      this.displayedImageWidth = width;
+      this.displayedImageHeight = height;
+
+      if (isInitialSizeUpdate) {
+        this.loadImage(false);
+      } else {
+        this.updateSrcsetSizes();
       }
 
       if (this.slide) {
@@ -249,6 +266,36 @@ class Content {
       this.isImageContent() && (this.state !== LOAD_STATE.ERROR),
       this
     );
+  }
+
+  /**
+   * Update image srcset sizes attribute based on width and height
+   */
+  updateSrcsetSizes() {
+    // Handle srcset sizes attribute.
+    //
+    // Never lower quality, if it was increased previously.
+    // Chrome does this automatically, Firefox and Safari do not,
+    // so we store largest used size in dataset.
+    // Handle srcset sizes attribute.
+    //
+    // Never lower quality, if it was increased previously.
+    // Chrome does this automatically, Firefox and Safari do not,
+    // so we store largest used size in dataset.
+    if (this.data.srcset) {
+      const image = /** @type HTMLImageElement */ (this.element);
+      const sizesWidth = this.instance.applyFilters(
+        'srcsetSizesWidth',
+        this.displayedImageWidth,
+        this
+      );
+
+      if (!image.dataset.largestUsedSize
+          || sizesWidth > parseInt(image.dataset.largestUsedSize, 10)) {
+        image.sizes = sizesWidth + 'px';
+        image.dataset.largestUsedSize = String(sizesWidth);
+      }
+    }
   }
 
   /**
@@ -297,6 +344,11 @@ class Content {
 
     this.remove();
 
+    if (this.placeholder) {
+      this.placeholder.destroy();
+      this.placeholder = null;
+    }
+
     if (this.isImageContent() && this.element) {
       this.element.onload = null;
       this.element.onerror = null;
@@ -319,7 +371,7 @@ class Content {
       );
       this.element = createElement('pswp__content pswp__error-msg-container');
       this.element.appendChild(errorMsgEl);
-      this.slide.container.innerHTML = '';
+      this.slide.container.innerText = '';
       this.slide.container.appendChild(this.element);
       this.slide.updateContentSize(true);
       this.removePlaceholder();
@@ -330,6 +382,10 @@ class Content {
    * Append the content
    */
   append() {
+    if (this.isAttached) {
+      return;
+    }
+
     this.isAttached = true;
 
     if (this.state === LOAD_STATE.ERROR) {
@@ -340,6 +396,8 @@ class Content {
     if (this.instance.dispatch('contentAppend', { content: this }).defaultPrevented) {
       return;
     }
+
+    const supportsDecode = ('decode' in this.element);
 
     if (this.isImageContent()) {
       // Use decode() on nearby slides
@@ -353,32 +411,17 @@ class Content {
       // You might ask "why dont you just decode() and then append all images",
       // that's because I want to show image before it's fully loaded,
       // as browser can render parts of image while it is loading.
-      if (this.slide
-          && !this.slide.isActive
-          && ('decode' in this.element)) {
+      // We do not do this in Safari due to partial loading bug.
+      if (supportsDecode && this.slide && (!this.slide.isActive || isSafari())) {
         this.isDecoding = true;
-        // Make sure that we start decoding on the next frame
-        requestAnimationFrame(() => {
-          // element might change
-          if (this.element && this.element.tagName === 'IMG') {
-            /** @type {HTMLImageElement} */
-            (this.element).decode().then(() => {
-              this.isDecoding = false;
-              requestAnimationFrame(() => {
-                this.appendImage();
-              });
-            }).catch(() => {
-              this.isDecoding = false;
-            });
-          }
+        // purposefully using finally instead of then,
+        // as if srcset sizes changes dynamically - it may cause decode error
+        /** @type {HTMLImageElement} */
+        (this.element).decode().finally(() => {
+          this.isDecoding = false;
+          this.appendImage();
         });
       } else {
-        if (this.placeholder
-          // eslint-disable-next-line max-len
-          && (this.state === LOAD_STATE.LOADED || /** @type {LoadState} */ (this.state) === LOAD_STATE.ERROR)
-        ) {
-          this.removePlaceholder();
-        }
         this.appendImage();
       }
     } else if (this.element && !this.element.parentNode) {
@@ -397,7 +440,7 @@ class Content {
     }
 
     if (this.slide) {
-      if (this.isImageContent() && this.isDecoding) {
+      if (this.isImageContent() && this.isDecoding && !isSafari()) {
         // add image to slide when it becomes active,
         // even if it's not finished decoding
         this.appendImage();
@@ -428,6 +471,10 @@ class Content {
     if (this.element && this.element.parentNode) {
       this.element.remove();
     }
+
+    if (this.placeholder && this.placeholder.element) {
+      this.placeholder.element.remove();
+    }
   }
 
   /**
@@ -445,11 +492,10 @@ class Content {
     // ensure that element exists and is not already appended
     if (this.slide && this.element && !this.element.parentNode) {
       this.slide.container.appendChild(this.element);
+    }
 
-      if (this.placeholder
-        && (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR)) {
-        this.removePlaceholder();
-      }
+    if (this.state === LOAD_STATE.LOADED || this.state === LOAD_STATE.ERROR) {
+      this.removePlaceholder();
     }
   }
 }

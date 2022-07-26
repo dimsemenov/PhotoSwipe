@@ -366,6 +366,7 @@ export type PhotoSwipeFiltersMap = {
      * https://photoswipe.com/filters/#thumbbounds
      */
     thumbBounds: (thumbBounds: Bounds, itemData: SlideData, index: number) => Bounds;
+    srcsetSizesWidth: (srcsetSizesWidth: number, content: Content) => number;
 };
 /**
  * <T>
@@ -729,6 +730,7 @@ declare class Eventable {
          * https://photoswipe.com/filters/#thumbbounds
          */
         thumbBounds?: Filter<"thumbBounds">[];
+        srcsetSizesWidth?: Filter<"srcsetSizesWidth">[];
     };
     /** @type {PhotoSwipe=} */
     pswp: PhotoSwipe | undefined;
@@ -952,6 +954,9 @@ declare class Eventable {
  * @prop {(thumbBounds: Bounds, itemData: SlideData, index: number) => Bounds} thumbBounds
  * Modify the thubmnail bounds from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbbounds
+ *
+ * @prop {(srcsetSizesWidth: number, content: Content) => number} srcsetSizesWidth
+ *
  */
 /**
  * @template {keyof PhotoSwipeFiltersMap} T

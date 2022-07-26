@@ -19,6 +19,8 @@ declare class Content {
     index: number;
     /** @type {HTMLImageElement | HTMLDivElement} */
     element: HTMLImageElement | HTMLDivElement;
+    displayedImageWidth: number;
+    displayedImageHeight: number;
     width: number;
     height: number;
     isAttached: boolean;
@@ -76,6 +78,10 @@ declare class Content {
      * @returns {boolean} If the content can be zoomed
      */
     isZoomable(): boolean;
+    /**
+     * Update image srcset sizes attribute based on width and height
+     */
+    updateSrcsetSizes(): void;
     /**
      * @returns {boolean} If content should use a placeholder (from msrc by default)
      */

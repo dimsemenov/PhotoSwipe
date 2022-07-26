@@ -104,21 +104,19 @@ class Slide {
   append(holderElement) {
     this.holderElement = holderElement;
 
+    this.container.style.transformOrigin = '0 0';
+
     // Slide appended to DOM
     if (!this.data) {
-      this.holderElement.innerText = '';
       return;
     }
 
     this.calculateSize();
 
-    this.container.style.transformOrigin = '0 0';
-
     this.load();
-    this.appendHeavy();
     this.updateContentSize();
-
-    this.holderElement.innerText = '';
+    this.appendHeavy();
+    
     this.holderElement.appendChild(this.container);
 
     this.zoomAndPanToInitial();
@@ -190,6 +188,11 @@ class Slide {
     this.isActive = false;
     this.content.deactivate();
 
+    if (this.currZoomLevel !== this.zoomLevels.initial) {
+      // allow filtering
+      this.calculateSize();
+    }
+
     // reset zoom level
     this.currentResolution = 0;
     this.zoomAndPanToInitial();
@@ -206,6 +209,7 @@ class Slide {
   destroy() {
     this.content.hasSlide = false;
     this.content.remove();
+    this.container.remove();
     this.pswp.dispatch('slideDestroy', { slide: this });
   }
 

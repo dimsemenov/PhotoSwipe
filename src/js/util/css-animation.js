@@ -53,11 +53,19 @@ class CSSAnimation {
     //
     // ¯\_(ツ)_/¯
     /** @private */
-    this._firstFrameTimeout = setTimeout(() => {
+    this._helperTimeout = setTimeout(() => {
       setTransitionStyle(target, prop, duration, easing);
-      this._firstFrameTimeout = setTimeout(() => {
+      this._helperTimeout = setTimeout(() => {
         target.addEventListener('transitionend', this._onTransitionEnd, false);
         target.addEventListener('transitioncancel', this._onTransitionEnd, false);
+
+        // Safari occasionally does not emit transitionend event
+        // if element propery was modified during the transition,
+        // which may be caused by resize or third party component,
+        // using timeout as a safety fallback
+        this._helperTimeout = setTimeout(() => {
+          this._finalizeAnimation();
+        }, duration + 500);
         target.style[prop] = propValue;
       }, 30); // Do not reduce this number
     }, 0);
@@ -88,8 +96,8 @@ class CSSAnimation {
 
   // Destroy is called automatically onFinish
   destroy() {
-    if (this._firstFrameTimeout) {
-      clearTimeout(this._firstFrameTimeout);
+    if (this._helperTimeout) {
+      clearTimeout(this._helperTimeout);
     }
     removeTransitionStyle(this._target);
     this._target.removeEventListener('transitionend', this._onTransitionEnd, false);

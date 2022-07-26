@@ -24,7 +24,7 @@ declare class CSSAnimation {
      */
     private _onTransitionEnd;
     /** @private */
-    private _firstFrameTimeout;
+    private _helperTimeout;
     /**
      * @private
      */
