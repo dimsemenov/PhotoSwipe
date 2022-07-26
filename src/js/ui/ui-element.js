@@ -49,10 +49,6 @@ function addElementHTML(htmlData) {
     return htmlData;
   }
 
-  //if (!htmlData || !htmlData.isCustomSVG) {
-  //return '';
-  //}
-
   const svgData = htmlData;
   let out = '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 %d %d" width="%d" height="%d">';
   // replace all %d with size
@@ -141,6 +137,7 @@ class UIElement {
       }
     }
 
+    // use sanitize function if user defines it
     if (!elementHTML || (typeof elementHTML !== 'string' && !elementHTML.isCustomSVG)) {
       element.innerText = '';
     } else if (typeof pswp.options.sanitizeHTMLFn === "function") {
