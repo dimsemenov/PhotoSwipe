@@ -557,5 +557,32 @@ const lightbox = new PhotoSwipeLightbox({
 });
 lightbox.init();
 ```
+</PswpCodePreview>
+
+
+## Sanitizing
+
+To prevent Trusted Types violations, there might be a need to use a sanitizing function to defend against malicious script injection attacks. 
+In the example below, you can see a very "naive" solution of removing script tags.
+
+<PswpCodePreview galleryID="test-sanitizing">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--test-sanitizing',
+  children: 'a',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
+  sanitizeHTMLFn: function htmlIncludesScript(html) { 
+    if (html.includes("<script>")){
+      // removes both <script> and </script>
+      html.replace('script>', '');
+    } 
+      return html;
+    }
+});
+lightbox.init();
+```
+
 
 </PswpCodePreview>

@@ -37,33 +37,41 @@ import { createElement } from '../util/util.js';
 /**
  * @param {UIElementMarkup} [htmlData]
  */
- //rename create SVG
- function addElementHTML(htmlData) {
+function addElementHTML(htmlData) {
+  if (typeof htmlData === 'string') {
+    // Allow developers to provide full svg,
+    // For example:
+    // <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" class="pswp__icn">
+    //   <path d="..." />
+    //   <circle ... />
+    // </svg>
+    // Can also be any HTML string.
+    return htmlData;
+  }
+
+  //if (!htmlData || !htmlData.isCustomSVG) {
+  //return '';
+  //}
+
+  const svgData = htmlData;
+  let out = '<svg aria-hidden="true" class="pswp__icn" viewBox="0 0 %d %d" width="%d" height="%d">';
+  // replace all %d with size
+  out = out.split('%d').join(/** @type {string} */(svgData.size || 32));
+
   // Icons may contain outline/shadow,
   // to make it we "clone" base icon shape and add border to it.
   // Icon itself and border are styled via CSS.
   //
   // Property shadowID defines ID of element that should be cloned.
-  if (typeof htmlData !== 'string'){ 
-    const svgData = document.createElementNS("http://www.w3.org/2000/svg",'svg');
-    
-    svgData.setAttribute("aria-hidden","true");
-    svgData.setAttribute("class","pswp__icn");
-    var viewBoxSize = (htmlData.size || 32);
-    svgData.setAttribute("viewBox",`0 0 ${viewBoxSize} ${viewBoxSize}`);
-    svgData.setAttribute("width",`${viewBoxSize}`);
-    svgData.setAttribute("height",`${viewBoxSize}`);
-
-    if (htmlData.outlineID) {
-      var useElem = document.createElementNS("http://www.w3.org/2000/svg",'use');
-      useElem.setAttribute("class","pswp__icn-shadow");
-      useElem.setAttribute("href",`#${htmlData.outlineID}`);
-      svgData.appendChild(useElem);
-      
-    }
-    svgData.append(htmlData.inner);
-    return svgData;
+  if (svgData.outlineID) {
+    out += '<use class="pswp__icn-shadow" xlink:href="#' + svgData.outlineID + '"/>';
   }
+
+  out += svgData.inner;
+
+  out += '</svg>';
+
+  return out;
 }
 
 class UIElement {
@@ -133,17 +141,13 @@ class UIElement {
       }
     }
 
-    if (elementHTML instanceof TrustedHTML) {
-      element.innerHTML = elementHTML.toString();
-    } else if (!elementHTML || (typeof elementHTML !== 'string' && !elementHTML.isCustomSVG)) {
+    if (!elementHTML || (typeof elementHTML !== 'string' && !elementHTML.isCustomSVG)) {
       element.innerText = '';
+    } else if (typeof pswp.options.sanitizeHTMLFn === "function") {
+      element.innerHTML = pswp.options.sanitizeHTMLFn(addElementHTML(elementHTML));
     } else {
-        element.append(addElementHTML(elementHTML));
-        //document.body.append(addElementHTML(elementHTML));
-        //element.innerHTML = addElementHTML(elementHTML).toString();
+      element.innerHTML = addElementHTML(elementHTML);
     }
-
-
 
     if (data.onInit) {
       data.onInit(element, pswp);

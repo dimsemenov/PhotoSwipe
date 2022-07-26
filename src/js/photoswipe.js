@@ -213,6 +213,9 @@ import ContentLoader from './slide/loader.js';
  * @prop {string=} children
  * @prop {string=} childSelector
  * @prop {string | false} [thumbSelector]
+ * 
+ * @prop {(html: string) => string} [sanitizeHTMLFn]
+ * An user-defined sanitizing function to prevent Trusted Types violations.
  */
 
 /** @type {PhotoSwipeOptions} */
@@ -328,8 +331,8 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     // sanitize index
     if (Number.isNaN(this.currIndex)
-        || this.currIndex < 0
-        || this.currIndex >= this.getNumItems()) {
+      || this.currIndex < 0
+      || this.currIndex >= this.getNumItems()) {
       this.currIndex = 0;
     }
 
