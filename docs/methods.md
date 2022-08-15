@@ -173,8 +173,8 @@ button.pswp__button--test-button {
 
 </PswpCodePreview>
 
-Alternatively, you may omit `dataSource` option entirely and use filters to supply data and number of items, example on the [Data Sources page]/(data-sources#dynamically-generated-data).
+Alternatively, you may omit `dataSource` option entirely and use filters to supply data and number of items, example on the [Data Sources page](/data-sources#dynamically-generated-data).
 
 ## UI
 
-Refer to [Styling]/(styling) page on how to adjust the UI (add buttons, modify icons, etc).
+Refer to [Styling](/styling) page on how to adjust the UI (add buttons, modify icons, etc).
