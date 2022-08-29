@@ -8,11 +8,11 @@
   "exports": {
     ".": {
       "types": "./dist/types/photoswipe.d.ts",
-      "import": "./dist/photoswipe.esm.js"
+      "default": "./dist/photoswipe.esm.js"
     },
     "./lightbox": {
       "types": "./dist/types/lightbox/lightbox.d.ts",
-      "import": "./dist/photoswipe-lightbox.esm.js"
+      "default": "./dist/photoswipe-lightbox.esm.js"
     },
     "./dist/photoswipe.css": "./dist/photoswipe.css",
     "./photoswipe.css": "./dist/photoswipe.css",
