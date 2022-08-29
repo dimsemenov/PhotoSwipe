@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.3.1 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.3.2 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
