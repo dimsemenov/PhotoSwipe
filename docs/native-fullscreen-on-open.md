@@ -4,6 +4,8 @@ title: Trigger native fullscreen when lightbox opens
 sidebar_label: Native fullscreen on open
 ---
 
+There is [an unoficial fullscreen plugin by @arnowelzel](https://github.com/arnowelzel/photoswipe-fullscreen) that might be useful.
+
 You may use asynchronous initialization to open gallery in fullscreen mode right away. Fullscreen API is [supported in all major browsers](https://caniuse.com/#feat=fullscreen), except mobile Safari. Fullscreen in mobile Chrome on Android works exceptionally well in landscape orientation as it removes toolbars.
 
 To implement it, create a promise that is resolved after fullscreen mode is entered and pass it to lightbox as an `openPromise` option.
