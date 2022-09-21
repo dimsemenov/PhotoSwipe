@@ -99,6 +99,10 @@ const sidebars = {
           type: 'doc',
           id: 'vue-image-gallery',
         },
+        {
+          type: 'doc',
+          id: 'svelte-image-gallery',
+        },
       ],
     },
   ]
