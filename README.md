@@ -25,3 +25,7 @@ To run the demo website and automatically rebuild files during development, run 
 ### Older versions
 
 Documentation for the old version (v4) can be found [here](https://photoswipe.com/v4-docs/getting-started.html) and [the code for 4.1.3 is here](https://github.com/dimsemenov/PhotoSwipe/tree/v4.1.3).
+
+---
+
+This project is tested with [BrowserStack](https://www.browserstack.com/).
