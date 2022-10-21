@@ -158,7 +158,7 @@ function removeTransitionStyle(el) {
  */
 function decodeImage(img) {
   if ('decode' in img) {
-    return img.decode();
+    return img.decode().catch(() => {});
   }
 
   if (img.complete) {
@@ -2729,7 +2729,10 @@ class MainScroll {
     pswp.currSlide = this.itemHolders[1].slide;
     pswp.contentLoader.updateLazy(positionDifference);
 
-    pswp.currSlide.applyCurrentZoomPan();
+    if (pswp.currSlide) {
+      pswp.currSlide.applyCurrentZoomPan();
+    }
+
     pswp.dispatch('change');
   }
 
@@ -4336,7 +4339,7 @@ class Placeholder {
       this.element.setAttribute('role', 'presentation');
     }
 
-    this.element.setAttribute('aria-hiden', 'true');
+    this.element.setAttribute('aria-hidden', 'true');
   }
 
   /**
@@ -4784,7 +4787,7 @@ class Content {
         // purposefully using finally instead of then,
         // as if srcset sizes changes dynamically - it may cause decode error
         /** @type {HTMLImageElement} */
-        (this.element).decode().finally(() => {
+        (this.element).decode().catch(() => {}).finally(() => {
           this.isDecoding = false;
           this.appendImage();
         });

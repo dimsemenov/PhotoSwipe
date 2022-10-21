@@ -511,7 +511,7 @@ class Placeholder {
       this.element.setAttribute('role', 'presentation');
     }
 
-    this.element.setAttribute('aria-hiden', 'true');
+    this.element.setAttribute('aria-hidden', 'true');
   }
 
   /**
@@ -959,7 +959,7 @@ class Content {
         // purposefully using finally instead of then,
         // as if srcset sizes changes dynamically - it may cause decode error
         /** @type {HTMLImageElement} */
-        (this.element).decode().finally(() => {
+        (this.element).decode().catch(() => {}).finally(() => {
           this.isDecoding = false;
           this.appendImage();
         });
