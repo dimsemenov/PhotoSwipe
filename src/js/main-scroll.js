@@ -290,7 +290,10 @@ class MainScroll {
     pswp.currSlide = this.itemHolders[1].slide;
     pswp.contentLoader.updateLazy(positionDifference);
 
-    pswp.currSlide.applyCurrentZoomPan();
+    if (pswp.currSlide) {
+      pswp.currSlide.applyCurrentZoomPan();
+    }
+
     pswp.dispatch('change');
   }
 
