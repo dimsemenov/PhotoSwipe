@@ -70,7 +70,7 @@ document.querySelector('#btn-open-pswp-from-arr').onclick = () => {
   font-size: 40px;
   line-height: 45px;
   max-width: 400px;
-  wwidth: 100%;
+  width: 100%;
   padding: 0 20px;
   margin: 50px auto 0;
   color: #fff;
