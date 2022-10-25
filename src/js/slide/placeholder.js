@@ -24,7 +24,7 @@ class Placeholder {
       this.element.setAttribute('role', 'presentation');
     }
 
-    this.element.setAttribute('aria-hiden', 'true');
+    this.element.setAttribute('aria-hidden', 'true');
   }
 
   /**

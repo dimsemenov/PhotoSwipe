@@ -417,7 +417,7 @@ class Content {
         // purposefully using finally instead of then,
         // as if srcset sizes changes dynamically - it may cause decode error
         /** @type {HTMLImageElement} */
-        (this.element).decode().finally(() => {
+        (this.element).decode().catch(() => {}).finally(() => {
           this.isDecoding = false;
           this.appendImage();
         });

@@ -154,7 +154,7 @@ export function removeTransitionStyle(el) {
  */
 export function decodeImage(img) {
   if ('decode' in img) {
-    return img.decode();
+    return img.decode().catch(() => {});
   }
 
   if (img.complete) {
