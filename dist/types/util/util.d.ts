@@ -94,12 +94,12 @@ export function specialKeyUsed(e: MouseEvent | KeyboardEvent): boolean;
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {HTMLElement | NodeListOf<HTMLElement> | string} option
+ * @param {import('../photoswipe.js').ElementProvider} option
  * @param {string=} legacySelector
  * @param {HTMLElement | Document} [parent]
  * @returns HTMLElement[]
  */
-export function getElementsFromOption(option: HTMLElement | NodeListOf<HTMLElement> | string, legacySelector?: string | undefined, parent?: HTMLElement | Document): HTMLElement[];
+export function getElementsFromOption(option: import('../photoswipe.js').ElementProvider, legacySelector?: string | undefined, parent?: HTMLElement | Document): HTMLElement[];
 /**
  * Check if variable is PhotoSwipe class
  *

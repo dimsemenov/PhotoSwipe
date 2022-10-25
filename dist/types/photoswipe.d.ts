@@ -44,6 +44,7 @@ export type PhotoSwipeModule = Type<PhotoSwipe> | {
     default: Type<PhotoSwipe>;
 };
 export type PhotoSwipeModuleOption = PhotoSwipeModule | Promise<PhotoSwipeModule> | (() => Promise<PhotoSwipeModule>);
+export type ElementProvider = string | NodeListOf<HTMLElement> | HTMLElement[] | HTMLElement;
 /**
  * https://photoswipe.com/options/
  */
@@ -231,9 +232,9 @@ export type PhotoSwipeOptions = {
     pswpModule?: PhotoSwipeModuleOption;
     openPromise?: () => Promise<any>;
     preloadFirstSlide?: boolean | undefined;
-    gallery?: string | undefined;
+    gallery?: ElementProvider | undefined;
     gallerySelector?: string | undefined;
-    children?: string | undefined;
+    children?: ElementProvider | undefined;
     childSelector?: string | undefined;
     thumbSelector?: string | false;
 };

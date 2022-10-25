@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.3.2 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.3.3 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -85,7 +85,7 @@ function specialKeyUsed(e) {
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {HTMLElement | NodeListOf<HTMLElement> | string} option
+ * @param {import('../photoswipe.js').ElementProvider} option
  * @param {string=} legacySelector
  * @param {HTMLElement | Document} [parent]
  * @returns HTMLElement[]
@@ -511,7 +511,7 @@ class Placeholder {
       this.element.setAttribute('role', 'presentation');
     }
 
-    this.element.setAttribute('aria-hiden', 'true');
+    this.element.setAttribute('aria-hidden', 'true');
   }
 
   /**
@@ -959,7 +959,7 @@ class Content {
         // purposefully using finally instead of then,
         // as if srcset sizes changes dynamically - it may cause decode error
         /** @type {HTMLImageElement} */
-        (this.element).decode().finally(() => {
+        (this.element).decode().catch(() => {}).finally(() => {
           this.isDecoding = false;
           this.appendImage();
         });

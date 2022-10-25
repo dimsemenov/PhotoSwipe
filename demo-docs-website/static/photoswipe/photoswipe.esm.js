@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.3.2 - https://photoswipe.com
+  * PhotoSwipe 5.3.3 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -158,7 +158,7 @@ function removeTransitionStyle(el) {
  */
 function decodeImage(img) {
   if ('decode' in img) {
-    return img.decode();
+    return img.decode().catch(() => {});
   }
 
   if (img.complete) {
@@ -196,7 +196,7 @@ function specialKeyUsed(e) {
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {HTMLElement | NodeListOf<HTMLElement> | string} option
+ * @param {import('../photoswipe.js').ElementProvider} option
  * @param {string=} legacySelector
  * @param {HTMLElement | Document} [parent]
  * @returns HTMLElement[]
@@ -2729,7 +2729,10 @@ class MainScroll {
     pswp.currSlide = this.itemHolders[1].slide;
     pswp.contentLoader.updateLazy(positionDifference);
 
-    pswp.currSlide.applyCurrentZoomPan();
+    if (pswp.currSlide) {
+      pswp.currSlide.applyCurrentZoomPan();
+    }
+
     pswp.dispatch('change');
   }
 
@@ -4336,7 +4339,7 @@ class Placeholder {
       this.element.setAttribute('role', 'presentation');
     }
 
-    this.element.setAttribute('aria-hiden', 'true');
+    this.element.setAttribute('aria-hidden', 'true');
   }
 
   /**
@@ -4784,7 +4787,7 @@ class Content {
         // purposefully using finally instead of then,
         // as if srcset sizes changes dynamically - it may cause decode error
         /** @type {HTMLImageElement} */
-        (this.element).decode().finally(() => {
+        (this.element).decode().catch(() => {}).finally(() => {
           this.isDecoding = false;
           this.appendImage();
         });
@@ -5655,6 +5658,10 @@ class Opener {
 /** @typedef {PhotoSwipeModule | Promise<PhotoSwipeModule> | (() => Promise<PhotoSwipeModule>)} PhotoSwipeModuleOption */
 
 /**
+ * @typedef {string | NodeListOf<HTMLElement> | HTMLElement[] | HTMLElement} ElementProvider
+ */
+
+/**
  * @typedef {Object} PhotoSwipeOptions https://photoswipe.com/options/
  *
  * @prop {DataSource=} dataSource
@@ -5811,9 +5818,9 @@ class Opener {
  * @prop {PhotoSwipeModuleOption} [pswpModule]
  * @prop {() => Promise<any>} [openPromise]
  * @prop {boolean=} preloadFirstSlide
- * @prop {string=} gallery
+ * @prop {ElementProvider=} gallery
  * @prop {string=} gallerySelector
- * @prop {string=} children
+ * @prop {ElementProvider=} children
  * @prop {string=} childSelector
  * @prop {string | false} [thumbSelector]
  */
