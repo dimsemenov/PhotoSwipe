@@ -1,4 +1,5 @@
-[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)]([https://www.comebackalive.in.ua/](https://savelife.in.ua/))
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://savelife.in.ua/en/)
+
 
 PhotoSwipe v5 — JavaScript image gallery and lightbox
 
