@@ -52,6 +52,10 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {PhotoSwipeModule | Promise<PhotoSwipeModule> | (() => Promise<PhotoSwipeModule>)} PhotoSwipeModuleOption */
 
 /**
+ * @typedef {string | NodeListOf<HTMLElement> | HTMLElement[] | HTMLElement} ElementProvider
+ */
+
+/**
  * @typedef {Object} PhotoSwipeOptions https://photoswipe.com/options/
  *
  * @prop {DataSource=} dataSource
@@ -208,9 +212,9 @@ import ContentLoader from './slide/loader.js';
  * @prop {PhotoSwipeModuleOption} [pswpModule]
  * @prop {() => Promise<any>} [openPromise]
  * @prop {boolean=} preloadFirstSlide
- * @prop {string=} gallery
+ * @prop {ElementProvider=} gallery
  * @prop {string=} gallerySelector
- * @prop {string=} children
+ * @prop {ElementProvider=} children
  * @prop {string=} childSelector
  * @prop {string | false} [thumbSelector]
  */
