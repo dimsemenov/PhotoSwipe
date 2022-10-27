@@ -67,6 +67,11 @@ class Slide {
     this.content = this.pswp.contentLoader.getContentBySlide(this);
     this.container = createElement('pswp__zoom-wrap');
 
+    // aria pattern: carousel
+    this.container.setAttribute('role', 'group');
+    this.container.setAttribute('aria-roledescription', 'slide');
+    // TODO: add aria-label="X of X"
+
     this.currZoomLevel = 1;
     /** @type {number} */
     this.width = this.content.width;
