@@ -98,6 +98,9 @@ class MainScroll {
     // previous, current, and next
     for (let i = 0; i < 3; i++) {
       const el = createElement('pswp__item', false, this.pswp.container);
+      el.setAttribute('role', 'group');
+      el.setAttribute('aria-roledescription', 'slide');
+      el.setAttribute('aria-hidden', 'true');
 
       // hide nearby item holders until initial zoom animation finishes (to avoid extra Paints)
       el.style.display = (i === 1) ? 'block' : 'none';
