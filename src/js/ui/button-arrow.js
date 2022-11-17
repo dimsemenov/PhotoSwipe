@@ -13,6 +13,8 @@
  */
 function initArrowButton(element, pswp, isNextButton) {
   element.classList.add('pswp__button--arrow');
+  // TODO: this should point to a unique id for this instance
+  element.setAttribute('aria-controls', 'pswp__items');
   pswp.on('change', () => {
     if (!pswp.options.loop) {
       if (isNextButton) {

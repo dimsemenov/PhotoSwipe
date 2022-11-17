@@ -714,8 +714,9 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.container = createElement('pswp__container', false, this.scrollWrap);
 
     // aria pattern: carousel
-    this.scrollWrap.setAttribute('role', 'carousel');
     this.scrollWrap.setAttribute('aria-roledescription', 'carousel');
+    this.container.setAttribute('aria-live', 'off');
+    this.container.setAttribute('id', 'pswp__items');
 
     this.mainScroll.appendHolders();
 
