@@ -710,8 +710,13 @@ class PhotoSwipe extends PhotoSwipeBase {
     // Background is added as a separate element,
     // as animating opacity is faster than animating rgba()
     this.bg = createElement('pswp__bg', false, this.element);
-    this.scrollWrap = createElement('pswp__scroll-wrap', false, this.element);
+    this.scrollWrap = createElement('pswp__scroll-wrap', 'section', this.element);
     this.container = createElement('pswp__container', false, this.scrollWrap);
+
+    // aria pattern: carousel
+    this.scrollWrap.setAttribute('aria-roledescription', 'carousel');
+    this.container.setAttribute('aria-live', 'off');
+    this.container.setAttribute('id', 'pswp__items');
 
     this.mainScroll.appendHolders();
 
