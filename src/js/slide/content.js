@@ -447,7 +447,10 @@ class Content {
       } else if (this.isError()) {
         this.load(false, true); // try to reload
       }
-      this.slide.holderElement.setAttribute('aria-hidden', 'false');
+
+      if (this.slide.holderElement) {
+        this.slide.holderElement.setAttribute('aria-hidden', 'false');
+      }
     }
   }
 
@@ -456,7 +459,9 @@ class Content {
    */
   deactivate() {
     this.instance.dispatch('contentDeactivate', { content: this });
-    this.slide.holderElement.setAttribute('aria-hidden', 'true');
+    if (this.slide && this.slide.holderElement) {
+      this.slide.holderElement.setAttribute('aria-hidden', 'true');
+    }
   }
 
 
