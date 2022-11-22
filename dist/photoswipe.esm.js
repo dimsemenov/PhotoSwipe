@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.3.3 - https://photoswipe.com
+  * PhotoSwipe 5.3.4 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -2537,6 +2537,9 @@ class MainScroll {
     // previous, current, and next
     for (let i = 0; i < 3; i++) {
       const el = createElement('pswp__item', false, this.pswp.container);
+      el.setAttribute('role', 'group');
+      el.setAttribute('aria-roledescription', 'slide');
+      el.setAttribute('aria-hidden', 'true');
 
       // hide nearby item holders until initial zoom animation finishes (to avoid extra Paints)
       el.style.display = (i === 1) ? 'block' : 'none';
@@ -3560,6 +3563,8 @@ class UIElement {
  */
 function initArrowButton(element, pswp, isNextButton) {
   element.classList.add('pswp__button--arrow');
+  // TODO: this should point to a unique id for this instance
+  element.setAttribute('aria-controls', 'pswp__items');
   pswp.on('change', () => {
     if (!pswp.options.loop) {
       if (isNextButton) {
@@ -4817,6 +4822,10 @@ class Content {
       } else if (this.isError()) {
         this.load(false, true); // try to reload
       }
+
+      if (this.slide.holderElement) {
+        this.slide.holderElement.setAttribute('aria-hidden', 'false');
+      }
     }
   }
 
@@ -4825,6 +4834,9 @@ class Content {
    */
   deactivate() {
     this.instance.dispatch('contentDeactivate', { content: this });
+    if (this.slide && this.slide.holderElement) {
+      this.slide.holderElement.setAttribute('aria-hidden', 'true');
+    }
   }
 
 
@@ -6316,8 +6328,13 @@ class PhotoSwipe extends PhotoSwipeBase {
     // Background is added as a separate element,
     // as animating opacity is faster than animating rgba()
     this.bg = createElement('pswp__bg', false, this.element);
-    this.scrollWrap = createElement('pswp__scroll-wrap', false, this.element);
+    this.scrollWrap = createElement('pswp__scroll-wrap', 'section', this.element);
     this.container = createElement('pswp__container', false, this.scrollWrap);
+
+    // aria pattern: carousel
+    this.scrollWrap.setAttribute('aria-roledescription', 'carousel');
+    this.container.setAttribute('aria-live', 'off');
+    this.container.setAttribute('id', 'pswp__items');
 
     this.mainScroll.appendHolders();
 

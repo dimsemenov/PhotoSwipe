@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.3.3 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.3.4 - https://photoswipe.com
   * (c) 2022 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -989,6 +989,10 @@ class Content {
       } else if (this.isError()) {
         this.load(false, true); // try to reload
       }
+
+      if (this.slide.holderElement) {
+        this.slide.holderElement.setAttribute('aria-hidden', 'false');
+      }
     }
   }
 
@@ -997,6 +1001,9 @@ class Content {
    */
   deactivate() {
     this.instance.dispatch('contentDeactivate', { content: this });
+    if (this.slide && this.slide.holderElement) {
+      this.slide.holderElement.setAttribute('aria-hidden', 'true');
+    }
   }
 
 

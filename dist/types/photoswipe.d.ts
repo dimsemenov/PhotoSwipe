@@ -406,7 +406,7 @@ declare class PhotoSwipe extends PhotoSwipeBase {
     element: HTMLDivElement;
     template: HTMLDivElement;
     bg: HTMLDivElement;
-    scrollWrap: HTMLDivElement;
+    scrollWrap: HTMLElement;
     container: HTMLDivElement;
     ui: UI;
     /**
