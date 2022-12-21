@@ -186,7 +186,7 @@
 
 /**
  * @template {keyof PhotoSwipeFiltersMap} T
- * @typedef {{ fn: PhotoSwipeFiltersMap[T], priority: number }} Filter<T>
+ * @typedef {{ fn: PhotoSwipeFiltersMap[T], priority: number }} Filter
  */
 
 /**
@@ -196,7 +196,7 @@
 
 /**
  * @template {keyof PhotoSwipeEventsMap} T
- * @typedef {(event: AugmentedEvent<T>) => void} EventCallback<T>
+ * @typedef {(event: AugmentedEvent<T>) => void} EventCallback
  */
 
 /**
@@ -211,6 +211,7 @@ class PhotoSwipeEvent {
    */
   constructor(type, details) {
     this.type = type;
+    this.defaultPrevented = false;
     if (details) {
       Object.assign(this, details);
     }
@@ -237,11 +238,11 @@ class Eventable {
      */
     this._filters = {};
 
-    /** @type {PhotoSwipe=} */
+    /** @type {PhotoSwipe | undefined} */
     this.pswp = undefined;
 
     /** @type {PhotoSwipeOptions} */
-    this.options = undefined;
+    this.options = {};
   }
 
   /**
@@ -342,10 +343,6 @@ class Eventable {
     }
 
     const event = /** @type {AugmentedEvent<T>} */ (new PhotoSwipeEvent(name, details));
-
-    if (!this._listeners) {
-      return event;
-    }
 
     if (this._listeners[name]) {
       this._listeners[name].forEach((listener) => {

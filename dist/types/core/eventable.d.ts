@@ -368,17 +368,11 @@ export type PhotoSwipeFiltersMap = {
     thumbBounds: (thumbBounds: Bounds, itemData: SlideData, index: number) => Bounds;
     srcsetSizesWidth: (srcsetSizesWidth: number, content: Content) => number;
 };
-/**
- * <T>
- */
 export type Filter<T extends keyof PhotoSwipeFiltersMap> = {
     fn: PhotoSwipeFiltersMap[T];
     priority: number;
 };
 export type AugmentedEvent<T extends keyof PhotoSwipeEventsMap> = PhotoSwipeEventsMap[T] extends undefined ? PhotoSwipeEvent<T> : PhotoSwipeEvent<T> & PhotoSwipeEventsMap[T];
-/**
- * <T>
- */
 export type EventCallback<T extends keyof PhotoSwipeEventsMap> = (event: AugmentedEvent<T>) => void;
 /**
  * PhotoSwipe base class that can listen and dispatch for events.
@@ -732,7 +726,7 @@ declare class Eventable {
         thumbBounds?: Filter<"thumbBounds">[];
         srcsetSizesWidth?: Filter<"srcsetSizesWidth">[];
     };
-    /** @type {PhotoSwipe=} */
+    /** @type {PhotoSwipe | undefined} */
     pswp: PhotoSwipe | undefined;
     /** @type {PhotoSwipeOptions} */
     options: PhotoSwipeOptions;
@@ -960,7 +954,7 @@ declare class Eventable {
  */
 /**
  * @template {keyof PhotoSwipeFiltersMap} T
- * @typedef {{ fn: PhotoSwipeFiltersMap[T], priority: number }} Filter<T>
+ * @typedef {{ fn: PhotoSwipeFiltersMap[T], priority: number }} Filter
  */
 /**
  * @template {keyof PhotoSwipeEventsMap} T
@@ -968,7 +962,7 @@ declare class Eventable {
  */
 /**
  * @template {keyof PhotoSwipeEventsMap} T
- * @typedef {(event: AugmentedEvent<T>) => void} EventCallback<T>
+ * @typedef {(event: AugmentedEvent<T>) => void} EventCallback
  */
 /**
  * Base PhotoSwipe event object
@@ -982,6 +976,6 @@ declare class PhotoSwipeEvent<T extends keyof PhotoSwipeEventsMap> {
      */
     constructor(type: T, details?: PhotoSwipeEventsMap[T]);
     type: T;
-    preventDefault(): void;
     defaultPrevented: boolean;
+    preventDefault(): void;
 }
