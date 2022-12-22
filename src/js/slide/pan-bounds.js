@@ -1,11 +1,12 @@
-import {
-  clamp
-} from '../util/util.js';
+import { clamp } from '../util/util.js';
 import { parsePaddingOption } from '../util/viewport-size.js';
 
 /** @typedef {import('./slide.js').default} Slide */
-/** @typedef {{ x?: number; y?: number }} Point */
+/** @typedef {Record<Axis, number>} Point */
 /** @typedef {'x' | 'y'} Axis */
+
+/** @type {Point} */
+const defaultPoint = { x: 0, y: 0 };
 
 /**
  * Calculates minimum, maximum and initial (center) bounds of a slide
@@ -16,17 +17,10 @@ class PanBounds {
    */
   constructor(slide) {
     this.slide = slide;
-
     this.currZoomLevel = 1;
-
-    /** @type {Point} */
-    this.center = {};
-    /** @type {Point} */
-    this.max = {};
-    /** @type {Point} */
-    this.min = {};
-
-    this.reset();
+    this.center = /** @type {Point} */ ({ ...defaultPoint });
+    this.max = /** @type {Point} */ ({ ...defaultPoint });
+    this.min = /** @type {Point} */ ({ ...defaultPoint });
   }
 
   /**
@@ -66,7 +60,7 @@ class PanBounds {
     const panAreaSize = this.slide.panAreaSize[axis];
 
     // Default position of element.
-    // By defaul it is center of viewport:
+    // By default, it is center of viewport:
     this.center[axis] = Math.round((panAreaSize - elSize) / 2) + padding;
 
     // maximum pan position
@@ -82,12 +76,9 @@ class PanBounds {
 
   // _getZeroBounds
   reset() {
-    this.center.x = 0;
-    this.center.y = 0;
-    this.max.x = 0;
-    this.max.y = 0;
-    this.min.x = 0;
-    this.min.y = 0;
+    this.center = { ...defaultPoint };
+    this.max = { ...defaultPoint };
+    this.min = { ...defaultPoint };
   }
 
   /**
@@ -95,6 +86,7 @@ class PanBounds {
    *
    * @param {Axis} axis x or y
    * @param {number} panOffset
+   * @returns {number}
    */
   correctPan(axis, panOffset) { // checkPanBounds
     return clamp(panOffset, this.max[axis], this.min[axis]);
