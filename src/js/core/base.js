@@ -1,7 +1,5 @@
 import Eventable from './eventable.js';
-import {
-  getElementsFromOption
-} from '../util/util.js';
+import { getElementsFromOption } from '../util/util.js';
 import Content from '../slide/content.js';
 import { lazyLoadData } from '../slide/loader.js';
 
@@ -49,6 +47,7 @@ class PhotoSwipeBase extends Eventable {
   /**
    * @param {SlideData} slideData
    * @param {number} index
+   * @returns {Content}
    */
   createContentFromData(slideData, index) {
     // @ts-expect-error
@@ -63,6 +62,7 @@ class PhotoSwipeBase extends Eventable {
    * `src`, `srcset`, `w`, `h`, which will be used to generate a slide with image.
    *
    * @param {number} index
+   * @returns {SlideData}
    */
   getItemData(index) {
     const { dataSource } = this.options;
@@ -104,6 +104,7 @@ class PhotoSwipeBase extends Eventable {
    * based on childSelector and gallery element.
    *
    * @param {HTMLElement} galleryElement
+   * @returns {HTMLElement[]}
    */
   _getGalleryDOMElements(galleryElement) {
     if (this.options.children || this.options.childSelector) {
@@ -121,16 +122,19 @@ class PhotoSwipeBase extends Eventable {
    * Converts DOM element to item data object.
    *
    * @param {HTMLElement} element DOM element
+   * @returns {SlideData}
    */
-  // eslint-disable-next-line class-methods-use-this
   _domElementToItemData(element) {
     /** @type {SlideData} */
     const itemData = {
       element
     };
 
-    // eslint-disable-next-line max-len
-    const linkEl = /** @type {HTMLAnchorElement} */ (element.tagName === 'A' ? element : element.querySelector('a'));
+    const linkEl = /** @type {HTMLAnchorElement} */ (
+      element.tagName === 'A'
+        ? element
+        : element.querySelector('a')
+    );
 
     if (linkEl) {
       // src comes from data-pswp-src attribute,
