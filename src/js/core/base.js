@@ -50,7 +50,6 @@ class PhotoSwipeBase extends Eventable {
    * @returns {Content}
    */
   createContentFromData(slideData, index) {
-    // @ts-expect-error
     return new Content(slideData, this, index);
   }
 
