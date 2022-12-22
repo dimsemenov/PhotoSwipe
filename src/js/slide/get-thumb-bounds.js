@@ -5,6 +5,7 @@
 
 /**
  * @param {HTMLElement} el
+ * @returns Bounds
  */
 function getBoundsByElement(el) {
   const thumbAreaRect = el.getBoundingClientRect();
@@ -19,6 +20,7 @@ function getBoundsByElement(el) {
  * @param {HTMLElement} el
  * @param {number} imageWidth
  * @param {number} imageHeight
+ * @returns Bounds
  */
 function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
   const thumbAreaRect = el.getBoundingClientRect();
@@ -80,9 +82,10 @@ export function getThumbBounds(index, itemData, instance) {
   }
 
   const { element } = itemData;
+  /** @type {Bounds | undefined} */
   let thumbBounds;
-  /** @type {HTMLElement} */
-  let thumbnail;
+  /** @type {HTMLElement | null} */
+  let thumbnail = null;
 
   if (element && instance.options.thumbSelector !== false) {
     const thumbSelector = instance.options.thumbSelector || 'img';
