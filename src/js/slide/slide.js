@@ -1,5 +1,5 @@
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
-/** @typedef {import('../photoswipe.js').Point} Point */
+/** @typedef {import('./zoom-level').PanAreaSize} PanAreaSize */
 
 /**
  * @typedef {_SlideData & Record<string, any>} SlideData
@@ -46,8 +46,8 @@ class Slide {
     this.pswp = pswp;
     this.isActive = (index === pswp.currIndex);
     this.currentResolution = 0;
-    /** @type {Point} */
-    this.panAreaSize = {};
+    /** @type {PanAreaSize | null} */
+    this.panAreaSize = null;
 
     this.isFirstSlide = (this.isActive && !pswp.opener.isOpen);
 
@@ -454,12 +454,14 @@ class Slide {
   calculateSize() {
     const { pswp } = this;
 
-    equalizePoints(
-      this.panAreaSize,
-      getPanAreaSize(pswp.options, pswp.viewportSize, this.data, this.index)
-    );
+    if (this.panAreaSize) {
+      equalizePoints(
+        this.panAreaSize,
+        getPanAreaSize(pswp.options, pswp.viewportSize, this.data, this.index)
+      );
 
-    this.zoomLevels.update(this.width, this.height, this.panAreaSize);
+      this.zoomLevels.update(this.width, this.height, this.panAreaSize);
+    }
 
     pswp.dispatch('calcSlideSize', {
       slide: this

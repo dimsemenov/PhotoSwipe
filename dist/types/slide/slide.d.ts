@@ -1,6 +1,6 @@
 export default Slide;
 export type PhotoSwipe = import('../photoswipe.js').default;
-export type Point = import('../photoswipe.js').Point;
+export type PanAreaSize = import('./zoom-level').PanAreaSize;
 export type SlideData = _SlideData & Record<string, any>;
 export type _SlideData = {
     /**
@@ -67,8 +67,8 @@ declare class Slide {
     pswp: import("../photoswipe.js").default;
     isActive: boolean;
     currentResolution: number;
-    /** @type {Point} */
-    panAreaSize: Point;
+    /** @type {PanAreaSize | null} */
+    panAreaSize: PanAreaSize | null;
     isFirstSlide: boolean;
     zoomLevels: ZoomLevel;
     pan: {
