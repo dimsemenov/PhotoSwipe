@@ -178,7 +178,7 @@ class PhotoSwipeBase extends Eventable {
    *
    * @param {SlideData} itemData Data about the slide
    * @param {number} index
-   * @returns Image that is being decoded or false.
+   * @returns {Content} Image that is being decoded or false.
    */
   lazyLoadData(itemData, index) {
     return lazyLoadData(itemData, this, index);
