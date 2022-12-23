@@ -5,9 +5,9 @@
  */
 
 /** @typedef {import('./gestures.js').default} Gestures */
+/** @typedef {import('../photoswipe.js').Point} Point */
 
 /** @typedef {'imageClick' | 'bgClick' | 'tap' | 'doubleTap'} Actions */
-/** @typedef {{ x?: number; y?: number }} Point */
 
 /**
  * Whether the tap was performed on the main slide

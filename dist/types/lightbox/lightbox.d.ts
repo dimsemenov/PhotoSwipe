@@ -6,6 +6,7 @@ export type Type<T> = import('../types.js').Type<T>;
 export type PhotoSwipe = import('../photoswipe.js').default;
 export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
 export type DataSource = import('../photoswipe.js').DataSource;
+export type Point = import('../photoswipe.js').Point;
 export type Content = import('../slide/content.js').default;
 export type PhotoSwipeEventsMap = import('../core/eventable.js').PhotoSwipeEventsMap;
 export type PhotoSwipeFiltersMap = import('../core/eventable.js').PhotoSwipeFiltersMap;
@@ -20,6 +21,7 @@ export type EventCallback<T> = import('../core/eventable.js').EventCallback<T>;
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/content.js').default} Content */
 /** @typedef {import('../core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
 /** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
@@ -67,13 +69,10 @@ declare class PhotoSwipeLightbox extends PhotoSwipeBase {
      * Load and open PhotoSwipe
      *
      * @param {number} index
-     * @param {DataSource=} dataSource
-     * @param {{ x?: number; y?: number }} [initialPoint]
+     * @param {DataSource} dataSource
+     * @param {Point | null} [initialPoint]
      */
-    loadAndOpen(index: number, dataSource?: DataSource | undefined, initialPoint?: {
-        x?: number;
-        y?: number;
-    }): boolean;
+    loadAndOpen(index: number, dataSource: DataSource, initialPoint?: Point | null): boolean;
     shouldOpen: boolean;
     /**
      * Load the main module and the slide content by index

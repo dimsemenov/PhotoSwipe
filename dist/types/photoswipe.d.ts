@@ -18,8 +18,8 @@ export type EventCallback<T> = import('./core/eventable.js').EventCallback<T>;
  */
 export type AugmentedEvent<T> = import('./core/eventable.js').AugmentedEvent<T>;
 export type Point = {
-    x?: number;
-    y?: number;
+    x: number;
+    y: number;
     id?: string | number;
 };
 export type Size = {
@@ -256,19 +256,16 @@ declare class PhotoSwipe extends PhotoSwipeBase {
         y?: number;
     };
     /**
-     * @type {{ x?: number; y?: number }}
+     * @type {Point}
      * @private
      */
     private _prevViewportSize;
     /**
      * Size of scrollable PhotoSwipe viewport
      *
-     * @type {{ x?: number; y?: number }}
+     * @type {Point}
      */
-    viewportSize: {
-        x?: number;
-        y?: number;
-    };
+    viewportSize: Point;
     /**
      * background (backdrop) opacity
      *

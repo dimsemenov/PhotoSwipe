@@ -15,6 +15,7 @@ import { lazyLoadSlide } from '../slide/loader.js';
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/content.js').default} Content */
 /** @typedef {import('../core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
 /** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
@@ -136,8 +137,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Load and open PhotoSwipe
    *
    * @param {number} index
-   * @param {DataSource=} dataSource
-   * @param {{ x?: number; y?: number }} [initialPoint]
+   * @param {DataSource} dataSource
+   * @param {Point | null} [initialPoint]
    */
   loadAndOpen(index, dataSource, initialPoint) {
     // Check if the gallery is already open

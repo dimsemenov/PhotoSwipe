@@ -65,7 +65,7 @@ class Slide {
     };
 
     this.content = this.pswp.contentLoader.getContentBySlide(this);
-    this.container = createElement('pswp__zoom-wrap');
+    this.container = createElement('pswp__zoom-wrap', 'div');
 
     this.currZoomLevel = 1;
     /** @type {number} */

@@ -37,24 +37,24 @@ class Gestures {
     // point objects are defined once and reused
     // PhotoSwipe keeps track only of two pointers, others are ignored
     /** @type {Point} */
-    this.p1 = {}; // the first pressed pointer
+    this.p1 = { x: 0, y: 0 }; // the first pressed pointer
     /** @type {Point} */
-    this.p2 = {}; // the second pressed pointer
+    this.p2 = { x: 0, y: 0 }; // the second pressed pointer
     /** @type {Point} */
-    this.prevP1 = {};
+    this.prevP1 = { x: 0, y: 0 };
     /** @type {Point} */
-    this.prevP2 = {};
+    this.prevP2 = { x: 0, y: 0 };
     /** @type {Point} */
-    this.startP1 = {};
+    this.startP1 = { x: 0, y: 0 };
     /** @type {Point} */
-    this.startP2 = {};
+    this.startP2 = { x: 0, y: 0 };
     /** @type {Point} */
-    this.velocity = {};
+    this.velocity = { x: 0, y: 0 };
 
     /** @type {Point} */
-    this._lastStartP1 = {};
+    this._lastStartP1 = { x: 0, y: 0 };
     /** @type {Point} */
-    this._intervalP1 = {};
+    this._intervalP1 = { x: 0, y: 0 };
     this._numActivePoints = 0;
     /** @type {Point[]} */
     this._ongoingPointers = [];
@@ -460,7 +460,7 @@ class Gestures {
         this._ongoingPointers.splice(pointerIndex, 1);
       } else if (pointerType === 'down' && pointerIndex === -1) {
         // add new pointer
-        this._ongoingPointers.push(this._convertEventPosToPoint(pointerEvent, {}));
+        this._ongoingPointers.push(this._convertEventPosToPoint(pointerEvent, { x: 0, y: 0 }));
       } else if (pointerIndex > -1) {
         // update existing pointer
         this._convertEventPosToPoint(pointerEvent, this._ongoingPointers[pointerIndex]);

@@ -4,11 +4,8 @@ export default TapHandler;
  */
 export type AddPostfix<T, P> = import('../types.js').AddPostfix<T, P>;
 export type Gestures = import('./gestures.js').default;
+export type Point = import('../photoswipe.js').Point;
 export type Actions = 'imageClick' | 'bgClick' | 'tap' | 'doubleTap';
-export type Point = {
-    x?: number;
-    y?: number;
-};
 /**
  * Tap, double-tap handler.
  */

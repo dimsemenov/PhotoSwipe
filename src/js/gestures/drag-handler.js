@@ -34,7 +34,7 @@ class DragHandler {
     this.gestures = gestures;
     this.pswp = gestures.pswp;
     /** @type {Point} */
-    this.startPan = {};
+    this.startPan = { x: 0, y: 0 };
   }
 
   start() {

@@ -30,12 +30,11 @@ class ZoomHandler {
     this.gestures = gestures;
     this.pswp = this.gestures.pswp;
     /** @type {Point} */
-    this._startPan = {};
-
+    this._startPan = { x: 0, y: 0 };
     /** @type {Point} */
-    this._startZoomPoint = {};
+    this._startZoomPoint = { x: 0, y: 0 };
     /** @type {Point} */
-    this._zoomPoint = {};
+    this._zoomPoint = { x: 0, y: 0 };
   }
 
   start() {
@@ -155,8 +154,8 @@ class ZoomHandler {
     const initialBgOpacity = pswp.bgOpacity;
     const restoreBgOpacity = pswp.bgOpacity < 1;
 
-    const initialPan = equalizePoints({}, currSlide.pan);
-    let destinationPan = equalizePoints({}, initialPan);
+    const initialPan = equalizePoints({ x: 0, y: 0 }, currSlide.pan);
+    let destinationPan = equalizePoints({ x: 0, y: 0 }, initialPan);
 
     if (ignoreGesture) {
       this._zoomPoint.x = 0;

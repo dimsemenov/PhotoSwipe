@@ -40,7 +40,7 @@ import ContentLoader from './slide/loader.js';
  * @typedef {import('./core/eventable.js').AugmentedEvent<T>} AugmentedEvent<T>
  */
 
-/** @typedef {{ x?: number; y?: number; id?: string | number }} Point */
+/** @typedef {{ x: number; y: number; id?: string | number }} Point */
 /** @typedef {{ x?: number; y?: number }} Size */
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
 /** @typedef {SlideData[]} DataSourceArray */
@@ -268,17 +268,17 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.offset = {};
 
     /**
-     * @type {{ x?: number; y?: number }}
+     * @type {Point}
      * @private
      */
-    this._prevViewportSize = {};
+    this._prevViewportSize = { x: 0, y: 0 };
 
     /**
      * Size of scrollable PhotoSwipe viewport
      *
-     * @type {{ x?: number; y?: number }}
+     * @type {Point}
      */
-    this.viewportSize = {};
+    this.viewportSize = { x: 0, y: 0 };
 
     /**
      * background (backdrop) opacity
@@ -700,7 +700,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   _createMainStructure() {
     // root DOM element of PhotoSwipe (.pswp)
-    this.element = createElement('pswp');
+    this.element = createElement('pswp', 'div');
     this.element.setAttribute('tabindex', '-1');
     this.element.setAttribute('role', 'dialog');
 
@@ -709,9 +709,9 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     // Background is added as a separate element,
     // as animating opacity is faster than animating rgba()
-    this.bg = createElement('pswp__bg', false, this.element);
+    this.bg = createElement('pswp__bg', 'div', this.element);
     this.scrollWrap = createElement('pswp__scroll-wrap', 'section', this.element);
-    this.container = createElement('pswp__container', false, this.scrollWrap);
+    this.container = createElement('pswp__container', 'div', this.scrollWrap);
 
     // aria pattern: carousel
     this.scrollWrap.setAttribute('aria-roledescription', 'carousel');
