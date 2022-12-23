@@ -74,7 +74,11 @@ class Gestures {
     this.tapHandler = new TapHandler(this);
 
     pswp.on('bindEvents', () => {
-      pswp.events.add(pswp.scrollWrap, 'click', e => this._onClick(e));
+      pswp.events.add(
+        pswp.scrollWrap,
+        'click',
+        /** @type EventListener */(this._onClick.bind(this))
+      );
 
       if (this._pointerEventEnabled) {
         this._bindEvents('pointer', 'down', 'up', 'cancel');
@@ -110,11 +114,19 @@ class Gestures {
 
     const cancelEvent = cancel ? pref + cancel : '';
 
-    events.add(pswp.scrollWrap, pref + down, this.onPointerDown.bind(this));
-    events.add(window, pref + 'move', this.onPointerMove.bind(this));
-    events.add(window, pref + up, this.onPointerUp.bind(this));
+    events.add(
+      pswp.scrollWrap,
+      pref + down,
+      /** @type EventListener */(this.onPointerDown.bind(this))
+    );
+    events.add(window, pref + 'move', /** @type EventListener */(this.onPointerMove.bind(this)));
+    events.add(window, pref + up, /** @type EventListener */(this.onPointerUp.bind(this)));
     if (cancelEvent) {
-      events.add(pswp.scrollWrap, cancelEvent, this.onPointerUp.bind(this));
+      events.add(
+        pswp.scrollWrap,
+        cancelEvent,
+        /** @type EventListener */(this.onPointerUp.bind(this))
+      );
     }
   }
 

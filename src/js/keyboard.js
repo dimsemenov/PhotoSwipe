@@ -27,8 +27,8 @@ class Keyboard {
         this._focusRoot();
       }
 
-      pswp.events.add(document, 'focusin', this._onFocusIn.bind(this));
-      pswp.events.add(document, 'keydown', this._onKeyDown.bind(this));
+      pswp.events.add(document, 'focusin', /** @type EventListener */(this._onFocusIn.bind(this)));
+      pswp.events.add(document, 'keydown', /** @type EventListener */(this._onKeyDown.bind(this)));
     });
 
     const lastActiveElement = /** @type {HTMLElement} */ (document.activeElement);
