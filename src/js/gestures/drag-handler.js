@@ -18,6 +18,7 @@ const MIN_NEXT_SLIDE_SPEED = 0.5;
 /**
  * @param {number} initialVelocity
  * @param {number} decelerationRate
+ * @returns {number}
  */
 function project(initialVelocity, decelerationRate) {
   return initialVelocity * decelerationRate / (1 - decelerationRate);
@@ -32,14 +33,13 @@ class DragHandler {
    */
   constructor(gestures) {
     this.gestures = gestures;
-    this.pswp = gestures.pswp;
     /** @type {Point} */
     this.startPan = { x: 0, y: 0 };
   }
 
   start() {
-    equalizePoints(this.startPan, this.pswp.currSlide.pan);
-    this.pswp.animations.stopAll();
+    equalizePoints(this.startPan, this.gestures.pswp.currSlide.pan);
+    this.gestures.pswp.animations.stopAll();
   }
 
   change() {
@@ -89,7 +89,7 @@ class DragHandler {
 
       // Go next slide.
       //
-      // - if velocity and its direction is matched
+      // - if velocity and its direction is matched,
       //   and we see at least tiny part of the next slide
       //
       // - or if we see less than 50% of the current slide
@@ -129,15 +129,14 @@ class DragHandler {
    * @param {'x' | 'y'} axis
    */
   _finishPanGestureForAxis(axis) {
-    const { pswp } = this;
+    const { pswp, velocity } = this.gestures;
     const { currSlide } = pswp;
-    const { velocity } = this.gestures;
     const { pan, bounds } = currSlide;
     const panPos = pan[axis];
     const restoreBgOpacity = (pswp.bgOpacity < 1 && axis === 'y');
 
     // 0.995 means - scroll view loses 0.5% of its velocity per millisecond
-    // Inceasing this number will reduce travel distance
+    // Increasing this number will reduce travel distance
     const decelerationRate = 0.995; // 0.99
 
     // Pan position if there is no bounds
@@ -208,6 +207,7 @@ class DragHandler {
    *
    * @private
    * @param {'x' | 'y'} axis
+   * @returns {boolean}
    */
   _panOrMoveMainScroll(axis) {
     const { p1, pswp, dragAxis, prevP1, isMultitouch } = this.gestures;
@@ -216,7 +216,7 @@ class DragHandler {
     const newMainScrollX = mainScroll.x + delta;
 
     if (!delta) {
-      return;
+      return false;
     }
 
     // Always move main scroll if image can not be panned
@@ -295,8 +295,10 @@ class DragHandler {
         this._setPanWithFriction(axis, newPan);
       }
     }
+
+    return false;
   }
-  //
+
   // If we move above - the ratio is negative
   // If we move below the ratio is positive
 
@@ -309,10 +311,11 @@ class DragHandler {
    *
    * @private
    * @param {number} panY The current pan Y position.
+   * @returns {number}
    */
   _getVerticalDragRatio(panY) {
-    return (panY - this.pswp.currSlide.bounds.center.y)
-            / (this.pswp.viewportSize.y / 3);
+    return (panY - this.gestures.pswp.currSlide.bounds.center.y)
+            / (this.gestures.pswp.viewportSize.y / 3);
   }
 
   /**
@@ -323,10 +326,10 @@ class DragHandler {
    * @private
    * @param {'x' | 'y'} axis
    * @param {number} potentialPan
-   * @param {number=} customFriction (0.1 - 1)
+   * @param {number} [customFriction] (0.1 - 1)
    */
   _setPanWithFriction(axis, potentialPan, customFriction) {
-    const { pan, bounds } = this.pswp.currSlide;
+    const { pan, bounds } = this.gestures.pswp.currSlide;
     const correctedPan = bounds.correctPan(axis, potentialPan);
     // If we are out of pan bounds
     if (correctedPan !== potentialPan || customFriction) {
