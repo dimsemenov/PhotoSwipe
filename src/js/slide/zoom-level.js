@@ -2,10 +2,10 @@ const MAX_IMAGE_WIDTH = 4000;
 
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
-/** @typedef {{ x: number; y: number }} PanAreaSize */
 
 /**
  * Calculates zoom levels for specific slide.
@@ -23,9 +23,9 @@ class ZoomLevel {
     this.options = options;
     this.itemData = itemData;
     this.index = index;
-    /** @type { PanAreaSize | null } */
+    /** @type { Point | null } */
     this.panAreaSize = null;
-    /** @type { PanAreaSize | null } */
+    /** @type { Point | null } */
     this.elementSize = null;
     this.fit = 1;
     this.fill = 1;
@@ -43,10 +43,10 @@ class ZoomLevel {
    *
    * @param {number} maxWidth
    * @param {number} maxHeight
-   * @param {PanAreaSize} panAreaSize
+   * @param {Point} panAreaSize
    */
   update(maxWidth, maxHeight, panAreaSize) {
-    /** @type {PanAreaSize} */
+    /** @type {Point} */
     const elementSize = { x: maxWidth, y: maxHeight };
     this.elementSize = elementSize;
     this.panAreaSize = panAreaSize;

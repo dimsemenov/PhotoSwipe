@@ -308,10 +308,7 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      *
      * @param {Parameters<Slide['zoomTo']>} args
      */
-    zoomTo(destZoomLevel: number, centerPoint: {
-        x?: number;
-        y?: number;
-    }, transitionDuration?: number | false, ignoreBounds?: boolean): void;
+    zoomTo(destZoomLevel: number, centerPoint?: Point, transitionDuration?: number | false, ignoreBounds?: boolean): void;
     /**
      * @see slide/slide.js toggleZoom
      */

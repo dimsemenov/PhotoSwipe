@@ -191,7 +191,7 @@ class ZoomHandler {
 
     if (!panNeedsChange && !currZoomLevelNeedsChange && !restoreBgOpacity) {
       // update resolution after gesture
-      currSlide._setResolution(destinationZoomLevel);
+      currSlide.setResolution(destinationZoomLevel);
       currSlide.applyCurrentZoomPan();
 
       // nothing to animate
@@ -237,7 +237,7 @@ class ZoomHandler {
       },
       onComplete: () => {
         // update resolution after transition ends
-        currSlide._setResolution(destinationZoomLevel);
+        currSlide.setResolution(destinationZoomLevel);
         currSlide.applyCurrentZoomPan();
       }
     });

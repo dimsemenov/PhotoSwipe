@@ -1,17 +1,14 @@
 export default ZoomLevel;
 export type PhotoSwipe = import('../photoswipe.js').default;
 export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
+export type Point = import('../photoswipe.js').Point;
 export type SlideData = import('../slide/slide.js').SlideData;
 export type ZoomLevelOption = number | "fit" | "fill" | ((zoomLevelObject: ZoomLevel) => number);
-export type PanAreaSize = {
-    x: number;
-    y: number;
-};
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/slide.js').SlideData} SlideData */
 /** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
-/** @typedef {{ x: number; y: number }} PanAreaSize */
 /**
  * Calculates zoom levels for specific slide.
  * Depends on viewport size and image size.
@@ -28,10 +25,10 @@ declare class ZoomLevel {
     options: import("../photoswipe.js").PhotoSwipeOptions;
     itemData: import("../slide/slide.js").SlideData;
     index: number;
-    /** @type { PanAreaSize | null } */
-    panAreaSize: PanAreaSize | null;
-    /** @type { PanAreaSize | null } */
-    elementSize: PanAreaSize | null;
+    /** @type { Point | null } */
+    panAreaSize: Point | null;
+    /** @type { Point | null } */
+    elementSize: Point | null;
     fit: number;
     fill: number;
     vFill: number;
@@ -46,9 +43,9 @@ declare class ZoomLevel {
      *
      * @param {number} maxWidth
      * @param {number} maxHeight
-     * @param {PanAreaSize} panAreaSize
+     * @param {Point} panAreaSize
      */
-    update(maxWidth: number, maxHeight: number, panAreaSize: PanAreaSize): void;
+    update(maxWidth: number, maxHeight: number, panAreaSize: Point): void;
     /**
      * Parses user-defined zoom option.
      *
