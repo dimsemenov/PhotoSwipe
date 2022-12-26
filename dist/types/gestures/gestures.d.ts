@@ -14,8 +14,8 @@ declare class Gestures {
      */
     constructor(pswp: PhotoSwipe);
     pswp: import("../photoswipe.js").default;
-    /** @type {'x' | 'y'} */
-    dragAxis: 'x' | 'y';
+    /** @type {'x' | 'y' | null} */
+    dragAxis: 'x' | 'y' | null;
     /** @type {Point} */
     p1: Point;
     /** @type {Point} */
@@ -30,41 +30,59 @@ declare class Gestures {
     startP2: Point;
     /** @type {Point} */
     velocity: Point;
-    /** @type {Point} */
-    _lastStartP1: Point;
-    /** @type {Point} */
-    _intervalP1: Point;
-    _numActivePoints: number;
-    /** @type {Point[]} */
-    _ongoingPointers: Point[];
-    _touchEventEnabled: boolean;
-    _pointerEventEnabled: boolean;
+    /** @type {Point}
+     * @private
+     */
+    private _lastStartP1;
+    /** @type {Point}
+     * @private
+     */
+    private _intervalP1;
+    /** @private */
+    private _numActivePoints;
+    /** @type {Point[]}
+     * @private
+     */
+    private _ongoingPointers;
+    /** @private */
+    private _touchEventEnabled;
+    /** @private */
+    private _pointerEventEnabled;
     supportsTouch: boolean;
+    /** @private */
+    private _intervalTime;
+    /** @private */
+    private _velocityCalculated;
+    isMultitouch: boolean;
+    isDragging: boolean;
+    isZooming: boolean;
+    /** @type {number | null}
+     * @private
+     */
+    private _raf;
+    /** @type {NodeJS.Timeout | null}
+     * @private
+     */
+    private _tapTimer;
     drag: DragHandler;
     zoomLevels: ZoomHandler;
     tapHandler: TapHandler;
     /**
-     *
+     * @private
      * @param {'mouse' | 'touch' | 'pointer'} pref
      * @param {'down' | 'start'} down
      * @param {'up' | 'end'} up
      * @param {'cancel'} [cancel]
      */
-    _bindEvents(pref: 'mouse' | 'touch' | 'pointer', down: 'down' | 'start', up: 'up' | 'end', cancel?: 'cancel'): void;
+    private _bindEvents;
     /**
      * @param {PointerEvent} e
      */
     onPointerDown(e: PointerEvent): void;
-    pointerDown: boolean;
-    isMultitouch: boolean;
     /**
      * @param {PointerEvent} e
      */
     onPointerMove(e: PointerEvent): void;
-    isZooming: boolean;
-    isDragging: boolean;
-    _intervalTime: number;
-    _velocityCalculated: boolean;
     /**
      * @private
      */
@@ -77,19 +95,18 @@ declare class Gestures {
      * @private
      */
     private _rafRenderLoop;
-    raf: number;
     /**
      * Update velocity at 50ms interval
      *
-     * @param {boolean=} force
+     * @private
+     * @param {boolean} [force]
      */
-    _updateVelocity(force?: boolean | undefined): void;
+    private _updateVelocity;
     /**
      * @private
      * @param {PointerEvent} e
      */
     private _finishTap;
-    _tapTimer: NodeJS.Timeout;
     /**
      * @private
      */
@@ -100,6 +117,7 @@ declare class Gestures {
      * @private
      * @param {'x' | 'y'} axis
      * @param {number} duration
+     * @returns {number}
      */
     private _getVelocity;
     /**
@@ -120,9 +138,16 @@ declare class Gestures {
      * @param {'up' | 'down' | 'move'} pointerType Normalized pointer type
      */
     private _updatePoints;
-    _updatePrevPoints(): void;
-    _updateStartPoints(): void;
-    _calculateDragDirection(): void;
+    /** update points that were used during previous rAF tick
+     * @private
+     */
+    private _updatePrevPoints;
+    /** update points at the start of gesture
+     * @private
+     */
+    private _updateStartPoints;
+    /** @private */
+    private _calculateDragDirection;
     /**
      * Converts touch, pointer or mouse event
      * to PhotoSwipe point.
@@ -130,6 +155,7 @@ declare class Gestures {
      * @private
      * @param {Touch | PointerEvent} e
      * @param {Point} p
+     * @returns {Point}
      */
     private _convertEventPosToPoint;
     /**
