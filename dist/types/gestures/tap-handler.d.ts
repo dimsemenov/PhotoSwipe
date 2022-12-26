@@ -31,9 +31,10 @@ declare class TapHandler {
      */
     doubleTap(point: Point, originalEvent: PointerEvent): void;
     /**
+     * @private
      * @param {Actions} actionName
      * @param {Point} point
      * @param {PointerEvent} originalEvent
      */
-    _doClickOrTapAction(actionName: Actions, point: Point, originalEvent: PointerEvent): void;
+    private _doClickOrTapAction;
 }

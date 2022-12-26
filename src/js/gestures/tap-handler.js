@@ -1,6 +1,5 @@
 /**
- * @template T
- * @template P
+ * @template T, P
  * @typedef {import('../types.js').AddPostfix<T, P>} AddPostfix<T, P>
  */
 
@@ -14,6 +13,7 @@
  * (rather than controls or caption).
  *
  * @param {PointerEvent} event
+ * @returns {boolean}
  */
 function didTapOnMainContent(event) {
   return !!(/** @type {HTMLElement} */ (event.target).closest('.pswp__container'));
@@ -68,6 +68,7 @@ class TapHandler {
   }
 
   /**
+   * @private
    * @param {Actions} actionName
    * @param {Point} point
    * @param {PointerEvent} originalEvent
