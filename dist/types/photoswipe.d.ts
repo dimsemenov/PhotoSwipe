@@ -22,10 +22,6 @@ export type Point = {
     y: number;
     id?: string | number;
 };
-export type Size = {
-    x?: number;
-    y?: number;
-};
 export type Padding = {
     top: number;
     bottom: number;
@@ -95,7 +91,7 @@ export type PhotoSwipeOptions = {
     /**
      * The option is checked frequently, so make sure it's performant. Overrides padding option if defined. For example:
      */
-    paddingFn?: (viewportSize: Size, itemData: SlideData, index: number) => Padding;
+    paddingFn?: (viewportSize: Point, itemData: SlideData, index: number) => Padding;
     /**
      * Transition duration in milliseconds, can be 0.
      */
@@ -156,10 +152,7 @@ export type PhotoSwipeOptions = {
     /**
      * A function that should return slide viewport width and height, in format {x: 100, y: 100}.
      */
-    getViewportSizeFn?: (options: PhotoSwipeOptions, pswp: PhotoSwipe) => {
-        x: number;
-        y: number;
-    };
+    getViewportSizeFn?: (options: PhotoSwipeOptions, pswp: PhotoSwipe) => Point;
     /**
      * Message to display when the image wasn't able to load. If you need to display HTML - use contentErrorElement filter.
      */

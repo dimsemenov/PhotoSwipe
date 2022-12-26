@@ -41,7 +41,6 @@ import ContentLoader from './slide/loader.js';
  */
 
 /** @typedef {{ x: number; y: number; id?: string | number }} Point */
-/** @typedef {{ x?: number; y?: number }} Size */
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
 /** @typedef {SlideData[]} DataSourceArray */
 /** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
@@ -92,7 +91,7 @@ import ContentLoader from './slide/loader.js';
  * @prop {Padding=} padding
  * Slide area padding (in pixels).
  *
- * @prop {(viewportSize: Size, itemData: SlideData, index: number) => Padding} [paddingFn]
+ * @prop {(viewportSize: Point, itemData: SlideData, index: number) => Padding} [paddingFn]
  * The option is checked frequently, so make sure it's performant. Overrides padding option if defined. For example:
  *
  * @prop {number | false} [hideAnimationDuration]
@@ -138,7 +137,7 @@ import ContentLoader from './slide/loader.js';
  * @prop {string=} indexIndicatorSep
  * Used for slide count indicator ("1 of 10 ").
  *
- * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipe) => { x: number; y: number }} [getViewportSizeFn]
+ * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipe) => Point} [getViewportSizeFn]
  * A function that should return slide viewport width and height, in format {x: 100, y: 100}.
  *
  * @prop {string=} errorMsg
