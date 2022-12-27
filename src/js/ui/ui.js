@@ -11,7 +11,7 @@ import { counterIndicator } from './counter-indicator.js';
 /**
  * Set special class on element when image is zoomed.
  *
- * By default it is used to adjust
+ * By default, it is used to adjust
  * zoom icon and zoom cursor via CSS.
  *
  * @param {HTMLElement} el
@@ -27,18 +27,22 @@ class UI {
    */
   constructor(pswp) {
     this.pswp = pswp;
+    this.isRegistered = false;
+    /** @type {UIElementData[]} */
+    this.uiElementsData = [];
+    /** @type {(UIElement | UIElementData)[]} */
+    this.items = [];
 
-    /** @type {() => void} */
-    this.updatePreloaderVisibility = undefined;
-
-    /** @type {number} */
+    /**
+     * @private
+     * @type {number | undefined}
+     */
     this._lastUpdatedZoomLevel = undefined;
   }
 
   init() {
     const { pswp } = this;
     this.isRegistered = false;
-    /** @type {UIElementData[]} */
     this.uiElementsData = [
       closeButton,
       arrowPrev,
@@ -56,7 +60,6 @@ class UI {
       return (a.order || 0) - (b.order || 0);
     });
 
-    /** @type {(UIElement | UIElementData)[]} */
     this.items = [];
 
     this.isRegistered = true;
@@ -87,6 +90,8 @@ class UI {
   /**
    * Fired each time zoom or pan position is changed.
    * Update classes that control visibility of zoom button and cursor icon.
+   *
+   * @private
    */
   _onZoomPanUpdate() {
     const { template, currSlide, options } = this.pswp;
