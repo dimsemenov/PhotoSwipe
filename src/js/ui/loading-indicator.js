@@ -10,10 +10,10 @@ export const loadingIndicator = {
     outlineID: 'pswp__icn-loading'
   },
   onInit: (indicatorElement, pswp) => {
-    /** @type {boolean} */
+    /** @type {boolean | undefined} */
     let isVisible;
-    /** @type {NodeJS.Timeout} */
-    let delayTimeout;
+    /** @type {NodeJS.Timeout | null} */
+    let delayTimeout = null;
 
     /**
      * @param {string} className
