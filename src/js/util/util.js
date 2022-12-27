@@ -181,7 +181,7 @@ export const LOAD_STATE = {
  * @returns {boolean}
  */
 export function specialKeyUsed(e) {
-  return e.which === 2 || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey;
+  return ('button' in e && e.button === 1) || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey;
 }
 
 /**
