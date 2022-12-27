@@ -5,23 +5,23 @@ export type PhotoSwipe = import('../photoswipe.js').default;
  */
 export type Methods<T> = import('../types.js').Methods<T>;
 export type UIElementMarkupProps = {
-    isCustomSVG?: boolean | undefined;
+    isCustomSVG?: boolean;
     inner: string;
-    outlineID?: string | undefined;
+    outlineID?: string;
     size?: number | string;
 };
 export type UIElementData = {
     name?: DefaultUIElements | string;
-    className?: string | undefined;
-    html?: UIElementMarkup | undefined;
-    isButton?: boolean | undefined;
+    className?: string;
+    html?: UIElementMarkup;
+    isButton?: boolean;
     tagName?: keyof HTMLElementTagNameMap;
-    title?: string | undefined;
-    ariaLabel?: string | undefined;
+    title?: string;
+    ariaLabel?: string;
     onInit?: (element: HTMLElement, pswp: PhotoSwipe) => void;
     onClick?: import("../types.js").Methods<import("../photoswipe.js").default> | ((e: MouseEvent, element: HTMLElement, pswp: PhotoSwipe) => void);
     appendTo?: 'bar' | 'wrapper' | 'root';
-    order?: number | undefined;
+    order?: number;
 };
 export type DefaultUIElements = 'arrowPrev' | 'arrowNext' | 'close' | 'zoom' | 'counter';
 export type UIElementMarkup = string | UIElementMarkupProps;
