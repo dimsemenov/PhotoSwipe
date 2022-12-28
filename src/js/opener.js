@@ -27,10 +27,51 @@ class Opener {
   constructor(pswp) {
     this.pswp = pswp;
     this.isClosed = true;
-    this._prepareOpen = this._prepareOpen.bind(this);
+    this.isOpen = false;
+    this.isClosing = false;
+    this.isOpening = false;
+    /**
+     * @private
+     * @type {number | false | undefined}
+     */
+    this._duration = undefined;
+    /** @private */
+    this._useAnimation = false;
+    /** @private */
+    this._croppedZoom = false;
+    /** @private */
+    this._animateRootOpacity = false;
+    /** @private */
+    this._animateBgOpacity = false;
+    /**
+     * @private
+     * @type { HTMLDivElement | HTMLImageElement | null | undefined }
+     */
+    this._placeholder = undefined;
+    /**
+     * @private
+     * @type { HTMLDivElement | undefined }
+     */
+    this._opacityElement = undefined;
+    /**
+     * @private
+     * @type { HTMLDivElement | undefined }
+     */
+    this._cropContainer1 = undefined;
+    /**
+     * @private
+     * @type { HTMLElement | undefined }
+     */
+    this._cropContainer2 = undefined;
 
-    /** @type {false | Bounds} */
-    this._thumbBounds = undefined;
+    /**
+     * @private
+     * @type {Bounds | null}
+     */
+    this._thumbBounds = null;
+
+
+    this._prepareOpen = this._prepareOpen.bind(this);
 
     // Override initial zoom and pan position
     pswp.on('firstZoomPan', this._prepareOpen);
@@ -46,7 +87,7 @@ class Opener {
       // if we close during opening animation
       // for now do nothing,
       // browsers aren't good at changing the direction of the CSS transition
-      return false;
+      return;
     }
 
     const slide = this.pswp.currSlide;
@@ -64,10 +105,9 @@ class Opener {
     setTimeout(() => {
       this._start();
     }, this._croppedZoom ? 30 : 0);
-
-    return true;
   }
 
+  /** @private */
   _prepareOpen() {
     this.pswp.off('firstZoomPan', this._prepareOpen);
     if (!this.isOpening) {
@@ -82,6 +122,7 @@ class Opener {
     }
   }
 
+  /** @private */
   _applyStartProps() {
     const { pswp } = this;
     const slide = this.pswp.currSlide;
@@ -89,11 +130,11 @@ class Opener {
 
     if (options.showHideAnimationType === 'fade') {
       options.showHideOpacity = true;
-      this._thumbBounds = false;
+      this._thumbBounds = null;
     } else if (options.showHideAnimationType === 'none') {
       options.showHideOpacity = false;
       this._duration = 0;
-      this._thumbBounds = false;
+      this._thumbBounds = null;
     } else if (this.isOpening && pswp._initialThumbBounds) {
       // Use initial bounds if defined
       this._thumbBounds = pswp._initialThumbBounds;
@@ -186,6 +227,7 @@ class Opener {
     }
   }
 
+  /** @private */
   _start() {
     if (this.isOpening
         && this._useAnimation
@@ -219,6 +261,7 @@ class Opener {
     }
   }
 
+  /** @private */
   _initiate() {
     this.pswp.element.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
 
@@ -249,6 +292,7 @@ class Opener {
     }
   }
 
+  /** @private */
   _onAnimationComplete() {
     const { pswp } = this;
     this.isOpen = this.isOpening;
@@ -277,6 +321,7 @@ class Opener {
     }
   }
 
+  /** @private */
   _animateToOpenState() {
     const { pswp } = this;
     if (this._animateZoom) {
@@ -302,6 +347,7 @@ class Opener {
     }
   }
 
+  /** @private */
   _animateToClosedState() {
     const { pswp } = this;
 
@@ -320,7 +366,8 @@ class Opener {
   }
 
   /**
-   * @param {boolean=} animate
+   * @private
+   * @param {boolean} [animate]
    */
   _setClosedStateZoomPan(animate) {
     if (!this._thumbBounds) return;
@@ -365,6 +412,7 @@ class Opener {
   }
 
   /**
+   * @private
    * @param {HTMLElement} target
    * @param {'transform' | 'opacity'} prop
    * @param {string} propValue
