@@ -2,10 +2,10 @@ export default CSSAnimation;
 export type SharedAnimationProps = import('./animations.js').SharedAnimationProps;
 export type DefaultCssAnimationProps = {
     target: HTMLElement;
-    duration?: number;
-    easing?: string;
-    transform?: string;
-    opacity?: string;
+    duration?: number | undefined;
+    easing?: string | undefined;
+    transform?: string | undefined;
+    opacity?: string | undefined;
 };
 export type CssAnimationProps = SharedAnimationProps & DefaultCssAnimationProps;
 /** @typedef {import('./animations.js').SharedAnimationProps} SharedAnimationProps */

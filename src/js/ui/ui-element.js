@@ -134,8 +134,9 @@ class UIElement {
         element.title = title;
       }
 
-      if (ariaLabel || title) {
-        element.setAttribute('aria-label', ariaLabel || title);
+      const ariaText = ariaLabel || title;
+      if (ariaText) {
+        element.setAttribute('aria-label', ariaText);
       }
     }
 
@@ -148,8 +149,9 @@ class UIElement {
     if (data.onClick) {
       element.onclick = (e) => {
         if (typeof data.onClick === 'string') {
+          // @ts-ignore
           pswp[data.onClick]();
-        } else {
+        } else if (typeof data.onClick === 'function') {
           data.onClick(e, element, pswp);
         }
       };
@@ -157,7 +159,7 @@ class UIElement {
 
     // Top bar is default position
     const appendTo = data.appendTo || 'bar';
-    /** @type {HTMLElement} root element by default */
+    /** @type {HTMLElement | undefined} root element by default */
     let container = pswp.element;
     if (appendTo === 'bar') {
       if (!pswp.topBar) {
@@ -174,7 +176,7 @@ class UIElement {
       }
     }
 
-    container.appendChild(pswp.applyFilters('uiElement', element, data));
+    container?.appendChild(pswp.applyFilters('uiElement', element, data));
   }
 }
 

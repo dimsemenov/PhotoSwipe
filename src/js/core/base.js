@@ -1,4 +1,4 @@
-import Eventable from './eventable.js';
+import Eventable, { defaultOptions } from './eventable.js';
 import { getElementsFromOption } from '../util/util.js';
 import Content from '../slide/content.js';
 import { lazyLoadData } from '../slide/loader.js';
@@ -18,11 +18,12 @@ class PhotoSwipeBase extends Eventable {
    * @returns {number}
    */
   getNumItems() {
-    let numItems;
-    const { dataSource } = this.options;
+    let numItems = 0;
+    let { dataSource } = this.options;
     if (!dataSource) {
-      numItems = 0;
-    } else if ('length' in dataSource) {
+      dataSource = [];
+    }
+    if ('length' in dataSource) {
       // may be an array or just object with length property
       numItems = dataSource.length;
     } else if ('gallery' in dataSource) {
@@ -65,11 +66,12 @@ class PhotoSwipeBase extends Eventable {
    */
   getItemData(index) {
     const { dataSource } = this.options;
-    let dataSourceItem;
+    /** @type {SlideData | HTMLElement} */
+    let dataSourceItem = {};
     if (Array.isArray(dataSource)) {
       // Datasource is an array of elements
       dataSourceItem = dataSource[index];
-    } else if (dataSource && dataSource.gallery) {
+    } else if (dataSource && 'gallery' in dataSource) {
       // dataSource has gallery property,
       // thus it was created by Lightbox, based on
       // gallery and children options
@@ -144,8 +146,8 @@ class PhotoSwipeBase extends Eventable {
         itemData.srcset = linkEl.dataset.pswpSrcset;
       }
 
-      itemData.width = parseInt(linkEl.dataset.pswpWidth, 10);
-      itemData.height = parseInt(linkEl.dataset.pswpHeight, 10);
+      itemData.width = linkEl.dataset.pswpWidth ? parseInt(linkEl.dataset.pswpWidth, 10) : 0;
+      itemData.height = linkEl.dataset.pswpHeight ? parseInt(linkEl.dataset.pswpHeight, 10) : 0;
 
       // support legacy w & h properties
       itemData.w = itemData.width;
@@ -161,7 +163,7 @@ class PhotoSwipeBase extends Eventable {
         // msrc is URL to placeholder image that's displayed before large image is loaded
         // by default it's displayed only for the first slide
         itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
-        itemData.alt = thumbnailEl.getAttribute('alt');
+        itemData.alt = thumbnailEl.getAttribute('alt') ?? '';
       }
 
       if (linkEl.dataset.pswpCropped || linkEl.dataset.cropped) {
@@ -181,6 +183,24 @@ class PhotoSwipeBase extends Eventable {
    */
   lazyLoadData(itemData, index) {
     return lazyLoadData(itemData, this, index);
+  }
+
+  /**
+   * @protected
+   * @param {Partial<PhotoSwipeOptions>} options
+   * @returns {PhotoSwipeOptions}
+   */
+  _prepareOptions(options) {
+    if (window.matchMedia('(prefers-reduced-motion), (update: slow)').matches) {
+      options.showHideAnimationType = 'none';
+      options.zoomAnimationDuration = 0;
+    }
+
+    /** @type {PhotoSwipeOptions}*/
+    return {
+      ...defaultOptions,
+      ...options
+    };
   }
 }
 

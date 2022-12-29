@@ -60,7 +60,7 @@ class Opener {
     this._cropContainer1 = undefined;
     /**
      * @private
-     * @type { HTMLElement | undefined }
+     * @type { HTMLElement | null | undefined }
      */
     this._cropContainer2 = undefined;
 
@@ -142,24 +142,24 @@ class Opener {
       this._thumbBounds = this.pswp.getThumbBounds();
     }
 
-    this._placeholder = slide.getPlaceholderElement();
+    this._placeholder = slide?.getPlaceholderElement();
 
     pswp.animations.stopAll();
 
     // Discard animations when duration is less than 50ms
-    this._useAnimation = (this._duration > 50);
+    this._useAnimation = Boolean(this._duration && this._duration > 50);
     this._animateZoom = Boolean(this._thumbBounds)
-                        && (slide.content && slide.content.usePlaceholder())
+                        && slide?.content.usePlaceholder()
                         && (!this.isClosing || !pswp.mainScroll.isShifted());
     if (!this._animateZoom) {
       this._animateRootOpacity = true;
 
-      if (this.isOpening) {
+      if (this.isOpening && slide) {
         slide.zoomAndPanToInitial();
         slide.applyCurrentZoomPan();
       }
     } else {
-      this._animateRootOpacity = options.showHideOpacity;
+      this._animateRootOpacity = options.showHideOpacity ?? false;
     }
     this._animateBgOpacity = !this._animateRootOpacity && this.pswp.options.bgOpacity > MIN_OPACITY;
     this._opacityElement = this._animateRootOpacity ? pswp.element : pswp.bg;
@@ -170,7 +170,9 @@ class Opener {
       this._animateBgOpacity = false;
       this._animateRootOpacity = true;
       if (this.isOpening) {
-        pswp.element.style.opacity = String(MIN_OPACITY);
+        if (pswp.element) {
+          pswp.element.style.opacity = String(MIN_OPACITY);
+        }
         pswp.applyBgOpacity(1);
       }
       return;
@@ -180,10 +182,12 @@ class Opener {
       // Properties are used when animation from cropped thumbnail
       this._croppedZoom = true;
       this._cropContainer1 = this.pswp.container;
-      this._cropContainer2 = this.pswp.currSlide.holderElement;
+      this._cropContainer2 = this.pswp.currSlide?.holderElement;
 
-      pswp.container.style.overflow = 'hidden';
-      pswp.container.style.width = pswp.viewportSize.x + 'px';
+      if (pswp.container) {
+        pswp.container.style.overflow = 'hidden';
+        pswp.container.style.width = pswp.viewportSize.x + 'px';
+      }
     } else {
       this._croppedZoom = false;
     }
@@ -191,13 +195,17 @@ class Opener {
     if (this.isOpening) {
       // Apply styles before opening transition
       if (this._animateRootOpacity) {
-        pswp.element.style.opacity = String(MIN_OPACITY);
+        if (pswp.element) {
+          pswp.element.style.opacity = String(MIN_OPACITY);
+        }
         pswp.applyBgOpacity(1);
       } else {
-        if (this._animateBgOpacity) {
+        if (this._animateBgOpacity && pswp.bg) {
           pswp.bg.style.opacity = String(MIN_OPACITY);
         }
-        pswp.element.style.opacity = '1';
+        if (pswp.element) {
+          pswp.element.style.opacity = '1';
+        }
       }
 
       if (this._animateZoom) {
@@ -214,8 +222,12 @@ class Opener {
     } else if (this.isClosing) {
       // hide nearby slides to make sure that
       // they are not painted during the transition
-      pswp.mainScroll.itemHolders[0].el.style.display = 'none';
-      pswp.mainScroll.itemHolders[2].el.style.display = 'none';
+      if (pswp.mainScroll.itemHolders[0]) {
+        pswp.mainScroll.itemHolders[0].el.style.display = 'none';
+      }
+      if (pswp.mainScroll.itemHolders[2]) {
+        pswp.mainScroll.itemHolders[2].el.style.display = 'none';
+      }
 
       if (this._croppedZoom) {
         if (pswp.mainScroll.x !== 0) {
@@ -245,13 +257,13 @@ class Opener {
         decodeImage(/** @type {HTMLImageElement} */ (this._placeholder)).finally(() => {
           decoded = true;
           if (!isDelaying) {
-            resolve();
+            resolve(true);
           }
         });
         setTimeout(() => {
           isDelaying = false;
           if (decoded) {
-            resolve();
+            resolve(true);
           }
         }, 50);
         setTimeout(resolve, 250);
@@ -263,7 +275,7 @@ class Opener {
 
   /** @private */
   _initiate() {
-    this.pswp.element.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
+    this.pswp.element?.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
 
     this.pswp.dispatch(
       this.isOpening ? 'openingAnimationStart' : 'closingAnimationStart'
@@ -275,7 +287,7 @@ class Opener {
       ('initialZoom' + (this.isOpening ? 'In' : 'Out'))
     );
 
-    this.pswp.element.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
+    this.pswp.element?.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
     if (this.isOpening) {
       if (this._placeholder) {
@@ -313,11 +325,11 @@ class Opener {
     if (this.isClosed) {
       pswp.destroy();
     } else if (this.isOpen) {
-      if (this._animateZoom) {
+      if (this._animateZoom && pswp.container) {
         pswp.container.style.overflow = 'visible';
         pswp.container.style.width = '100%';
       }
-      pswp.currSlide.applyCurrentZoomPan();
+      pswp.currSlide?.applyCurrentZoomPan();
     }
   }
 
@@ -325,24 +337,26 @@ class Opener {
   _animateToOpenState() {
     const { pswp } = this;
     if (this._animateZoom) {
-      if (this._croppedZoom) {
+      if (this._croppedZoom && this._cropContainer1 && this._cropContainer2) {
         this._animateTo(this._cropContainer1, 'transform', 'translate3d(0,0,0)');
         this._animateTo(this._cropContainer2, 'transform', 'none');
       }
 
-      pswp.currSlide.zoomAndPanToInitial();
-      this._animateTo(
-        pswp.currSlide.container,
-        'transform',
-        pswp.currSlide.getCurrentTransform()
-      );
+      if (pswp.currSlide) {
+        pswp.currSlide.zoomAndPanToInitial();
+        this._animateTo(
+          pswp.currSlide.container,
+          'transform',
+          pswp.currSlide.getCurrentTransform()
+        );
+      }
     }
 
-    if (this._animateBgOpacity) {
+    if (this._animateBgOpacity && pswp.bg) {
       this._animateTo(pswp.bg, 'opacity', String(pswp.options.bgOpacity));
     }
 
-    if (this._animateRootOpacity) {
+    if (this._animateRootOpacity && pswp.element) {
       this._animateTo(pswp.element, 'opacity', '1');
     }
   }
@@ -355,12 +369,12 @@ class Opener {
       this._setClosedStateZoomPan(true);
     }
 
-    if (this._animateBgOpacity
-        && pswp.bgOpacity > 0.01) { // do not animate opacity if it's already at 0
+    // do not animate opacity if it's already at 0
+    if (this._animateBgOpacity && pswp.bgOpacity > 0.01 && pswp.bg) {
       this._animateTo(pswp.bg, 'opacity', '0');
     }
 
-    if (this._animateRootOpacity) {
+    if (this._animateRootOpacity && pswp.element) {
       this._animateTo(pswp.element, 'opacity', '0');
     }
   }
@@ -376,7 +390,7 @@ class Opener {
     const { innerRect } = this._thumbBounds;
     const { currSlide, viewportSize } = pswp;
 
-    if (this._croppedZoom) {
+    if (this._croppedZoom && innerRect && this._cropContainer1 && this._cropContainer2) {
       const containerOnePanX = -viewportSize.x + (this._thumbBounds.x - innerRect.x) + innerRect.w;
       const containerOnePanY = -viewportSize.y + (this._thumbBounds.y - innerRect.y) + innerRect.h;
       const containerTwoPanX = viewportSize.x - innerRect.w;
@@ -401,13 +415,14 @@ class Opener {
       }
     }
 
-    equalizePoints(currSlide.pan, innerRect || this._thumbBounds);
-    currSlide.currZoomLevel = this._thumbBounds.w / currSlide.width;
-
-    if (animate) {
-      this._animateTo(currSlide.container, 'transform', currSlide.getCurrentTransform());
-    } else {
-      currSlide.applyCurrentZoomPan();
+    if (currSlide) {
+      currSlide.pan = equalizePoints(currSlide.pan, innerRect || this._thumbBounds);
+      currSlide.currZoomLevel = this._thumbBounds.w / currSlide.width;
+      if (animate) {
+        this._animateTo(currSlide.container, 'transform', currSlide.getCurrentTransform());
+      } else {
+        currSlide.applyCurrentZoomPan();
+      }
     }
   }
 

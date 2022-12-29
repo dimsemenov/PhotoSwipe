@@ -2,6 +2,7 @@
 let supportsPassive = false;
 /* eslint-disable */
 try {
+  /* @ts-ignore */
   window.addEventListener('test', null, Object.defineProperty({}, 'passive', {
     get: () => {
       supportsPassive = true;
@@ -15,7 +16,7 @@ try {
  * @prop {HTMLElement | Window | Document | undefined | null} target
  * @prop {string} type
  * @prop {EventListenerOrEventListenerObject} listener
- * @prop {boolean} passive
+ * @prop {boolean} [passive]
  */
 
 class DOMEvents {

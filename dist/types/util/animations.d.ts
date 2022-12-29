@@ -2,11 +2,11 @@ export default Animations;
 export type CssAnimationProps = import('./css-animation.js').CssAnimationProps;
 export type SpringAnimationProps = import('./spring-animation.js').SpringAnimationProps;
 export type SharedAnimationProps = {
-    name?: string;
-    isPan?: boolean;
-    isMainScroll?: boolean;
-    onComplete?: VoidFunction;
-    onFinish?: VoidFunction;
+    name?: string | undefined;
+    isPan?: boolean | undefined;
+    isMainScroll?: boolean | undefined;
+    onComplete?: VoidFunction | undefined;
+    onFinish?: VoidFunction | undefined;
 };
 export type Animation = SpringAnimation | CSSAnimation;
 export type AnimationProps = SpringAnimationProps | CssAnimationProps;

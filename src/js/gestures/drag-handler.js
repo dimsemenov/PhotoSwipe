@@ -38,7 +38,9 @@ class DragHandler {
   }
 
   start() {
-    equalizePoints(this.startPan, this.gestures.pswp.currSlide.pan);
+    if (this.gestures.pswp.currSlide) {
+      this.startPan = equalizePoints(this.startPan, this.gestures.pswp.currSlide.pan);
+    }
     this.gestures.pswp.animations.stopAll();
   }
 
@@ -48,7 +50,7 @@ class DragHandler {
 
     if (dragAxis === 'y'
         && pswp.options.closeOnVerticalDrag
-        && currSlide.currZoomLevel <= currSlide.zoomLevels.fit
+        && (currSlide && currSlide.currZoomLevel <= currSlide.zoomLevels.fit)
         && !this.gestures.isMultitouch) {
       // Handle vertical drag to close
       const panY = currSlide.pan.y + (p1.y - prevP1.y);
@@ -63,15 +65,17 @@ class DragHandler {
       if (!mainScrollChanged) {
         this._panOrMoveMainScroll('y');
 
-        roundPoint(currSlide.pan);
-        currSlide.applyCurrentZoomPan();
+        if (currSlide) {
+          currSlide.pan = roundPoint(currSlide.pan);
+          currSlide.applyCurrentZoomPan();
+        }
       }
     }
   }
 
   end() {
     const { pswp, velocity } = this.gestures;
-    const { mainScroll } = pswp;
+    const { mainScroll, currSlide } = pswp;
     let indexDiff = 0;
 
     pswp.animations.stopAll();
@@ -111,7 +115,7 @@ class DragHandler {
     }
 
     // Restore zoom level
-    if (pswp.currSlide.currZoomLevel > pswp.currSlide.zoomLevels.max
+    if ((currSlide && currSlide.currZoomLevel > currSlide.zoomLevels.max)
         || this.gestures.isMultitouch) {
       this.gestures.zoomLevels.correctZoomPan(true);
     } else {
@@ -131,6 +135,11 @@ class DragHandler {
   _finishPanGestureForAxis(axis) {
     const { pswp, velocity } = this.gestures;
     const { currSlide } = pswp;
+
+    if (!currSlide) {
+      return;
+    }
+
     const { pan, bounds } = currSlide;
     const panPos = pan[axis];
     const restoreBgOpacity = (pswp.bgOpacity < 1 && axis === 'y');
@@ -215,7 +224,7 @@ class DragHandler {
     const delta = (p1[axis] - prevP1[axis]);
     const newMainScrollX = mainScroll.x + delta;
 
-    if (!delta) {
+    if (!delta || !currSlide) {
       return false;
     }
 
@@ -314,7 +323,7 @@ class DragHandler {
    * @returns {number}
    */
   _getVerticalDragRatio(panY) {
-    return (panY - this.gestures.pswp.currSlide.bounds.center.y)
+    return (panY - (this.gestures.pswp.currSlide?.bounds.center.y ?? 0))
             / (this.gestures.pswp.viewportSize.y / 3);
   }
 
@@ -329,7 +338,13 @@ class DragHandler {
    * @param {number} [customFriction] (0.1 - 1)
    */
   _setPanWithFriction(axis, potentialPan, customFriction) {
-    const { pan, bounds } = this.gestures.pswp.currSlide;
+    const { currSlide } = this.gestures.pswp;
+
+    if (!currSlide) {
+      return;
+    }
+
+    const { pan, bounds } = currSlide;
     const correctedPan = bounds.correctPan(axis, potentialPan);
     // If we are out of pan bounds
     if (correctedPan !== potentialPan || customFriction) {

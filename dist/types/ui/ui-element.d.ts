@@ -5,23 +5,23 @@ export type PhotoSwipe = import('../photoswipe.js').default;
  */
 export type Methods<T> = import('../types.js').Methods<T>;
 export type UIElementMarkupProps = {
-    isCustomSVG?: boolean;
+    isCustomSVG?: boolean | undefined;
     inner: string;
-    outlineID?: string;
-    size?: number | string;
+    outlineID?: string | undefined;
+    size?: string | number | undefined;
 };
 export type UIElementData = {
-    name?: DefaultUIElements | string;
-    className?: string;
-    html?: UIElementMarkup;
-    isButton?: boolean;
-    tagName?: keyof HTMLElementTagNameMap;
-    title?: string;
-    ariaLabel?: string;
-    onInit?: (element: HTMLElement, pswp: PhotoSwipe) => void;
-    onClick?: import("../types.js").Methods<import("../photoswipe.js").default> | ((e: MouseEvent, element: HTMLElement, pswp: PhotoSwipe) => void);
-    appendTo?: 'bar' | 'wrapper' | 'root';
-    order?: number;
+    name?: string | undefined;
+    className?: string | undefined;
+    html?: UIElementMarkup | undefined;
+    isButton?: boolean | undefined;
+    tagName?: keyof HTMLElementTagNameMap | undefined;
+    title?: string | undefined;
+    ariaLabel?: string | undefined;
+    onInit?: ((element: HTMLElement, pswp: PhotoSwipe) => void) | undefined;
+    onClick?: import("../types.js").Methods<import("../photoswipe.js").default> | ((e: MouseEvent, element: HTMLElement, pswp: PhotoSwipe) => void) | undefined;
+    appendTo?: "bar" | "wrapper" | "root" | undefined;
+    order?: number | undefined;
 };
 export type DefaultUIElements = 'arrowPrev' | 'arrowNext' | 'close' | 'zoom' | 'counter';
 export type UIElementMarkup = string | UIElementMarkupProps;

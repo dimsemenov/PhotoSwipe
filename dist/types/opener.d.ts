@@ -47,7 +47,7 @@ declare class Opener {
     private _cropContainer1;
     /**
      * @private
-     * @type { HTMLElement | undefined }
+     * @type { HTMLElement | null | undefined }
      */
     private _cropContainer2;
     /**
@@ -61,7 +61,7 @@ declare class Opener {
     close(): void;
     /** @private */
     private _applyStartProps;
-    _animateZoom: boolean;
+    _animateZoom: boolean | undefined;
     /** @private */
     private _start;
     /** @private */

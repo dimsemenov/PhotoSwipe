@@ -57,7 +57,7 @@ import ContentLoader from './slide/loader.js';
 /**
  * @typedef {Object} PhotoSwipeOptions https://photoswipe.com/options/
  *
- * @prop {DataSource=} dataSource
+ * @prop {DataSource} [dataSource]
  * Pass an array of any items via dataSource option. Its length will determine amount of slides
  * (which may be modified further from numItems event).
  *
@@ -66,109 +66,109 @@ import ContentLoader from './slide/loader.js';
  *
  * If these properties are not present in your initial array, you may "pre-parse" each item from itemData filter.
  *
- * @prop {number=} bgOpacity
+ * @prop {number} bgOpacity
  * Background backdrop opacity, always define it via this option and not via CSS rgba color.
  *
- * @prop {number=} spacing
+ * @prop {number} spacing
  * Spacing between slides. Defined as ratio relative to the viewport width (0.1 = 10% of viewport).
  *
- * @prop {boolean=} allowPanToNext
+ * @prop {boolean} allowPanToNext
  * Allow swipe navigation to the next slide when the current slide is zoomed. Does not apply to mouse events.
  *
- * @prop {boolean=} loop
+ * @prop {boolean} loop
  * If set to true you'll be able to swipe from the last to the first image.
  * Option is always false when there are less than 3 slides.
  *
- * @prop {boolean=} wheelToZoom
+ * @prop {boolean} [wheelToZoom]
  * By default PhotoSwipe zooms image with ctrl-wheel, if you enable this option - image will zoom just via wheel.
  *
- * @prop {boolean=} pinchToClose
+ * @prop {boolean} pinchToClose
  * Pinch touch gesture to close the gallery.
  *
- * @prop {boolean=} closeOnVerticalDrag
+ * @prop {boolean} closeOnVerticalDrag
  * Vertical drag gesture to close the PhotoSwipe.
  *
- * @prop {Padding=} padding
+ * @prop {Padding} [padding]
  * Slide area padding (in pixels).
  *
  * @prop {(viewportSize: Point, itemData: SlideData, index: number) => Padding} [paddingFn]
  * The option is checked frequently, so make sure it's performant. Overrides padding option if defined. For example:
  *
- * @prop {number | false} [hideAnimationDuration]
+ * @prop {number | false} hideAnimationDuration
  * Transition duration in milliseconds, can be 0.
  *
- * @prop {number | false} [showAnimationDuration]
+ * @prop {number | false} showAnimationDuration
  * Transition duration in milliseconds, can be 0.
  *
- * @prop {number | false} [zoomAnimationDuration]
+ * @prop {number | false} zoomAnimationDuration
  * Transition duration in milliseconds, can be 0.
  *
- * @prop {string=} easing
+ * @prop {string} easing
  * String, 'cubic-bezier(.4,0,.22,1)'. CSS easing function for open/close/zoom transitions.
  *
- * @prop {boolean=} escKey
+ * @prop {boolean} escKey
  * Esc key to close.
  *
- * @prop {boolean=} arrowKeys
+ * @prop {boolean} arrowKeys
  * Left/right arrow keys for navigation.
  *
- * @prop {boolean=} returnFocus
+ * @prop {boolean} returnFocus
  * Restore focus the last active element after PhotoSwipe is closed.
  *
- * @prop {boolean=} clickToCloseNonZoomable
+ * @prop {boolean} clickToCloseNonZoomable
  * If image is not zoomable (for example, smaller than viewport) it can be closed by clicking on it.
  *
- * @prop {ActionType | ActionFn | false} [imageClickAction]
+ * @prop {ActionType | ActionFn | false} imageClickAction
  * Refer to click and tap actions page.
  *
- * @prop {ActionType | ActionFn | false} [bgClickAction]
+ * @prop {ActionType | ActionFn | false} bgClickAction
  * Refer to click and tap actions page.
  *
- * @prop {ActionType | ActionFn | false} [tapAction]
+ * @prop {ActionType | ActionFn | false} tapAction
  * Refer to click and tap actions page.
  *
- * @prop {ActionType | ActionFn | false} [doubleTapAction]
+ * @prop {ActionType | ActionFn | false} doubleTapAction
  * Refer to click and tap actions page.
  *
- * @prop {number=} preloaderDelay
+ * @prop {number} preloaderDelay
  * Delay before the loading indicator will be displayed,
  * if image is loaded during it - the indicator will not be displayed at all. Can be zero.
  *
- * @prop {string=} indexIndicatorSep
+ * @prop {string} indexIndicatorSep
  * Used for slide count indicator ("1 of 10 ").
  *
  * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipe) => Point} [getViewportSizeFn]
  * A function that should return slide viewport width and height, in format {x: 100, y: 100}.
  *
- * @prop {string=} errorMsg
+ * @prop {string} errorMsg
  * Message to display when the image wasn't able to load. If you need to display HTML - use contentErrorElement filter.
  *
- * @prop {[number, number]=} preload
+ * @prop {[number, number]} preload
  * Lazy loading of nearby slides based on direction of movement. Should be an array with two integers,
  * first one - number of items to preload before the current image, second one - after the current image.
  * Two nearby images are always loaded.
  *
- * @prop {string=} mainClass
+ * @prop {string} [mainClass]
  * Class that will be added to the root element of PhotoSwipe, may contain multiple separated by space.
  * Example on Styling page.
  *
- * @prop {HTMLElement=} appendToEl
+ * @prop {HTMLElement} [appendToEl]
  * Element to which PhotoSwipe dialog will be appended when it opens.
  *
- * @prop {number=} maxWidthToAnimate
+ * @prop {number} maxWidthToAnimate
  * Maximum width of image to animate, if initial rendered image width
  * is larger than this value - the opening/closing transition will be automatically disabled.
  *
- * @prop {string=} closeTitle
+ * @prop {string} [closeTitle]
  * Translating
  *
- * @prop {string=} zoomTitle
+ * @prop {string} [zoomTitle]
  * Translating
  *
- * @prop {string=} arrowPrevTitle
+ * @prop {string} [arrowPrevTitle]
  * Translating
  *
- * @prop {string=} arrowNextTitle
+ * @prop {string} [arrowNextTitle]
  * Translating
  *
  * @prop {'zoom' | 'fade' | 'none'} [showHideAnimationType]
@@ -177,94 +177,65 @@ import ContentLoader from './slide/loader.js';
  *
  * Animations are automatically disabled if user `(prefers-reduced-motion: reduce)`.
  *
- * @prop {number=} index
+ * @prop {number} index
  * Defines start slide index.
  *
  * @prop {(e: MouseEvent) => number} [getClickedIndexFn]
  *
- * @prop {boolean=} arrowPrev
- * @prop {boolean=} arrowNext
- * @prop {boolean=} zoom
- * @prop {boolean=} close
- * @prop {boolean=} counter
+ * @prop {boolean} [arrowPrev]
+ * @prop {boolean} [arrowNext]
+ * @prop {boolean} [zoom]
+ * @prop {boolean} [close]
+ * @prop {boolean} [counter]
  *
- * @prop {string=} arrowPrevSVG
- * @prop {string=} arrowNextSVG
- * @prop {string=} zoomSVG
- * @prop {string=} closeSVG
- * @prop {string=} counterSVG
+ * @prop {string} [arrowPrevSVG]
+ * @prop {string} [arrowNextSVG]
+ * @prop {string} [zoomSVG]
+ * @prop {string} [closeSVG]
+ * @prop {string} [counterSVG]
  *
- * @prop {string=} arrowPrevTitle
- * @prop {string=} arrowNextTitle
- * @prop {string=} zoomTitle
- * @prop {string=} closeTitle
- * @prop {string=} counterTitle
+ * @prop {string} [arrowPrevTitle]
+ * @prop {string} [arrowNextTitle]
+ * @prop {string} [zoomTitle]
+ * @prop {string} [closeTitle]
+ * @prop {string} [counterTitle]
  *
- * @prop {ZoomLevelOption=} initialZoomLevel
- * @prop {ZoomLevelOption=} secondaryZoomLevel
- * @prop {ZoomLevelOption=} maxZoomLevel
+ * @prop {ZoomLevelOption} [initialZoomLevel]
+ * @prop {ZoomLevelOption} [secondaryZoomLevel]
+ * @prop {ZoomLevelOption} [maxZoomLevel]
  *
- * @prop {boolean=} mouseMovePan
+ * @prop {boolean} [mouseMovePan]
  * @prop {Point | null} [initialPointerPos]
- * @prop {boolean=} showHideOpacity
+ * @prop {boolean} [showHideOpacity]
  *
  * @prop {PhotoSwipeModuleOption} [pswpModule]
  * @prop {() => Promise<any>} [openPromise]
- * @prop {boolean=} preloadFirstSlide
- * @prop {ElementProvider=} gallery
- * @prop {string=} gallerySelector
- * @prop {ElementProvider=} children
- * @prop {string=} childSelector
+ * @prop {boolean} [preloadFirstSlide]
+ * @prop {ElementProvider} [gallery]
+ * @prop {string} [gallerySelector]
+ * @prop {ElementProvider} [children]
+ * @prop {string} [childSelector]
  * @prop {string | false} [thumbSelector]
  */
-
-/** @type {PhotoSwipeOptions} */
-const defaultOptions = {
-  allowPanToNext: true,
-  spacing: 0.1,
-  loop: true,
-  pinchToClose: true,
-  closeOnVerticalDrag: true,
-  hideAnimationDuration: 333,
-  showAnimationDuration: 333,
-  zoomAnimationDuration: 333,
-  escKey: true,
-  arrowKeys: true,
-  returnFocus: true,
-  maxWidthToAnimate: 4000,
-  clickToCloseNonZoomable: true,
-  imageClickAction: 'zoom-or-close',
-  bgClickAction: 'close',
-  tapAction: 'toggle-controls',
-  doubleTapAction: 'zoom',
-  indexIndicatorSep: ' / ',
-  preloaderDelay: 2000,
-  bgOpacity: 0.8,
-
-  index: 0,
-  errorMsg: 'The image cannot be loaded',
-  preload: [1, 2],
-  easing: 'cubic-bezier(.4,0,.22,1)'
-};
 
 /**
  * PhotoSwipe Core
  */
 class PhotoSwipe extends PhotoSwipeBase {
   /**
-   * @param {PhotoSwipeOptions} options
+   * @param {Partial<PhotoSwipeOptions>} [options]
    */
   constructor(options) {
     super();
 
-    this._prepareOptions(options);
+    this.options = this._prepareOptions(options || {});
 
     /**
      * offset of viewport relative to document
      *
-     * @type {{ x?: number; y?: number }}
+     * @type {Point}
      */
-    this.offset = {};
+    this.offset = { x: 0, y: 0 };
 
     /**
      * @type {Point}
@@ -281,13 +252,28 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     /**
      * background (backdrop) opacity
-     *
-     * @type {number}
      */
     this.bgOpacity = 1;
+    this.currIndex = 0;
+    this.potentialIndex = 0;
+    /**
+     * @private
+     * @type {SlideData}
+     */
+    this._initialItemData = {};
 
-    /** @type {HTMLDivElement} */
+    /** @type {HTMLDivElement | undefined} */
     this.topBar = undefined;
+    /** @type {HTMLDivElement | undefined} */
+    this.element = undefined;
+    /** @type {HTMLDivElement | undefined} */
+    this.template = undefined;
+    /** @type {HTMLDivElement | undefined} */
+    this.container = undefined;
+    /** @type {HTMLElement | undefined} */
+    this.scrollWrap = undefined;
+    /** @type {Slide | undefined} */
+    this.currSlide = undefined;
 
     this.events = new DOMEvents();
 
@@ -299,6 +285,9 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.opener = new Opener(this);
     this.keyboard = new Keyboard(this);
     this.contentLoader = new ContentLoader(this);
+    // initialize scroll wheel handler to block the scroll
+    this.scrollWheel = new ScrollWheel(this);
+    this.ui = new UI(this);
   }
 
   init() {
@@ -320,14 +309,13 @@ class PhotoSwipe extends PhotoSwipeBase {
     if (this.options.mainClass) {
       rootClasses += ' ' + this.options.mainClass;
     }
-    this.element.className += ' ' + rootClasses;
+    if (this.element) {
+      this.element.className += ' ' + rootClasses;
+    }
 
     this.currIndex = this.options.index || 0;
     this.potentialIndex = this.currIndex;
     this.dispatch('firstUpdate'); // starting index can be modified here
-
-    // initialize scroll wheel handler to block the scroll
-    this.scrollWheel = new ScrollWheel(this);
 
     // sanitize index
     if (Number.isNaN(this.currIndex)
@@ -411,9 +399,7 @@ class PhotoSwipe extends PhotoSwipeBase {
 
   appendHeavy() {
     this.mainScroll.itemHolders.forEach((itemHolder) => {
-      if (itemHolder.slide) {
-        itemHolder.slide.appendHeavy();
-      }
+      itemHolder.slide?.appendHeavy();
     });
   }
 
@@ -447,14 +433,14 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @param {Parameters<Slide['zoomTo']>} args
    */
   zoomTo(...args) {
-    this.currSlide.zoomTo(...args);
+    this.currSlide?.zoomTo(...args);
   }
 
   /**
    * @see slide/slide.js toggleZoom
    */
   toggleZoom() {
-    this.currSlide.toggleZoom();
+    this.currSlide?.toggleZoom();
   }
 
   /**
@@ -490,17 +476,17 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     this.dispatch('destroy');
 
-    this.listeners = null;
+    this._listeners = {};
 
-    this.scrollWrap.ontouchmove = null;
-    this.scrollWrap.ontouchend = null;
+    if (this.scrollWrap) {
+      this.scrollWrap.ontouchmove = null;
+      this.scrollWrap.ontouchend = null;
+    }
 
-    this.element.remove();
+    this.element?.remove();
 
     this.mainScroll.itemHolders.forEach((itemHolder) => {
-      if (itemHolder.slide) {
-        itemHolder.slide.destroy();
-      }
+      itemHolder.slide?.destroy();
     });
 
     this.contentLoader.destroy();
@@ -515,7 +501,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   refreshSlideContent(slideIndex) {
     this.contentLoader.removeByIndex(slideIndex);
     this.mainScroll.itemHolders.forEach((itemHolder, i) => {
-      let potentialHolderIndex = this.currSlide.index - 1 + i;
+      let potentialHolderIndex = (this.currSlide?.index ?? 0) - 1 + i;
       if (this.canLoop()) {
         potentialHolderIndex = this.getLoopedIndex(potentialHolderIndex);
       }
@@ -525,9 +511,8 @@ class PhotoSwipe extends PhotoSwipeBase {
 
         // activate the new slide if it's current
         if (i === 1) {
-          /** @type {Slide} */
           this.currSlide = itemHolder.slide;
-          itemHolder.slide.setIsActive(true);
+          itemHolder.slide?.setIsActive(true);
         }
       }
     });
@@ -557,7 +542,7 @@ class PhotoSwipe extends PhotoSwipeBase {
 
       // destroy previous slide
       holder.slide.destroy();
-      holder.slide = null;
+      holder.slide = undefined;
     }
 
     // exit if no loop and index is out of bounds
@@ -611,11 +596,11 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     //this._prevViewportSize.x = newWidth;
     //this._prevViewportSize.y = newHeight;
-    equalizePoints(this._prevViewportSize, newViewportSize);
+    this._prevViewportSize = equalizePoints(this._prevViewportSize, newViewportSize);
 
     this.dispatch('beforeResize');
 
-    equalizePoints(this.viewportSize, this._prevViewportSize);
+    this.viewportSize = equalizePoints(this.viewportSize, this._prevViewportSize);
 
     this._updatePageScrollOffset();
 
@@ -637,7 +622,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   applyBgOpacity(opacity) {
     this.bgOpacity = Math.max(opacity, 0);
-    this.bg.style.opacity = String(this.bgOpacity * this.options.bgOpacity);
+    if (this.bg) this.bg.style.opacity = String(this.bgOpacity * this.options.bgOpacity);
   }
 
   /**
@@ -646,7 +631,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   mouseDetected() {
     if (!this.hasMouse) {
       this.hasMouse = true;
-      this.element.classList.add('pswp--has_mouse');
+      this.element?.classList.add('pswp--has_mouse');
     }
   }
 
@@ -719,7 +704,6 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     this.mainScroll.appendHolders();
 
-    this.ui = new UI(this);
     this.ui.init();
 
     // append to DOM
@@ -747,23 +731,6 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   canLoop() {
     return (this.options.loop && this.getNumItems() > 2);
-  }
-
-  /**
-   * @param {PhotoSwipeOptions} options
-   * @private
-   */
-  _prepareOptions(options) {
-    if (window.matchMedia('(prefers-reduced-motion), (update: slow)').matches) {
-      options.showHideAnimationType = 'none';
-      options.zoomAnimationDuration = 0;
-    }
-
-    /** @type {PhotoSwipeOptions}*/
-    this.options = {
-      ...defaultOptions,
-      ...options
-    };
   }
 }
 

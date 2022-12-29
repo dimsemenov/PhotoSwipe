@@ -86,7 +86,7 @@
  * @prop {{ originalEvent: KeyboardEvent }} keydown can be default prevented
  * @prop {{ x: number; dragging: boolean }} moveMainScroll
  * @prop {{ slide: Slide }} firstZoomPan
- * @prop {{ slide: Slide, data: SlideData, index: number }} gettingData
+ * @prop {{ slide: Slide | undefined, data: SlideData, index: number }} gettingData
  * @prop {undefined} beforeResize
  * @prop {undefined} resize
  * @prop {undefined} viewportSize
@@ -99,7 +99,7 @@
  * @prop {{ slide: Slide }} slideActivate
  * @prop {{ slide: Slide }} slideDeactivate
  * @prop {{ slide: Slide }} slideDestroy
- * @prop {{ destZoomLevel: number, centerPoint: Point, transitionDuration: number | false }} beforeZoomTo
+ * @prop {{ destZoomLevel: number, centerPoint: Point | undefined, transitionDuration: number | false | undefined }} beforeZoomTo
  * @prop {{ slide: Slide }} zoomPanUpdate
  * @prop {{ slide: Slide }} initialZoomPan
  * @prop {{ slide: Slide }} calcSlideSize
@@ -199,6 +199,35 @@
  * @typedef {(event: AugmentedEvent<T>) => void} EventCallback
  */
 
+/** @type {PhotoSwipeOptions} */
+export const defaultOptions = {
+  allowPanToNext: true,
+  spacing: 0.1,
+  loop: true,
+  pinchToClose: true,
+  closeOnVerticalDrag: true,
+  hideAnimationDuration: 333,
+  showAnimationDuration: 333,
+  zoomAnimationDuration: 333,
+  escKey: true,
+  arrowKeys: true,
+  returnFocus: true,
+  maxWidthToAnimate: 4000,
+  clickToCloseNonZoomable: true,
+  imageClickAction: 'zoom-or-close',
+  bgClickAction: 'close',
+  tapAction: 'toggle-controls',
+  doubleTapAction: 'zoom',
+  indexIndicatorSep: ' / ',
+  preloaderDelay: 2000,
+  bgOpacity: 0.8,
+
+  index: 0,
+  errorMsg: 'The image cannot be loaded',
+  preload: [1, 2],
+  easing: 'cubic-bezier(.4,0,.22,1)'
+};
+
 /**
  * Base PhotoSwipe event object
  *
@@ -242,7 +271,7 @@ class Eventable {
     this.pswp = undefined;
 
     /** @type {PhotoSwipeOptions} */
-    this.options = {};
+    this.options = defaultOptions;
   }
 
   /**
@@ -256,12 +285,10 @@ class Eventable {
       this._filters[name] = [];
     }
 
-    this._filters[name].push({ fn, priority });
-    this._filters[name].sort((f1, f2) => f1.priority - f2.priority);
+    this._filters[name]?.push({ fn, priority });
+    this._filters[name]?.sort((f1, f2) => f1.priority - f2.priority);
 
-    if (this.pswp) {
-      this.pswp.addFilter(name, fn, priority);
-    }
+    this.pswp?.addFilter(name, fn, priority);
   }
 
   /**
@@ -287,12 +314,10 @@ class Eventable {
    * @returns {Parameters<PhotoSwipeFiltersMap[T]>[0]}
    */
   applyFilters(name, ...args) {
-    if (this._filters[name]) {
-      this._filters[name].forEach((filter) => {
-        // @ts-expect-error
-        args[0] = filter.fn.apply(this, args);
-      });
-    }
+    this._filters[name]?.forEach((filter) => {
+      // @ts-expect-error
+      args[0] = filter.fn.apply(this, args);
+    });
     return args[0];
   }
 
@@ -305,14 +330,12 @@ class Eventable {
     if (!this._listeners[name]) {
       this._listeners[name] = [];
     }
-    this._listeners[name].push(fn);
+    this._listeners[name]?.push(fn);
 
     // When binding events to lightbox,
     // also bind events to PhotoSwipe Core,
     // if it's open.
-    if (this.pswp) {
-      this.pswp.on(name, fn);
-    }
+    this.pswp?.on(name, fn);
   }
 
   /**
@@ -326,9 +349,7 @@ class Eventable {
       this._listeners[name] = this._listeners[name].filter(listener => (fn !== listener));
     }
 
-    if (this.pswp) {
-      this.pswp.off(name, fn);
-    }
+    this.pswp?.off(name, fn);
   }
 
   /**
@@ -344,11 +365,9 @@ class Eventable {
 
     const event = /** @type {AugmentedEvent<T>} */ (new PhotoSwipeEvent(name, details));
 
-    if (this._listeners[name]) {
-      this._listeners[name].forEach((listener) => {
-        listener.call(this, event);
-      });
-    }
+    this._listeners[name]?.forEach((listener) => {
+      listener.call(this, event);
+    });
 
     return event;
   }

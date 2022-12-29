@@ -328,9 +328,12 @@ class MainScroll {
     }
 
     this.x = x;
-    setTransform(this.pswp.container, x);
 
-    this.pswp.dispatch('moveMainScroll', { x, dragging });
+    if (this.pswp.container) {
+      setTransform(this.pswp.container, x);
+    }
+
+    this.pswp.dispatch('moveMainScroll', { x, dragging: dragging ?? false });
   }
 }
 

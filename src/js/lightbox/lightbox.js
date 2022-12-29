@@ -42,12 +42,12 @@ import { lazyLoadSlide } from '../slide/loader.js';
  */
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
-   * @param {PhotoSwipeOptions} options
+   * @param {Partial<PhotoSwipeOptions>} [options]
    */
   constructor(options) {
     super();
     /** @type {PhotoSwipeOptions} */
-    this.options = options || {};
+    this.options = this._prepareOptions(options || {});
     this._uid = 0;
   }
 
@@ -83,6 +83,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     // Note that some screen readers emulate the mouse position,
     // so it's not ideal way to detect them.
     //
+    /** @type {Point | null} */
     let initialPoint = { x: e.clientX, y: e.clientY };
 
     if (!initialPoint.x && !initialPoint.y) {
@@ -242,7 +243,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     // map listeners from Lightbox to PhotoSwipe Core
     /** @type {(keyof PhotoSwipeEventsMap)[]} */
     (Object.keys(this._listeners)).forEach((name) => {
-      this._listeners[name].forEach((fn) => {
+      this._listeners[name]?.forEach((fn) => {
         pswp.on(name, /** @type {EventCallback<typeof name>} */(fn));
       });
     });
@@ -250,7 +251,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     // same with filters
     /** @type {(keyof PhotoSwipeFiltersMap)[]} */
     (Object.keys(this._filters)).forEach((name) => {
-      this._filters[name].forEach((filter) => {
+      this._filters[name]?.forEach((filter) => {
         pswp.addFilter(name, filter.fn, filter.priority);
       });
     });
@@ -262,8 +263,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     pswp.on('destroy', () => {
       // clean up public variables
-      this.pswp = null;
-      window.pswp = null;
+      this.pswp = undefined;
+      delete window.pswp;
     });
 
     pswp.init();
@@ -278,7 +279,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     }
 
     this.shouldOpen = false;
-    this._listeners = null;
+    this._listeners = {};
 
     getElementsFromOption(this.options.gallery, this.options.gallerySelector)
       .forEach((galleryElement) => {

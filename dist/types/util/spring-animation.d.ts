@@ -4,8 +4,8 @@ export type DefaultSpringAnimationProps = {
     start: number;
     end: number;
     velocity: number;
-    dampingRatio?: number;
-    naturalFrequency?: number;
+    dampingRatio?: number | undefined;
+    naturalFrequency?: number | undefined;
     onUpdate: (end: number) => void;
 };
 export type SpringAnimationProps = SharedAnimationProps & DefaultSpringAnimationProps;
@@ -27,7 +27,7 @@ declare class SpringAnimation {
      */
     constructor(props: SpringAnimationProps);
     props: SpringAnimationProps;
-    onFinish: VoidFunction;
     _raf: number;
+    onFinish: VoidFunction;
     destroy(): void;
 }

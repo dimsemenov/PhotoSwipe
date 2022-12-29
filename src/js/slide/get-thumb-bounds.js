@@ -66,7 +66,7 @@ function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
  * @param {number} index
  * @param {SlideData} itemData
  * @param {PhotoSwipe} instance PhotoSwipe instance
- * @returns {Bounds | undefined}
+ * @returns {Bounds | null}
  */
 export function getThumbBounds(index, itemData, instance) {
   // legacy event, before filters were introduced
@@ -93,19 +93,21 @@ export function getThumbBounds(index, itemData, instance) {
       ? element : element.querySelector(thumbSelector);
   }
 
-  thumbnail = instance.applyFilters('thumbEl', thumbnail, itemData, index);
-
   if (thumbnail) {
+    thumbnail = instance.applyFilters('thumbEl', thumbnail, itemData, index);
+
     if (!itemData.thumbCropped) {
       thumbBounds = getBoundsByElement(thumbnail);
     } else {
       thumbBounds = getCroppedBoundsByElement(
         thumbnail,
-        itemData.width || itemData.w,
-        itemData.height || itemData.h
+        itemData.width || itemData.w || 0,
+        itemData.height || itemData.h || 0
       );
     }
   }
 
-  return instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
+  return thumbBounds
+    ? instance.applyFilters('thumbBounds', thumbBounds, itemData, index)
+    : null;
 }

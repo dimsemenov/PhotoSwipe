@@ -46,9 +46,9 @@ export type EventCallback<T> = import('../core/eventable.js').EventCallback<T>;
  */
 declare class PhotoSwipeLightbox extends PhotoSwipeBase {
     /**
-     * @param {PhotoSwipeOptions} options
+     * @param {Partial<PhotoSwipeOptions>} [options]
      */
-    constructor(options: PhotoSwipeOptions);
+    constructor(options?: Partial<import("../photoswipe.js").PhotoSwipeOptions> | undefined);
     _uid: number;
     /**
      * Initialize lightbox, should be called only once.
@@ -72,8 +72,8 @@ declare class PhotoSwipeLightbox extends PhotoSwipeBase {
      * @param {DataSource} dataSource
      * @param {Point | null} [initialPoint]
      */
-    loadAndOpen(index: number, dataSource: DataSource, initialPoint?: Point | null): boolean;
-    shouldOpen: boolean;
+    loadAndOpen(index: number, dataSource: DataSource, initialPoint?: import("../photoswipe.js").Point | null | undefined): boolean;
+    shouldOpen: boolean | undefined;
     /**
      * Load the main module and the slide content by index
      *
@@ -81,7 +81,7 @@ declare class PhotoSwipeLightbox extends PhotoSwipeBase {
      * @param {DataSource=} dataSource
      */
     preload(index: number, dataSource?: DataSource | undefined): void;
-    _preloadedContent: import("../slide/content.js").default;
+    _preloadedContent: import("../slide/content.js").default | null | undefined;
     /**
      * @private
      * @param {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} module

@@ -6,51 +6,51 @@ export type _SlideData = {
     /**
      * thumbnail element
      */
-    element?: HTMLElement;
+    element?: HTMLElement | undefined;
     /**
      * image URL
      */
-    src?: string;
+    src?: string | undefined;
     /**
      * image srcset
      */
-    srcset?: string;
+    srcset?: string | undefined;
     /**
      * image width (deprecated)
      */
-    w?: number;
+    w?: number | undefined;
     /**
      * image height (deprecated)
      */
-    h?: number;
+    h?: number | undefined;
     /**
      * image width
      */
-    width?: number;
+    width?: number | undefined;
     /**
      * image height
      */
-    height?: number;
+    height?: number | undefined;
     /**
      * placeholder image URL that's displayed before large image is loaded
      */
-    msrc?: string;
+    msrc?: string | undefined;
     /**
      * image alt text
      */
-    alt?: string;
+    alt?: string | undefined;
     /**
      * whether thumbnail is cropped client-side or not
      */
-    thumbCropped?: boolean;
+    thumbCropped?: boolean | undefined;
     /**
      * html content of a slide
      */
-    html?: string;
+    html?: string | undefined;
     /**
      * slide type
      */
-    type?: 'image' | 'html' | string;
+    type?: string | undefined;
 };
 /**
  * Renders and allows to control a single slide
@@ -67,12 +67,12 @@ declare class Slide {
     pswp: import("../photoswipe.js").default;
     isActive: boolean;
     currentResolution: number;
-    /** @type {Point | null} */
-    panAreaSize: Point | null;
-    isFirstSlide: boolean;
-    zoomLevels: ZoomLevel;
+    /** @type {Point} */
+    panAreaSize: Point;
     /** @type {Point} */
     pan: Point;
+    isFirstSlide: boolean;
+    zoomLevels: ZoomLevel;
     content: import("./content.js").default;
     container: HTMLDivElement;
     /** @type {HTMLElement | null} */
@@ -131,7 +131,7 @@ declare class Slide {
      *
      * @param {boolean} [force] if size should be updated even if dimensions weren't changed
      */
-    updateContentSize(force?: boolean): void;
+    updateContentSize(force?: boolean | undefined): void;
     /**
      * @param {number} width
      * @param {number} height
@@ -148,11 +148,11 @@ declare class Slide {
      * @param {number | false} [transitionDuration] Transition duration, may be set to 0.
      * @param {boolean} [ignoreBounds] Minimum and maximum zoom levels will be ignored.
      */
-    zoomTo(destZoomLevel: number, centerPoint?: Point, transitionDuration?: number | false, ignoreBounds?: boolean): void;
+    zoomTo(destZoomLevel: number, centerPoint?: import("../photoswipe.js").Point | undefined, transitionDuration?: number | false | undefined, ignoreBounds?: boolean | undefined): void;
     /**
      * @param {Point} [centerPoint]
      */
-    toggleZoom(centerPoint?: Point): void;
+    toggleZoom(centerPoint?: import("../photoswipe.js").Point | undefined): void;
     /**
      * Updates zoom level property and recalculates new pan bounds,
      * unlike zoomTo it does not apply transform (use applyCurrentZoomPan)
@@ -173,7 +173,7 @@ declare class Slide {
      * @param {number} [prevZoomLevel] Zoom level before new zoom was applied.
      * @returns {number}
      */
-    calculateZoomToPanOffset(axis: 'x' | 'y', point?: Point, prevZoomLevel?: number): number;
+    calculateZoomToPanOffset(axis: 'x' | 'y', point?: import("../photoswipe.js").Point | undefined, prevZoomLevel?: number | undefined): number;
     /**
      * Apply pan and keep it within bounds.
      *

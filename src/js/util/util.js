@@ -24,20 +24,15 @@ export function createElement(className, tagName, appendToEl) {
  * @returns {Point}
  */
 export function equalizePoints(p1, p2) {
-  p1.x = p2.x;
-  p1.y = p2.y;
-  if (p2.id !== undefined) {
-    p1.id = p2.id;
-  }
-  return p1;
+  return { ...p1, ...p2 };
 }
 
 /**
  * @param {Point} p
+ * @returns {Point}
  */
 export function roundPoint(p) {
-  p.x = Math.round(p.x);
-  p.y = Math.round(p.y);
+  return { x: Math.round(p.x), y: Math.round(p.y) };
 }
 
 /**
@@ -187,7 +182,7 @@ export function specialKeyUsed(e) {
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {import('../photoswipe.js').ElementProvider} option
+ * @param {import('../photoswipe.js').ElementProvider} [option]
  * @param {string} [legacySelector]
  * @param {HTMLElement | Document} [parent]
  * @returns HTMLElement[]

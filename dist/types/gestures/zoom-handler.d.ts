@@ -44,5 +44,5 @@ declare class ZoomHandler {
      * @param {boolean} [ignoreGesture]
      * Wether gesture coordinates should be ignored when calculating destination pan position.
      */
-    correctZoomPan(ignoreGesture?: boolean): void;
+    correctZoomPan(ignoreGesture?: boolean | undefined): void;
 }

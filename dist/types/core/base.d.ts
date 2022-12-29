@@ -56,6 +56,12 @@ declare class PhotoSwipeBase extends Eventable {
      * @returns {Content} Image that is being decoded or false.
      */
     lazyLoadData(itemData: SlideData, index: number): Content;
+    /**
+     * @protected
+     * @param {Partial<PhotoSwipeOptions>} options
+     * @returns {PhotoSwipeOptions}
+     */
+    protected _prepareOptions(options: Partial<PhotoSwipeOptions>): PhotoSwipeOptions;
 }
 import Eventable from "./eventable.js";
 import Content from "../slide/content.js";

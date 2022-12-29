@@ -62,7 +62,7 @@ class Content {
   /**
    * Preload content
    *
-   * @param {boolean} [isLazy]
+   * @param {boolean} isLazy
    * @param {boolean} [reload]
    */
   load(isLazy, reload) {
@@ -133,9 +133,8 @@ class Content {
       imageElement.srcset = this.data.srcset;
     }
 
-    imageElement.src = this.data.src;
-
-    imageElement.alt = this.data.alt || '';
+    imageElement.src = this.data.src ?? '';
+    imageElement.alt = this.data.alt ?? '';
 
     this.state = LOAD_STATE.LOADING;
 

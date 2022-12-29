@@ -41,7 +41,7 @@ declare class ContentLoader {
      *
      * @param {number} [diff] Difference between slide indexes that was changed recently, or 0.
      */
-    updateLazy(diff?: number): void;
+    updateLazy(diff?: number | undefined): void;
     /**
      * @param {number} initialIndex
      */

@@ -3,14 +3,14 @@ export type PoolItem = {
     target: HTMLElement | Window | Document | undefined | null;
     type: string;
     listener: EventListenerOrEventListenerObject;
-    passive: boolean;
+    passive?: boolean | undefined;
 };
 /**
  * @typedef {Object} PoolItem
  * @prop {HTMLElement | Window | Document | undefined | null} target
  * @prop {string} type
  * @prop {EventListenerOrEventListenerObject} listener
- * @prop {boolean} passive
+ * @prop {boolean} [passive]
  */
 declare class DOMEvents {
     /**

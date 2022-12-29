@@ -18,7 +18,7 @@ declare class SpringEaser {
      * and the faster it will slow down.
      * Recommended value from 10 to 50
      */
-    constructor(initialVelocity: number, dampingRatio?: number, naturalFrequency?: number);
+    constructor(initialVelocity: number, dampingRatio?: number | undefined, naturalFrequency?: number | undefined);
     velocity: number;
     _dampingRatio: number;
     _naturalFrequency: number;

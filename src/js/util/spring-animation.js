@@ -21,6 +21,7 @@ class SpringAnimation {
    */
   constructor(props) {
     this.props = props;
+    this._raf = 0;
 
     const {
       start,
@@ -67,7 +68,7 @@ class SpringAnimation {
     if (this._raf >= 0) {
       cancelAnimationFrame(this._raf);
     }
-    this._raf = null;
+    this._raf = 0;
   }
 }
 

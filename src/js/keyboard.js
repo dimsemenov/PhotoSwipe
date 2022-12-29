@@ -65,7 +65,7 @@ class Keyboard {
 
   /** @private */
   _focusRoot() {
-    if (!this._wasFocused) {
+    if (!this._wasFocused && this.pswp.element) {
       this.pswp.element.focus();
       this._wasFocused = true;
     }
@@ -148,6 +148,7 @@ class Keyboard {
 
     if (keydownAction) {
       e.preventDefault();
+      // @ts-ignore
       pswp[keydownAction]();
     }
   }
@@ -160,7 +161,8 @@ class Keyboard {
    */
   _onFocusIn(e) {
     const { template } = this.pswp;
-    if (document !== e.target
+    if (template
+        && document !== e.target
         && template !== e.target
         && !template.contains(/** @type {Node} */ (e.target))) {
       // focus root element

@@ -94,12 +94,12 @@ class TapHandler {
         pswp[optionValue]();
         break;
       case 'zoom':
-        currSlide.toggleZoom(point);
+        currSlide?.toggleZoom(point);
         break;
       case 'zoom-or-close':
         // by default click zooms current image,
         // if it can not be zoomed - gallery will be closed
-        if (currSlide.isZoomable()
+        if (currSlide?.isZoomable()
             && currSlide.zoomLevels.secondary !== currSlide.zoomLevels.initial) {
           currSlide.toggleZoom(point);
         } else if (pswp.options.clickToCloseNonZoomable) {
@@ -107,7 +107,7 @@ class TapHandler {
         }
         break;
       case 'toggle-controls':
-        this.gestures.pswp.element.classList.toggle('pswp--ui-visible');
+        this.gestures.pswp.element?.classList.toggle('pswp--ui-visible');
         // if (_controlsVisible) {
         //   _ui.hideControls();
         // } else {

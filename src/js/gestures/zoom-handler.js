@@ -51,8 +51,12 @@ class ZoomHandler {
   }
 
   start() {
-    this._startZoomLevel = this.gestures.pswp.currSlide.currZoomLevel;
-    equalizePoints(this._startPan, this.gestures.pswp.currSlide.pan);
+    const { currSlide } = this.gestures.pswp;
+    if (currSlide) {
+      this._startZoomLevel = currSlide.currZoomLevel;
+      this._startPan = equalizePoints(this._startPan, currSlide.pan);
+    }
+
     this.gestures.pswp.animations.stopAllPan();
     this._wasOverFitZoomLevel = false;
   }
@@ -60,6 +64,11 @@ class ZoomHandler {
   change() {
     const { p1, startP1, p2, startP2, pswp } = this.gestures;
     const { currSlide } = pswp;
+
+    if (!currSlide) {
+      return;
+    }
+
     const minZoomLevel = currSlide.zoomLevels.min;
     const maxZoomLevel = currSlide.zoomLevels.max;
 
@@ -107,7 +116,7 @@ class ZoomHandler {
   end() {
     const { pswp } = this.gestures;
     const { currSlide } = pswp;
-    if (currSlide.currZoomLevel < currSlide.zoomLevels.initial
+    if ((!currSlide || currSlide.currZoomLevel < currSlide.zoomLevels.initial)
         && !this._wasOverFitZoomLevel
         && pswp.options.pinchToClose) {
       pswp.close();
@@ -140,7 +149,7 @@ class ZoomHandler {
     const { pswp } = this.gestures;
     const { currSlide } = pswp;
 
-    if (!currSlide.isZoomable()) {
+    if (!currSlide?.isZoomable()) {
       return;
     }
 
@@ -177,7 +186,7 @@ class ZoomHandler {
       this._startZoomPoint.x = 0;
       this._startZoomPoint.y = 0;
       this._startZoomLevel = prevZoomLevel;
-      equalizePoints(this._startPan, initialPan);
+      this._startPan = equalizePoints(this._startPan, initialPan);
     }
 
     if (currZoomLevelNeedsChange) {

@@ -39,7 +39,7 @@ class CSSAnimation {
 
     // support only transform and opacity
     const prop = transform ? 'transform' : 'opacity';
-    const propValue = props[prop];
+    const propValue = props[prop] ?? '';
 
     /** @private */
     this._target = target;

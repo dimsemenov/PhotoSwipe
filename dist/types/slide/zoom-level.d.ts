@@ -20,8 +20,8 @@ declare class ZoomLevel {
      * @param {number} index Slide index
      * @param {PhotoSwipe} [pswp] PhotoSwipe instance, can be undefined if not initialized yet
      */
-    constructor(options: PhotoSwipeOptions, itemData: SlideData, index: number, pswp?: PhotoSwipe);
-    pswp: import("../photoswipe.js").default;
+    constructor(options: PhotoSwipeOptions, itemData: SlideData, index: number, pswp?: import("../photoswipe.js").default | undefined);
+    pswp: import("../photoswipe.js").default | undefined;
     options: import("../photoswipe.js").PhotoSwipeOptions;
     itemData: import("../slide/slide.js").SlideData;
     index: number;

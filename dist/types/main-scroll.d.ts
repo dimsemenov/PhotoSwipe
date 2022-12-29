@@ -33,7 +33,7 @@ declare class MainScroll {
      *
      * @param {boolean} [resizeSlides] Whether slides content should resized
      */
-    resize(resizeSlides?: boolean): void;
+    resize(resizeSlides?: boolean | undefined): void;
     /**
      * Reset X position of the main scroller to zero
      */
@@ -63,7 +63,7 @@ declare class MainScroll {
      * @param {number} [velocityX]
      * @returns {boolean} whether index was changed or not
      */
-    moveIndexBy(diff: number, animate?: boolean, velocityX?: number): boolean;
+    moveIndexBy(diff: number, animate?: boolean | undefined, velocityX?: number | undefined): boolean;
     /**
      * X position of the main scroll for the current slide
      * (ignores position during dragging)
@@ -86,5 +86,5 @@ declare class MainScroll {
      * @param {number} x
      * @param {boolean} [dragging]
      */
-    moveTo(x: number, dragging?: boolean): void;
+    moveTo(x: number, dragging?: boolean | undefined): void;
 }

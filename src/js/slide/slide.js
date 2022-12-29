@@ -46,8 +46,10 @@ class Slide {
     this.pswp = pswp;
     this.isActive = (index === pswp.currIndex);
     this.currentResolution = 0;
-    /** @type {Point | null} */
-    this.panAreaSize = null;
+    /** @type {Point} */
+    this.panAreaSize = { x: 0, y: 0 };
+    /** @type {Point} */
+    this.pan = { x: 0, y: 0 };
 
     this.isFirstSlide = (this.isActive && !pswp.opener.isOpen);
 
@@ -58,8 +60,6 @@ class Slide {
       data: this.data,
       index
     });
-    /** @type {Point} */
-    this.pan = { x: 0, y: 0 };
 
     this.content = this.pswp.contentLoader.getContentBySlide(this);
     this.container = createElement('pswp__zoom-wrap', 'div');
@@ -132,7 +132,7 @@ class Slide {
   }
 
   load() {
-    this.content.load();
+    this.content.load(false);
     this.pswp.dispatch('slideLoad', { slide: this });
   }
 
@@ -316,7 +316,7 @@ class Slide {
     this.setZoomLevel(destZoomLevel);
     this.pan.x = this.calculateZoomToPanOffset('x', centerPoint, prevZoomLevel);
     this.pan.y = this.calculateZoomToPanOffset('y', centerPoint, prevZoomLevel);
-    roundPoint(this.pan);
+    this.pan = roundPoint(this.pan);
 
     const finishTransition = () => {
       this.setResolution(destZoomLevel);
@@ -384,6 +384,10 @@ class Slide {
       point = this.pswp.getViewportCenterPoint();
     }
 
+    if (!prevZoomLevel) {
+      prevZoomLevel = this.zoomLevels.initial;
+    }
+
     const zoomFactor = this.currZoomLevel / prevZoomLevel;
     return this.bounds.correctPan(
       axis,
@@ -408,7 +412,7 @@ class Slide {
    * @returns {boolean}
    */
   isPannable() {
-    return this.width && (this.currZoomLevel > this.zoomLevels.fit);
+    return Boolean(this.width) && (this.currZoomLevel > this.zoomLevels.fit);
   }
 
   /**
@@ -416,7 +420,7 @@ class Slide {
    * @returns {boolean}
    */
   isZoomable() {
-    return this.width && this.content.isZoomable();
+    return Boolean(this.width) && this.content.isZoomable();
   }
 
   /**
@@ -435,7 +439,7 @@ class Slide {
 
     // pan according to the zoom level
     this.bounds.update(this.currZoomLevel);
-    equalizePoints(this.pan, this.bounds.center);
+    this.pan = equalizePoints(this.pan, this.bounds.center);
     this.pswp.dispatch('initialZoomPan', { slide: this });
   }
 
@@ -455,14 +459,12 @@ class Slide {
   calculateSize() {
     const { pswp } = this;
 
-    if (this.panAreaSize) {
-      equalizePoints(
-        this.panAreaSize,
-        getPanAreaSize(pswp.options, pswp.viewportSize, this.data, this.index)
-      );
+    this.panAreaSize = equalizePoints(
+      this.panAreaSize,
+      getPanAreaSize(pswp.options, pswp.viewportSize, this.data, this.index)
+    );
 
-      this.zoomLevels.update(this.width, this.height, this.panAreaSize);
-    }
+    this.zoomLevels.update(this.width, this.height, this.panAreaSize);
 
     pswp.dispatch('calcSlideSize', {
       slide: this

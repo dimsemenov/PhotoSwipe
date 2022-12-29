@@ -37,10 +37,10 @@ declare class Content {
     /**
      * Preload content
      *
-     * @param {boolean} [isLazy]
+     * @param {boolean} isLazy
      * @param {boolean} [reload]
      */
-    load(isLazy?: boolean, reload?: boolean): void;
+    load(isLazy: boolean, reload?: boolean | undefined): void;
     /**
      * Preload image
      *

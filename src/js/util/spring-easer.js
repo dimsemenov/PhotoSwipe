@@ -29,9 +29,10 @@ class SpringEaser {
     // https://en.wikipedia.org/wiki/Natural_frequency
     this._naturalFrequency = naturalFrequency || DEFAULT_NATURAL_FREQUENCY;
 
+    this._dampedFrequency = this._naturalFrequency;
+
     if (this._dampingRatio < 1) {
-      this._dampedFrequency = this._naturalFrequency
-                         * Math.sqrt(1 - this._dampingRatio * this._dampingRatio);
+      this._dampedFrequency *= Math.sqrt(1 - this._dampingRatio * this._dampingRatio);
     }
   }
 

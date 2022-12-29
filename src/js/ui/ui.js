@@ -68,7 +68,7 @@ class UI {
     });
 
     pswp.on('change', () => {
-      pswp.element.classList[pswp.getNumItems() === 1 ? 'add' : 'remove']('pswp--one-slide');
+      pswp.element?.classList[pswp.getNumItems() === 1 ? 'add' : 'remove']('pswp--one-slide');
     });
 
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());
@@ -95,11 +95,12 @@ class UI {
    */
   _onZoomPanUpdate() {
     const { template, currSlide, options } = this.pswp;
-    let { currZoomLevel } = currSlide;
 
-    if (this.pswp.opener.isClosing) {
+    if (this.pswp.opener.isClosing || !template || !currSlide) {
       return;
     }
+
+    let { currZoomLevel } = currSlide;
 
     // if not open yet - check against initial zoom level
     if (!this.pswp.opener.isOpen) {

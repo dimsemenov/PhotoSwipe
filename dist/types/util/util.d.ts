@@ -6,7 +6,7 @@
  * @param {Node} [appendToEl]
  * @returns {HTMLElementTagNameMap[T]}
  */
-export function createElement<T extends keyof HTMLElementTagNameMap>(className: string, tagName: T, appendToEl?: Node): HTMLElementTagNameMap[T];
+export function createElement<T extends keyof HTMLElementTagNameMap>(className: string, tagName: T, appendToEl?: Node | undefined): HTMLElementTagNameMap[T];
 /**
  * @param {Point} p1
  * @param {Point} p2
@@ -15,8 +15,9 @@ export function createElement<T extends keyof HTMLElementTagNameMap>(className: 
 export function equalizePoints(p1: Point, p2: Point): Point;
 /**
  * @param {Point} p
+ * @returns {Point}
  */
-export function roundPoint(p: Point): void;
+export function roundPoint(p: Point): Point;
 /**
  * Returns distance between two points.
  *
@@ -50,7 +51,7 @@ export function clamp(val: number, min: number, max: number): number;
  * @param {number} [scale]
  * @returns {string}
  */
-export function toTransformString(x: number, y?: number, scale?: number): string;
+export function toTransformString(x: number, y?: number | undefined, scale?: number | undefined): string;
 /**
  * Apply transform:translate(x, y) scale(scale) to element
  *
@@ -59,7 +60,7 @@ export function toTransformString(x: number, y?: number, scale?: number): string
  * @param {number} [y]
  * @param {number} [scale]
  */
-export function setTransform(el: HTMLElement, x: number, y?: number, scale?: number): void;
+export function setTransform(el: HTMLElement, x: number, y?: number | undefined, scale?: number | undefined): void;
 /**
  * Apply CSS transition to element
  *
@@ -68,7 +69,7 @@ export function setTransform(el: HTMLElement, x: number, y?: number, scale?: num
  * @param {number} [duration] in ms
  * @param {string} [ease] CSS easing function
  */
-export function setTransitionStyle(el: HTMLElement, prop?: string, duration?: number, ease?: string): void;
+export function setTransitionStyle(el: HTMLElement, prop?: string | undefined, duration?: number | undefined, ease?: string | undefined): void;
 /**
  * Apply width and height CSS properties to element
  *
@@ -97,12 +98,12 @@ export function specialKeyUsed(e: MouseEvent | KeyboardEvent): boolean;
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {import('../photoswipe.js').ElementProvider} option
+ * @param {import('../photoswipe.js').ElementProvider} [option]
  * @param {string} [legacySelector]
  * @param {HTMLElement | Document} [parent]
  * @returns HTMLElement[]
  */
-export function getElementsFromOption(option: import('../photoswipe.js').ElementProvider, legacySelector?: string, parent?: HTMLElement | Document): HTMLElement[];
+export function getElementsFromOption(option?: import("../photoswipe.js").ElementProvider | undefined, legacySelector?: string | undefined, parent?: Document | HTMLElement | undefined): HTMLElement[];
 /**
  * Check if variable is PhotoSwipe class
  *
