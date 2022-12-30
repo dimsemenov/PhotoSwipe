@@ -1,6 +1,6 @@
 /** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
-/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').PreparedPhotoSwipeOptions} PreparedPhotoSwipeOptions */
 /** @typedef {import('../photoswipe.js').DataSource} DataSource */
 /** @typedef {import('../ui/ui-element.js').UIElementData} UIElementData */
 /** @typedef {import('../slide/content.js').default} ContentDefault */
@@ -192,12 +192,12 @@
  * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {(event: AugmentedEvent<T>) => void} EventCallback
  */
-/** @type {PhotoSwipeOptions} */
-export const defaultOptions: PhotoSwipeOptions;
+/** @type {PreparedPhotoSwipeOptions} */
+export const defaultOptions: PreparedPhotoSwipeOptions;
 export default Eventable;
 export type PhotoSwipeLightbox = import('../lightbox/lightbox.js').default;
 export type PhotoSwipe = import('../photoswipe.js').default;
-export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
+export type PreparedPhotoSwipeOptions = import('../photoswipe.js').PreparedPhotoSwipeOptions;
 export type DataSource = import('../photoswipe.js').DataSource;
 export type UIElementData = import('../ui/ui-element.js').UIElementData;
 export type ContentDefault = import('../slide/content.js').default;
@@ -924,8 +924,8 @@ declare class Eventable {
     };
     /** @type {PhotoSwipe | undefined} */
     pswp: PhotoSwipe | undefined;
-    /** @type {PhotoSwipeOptions} */
-    options: PhotoSwipeOptions;
+    /** @type {PreparedPhotoSwipeOptions} */
+    options: PreparedPhotoSwipeOptions;
     /**
      * @template {keyof PhotoSwipeFiltersMap} T
      * @param {T} name

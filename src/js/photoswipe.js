@@ -31,6 +31,7 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {import('./main-scroll.js').ItemHolder} ItemHolder */
 /** @typedef {import('./core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
 /** @typedef {import('./core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+/** @typedef {import('./slide/get-thumb-bounds').Bounds} Bounds */
 /**
  * @template T
  * @typedef {import('./core/eventable.js').EventCallback<T>} EventCallback<T>
@@ -54,8 +55,9 @@ import ContentLoader from './slide/loader.js';
  * @typedef {string | NodeListOf<HTMLElement> | HTMLElement[] | HTMLElement} ElementProvider
  */
 
+/** @typedef {Partial<PreparedPhotoSwipeOptions>} PhotoSwipeOptions https://photoswipe.com/options/ */
 /**
- * @typedef {Object} PhotoSwipeOptions https://photoswipe.com/options/
+ * @typedef {Object} PreparedPhotoSwipeOptions
  *
  * @prop {DataSource} [dataSource]
  * Pass an array of any items via dataSource option. Its length will determine amount of slides
@@ -223,7 +225,7 @@ import ContentLoader from './slide/loader.js';
  */
 class PhotoSwipe extends PhotoSwipeBase {
   /**
-   * @param {Partial<PhotoSwipeOptions>} [options]
+   * @param {PhotoSwipeOptions} [options]
    */
   constructor(options) {
     super();
@@ -256,11 +258,17 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.bgOpacity = 1;
     this.currIndex = 0;
     this.potentialIndex = 0;
+    this.isOpen = false;
+    this.isDestroying = false;
+    this.hasMouse = false;
+
     /**
      * @private
      * @type {SlideData}
      */
     this._initialItemData = {};
+    /** @type {Bounds | null} */
+    this._initialThumbBounds = null;
 
     /** @type {HTMLDivElement | undefined} */
     this.topBar = undefined;
@@ -276,10 +284,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.currSlide = undefined;
 
     this.events = new DOMEvents();
-
-    /** @type {Animations} */
     this.animations = new Animations();
-
     this.mainScroll = new MainScroll(this);
     this.gestures = new Gestures(this);
     this.opener = new Opener(this);
@@ -346,12 +351,17 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.dispatch('initialLayout');
 
     this.on('openingAnimationEnd', () => {
-      this.mainScroll.itemHolders[0].el.style.display = 'block';
-      this.mainScroll.itemHolders[2].el.style.display = 'block';
+      const { itemHolders } = this.mainScroll;
 
       // Add content to the previous and next slide
-      this.setContent(this.mainScroll.itemHolders[0], this.currIndex - 1);
-      this.setContent(this.mainScroll.itemHolders[2], this.currIndex + 1);
+      if (itemHolders[0]) {
+        itemHolders[0].el.style.display = 'block';
+        this.setContent(itemHolders[0], this.currIndex - 1);
+      }
+      if (itemHolders[2]) {
+        itemHolders[2].el.style.display = 'block';
+        this.setContent(itemHolders[2], this.currIndex + 1);
+      }
 
       this.appendHeavy();
 
@@ -363,14 +373,14 @@ class PhotoSwipe extends PhotoSwipeBase {
     });
 
     // set content for center slide (first time)
-    this.setContent(this.mainScroll.itemHolders[1], this.currIndex);
+    if (this.mainScroll.itemHolders[1]) {
+      this.setContent(this.mainScroll.itemHolders[1], this.currIndex);
+    }
     this.dispatch('change');
 
     this.opener.open();
 
     this.dispatch('afterInit');
-
-    return true;
   }
 
   /**
@@ -378,6 +388,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    * (for example, -1 will return the last slide)
    *
    * @param {number} index
+   * @returns {number}
    */
   getLoopedIndex(index) {
     const numSlides = this.getNumItems();
@@ -392,9 +403,7 @@ class PhotoSwipe extends PhotoSwipeBase {
       }
     }
 
-    index = clamp(index, 0, numSlides - 1);
-
-    return index;
+    return clamp(index, 0, numSlides - 1);
   }
 
   appendHeavy() {
@@ -526,7 +535,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    *
    * @param {ItemHolder} holder mainScroll.itemHolders array item
    * @param {number} index Slide index
-   * @param {boolean=} force If content should be set even if index wasn't changed
+   * @param {boolean} [force] If content should be set even if index wasn't changed
    */
   setContent(holder, index, force) {
     if (this.canLoop()) {
@@ -561,6 +570,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     holder.slide.append(holder.el);
   }
 
+  /** @returns {Point} */
   getViewportCenterPoint() {
     return {
       x: this.viewportSize.x / 2,
@@ -572,7 +582,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    * Update size of all elements.
    * Executed on init and on page resize.
    *
-   * @param {boolean=} force Update size even if size of viewport was not changed.
+   * @param {boolean} [force] Update size even if size of viewport was not changed.
    */
   updateSize(force) {
     // let item;
@@ -622,7 +632,9 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   applyBgOpacity(opacity) {
     this.bgOpacity = Math.max(opacity, 0);
-    if (this.bg) this.bg.style.opacity = String(this.bgOpacity * this.options.bgOpacity);
+    if (this.bg) {
+      this.bg.style.opacity = String(this.bgOpacity * this.options.bgOpacity);
+    }
   }
 
   /**
@@ -716,6 +728,8 @@ class PhotoSwipe extends PhotoSwipeBase {
    *   {x:,y:,w:}
    *
    * Height is optional (calculated based on the large image)
+   *
+   * @returns {Bounds | null}
    */
   getThumbBounds() {
     return getThumbBounds(
@@ -726,7 +740,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   }
 
   /**
-   * If the PhotoSwipe can have continious loop
+   * If the PhotoSwipe can have continuous loop
    * @returns Boolean
    */
   canLoop() {

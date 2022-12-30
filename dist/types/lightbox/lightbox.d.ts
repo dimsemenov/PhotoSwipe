@@ -46,23 +46,30 @@ export type EventCallback<T> = import('../core/eventable.js').EventCallback<T>;
  */
 declare class PhotoSwipeLightbox extends PhotoSwipeBase {
     /**
-     * @param {Partial<PhotoSwipeOptions>} [options]
+     * @param {PhotoSwipeOptions} [options]
      */
-    constructor(options?: Partial<import("../photoswipe.js").PhotoSwipeOptions> | undefined);
+    constructor(options?: Partial<import("../photoswipe.js").PreparedPhotoSwipeOptions> | undefined);
     _uid: number;
+    shouldOpen: boolean;
+    /**
+     * @private
+     * @type {Content | undefined}
+     */
+    private _preloadedContent;
+    /**
+     * @param {MouseEvent} e
+     */
+    onThumbnailsClick(e: MouseEvent): void;
     /**
      * Initialize lightbox, should be called only once.
      * It's not included in the main constructor, so you may bind events before it.
      */
     init(): void;
     /**
-     * @param {MouseEvent} e
-     */
-    onThumbnailsClick(e: MouseEvent): void;
-    /**
      * Get index of gallery item that was clicked.
      *
      * @param {MouseEvent} e click event
+     * @returns {number}
      */
     getClickedIndex(e: MouseEvent): number;
     /**
@@ -71,17 +78,16 @@ declare class PhotoSwipeLightbox extends PhotoSwipeBase {
      * @param {number} index
      * @param {DataSource} dataSource
      * @param {Point | null} [initialPoint]
+     * @returns {boolean}
      */
     loadAndOpen(index: number, dataSource: DataSource, initialPoint?: import("../photoswipe.js").Point | null | undefined): boolean;
-    shouldOpen: boolean | undefined;
     /**
      * Load the main module and the slide content by index
      *
      * @param {number} index
-     * @param {DataSource=} dataSource
+     * @param {DataSource} [dataSource]
      */
-    preload(index: number, dataSource?: DataSource | undefined): void;
-    _preloadedContent: import("../slide/content.js").default | null | undefined;
+    preload(index: number, dataSource?: import("../photoswipe.js").DataSource | undefined): void;
     /**
      * @private
      * @param {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} module

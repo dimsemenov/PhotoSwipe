@@ -1,6 +1,6 @@
 /** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
-/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').PreparedPhotoSwipeOptions} PreparedPhotoSwipeOptions */
 /** @typedef {import('../photoswipe.js').DataSource} DataSource */
 /** @typedef {import('../ui/ui-element.js').UIElementData} UIElementData */
 /** @typedef {import('../slide/content.js').default} ContentDefault */
@@ -199,7 +199,7 @@
  * @typedef {(event: AugmentedEvent<T>) => void} EventCallback
  */
 
-/** @type {PhotoSwipeOptions} */
+/** @type {PreparedPhotoSwipeOptions} */
 export const defaultOptions = {
   allowPanToNext: true,
   spacing: 0.1,
@@ -270,7 +270,7 @@ class Eventable {
     /** @type {PhotoSwipe | undefined} */
     this.pswp = undefined;
 
-    /** @type {PhotoSwipeOptions} */
+    /** @type {PreparedPhotoSwipeOptions} */
     this.options = defaultOptions;
   }
 

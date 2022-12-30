@@ -22,7 +22,7 @@ declare class ZoomLevel {
      */
     constructor(options: PhotoSwipeOptions, itemData: SlideData, index: number, pswp?: import("../photoswipe.js").default | undefined);
     pswp: import("../photoswipe.js").default | undefined;
-    options: import("../photoswipe.js").PhotoSwipeOptions;
+    options: Partial<import("../photoswipe.js").PreparedPhotoSwipeOptions>;
     itemData: import("../slide/slide.js").SlideData;
     index: number;
     /** @type { Point | null } */

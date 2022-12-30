@@ -5,6 +5,7 @@ import { lazyLoadData } from '../slide/loader.js';
 
 /** @typedef {import("../photoswipe.js").default} PhotoSwipe */
 /** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import("../photoswipe.js").PreparedPhotoSwipeOptions} PreparedPhotoSwipeOptions */
 /** @typedef {import("../slide/slide.js").SlideData} SlideData */
 
 /**
@@ -187,8 +188,8 @@ class PhotoSwipeBase extends Eventable {
 
   /**
    * @protected
-   * @param {Partial<PhotoSwipeOptions>} options
-   * @returns {PhotoSwipeOptions}
+   * @param {PhotoSwipeOptions} options
+   * @returns {PreparedPhotoSwipeOptions}
    */
   _prepareOptions(options) {
     if (window.matchMedia('(prefers-reduced-motion), (update: slow)').matches) {
@@ -196,7 +197,7 @@ class PhotoSwipeBase extends Eventable {
       options.zoomAnimationDuration = 0;
     }
 
-    /** @type {PhotoSwipeOptions}*/
+    /** @type {PreparedPhotoSwipeOptions} */
     return {
       ...defaultOptions,
       ...options

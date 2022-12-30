@@ -9,6 +9,7 @@ export type UIElementData = import('./ui/ui-element.js').UIElementData;
 export type ItemHolder = import('./main-scroll.js').ItemHolder;
 export type PhotoSwipeEventsMap = import('./core/eventable.js').PhotoSwipeEventsMap;
 export type PhotoSwipeFiltersMap = import('./core/eventable.js').PhotoSwipeFiltersMap;
+export type Bounds = import('./slide/get-thumb-bounds').Bounds;
 /**
  * <T>
  */
@@ -44,7 +45,8 @@ export type ElementProvider = string | NodeListOf<HTMLElement> | HTMLElement[] |
 /**
  * https://photoswipe.com/options/
  */
-export type PhotoSwipeOptions = {
+export type PhotoSwipeOptions = Partial<PreparedPhotoSwipeOptions>;
+export type PreparedPhotoSwipeOptions = {
     /**
      * Pass an array of any items via dataSource option. Its length will determine amount of slides
      * (which may be modified further from numItems event).
@@ -241,6 +243,7 @@ export type PhotoSwipeOptions = {
 /** @typedef {import('./main-scroll.js').ItemHolder} ItemHolder */
 /** @typedef {import('./core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
 /** @typedef {import('./core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
+/** @typedef {import('./slide/get-thumb-bounds').Bounds} Bounds */
 /**
  * @template T
  * @typedef {import('./core/eventable.js').EventCallback<T>} EventCallback<T>
@@ -261,8 +264,9 @@ export type PhotoSwipeOptions = {
 /**
  * @typedef {string | NodeListOf<HTMLElement> | HTMLElement[] | HTMLElement} ElementProvider
  */
+/** @typedef {Partial<PreparedPhotoSwipeOptions>} PhotoSwipeOptions https://photoswipe.com/options/ */
 /**
- * @typedef {Object} PhotoSwipeOptions https://photoswipe.com/options/
+ * @typedef {Object} PreparedPhotoSwipeOptions
  *
  * @prop {DataSource} [dataSource]
  * Pass an array of any items via dataSource option. Its length will determine amount of slides
@@ -429,9 +433,9 @@ export type PhotoSwipeOptions = {
  */
 declare class PhotoSwipe extends PhotoSwipeBase {
     /**
-     * @param {Partial<PhotoSwipeOptions>} [options]
+     * @param {PhotoSwipeOptions} [options]
      */
-    constructor(options?: Partial<PhotoSwipeOptions> | undefined);
+    constructor(options?: Partial<PreparedPhotoSwipeOptions> | undefined);
     /**
      * offset of viewport relative to document
      *
@@ -455,11 +459,16 @@ declare class PhotoSwipe extends PhotoSwipeBase {
     bgOpacity: number;
     currIndex: number;
     potentialIndex: number;
+    isOpen: boolean;
+    isDestroying: boolean;
+    hasMouse: boolean;
     /**
      * @private
      * @type {SlideData}
      */
     private _initialItemData;
+    /** @type {Bounds | null} */
+    _initialThumbBounds: Bounds | null;
     /** @type {HTMLDivElement | undefined} */
     topBar: HTMLDivElement | undefined;
     /** @type {HTMLDivElement | undefined} */
@@ -473,7 +482,6 @@ declare class PhotoSwipe extends PhotoSwipeBase {
     /** @type {Slide | undefined} */
     currSlide: Slide | undefined;
     events: DOMEvents;
-    /** @type {Animations} */
     animations: Animations;
     mainScroll: MainScroll;
     gestures: Gestures;
@@ -482,14 +490,13 @@ declare class PhotoSwipe extends PhotoSwipeBase {
     contentLoader: ContentLoader;
     scrollWheel: ScrollWheel;
     ui: UI;
-    init(): true | undefined;
-    isOpen: boolean | undefined;
-    _initialThumbBounds: import("./slide/get-thumb-bounds.js").Bounds | null | undefined;
+    init(): void;
     /**
      * Get looped slide index
      * (for example, -1 will return the last slide)
      *
      * @param {number} index
+     * @returns {number}
      */
     getLoopedIndex(index: number): number;
     appendHeavy(): void;
@@ -521,7 +528,6 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      * After closing transition ends - destroy it
      */
     close(): void;
-    isDestroying: boolean | undefined;
     /**
      * Destroys the gallery:
      * - instantly closes the gallery
@@ -541,18 +547,16 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      *
      * @param {ItemHolder} holder mainScroll.itemHolders array item
      * @param {number} index Slide index
-     * @param {boolean=} force If content should be set even if index wasn't changed
+     * @param {boolean} [force] If content should be set even if index wasn't changed
      */
     setContent(holder: ItemHolder, index: number, force?: boolean | undefined): void;
-    getViewportCenterPoint(): {
-        x: number;
-        y: number;
-    };
+    /** @returns {Point} */
+    getViewportCenterPoint(): Point;
     /**
      * Update size of all elements.
      * Executed on init and on page resize.
      *
-     * @param {boolean=} force Update size even if size of viewport was not changed.
+     * @param {boolean} [force] Update size even if size of viewport was not changed.
      */
     updateSize(force?: boolean | undefined): void;
     /**
@@ -563,7 +567,6 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      * Whether mouse is detected
      */
     mouseDetected(): void;
-    hasMouse: boolean | undefined;
     /**
      * Page resize event handler
      *
@@ -596,10 +599,12 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      *   {x:,y:,w:}
      *
      * Height is optional (calculated based on the large image)
+     *
+     * @returns {Bounds | null}
      */
-    getThumbBounds(): import("./slide/get-thumb-bounds.js").Bounds | null;
+    getThumbBounds(): Bounds | null;
     /**
-     * If the PhotoSwipe can have continious loop
+     * If the PhotoSwipe can have continuous loop
      * @returns Boolean
      */
     canLoop(): boolean;

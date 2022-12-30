@@ -42,13 +42,20 @@ import { lazyLoadSlide } from '../slide/loader.js';
  */
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
-   * @param {Partial<PhotoSwipeOptions>} [options]
+   * @param {PhotoSwipeOptions} [options]
    */
   constructor(options) {
     super();
-    /** @type {PhotoSwipeOptions} */
     this.options = this._prepareOptions(options || {});
     this._uid = 0;
+    this.shouldOpen = false;
+    /**
+     * @private
+     * @type {Content | undefined}
+     */
+    this._preloadedContent = undefined;
+
+    this.onThumbnailsClick = this.onThumbnailsClick.bind(this);
   }
 
   /**
@@ -56,8 +63,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * It's not included in the main constructor, so you may bind events before it.
    */
   init() {
-    this.onThumbnailsClick = this.onThumbnailsClick.bind(this);
-
     // Bind click events to each gallery
     getElementsFromOption(this.options.gallery, this.options.gallerySelector)
       .forEach((galleryElement) => {
@@ -81,7 +86,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     // so we do not pass the initialPoint
     //
     // Note that some screen readers emulate the mouse position,
-    // so it's not ideal way to detect them.
+    // so it's not the ideal way to detect them.
     //
     /** @type {Point | null} */
     let initialPoint = { x: e.clientX, y: e.clientY };
@@ -92,6 +97,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     let clickedIndex = this.getClickedIndex(e);
     clickedIndex = this.applyFilters('clickedIndex', clickedIndex, e, this);
+    /** @type {DataSource} */
     const dataSource = {
       gallery: /** @type {HTMLElement} */ (e.currentTarget)
     };
@@ -106,6 +112,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Get index of gallery item that was clicked.
    *
    * @param {MouseEvent} e click event
+   * @returns {number}
    */
   getClickedIndex(e) {
     // legacy option
@@ -140,6 +147,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * @param {number} index
    * @param {DataSource} dataSource
    * @param {Point | null} [initialPoint]
+   * @returns {boolean}
    */
   loadAndOpen(index, dataSource, initialPoint) {
     // Check if the gallery is already open
@@ -162,7 +170,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Load the main module and the slide content by index
    *
    * @param {number} index
-   * @param {DataSource=} dataSource
+   * @param {DataSource} [dataSource]
    */
   preload(index, dataSource) {
     const { options } = this;
@@ -258,7 +266,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     if (this._preloadedContent) {
       pswp.contentLoader.addToCache(this._preloadedContent);
-      this._preloadedContent = null;
+      this._preloadedContent = undefined;
     }
 
     pswp.on('destroy', () => {
@@ -274,9 +282,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Unbinds all events, closes PhotoSwipe if it's open.
    */
   destroy() {
-    if (this.pswp) {
-      this.pswp.destroy();
-    }
+    this.pswp?.destroy();
 
     this.shouldOpen = false;
     this._listeners = {};
