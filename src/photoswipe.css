@@ -406,7 +406,8 @@ div.pswp__img--placeholder,
 */
 .pswp__counter {
   height: 30px;
-  margin: 15px 0 0 20px;
+  margin-top: 15px;
+  margin-inline-start: 20px;
   font-size: 14px;
   line-height: 30px;
   color: var(--pswp-icon-color);
