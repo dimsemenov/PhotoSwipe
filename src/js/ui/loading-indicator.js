@@ -20,7 +20,7 @@ export const loadingIndicator = {
      * @param {boolean} add
      */
     const toggleIndicatorClass = (className, add) => {
-      indicatorElement.classList[add ? 'add' : 'remove']('pswp__preloader--' + className);
+      indicatorElement.classList.toggle('pswp__preloader--' + className, add);
     };
 
     /**
