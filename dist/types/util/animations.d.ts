@@ -39,6 +39,7 @@ declare class Animations {
      * @private
      * @param {AnimationProps} props
      * @param {boolean} [isSpring]
+     * @returns {Animation}
      */
     private _start;
     /**

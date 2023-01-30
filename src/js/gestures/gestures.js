@@ -80,10 +80,8 @@ class Gestures {
     this.isMultitouch = false;
     this.isDragging = false;
     this.isZooming = false;
-    /** @type {number | null}
-     * @private
-     */
-    this._raf = null;
+    /** @type {number | null} */
+    this.raf = null;
     /** @type {NodeJS.Timeout | null}
      * @private
      */
@@ -204,7 +202,7 @@ class Gestures {
       this.dragAxis = null;
       // we need to store initial point to determine the main axis,
       // drag is activated only after the axis is determined
-      this.startP1 = equalizePoints(this.startP1, this.p1);
+      equalizePoints(this.startP1, this.p1);
     }
 
     if (this._numActivePoints > 1) {
@@ -252,7 +250,7 @@ class Gestures {
         this._intervalTime = Date.now();
         //this._startTime = this._intervalTime;
         this._velocityCalculated = false;
-        this._intervalP1 = equalizePoints(this._intervalP1, this.p1);
+        equalizePoints(this._intervalP1, this.p1);
         this.velocity.x = 0;
         this.velocity.y = 0;
         this.drag.start();
@@ -350,7 +348,7 @@ class Gestures {
       }
 
       this._updatePrevPoints();
-      this._raf = requestAnimationFrame(this._rafRenderLoop.bind(this));
+      this.raf = requestAnimationFrame(this._rafRenderLoop.bind(this));
     }
   }
 
@@ -373,7 +371,7 @@ class Gestures {
     this.velocity.y = this._getVelocity('y', duration);
 
     this._intervalTime = time;
-    this._intervalP1 = equalizePoints(this._intervalP1, this.p1);
+    equalizePoints(this._intervalP1, this.p1);
     this._velocityCalculated = true;
   }
 
@@ -416,7 +414,7 @@ class Gestures {
         this.tapHandler.doubleTap(this.startP1, e);
       }
     } else {
-      this._lastStartP1 = equalizePoints(this._lastStartP1, this.startP1);
+      equalizePoints(this._lastStartP1, this.startP1);
       this._tapTimer = setTimeout(() => {
         this.tapHandler.tap(this.startP1, e);
         this._clearTapTimer();
@@ -457,9 +455,9 @@ class Gestures {
    * @private
    */
   _rafStopLoop() {
-    if (this._raf) {
-      cancelAnimationFrame(this._raf);
-      this._raf = null;
+    if (this.raf) {
+      cancelAnimationFrame(this.raf);
+      this.raf = null;
     }
   }
 
@@ -505,11 +503,11 @@ class Gestures {
       // update points that PhotoSwipe uses
       // to calculate position and scale
       if (this._numActivePoints > 0) {
-        this.p1 = equalizePoints(this.p1, this._ongoingPointers[0]);
+        equalizePoints(this.p1, this._ongoingPointers[0]);
       }
 
       if (this._numActivePoints > 1) {
-        this.p2 = equalizePoints(this.p2, this._ongoingPointers[1]);
+        equalizePoints(this.p2, this._ongoingPointers[1]);
       }
     } else {
       const touchEvent = /** @type {TouchEvent} */ (e);
@@ -543,16 +541,16 @@ class Gestures {
    * @private
    */
   _updatePrevPoints() {
-    this.prevP1 = equalizePoints(this.prevP1, this.p1);
-    this.prevP2 = equalizePoints(this.prevP2, this.p2);
+    equalizePoints(this.prevP1, this.p1);
+    equalizePoints(this.prevP2, this.p2);
   }
 
   /** update points at the start of gesture
    * @private
    */
   _updateStartPoints() {
-    this.startP1 = equalizePoints(this.startP1, this.p1);
-    this.startP2 = equalizePoints(this.startP2, this.p2);
+    equalizePoints(this.startP1, this.p1);
+    equalizePoints(this.startP2, this.p2);
     this._updatePrevPoints();
   }
 

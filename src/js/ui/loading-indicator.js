@@ -59,5 +59,10 @@ export const loadingIndicator = {
         updatePreloaderVisibility();
       }
     });
+
+    // expose the method
+    if (pswp.ui) {
+      pswp.ui.updatePreloaderVisibility = updatePreloaderVisibility;
+    }
   }
 };

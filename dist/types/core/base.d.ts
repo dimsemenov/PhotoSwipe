@@ -1,11 +1,7 @@
 export default PhotoSwipeBase;
 export type PhotoSwipe = import("../photoswipe.js").default;
-export type PhotoSwipeOptions = import("../photoswipe.js").PhotoSwipeOptions;
-export type PreparedPhotoSwipeOptions = import("../photoswipe.js").PreparedPhotoSwipeOptions;
 export type SlideData = import("../slide/slide.js").SlideData;
 /** @typedef {import("../photoswipe.js").default} PhotoSwipe */
-/** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe.js").PreparedPhotoSwipeOptions} PreparedPhotoSwipeOptions */
 /** @typedef {import("../slide/slide.js").SlideData} SlideData */
 /**
  * PhotoSwipe base class that can retrieve data about every slide.
@@ -58,12 +54,6 @@ declare class PhotoSwipeBase extends Eventable {
      * @returns {Content} Image that is being decoded or false.
      */
     lazyLoadData(itemData: SlideData, index: number): Content;
-    /**
-     * @protected
-     * @param {PhotoSwipeOptions} options
-     * @returns {PreparedPhotoSwipeOptions}
-     */
-    protected _prepareOptions(options: PhotoSwipeOptions): PreparedPhotoSwipeOptions;
 }
 import Eventable from "./eventable.js";
 import Content from "../slide/content.js";

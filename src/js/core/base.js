@@ -1,11 +1,9 @@
-import Eventable, { defaultOptions } from './eventable.js';
+import Eventable from './eventable.js';
 import { getElementsFromOption } from '../util/util.js';
 import Content from '../slide/content.js';
 import { lazyLoadData } from '../slide/loader.js';
 
 /** @typedef {import("../photoswipe.js").default} PhotoSwipe */
-/** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import("../photoswipe.js").PreparedPhotoSwipeOptions} PreparedPhotoSwipeOptions */
 /** @typedef {import("../slide/slide.js").SlideData} SlideData */
 
 /**
@@ -20,14 +18,12 @@ class PhotoSwipeBase extends Eventable {
    */
   getNumItems() {
     let numItems = 0;
-    let { dataSource } = this.options;
-    if (!dataSource) {
-      dataSource = [];
-    }
-    if ('length' in dataSource) {
+    const dataSource = this.options?.dataSource;
+
+    if (dataSource && 'length' in dataSource) {
       // may be an array or just object with length property
       numItems = dataSource.length;
-    } else if ('gallery' in dataSource) {
+    } else if (dataSource && 'gallery' in dataSource) {
       // query DOM elements
       if (!dataSource.items) {
         dataSource.items = this._getGalleryDOMElements(dataSource.gallery);
@@ -66,7 +62,7 @@ class PhotoSwipeBase extends Eventable {
    * @returns {SlideData}
    */
   getItemData(index) {
-    const { dataSource } = this.options;
+    const dataSource = this.options?.dataSource;
     /** @type {SlideData | HTMLElement} */
     let dataSourceItem = {};
     if (Array.isArray(dataSource)) {
@@ -109,7 +105,7 @@ class PhotoSwipeBase extends Eventable {
    * @returns {HTMLElement[]}
    */
   _getGalleryDOMElements(galleryElement) {
-    if (this.options.children || this.options.childSelector) {
+    if (this.options?.children || this.options?.childSelector) {
       return getElementsFromOption(
         this.options.children,
         this.options.childSelector,
@@ -184,24 +180,6 @@ class PhotoSwipeBase extends Eventable {
    */
   lazyLoadData(itemData, index) {
     return lazyLoadData(itemData, this, index);
-  }
-
-  /**
-   * @protected
-   * @param {PhotoSwipeOptions} options
-   * @returns {PreparedPhotoSwipeOptions}
-   */
-  _prepareOptions(options) {
-    if (window.matchMedia('(prefers-reduced-motion), (update: slow)').matches) {
-      options.showHideAnimationType = 'none';
-      options.zoomAnimationDuration = 0;
-    }
-
-    /** @type {PreparedPhotoSwipeOptions} */
-    return {
-      ...defaultOptions,
-      ...options
-    };
   }
 }
 

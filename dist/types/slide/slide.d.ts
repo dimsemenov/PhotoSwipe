@@ -224,7 +224,7 @@ declare class Slide {
      *
      * @param {number} newResolution
      */
-    setResolution(newResolution: number): void;
+    _setResolution(newResolution: number): void;
 }
 import ZoomLevel from "./zoom-level.js";
 import PanBounds from "./pan-bounds.js";

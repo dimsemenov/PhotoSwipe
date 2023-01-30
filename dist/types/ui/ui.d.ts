@@ -12,6 +12,8 @@ declare class UI {
     uiElementsData: UIElementData[];
     /** @type {(UIElement | UIElementData)[]} */
     items: (UIElement | UIElementData)[];
+    /** @type {() => void} */
+    updatePreloaderVisibility: () => void;
     /**
      * @private
      * @type {number | undefined}

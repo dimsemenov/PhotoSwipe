@@ -5,9 +5,9 @@
  * @param {number} index
  * @param {SlideData} itemData
  * @param {PhotoSwipe} instance PhotoSwipe instance
- * @returns {Bounds | null}
+ * @returns {Bounds | undefined}
  */
-export function getThumbBounds(index: number, itemData: SlideData, instance: PhotoSwipe): Bounds | null;
+export function getThumbBounds(index: number, itemData: SlideData, instance: PhotoSwipe): Bounds | undefined;
 export type SlideData = import('./slide.js').SlideData;
 export type PhotoSwipe = import('../photoswipe.js').default;
 export type Bounds = {

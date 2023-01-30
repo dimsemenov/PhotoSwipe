@@ -54,7 +54,7 @@ class ZoomHandler {
     const { currSlide } = this.gestures.pswp;
     if (currSlide) {
       this._startZoomLevel = currSlide.currZoomLevel;
-      this._startPan = equalizePoints(this._startPan, currSlide.pan);
+      equalizePoints(this._startPan, currSlide.pan);
     }
 
     this.gestures.pswp.animations.stopAllPan();
@@ -186,7 +186,7 @@ class ZoomHandler {
       this._startZoomPoint.x = 0;
       this._startZoomPoint.y = 0;
       this._startZoomLevel = prevZoomLevel;
-      this._startPan = equalizePoints(this._startPan, initialPan);
+      equalizePoints(this._startPan, initialPan);
     }
 
     if (currZoomLevelNeedsChange) {
@@ -211,7 +211,7 @@ class ZoomHandler {
 
     if (!panNeedsChange && !currZoomLevelNeedsChange && !restoreBgOpacity) {
       // update resolution after gesture
-      currSlide.setResolution(destinationZoomLevel);
+      currSlide._setResolution(destinationZoomLevel);
       currSlide.applyCurrentZoomPan();
 
       // nothing to animate
@@ -257,7 +257,7 @@ class ZoomHandler {
       },
       onComplete: () => {
         // update resolution after transition ends
-        currSlide.setResolution(destinationZoomLevel);
+        currSlide._setResolution(destinationZoomLevel);
         currSlide.applyCurrentZoomPan();
       }
     });

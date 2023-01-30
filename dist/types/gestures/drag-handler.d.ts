@@ -10,6 +10,7 @@ declare class DragHandler {
      */
     constructor(gestures: Gestures);
     gestures: import("./gestures.js").default;
+    pswp: import("../photoswipe.js").default;
     /** @type {Point} */
     startPan: Point;
     start(): void;

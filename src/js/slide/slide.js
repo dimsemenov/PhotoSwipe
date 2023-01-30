@@ -116,7 +116,7 @@ class Slide {
     this.updateContentSize();
     this.appendHeavy();
 
-    holderElement.appendChild(this.container);
+    this.holderElement.appendChild(this.container);
 
     this.zoomAndPanToInitial();
 
@@ -316,10 +316,10 @@ class Slide {
     this.setZoomLevel(destZoomLevel);
     this.pan.x = this.calculateZoomToPanOffset('x', centerPoint, prevZoomLevel);
     this.pan.y = this.calculateZoomToPanOffset('y', centerPoint, prevZoomLevel);
-    this.pan = roundPoint(this.pan);
+    roundPoint(this.pan);
 
     const finishTransition = () => {
-      this.setResolution(destZoomLevel);
+      this._setResolution(destZoomLevel);
       this.applyCurrentZoomPan();
     };
 
@@ -439,7 +439,7 @@ class Slide {
 
     // pan according to the zoom level
     this.bounds.update(this.currZoomLevel);
-    this.pan = equalizePoints(this.pan, this.bounds.center);
+    equalizePoints(this.pan, this.bounds.center);
     this.pswp.dispatch('initialZoomPan', { slide: this });
   }
 
@@ -459,7 +459,7 @@ class Slide {
   calculateSize() {
     const { pswp } = this;
 
-    this.panAreaSize = equalizePoints(
+    equalizePoints(
       this.panAreaSize,
       getPanAreaSize(pswp.options, pswp.viewportSize, this.data, this.index)
     );
@@ -492,7 +492,7 @@ class Slide {
    *
    * @param {number} newResolution
    */
-  setResolution(newResolution) {
+  _setResolution(newResolution) {
     if (newResolution === this.currentResolution) {
       return;
     }

@@ -1,6 +1,6 @@
 /** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
-/** @typedef {import('../photoswipe.js').PreparedPhotoSwipeOptions} PreparedPhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import('../photoswipe.js').DataSource} DataSource */
 /** @typedef {import('../ui/ui-element.js').UIElementData} UIElementData */
 /** @typedef {import('../slide/content.js').default} ContentDefault */
@@ -119,7 +119,7 @@
  * @prop {undefined} initialZoomOut
  * @prop {undefined} initialZoomInEnd
  * @prop {undefined} initialZoomOutEnd
- * @prop {{ dataSource: DataSource, numItems: number }} numItems
+ * @prop {{ dataSource: DataSource | undefined, numItems: number }} numItems
  * @prop {{ itemData: SlideData; index: number }} itemData
  * @prop {{ index: number, itemData: SlideData, instance: PhotoSwipe }} thumbBounds
  */
@@ -127,7 +127,7 @@
 /**
  * @typedef {Object} PhotoSwipeFiltersMap https://photoswipe.com/filters/
  *
- * @prop {(numItems: number, dataSource: DataSource) => number} numItems
+ * @prop {(numItems: number, dataSource: DataSource | undefined) => number} numItems
  * Modify the total amount of slides. Example on Data sources page.
  * https://photoswipe.com/filters/#numitems
  *
@@ -172,11 +172,11 @@
  * Modify a UI element that's being created.
  * https://photoswipe.com/filters/#uielement
  *
- * @prop {(thumbnail: HTMLElement, itemData: SlideData, index: number) => HTMLElement} thumbEl
+ * @prop {(thumbnail: HTMLElement | null | undefined, itemData: SlideData, index: number) => HTMLElement} thumbEl
  * Modify the thubmnail element from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbel
  *
- * @prop {(thumbBounds: Bounds, itemData: SlideData, index: number) => Bounds} thumbBounds
+ * @prop {(thumbBounds: Bounds | undefined, itemData: SlideData, index: number) => Bounds} thumbBounds
  * Modify the thubmnail bounds from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbbounds
  *
@@ -198,35 +198,6 @@
  * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {(event: AugmentedEvent<T>) => void} EventCallback
  */
-
-/** @type {PreparedPhotoSwipeOptions} */
-export const defaultOptions = {
-  allowPanToNext: true,
-  spacing: 0.1,
-  loop: true,
-  pinchToClose: true,
-  closeOnVerticalDrag: true,
-  hideAnimationDuration: 333,
-  showAnimationDuration: 333,
-  zoomAnimationDuration: 333,
-  escKey: true,
-  arrowKeys: true,
-  returnFocus: true,
-  maxWidthToAnimate: 4000,
-  clickToCloseNonZoomable: true,
-  imageClickAction: 'zoom-or-close',
-  bgClickAction: 'close',
-  tapAction: 'toggle-controls',
-  doubleTapAction: 'zoom',
-  indexIndicatorSep: ' / ',
-  preloaderDelay: 2000,
-  bgOpacity: 0.8,
-
-  index: 0,
-  errorMsg: 'The image cannot be loaded',
-  preload: [1, 2],
-  easing: 'cubic-bezier(.4,0,.22,1)'
-};
 
 /**
  * Base PhotoSwipe event object
@@ -270,8 +241,8 @@ class Eventable {
     /** @type {PhotoSwipe | undefined} */
     this.pswp = undefined;
 
-    /** @type {PreparedPhotoSwipeOptions} */
-    this.options = defaultOptions;
+    /** @type {PhotoSwipeOptions | undefined} */
+    this.options = undefined;
   }
 
   /**

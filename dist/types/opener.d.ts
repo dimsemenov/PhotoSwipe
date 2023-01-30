@@ -52,7 +52,7 @@ declare class Opener {
     private _cropContainer2;
     /**
      * @private
-     * @type {Bounds | null}
+     * @type {Bounds | undefined}
      */
     private _thumbBounds;
     /** @private */

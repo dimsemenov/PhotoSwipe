@@ -46,7 +46,8 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    */
   constructor(options) {
     super();
-    this.options = this._prepareOptions(options || {});
+    /** @type {PhotoSwipeOptions} */
+    this.options = options || {};
     this._uid = 0;
     this.shouldOpen = false;
     /**

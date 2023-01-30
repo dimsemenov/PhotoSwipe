@@ -42,6 +42,7 @@ class Animations {
    * @private
    * @param {AnimationProps} props
    * @param {boolean} [isSpring]
+   * @returns {Animation}
    */
   _start(props, isSpring) {
     const animation = isSpring
@@ -50,6 +51,8 @@ class Animations {
 
     this.activeAnimations.push(animation);
     animation.onFinish = () => this.stop(animation);
+
+    return animation;
   }
 
   /**

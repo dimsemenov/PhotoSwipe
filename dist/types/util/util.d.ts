@@ -15,9 +15,8 @@ export function createElement<T extends keyof HTMLElementTagNameMap>(className: 
 export function equalizePoints(p1: Point, p2: Point): Point;
 /**
  * @param {Point} p
- * @returns {Point}
  */
-export function roundPoint(p: Point): Point;
+export function roundPoint(p: Point): void;
 /**
  * Returns distance between two points.
  *

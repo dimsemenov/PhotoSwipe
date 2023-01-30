@@ -66,9 +66,9 @@ class Opener {
 
     /**
      * @private
-     * @type {Bounds | null}
+     * @type {Bounds | undefined}
      */
-    this._thumbBounds = null;
+    this._thumbBounds = undefined;
 
 
     this._prepareOpen = this._prepareOpen.bind(this);
@@ -130,11 +130,11 @@ class Opener {
 
     if (options.showHideAnimationType === 'fade') {
       options.showHideOpacity = true;
-      this._thumbBounds = null;
+      this._thumbBounds = undefined;
     } else if (options.showHideAnimationType === 'none') {
       options.showHideOpacity = false;
       this._duration = 0;
-      this._thumbBounds = null;
+      this._thumbBounds = undefined;
     } else if (this.isOpening && pswp._initialThumbBounds) {
       // Use initial bounds if defined
       this._thumbBounds = pswp._initialThumbBounds;
@@ -416,7 +416,7 @@ class Opener {
     }
 
     if (currSlide) {
-      currSlide.pan = equalizePoints(currSlide.pan, innerRect || this._thumbBounds);
+      equalizePoints(currSlide.pan, innerRect || this._thumbBounds);
       currSlide.currZoomLevel = this._thumbBounds.w / currSlide.width;
       if (animate) {
         this._animateTo(currSlide.container, 'transform', currSlide.getCurrentTransform());

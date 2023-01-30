@@ -32,6 +32,8 @@ class UI {
     this.uiElementsData = [];
     /** @type {(UIElement | UIElementData)[]} */
     this.items = [];
+    /** @type {() => void} */
+    this.updatePreloaderVisibility = () => {};
 
     /**
      * @private

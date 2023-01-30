@@ -56,10 +56,8 @@ declare class Gestures {
     isMultitouch: boolean;
     isDragging: boolean;
     isZooming: boolean;
-    /** @type {number | null}
-     * @private
-     */
-    private _raf;
+    /** @type {number | null} */
+    raf: number | null;
     /** @type {NodeJS.Timeout | null}
      * @private
      */

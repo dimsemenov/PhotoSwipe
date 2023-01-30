@@ -21,23 +21,30 @@ const MIN_SLIDES_TO_CACHE = 5;
  */
 export function lazyLoadData(itemData, instance, index) {
   const content = instance.createContentFromData(itemData, index);
+  /** @type {ZoomLevel | undefined} */
+  let zoomLevel;
 
   const { options } = instance;
 
   // We need to know dimensions of the image to preload it,
   // as it might use srcset, and we need to define sizes
-  const zoomLevel = new ZoomLevel(options, itemData, -1);
-  if (instance.pswp) {
-    const viewportSize = instance.pswp.viewportSize || getViewportSize(options, instance.pswp);
-    const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
-    zoomLevel.update(content.width, content.height, panAreaSize);
+  if (options) {
+    zoomLevel = new ZoomLevel(options, itemData, -1);
+    if (instance.pswp) {
+      const viewportSize = instance.pswp.viewportSize || getViewportSize(options, instance.pswp);
+      const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
+      zoomLevel.update(content.width, content.height, panAreaSize);
+    }
   }
 
   content.lazyLoad();
-  content.setDisplayedSize(
-    Math.ceil(content.width * zoomLevel.initial),
-    Math.ceil(content.height * zoomLevel.initial)
-  );
+
+  if (zoomLevel) {
+    content.setDisplayedSize(
+      Math.ceil(content.width * zoomLevel.initial),
+      Math.ceil(content.height * zoomLevel.initial)
+    );
+  }
 
   return content;
 }

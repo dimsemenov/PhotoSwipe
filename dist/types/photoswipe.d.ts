@@ -234,201 +234,6 @@ export type PreparedPhotoSwipeOptions = {
     thumbSelector?: string | false | undefined;
 };
 /**
- * @template T
- * @typedef {import('./types.js').Type<T>} Type<T>
- */
-/** @typedef {import('./slide/slide.js').SlideData} SlideData */
-/** @typedef {import('./slide/zoom-level.js').ZoomLevelOption} ZoomLevelOption */
-/** @typedef {import('./ui/ui-element.js').UIElementData} UIElementData */
-/** @typedef {import('./main-scroll.js').ItemHolder} ItemHolder */
-/** @typedef {import('./core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
-/** @typedef {import('./core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
-/** @typedef {import('./slide/get-thumb-bounds').Bounds} Bounds */
-/**
- * @template T
- * @typedef {import('./core/eventable.js').EventCallback<T>} EventCallback<T>
- */
-/**
- * @template T
- * @typedef {import('./core/eventable.js').AugmentedEvent<T>} AugmentedEvent<T>
- */
-/** @typedef {{ x: number; y: number; id?: string | number }} Point */
-/** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
-/** @typedef {SlideData[]} DataSourceArray */
-/** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
-/** @typedef {DataSourceArray | DataSourceObject} DataSource */
-/** @typedef {(point: Point, originalEvent: PointerEvent) => void} ActionFn */
-/** @typedef {'close' | 'next' | 'zoom' | 'zoom-or-close' | 'toggle-controls'} ActionType */
-/** @typedef {Type<PhotoSwipe> | { default: Type<PhotoSwipe> }} PhotoSwipeModule */
-/** @typedef {PhotoSwipeModule | Promise<PhotoSwipeModule> | (() => Promise<PhotoSwipeModule>)} PhotoSwipeModuleOption */
-/**
- * @typedef {string | NodeListOf<HTMLElement> | HTMLElement[] | HTMLElement} ElementProvider
- */
-/** @typedef {Partial<PreparedPhotoSwipeOptions>} PhotoSwipeOptions https://photoswipe.com/options/ */
-/**
- * @typedef {Object} PreparedPhotoSwipeOptions
- *
- * @prop {DataSource} [dataSource]
- * Pass an array of any items via dataSource option. Its length will determine amount of slides
- * (which may be modified further from numItems event).
- *
- * Each item should contain data that you need to generate slide
- * (for image slide it would be src (image URL), width (image width), height, srcset, alt).
- *
- * If these properties are not present in your initial array, you may "pre-parse" each item from itemData filter.
- *
- * @prop {number} bgOpacity
- * Background backdrop opacity, always define it via this option and not via CSS rgba color.
- *
- * @prop {number} spacing
- * Spacing between slides. Defined as ratio relative to the viewport width (0.1 = 10% of viewport).
- *
- * @prop {boolean} allowPanToNext
- * Allow swipe navigation to the next slide when the current slide is zoomed. Does not apply to mouse events.
- *
- * @prop {boolean} loop
- * If set to true you'll be able to swipe from the last to the first image.
- * Option is always false when there are less than 3 slides.
- *
- * @prop {boolean} [wheelToZoom]
- * By default PhotoSwipe zooms image with ctrl-wheel, if you enable this option - image will zoom just via wheel.
- *
- * @prop {boolean} pinchToClose
- * Pinch touch gesture to close the gallery.
- *
- * @prop {boolean} closeOnVerticalDrag
- * Vertical drag gesture to close the PhotoSwipe.
- *
- * @prop {Padding} [padding]
- * Slide area padding (in pixels).
- *
- * @prop {(viewportSize: Point, itemData: SlideData, index: number) => Padding} [paddingFn]
- * The option is checked frequently, so make sure it's performant. Overrides padding option if defined. For example:
- *
- * @prop {number | false} hideAnimationDuration
- * Transition duration in milliseconds, can be 0.
- *
- * @prop {number | false} showAnimationDuration
- * Transition duration in milliseconds, can be 0.
- *
- * @prop {number | false} zoomAnimationDuration
- * Transition duration in milliseconds, can be 0.
- *
- * @prop {string} easing
- * String, 'cubic-bezier(.4,0,.22,1)'. CSS easing function for open/close/zoom transitions.
- *
- * @prop {boolean} escKey
- * Esc key to close.
- *
- * @prop {boolean} arrowKeys
- * Left/right arrow keys for navigation.
- *
- * @prop {boolean} returnFocus
- * Restore focus the last active element after PhotoSwipe is closed.
- *
- * @prop {boolean} clickToCloseNonZoomable
- * If image is not zoomable (for example, smaller than viewport) it can be closed by clicking on it.
- *
- * @prop {ActionType | ActionFn | false} imageClickAction
- * Refer to click and tap actions page.
- *
- * @prop {ActionType | ActionFn | false} bgClickAction
- * Refer to click and tap actions page.
- *
- * @prop {ActionType | ActionFn | false} tapAction
- * Refer to click and tap actions page.
- *
- * @prop {ActionType | ActionFn | false} doubleTapAction
- * Refer to click and tap actions page.
- *
- * @prop {number} preloaderDelay
- * Delay before the loading indicator will be displayed,
- * if image is loaded during it - the indicator will not be displayed at all. Can be zero.
- *
- * @prop {string} indexIndicatorSep
- * Used for slide count indicator ("1 of 10 ").
- *
- * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipe) => Point} [getViewportSizeFn]
- * A function that should return slide viewport width and height, in format {x: 100, y: 100}.
- *
- * @prop {string} errorMsg
- * Message to display when the image wasn't able to load. If you need to display HTML - use contentErrorElement filter.
- *
- * @prop {[number, number]} preload
- * Lazy loading of nearby slides based on direction of movement. Should be an array with two integers,
- * first one - number of items to preload before the current image, second one - after the current image.
- * Two nearby images are always loaded.
- *
- * @prop {string} [mainClass]
- * Class that will be added to the root element of PhotoSwipe, may contain multiple separated by space.
- * Example on Styling page.
- *
- * @prop {HTMLElement} [appendToEl]
- * Element to which PhotoSwipe dialog will be appended when it opens.
- *
- * @prop {number} maxWidthToAnimate
- * Maximum width of image to animate, if initial rendered image width
- * is larger than this value - the opening/closing transition will be automatically disabled.
- *
- * @prop {string} [closeTitle]
- * Translating
- *
- * @prop {string} [zoomTitle]
- * Translating
- *
- * @prop {string} [arrowPrevTitle]
- * Translating
- *
- * @prop {string} [arrowNextTitle]
- * Translating
- *
- * @prop {'zoom' | 'fade' | 'none'} [showHideAnimationType]
- * To adjust opening or closing transition type use lightbox option `showHideAnimationType` (`String`).
- * It supports three values - `zoom` (default), `fade` (default if there is no thumbnail) and `none`.
- *
- * Animations are automatically disabled if user `(prefers-reduced-motion: reduce)`.
- *
- * @prop {number} index
- * Defines start slide index.
- *
- * @prop {(e: MouseEvent) => number} [getClickedIndexFn]
- *
- * @prop {boolean} [arrowPrev]
- * @prop {boolean} [arrowNext]
- * @prop {boolean} [zoom]
- * @prop {boolean} [close]
- * @prop {boolean} [counter]
- *
- * @prop {string} [arrowPrevSVG]
- * @prop {string} [arrowNextSVG]
- * @prop {string} [zoomSVG]
- * @prop {string} [closeSVG]
- * @prop {string} [counterSVG]
- *
- * @prop {string} [arrowPrevTitle]
- * @prop {string} [arrowNextTitle]
- * @prop {string} [zoomTitle]
- * @prop {string} [closeTitle]
- * @prop {string} [counterTitle]
- *
- * @prop {ZoomLevelOption} [initialZoomLevel]
- * @prop {ZoomLevelOption} [secondaryZoomLevel]
- * @prop {ZoomLevelOption} [maxZoomLevel]
- *
- * @prop {boolean} [mouseMovePan]
- * @prop {Point | null} [initialPointerPos]
- * @prop {boolean} [showHideOpacity]
- *
- * @prop {PhotoSwipeModuleOption} [pswpModule]
- * @prop {() => Promise<any>} [openPromise]
- * @prop {boolean} [preloadFirstSlide]
- * @prop {ElementProvider} [gallery]
- * @prop {string} [gallerySelector]
- * @prop {ElementProvider} [children]
- * @prop {string} [childSelector]
- * @prop {string | false} [thumbSelector]
- */
-/**
  * PhotoSwipe Core
  */
 declare class PhotoSwipe extends PhotoSwipeBase {
@@ -436,6 +241,7 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      * @param {PhotoSwipeOptions} [options]
      */
     constructor(options?: Partial<PreparedPhotoSwipeOptions> | undefined);
+    options: PreparedPhotoSwipeOptions;
     /**
      * offset of viewport relative to document
      *
@@ -467,8 +273,8 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      * @type {SlideData}
      */
     private _initialItemData;
-    /** @type {Bounds | null} */
-    _initialThumbBounds: Bounds | null;
+    /** @type {Bounds | undefined} */
+    _initialThumbBounds: Bounds | undefined;
     /** @type {HTMLDivElement | undefined} */
     topBar: HTMLDivElement | undefined;
     /** @type {HTMLDivElement | undefined} */
@@ -488,9 +294,9 @@ declare class PhotoSwipe extends PhotoSwipeBase {
     opener: Opener;
     keyboard: Keyboard;
     contentLoader: ContentLoader;
-    scrollWheel: ScrollWheel;
-    ui: UI;
-    init(): void;
+    /** @returns {boolean} */
+    init(): boolean;
+    scrollWheel: ScrollWheel | undefined;
     /**
      * Get looped slide index
      * (for example, -1 will return the last slide)
@@ -594,20 +400,27 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      */
     private _createMainStructure;
     bg: HTMLDivElement | undefined;
+    ui: UI | undefined;
     /**
      * Get position and dimensions of small thumbnail
      *   {x:,y:,w:}
      *
      * Height is optional (calculated based on the large image)
      *
-     * @returns {Bounds | null}
+     * @returns {Bounds | undefined}
      */
-    getThumbBounds(): Bounds | null;
+    getThumbBounds(): Bounds | undefined;
     /**
      * If the PhotoSwipe can have continuous loop
      * @returns Boolean
      */
     canLoop(): boolean;
+    /**
+     * @private
+     * @param {PhotoSwipeOptions} options
+     * @returns {PreparedPhotoSwipeOptions}
+     */
+    private _prepareOptions;
 }
 import PhotoSwipeBase from "./core/base.js";
 import Slide from "./slide/slide.js";

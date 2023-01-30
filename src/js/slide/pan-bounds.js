@@ -5,9 +5,6 @@ import { parsePaddingOption } from '../util/viewport-size.js';
 /** @typedef {Record<Axis, number>} Point */
 /** @typedef {'x' | 'y'} Axis */
 
-/** @type {Point} */
-const defaultPoint = { x: 0, y: 0 };
-
 /**
  * Calculates minimum, maximum and initial (center) bounds of a slide
  */
@@ -18,9 +15,9 @@ class PanBounds {
   constructor(slide) {
     this.slide = slide;
     this.currZoomLevel = 1;
-    this.center = /** @type {Point} */ ({ ...defaultPoint });
-    this.max = /** @type {Point} */ ({ ...defaultPoint });
-    this.min = /** @type {Point} */ ({ ...defaultPoint });
+    this.center = /** @type {Point} */ { x: 0, y: 0 };
+    this.max = /** @type {Point} */ { x: 0, y: 0 };
+    this.min = /** @type {Point} */ { x: 0, y: 0 };
   }
 
   /**
@@ -76,9 +73,12 @@ class PanBounds {
 
   // _getZeroBounds
   reset() {
-    this.center = { ...defaultPoint };
-    this.max = { ...defaultPoint };
-    this.min = { ...defaultPoint };
+    this.center.x = 0;
+    this.center.y = 0;
+    this.max.x = 0;
+    this.max.y = 0;
+    this.min.x = 0;
+    this.min.y = 0;
   }
 
   /**

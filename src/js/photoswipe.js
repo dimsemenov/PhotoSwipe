@@ -220,6 +220,35 @@ import ContentLoader from './slide/loader.js';
  * @prop {string | false} [thumbSelector]
  */
 
+/** @type {PreparedPhotoSwipeOptions} */
+const defaultOptions = {
+  allowPanToNext: true,
+  spacing: 0.1,
+  loop: true,
+  pinchToClose: true,
+  closeOnVerticalDrag: true,
+  hideAnimationDuration: 333,
+  showAnimationDuration: 333,
+  zoomAnimationDuration: 333,
+  escKey: true,
+  arrowKeys: true,
+  returnFocus: true,
+  maxWidthToAnimate: 4000,
+  clickToCloseNonZoomable: true,
+  imageClickAction: 'zoom-or-close',
+  bgClickAction: 'close',
+  tapAction: 'toggle-controls',
+  doubleTapAction: 'zoom',
+  indexIndicatorSep: ' / ',
+  preloaderDelay: 2000,
+  bgOpacity: 0.8,
+
+  index: 0,
+  errorMsg: 'The image cannot be loaded',
+  preload: [1, 2],
+  easing: 'cubic-bezier(.4,0,.22,1)'
+};
+
 /**
  * PhotoSwipe Core
  */
@@ -267,8 +296,8 @@ class PhotoSwipe extends PhotoSwipeBase {
      * @type {SlideData}
      */
     this._initialItemData = {};
-    /** @type {Bounds | null} */
-    this._initialThumbBounds = null;
+    /** @type {Bounds | undefined} */
+    this._initialThumbBounds = undefined;
 
     /** @type {HTMLDivElement | undefined} */
     this.topBar = undefined;
@@ -290,14 +319,12 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.opener = new Opener(this);
     this.keyboard = new Keyboard(this);
     this.contentLoader = new ContentLoader(this);
-    // initialize scroll wheel handler to block the scroll
-    this.scrollWheel = new ScrollWheel(this);
-    this.ui = new UI(this);
   }
 
+  /** @returns {boolean} */
   init() {
     if (this.isOpen || this.isDestroying) {
-      return;
+      return false;
     }
 
     this.isOpen = true;
@@ -321,6 +348,9 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.currIndex = this.options.index || 0;
     this.potentialIndex = this.currIndex;
     this.dispatch('firstUpdate'); // starting index can be modified here
+
+    // initialize scroll wheel handler to block the scroll
+    this.scrollWheel = new ScrollWheel(this);
 
     // sanitize index
     if (Number.isNaN(this.currIndex)
@@ -381,6 +411,8 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.opener.open();
 
     this.dispatch('afterInit');
+
+    return true;
   }
 
   /**
@@ -606,11 +638,11 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     //this._prevViewportSize.x = newWidth;
     //this._prevViewportSize.y = newHeight;
-    this._prevViewportSize = equalizePoints(this._prevViewportSize, newViewportSize);
+    equalizePoints(this._prevViewportSize, newViewportSize);
 
     this.dispatch('beforeResize');
 
-    this.viewportSize = equalizePoints(this.viewportSize, this._prevViewportSize);
+    equalizePoints(this.viewportSize, this._prevViewportSize);
 
     this._updatePageScrollOffset();
 
@@ -716,6 +748,7 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     this.mainScroll.appendHolders();
 
+    this.ui = new UI(this);
     this.ui.init();
 
     // append to DOM
@@ -729,7 +762,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    *
    * Height is optional (calculated based on the large image)
    *
-   * @returns {Bounds | null}
+   * @returns {Bounds | undefined}
    */
   getThumbBounds() {
     return getThumbBounds(
@@ -745,6 +778,24 @@ class PhotoSwipe extends PhotoSwipeBase {
    */
   canLoop() {
     return (this.options.loop && this.getNumItems() > 2);
+  }
+
+  /**
+   * @private
+   * @param {PhotoSwipeOptions} options
+   * @returns {PreparedPhotoSwipeOptions}
+   */
+  _prepareOptions(options) {
+    if (window.matchMedia('(prefers-reduced-motion), (update: slow)').matches) {
+      options.showHideAnimationType = 'none';
+      options.zoomAnimationDuration = 0;
+    }
+
+    /** @type {PreparedPhotoSwipeOptions} */
+    return {
+      ...defaultOptions,
+      ...options
+    };
   }
 }
 

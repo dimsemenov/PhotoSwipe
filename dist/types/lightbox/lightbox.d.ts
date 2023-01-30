@@ -49,6 +49,8 @@ declare class PhotoSwipeLightbox extends PhotoSwipeBase {
      * @param {PhotoSwipeOptions} [options]
      */
     constructor(options?: Partial<import("../photoswipe.js").PreparedPhotoSwipeOptions> | undefined);
+    /** @type {PhotoSwipeOptions} */
+    options: Partial<import("../photoswipe.js").PreparedPhotoSwipeOptions>;
     _uid: number;
     shouldOpen: boolean;
     /**
