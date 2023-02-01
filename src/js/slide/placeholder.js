@@ -8,20 +8,19 @@ class Placeholder {
   constructor(imageSrc, container) {
     // Create placeholder
     // (stretched thumbnail or simple div behind the main image)
+    /** @type {HTMLImageElement | HTMLDivElement | null} */
     this.element = createElement(
       'pswp__img pswp__img--placeholder',
-      imageSrc ? 'img' : '',
+      imageSrc ? 'img' : 'div',
       container
     );
 
     if (imageSrc) {
-      /** @type {HTMLImageElement} */
-      (this.element).decoding = 'async';
-      /** @type {HTMLImageElement} */
-      (this.element).alt = '';
-      /** @type {HTMLImageElement} */
-      (this.element).src = imageSrc;
-      this.element.setAttribute('role', 'presentation');
+      const imgEl = /** @type {HTMLImageElement} */ (this.element);
+      imgEl.decoding = 'async';
+      imgEl.alt = '';
+      imgEl.src = imageSrc;
+      imgEl.setAttribute('role', 'presentation');
     }
 
     this.element.setAttribute('aria-hidden', 'true');
@@ -49,7 +48,7 @@ class Placeholder {
   }
 
   destroy() {
-    if (this.element.parentNode) {
+    if (this.element?.parentNode) {
       this.element.remove();
     }
     this.element = null;

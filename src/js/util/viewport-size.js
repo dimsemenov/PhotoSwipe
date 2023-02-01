@@ -1,10 +1,12 @@
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /**
  * @param {PhotoSwipeOptions} options
  * @param {PhotoSwipe} pswp
+ * @returns {Point}
  */
 export function getViewportSize(options, pswp) {
   if (options.getViewportSizeFn) {
@@ -55,14 +57,13 @@ export function getViewportSize(options, pswp) {
  *
  * @param {'left' | 'top' | 'bottom' | 'right'} prop
  * @param {PhotoSwipeOptions} options PhotoSwipe options
- * @param {{ x?: number; y?: number }} viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
+ * @param {Point} viewportSize PhotoSwipe viewport size, for example: { x:800, y:600 }
  * @param {SlideData} itemData Data about the slide
  * @param {number} index Slide index
  * @returns {number}
  */
 export function parsePaddingOption(prop, options, viewportSize, itemData, index) {
-  /** @type {number} */
-  let paddingValue;
+  let paddingValue = 0;
 
   if (options.paddingFn) {
     paddingValue = options.paddingFn(viewportSize, itemData, index)[prop];
@@ -77,14 +78,15 @@ export function parsePaddingOption(prop, options, viewportSize, itemData, index)
     }
   }
 
-  return paddingValue || 0;
+  return Number(paddingValue) || 0;
 }
 
 /**
  * @param {PhotoSwipeOptions} options
- * @param {{ x?: number; y?: number }} viewportSize
+ * @param {Point} viewportSize
  * @param {SlideData} itemData
  * @param {number} index
+ * @returns {Point}
  */
 export function getPanAreaSize(options, viewportSize, itemData, index) {
   return {

@@ -3,13 +3,13 @@ import Placeholder from './placeholder.js';
 
 /** @typedef {import('./slide.js').default} Slide */
 /** @typedef {import('./slide.js').SlideData} SlideData */
-/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
 /** @typedef {import('../util/util.js').LoadState} LoadState */
 
 class Content {
   /**
    * @param {SlideData} itemData Slide data
-   * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox instance
+   * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox instance
    * @param {number} index
    */
   constructor(itemData, instance, index) {
@@ -17,8 +17,12 @@ class Content {
     this.data = itemData;
     this.index = index;
 
-    /** @type {HTMLImageElement | HTMLDivElement} */
+    /** @type {HTMLImageElement | HTMLDivElement | undefined} */
     this.element = undefined;
+    /** @type {Placeholder | undefined} */
+    this.placeholder = undefined;
+    /** @type {Slide | undefined} */
+    this.slide = undefined;
 
     this.displayedImageWidth = 0;
     this.displayedImageHeight = 0;
@@ -28,6 +32,7 @@ class Content {
 
     this.isAttached = false;
     this.hasSlide = false;
+    this.isDecoding = false;
     /** @type {LoadState} */
     this.state = LOAD_STATE.IDLE;
 
@@ -48,7 +53,7 @@ class Content {
       setTimeout(() => {
         if (this.placeholder) {
           this.placeholder.destroy();
-          this.placeholder = null;
+          this.placeholder = undefined;
         }
       }, 1000);
     }
@@ -57,8 +62,8 @@ class Content {
   /**
    * Preload content
    *
-   * @param {boolean=} isLazy
-   * @param {boolean=} reload
+   * @param {boolean} isLazy
+   * @param {boolean} [reload]
    */
   load(isLazy, reload) {
     if (this.slide && this.usePlaceholder()) {
@@ -99,7 +104,7 @@ class Content {
         this.loadImage(isLazy);
       }
     } else {
-      this.element = createElement('pswp__content');
+      this.element = createElement('pswp__content', 'div');
       this.element.innerHTML = this.data.html || '';
     }
 
@@ -114,11 +119,13 @@ class Content {
    * @param {boolean} isLazy
    */
   loadImage(isLazy) {
-    const imageElement = /** @type HTMLImageElement */ (this.element);
-
-    if (this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
+    if (!this.isImageContent()
+      || !this.element
+      || this.instance.dispatch('contentLoadImage', { content: this, isLazy }).defaultPrevented) {
       return;
     }
+
+    const imageElement = /** @type HTMLImageElement */ (this.element);
 
     this.updateSrcsetSizes();
 
@@ -126,9 +133,8 @@ class Content {
       imageElement.srcset = this.data.srcset;
     }
 
-    imageElement.src = this.data.src;
-
-    imageElement.alt = this.data.alt || '';
+    imageElement.src = this.data.src ?? '';
+    imageElement.alt = this.data.alt ?? '';
 
     this.state = LOAD_STATE.LOADING;
 
@@ -164,7 +170,7 @@ class Content {
   onLoaded() {
     this.state = LOAD_STATE.LOADED;
 
-    if (this.slide) {
+    if (this.slide && this.element) {
       this.instance.dispatch('loadComplete', { slide: this.slide, content: this });
 
       // if content is reloaded
@@ -205,6 +211,9 @@ class Content {
     );
   }
 
+  /**
+   * @returns {Boolean} If the content is in error state
+   */
   isError() {
     return this.state === LOAD_STATE.ERROR;
   }
@@ -231,8 +240,10 @@ class Content {
       this.placeholder.setDisplayedSize(width, height);
     }
 
-    // eslint-disable-next-line max-len
-    if (this.instance.dispatch('contentResize', { content: this, width, height }).defaultPrevented) {
+    if (this.instance.dispatch(
+      'contentResize',
+      { content: this, width, height }).defaultPrevented
+    ) {
       return;
     }
 
@@ -251,8 +262,10 @@ class Content {
       }
 
       if (this.slide) {
-        // eslint-disable-next-line max-len
-        this.instance.dispatch('imageSizeChange', { slide: this.slide, width, height, content: this });
+        this.instance.dispatch(
+          'imageSizeChange',
+          { slide: this.slide, width, height, content: this }
+        );
       }
     }
   }
@@ -277,24 +290,23 @@ class Content {
     // Never lower quality, if it was increased previously.
     // Chrome does this automatically, Firefox and Safari do not,
     // so we store largest used size in dataset.
-    // Handle srcset sizes attribute.
-    //
-    // Never lower quality, if it was increased previously.
-    // Chrome does this automatically, Firefox and Safari do not,
-    // so we store largest used size in dataset.
-    if (this.data.srcset) {
-      const image = /** @type HTMLImageElement */ (this.element);
-      const sizesWidth = this.instance.applyFilters(
-        'srcsetSizesWidth',
-        this.displayedImageWidth,
-        this
-      );
+    if (!this.isImageContent() || !this.element || !this.data.srcset) {
+      return;
+    }
 
-      if (!image.dataset.largestUsedSize
-          || sizesWidth > parseInt(image.dataset.largestUsedSize, 10)) {
-        image.sizes = sizesWidth + 'px';
-        image.dataset.largestUsedSize = String(sizesWidth);
-      }
+    const image = /** @type HTMLImageElement */ (this.element);
+    const sizesWidth = this.instance.applyFilters(
+      'srcsetSizesWidth',
+      this.displayedImageWidth,
+      this
+    );
+
+    if (
+      !image.dataset.largestUsedSize
+      || sizesWidth > parseInt(image.dataset.largestUsedSize, 10)
+    ) {
+      image.sizes = sizesWidth + 'px';
+      image.dataset.largestUsedSize = String(sizesWidth);
     }
   }
 
@@ -336,7 +348,7 @@ class Content {
    */
   destroy() {
     this.hasSlide = false;
-    this.slide = null;
+    this.slide = undefined;
 
     if (this.instance.dispatch('contentDestroy', { content: this }).defaultPrevented) {
       return;
@@ -346,13 +358,13 @@ class Content {
 
     if (this.placeholder) {
       this.placeholder.destroy();
-      this.placeholder = null;
+      this.placeholder = undefined;
     }
 
     if (this.isImageContent() && this.element) {
       this.element.onload = null;
       this.element.onerror = null;
-      this.element = null;
+      this.element = undefined;
     }
   }
 
@@ -361,15 +373,14 @@ class Content {
    */
   displayError() {
     if (this.slide) {
-      /** @type {HTMLElement} */
-      let errorMsgEl = createElement('pswp__error-msg');
-      errorMsgEl.innerText = this.instance.options.errorMsg;
-      errorMsgEl = this.instance.applyFilters(
+      let errorMsgEl = createElement('pswp__error-msg', 'div');
+      errorMsgEl.innerText = this.instance.options?.errorMsg ?? '';
+      errorMsgEl = /** @type {HTMLDivElement} */ (this.instance.applyFilters(
         'contentErrorElement',
         errorMsgEl,
         this
-      );
-      this.element = createElement('pswp__content pswp__error-msg-container');
+      ));
+      this.element = createElement('pswp__content pswp__error-msg-container', 'div');
       this.element.appendChild(errorMsgEl);
       this.slide.container.innerText = '';
       this.slide.container.appendChild(this.element);
@@ -382,7 +393,7 @@ class Content {
    * Append the content
    */
   append() {
-    if (this.isAttached) {
+    if (this.isAttached || !this.element) {
       return;
     }
 
@@ -424,7 +435,7 @@ class Content {
       } else {
         this.appendImage();
       }
-    } else if (this.element && !this.element.parentNode) {
+    } else if (this.slide && !this.element.parentNode) {
       this.slide.container.appendChild(this.element);
     }
   }
@@ -435,22 +446,21 @@ class Content {
    * meaning the user can see it.
    */
   activate() {
-    if (this.instance.dispatch('contentActivate', { content: this }).defaultPrevented) {
+    if (this.instance.dispatch('contentActivate', { content: this }).defaultPrevented
+      || !this.slide) {
       return;
     }
 
-    if (this.slide) {
-      if (this.isImageContent() && this.isDecoding && !isSafari()) {
-        // add image to slide when it becomes active,
-        // even if it's not finished decoding
-        this.appendImage();
-      } else if (this.isError()) {
-        this.load(false, true); // try to reload
-      }
+    if (this.isImageContent() && this.isDecoding && !isSafari()) {
+      // add image to slide when it becomes active,
+      // even if it's not finished decoding
+      this.appendImage();
+    } else if (this.isError()) {
+      this.load(false, true); // try to reload
+    }
 
-      if (this.slide.holderElement) {
-        this.slide.holderElement.setAttribute('aria-hidden', 'false');
-      }
+    if (this.slide.holderElement) {
+      this.slide.holderElement.setAttribute('aria-hidden', 'false');
     }
   }
 

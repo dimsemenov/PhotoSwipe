@@ -31,38 +31,61 @@ class Gestures {
   constructor(pswp) {
     this.pswp = pswp;
 
-    /** @type {'x' | 'y'} */
-    this.dragAxis = undefined;
+    /** @type {'x' | 'y' | null} */
+    this.dragAxis = null;
 
     // point objects are defined once and reused
     // PhotoSwipe keeps track only of two pointers, others are ignored
     /** @type {Point} */
-    this.p1 = {}; // the first pressed pointer
+    this.p1 = { x: 0, y: 0 }; // the first pressed pointer
     /** @type {Point} */
-    this.p2 = {}; // the second pressed pointer
+    this.p2 = { x: 0, y: 0 }; // the second pressed pointer
     /** @type {Point} */
-    this.prevP1 = {};
+    this.prevP1 = { x: 0, y: 0 };
     /** @type {Point} */
-    this.prevP2 = {};
+    this.prevP2 = { x: 0, y: 0 };
     /** @type {Point} */
-    this.startP1 = {};
+    this.startP1 = { x: 0, y: 0 };
     /** @type {Point} */
-    this.startP2 = {};
+    this.startP2 = { x: 0, y: 0 };
     /** @type {Point} */
-    this.velocity = {};
+    this.velocity = { x: 0, y: 0 };
 
-    /** @type {Point} */
-    this._lastStartP1 = {};
-    /** @type {Point} */
-    this._intervalP1 = {};
+    /** @type {Point}
+     * @private
+     */
+    this._lastStartP1 = { x: 0, y: 0 };
+    /** @type {Point}
+     * @private
+     */
+    this._intervalP1 = { x: 0, y: 0 };
+    /** @private */
     this._numActivePoints = 0;
-    /** @type {Point[]} */
+    /** @type {Point[]}
+     * @private
+     */
     this._ongoingPointers = [];
-
+    /** @private */
     this._touchEventEnabled = 'ontouchstart' in window;
+    /** @private */
     this._pointerEventEnabled = !!(window.PointerEvent);
     this.supportsTouch = this._touchEventEnabled
                           || (this._pointerEventEnabled && navigator.maxTouchPoints > 1);
+    /** @private */
+    this._numActivePoints = 0;
+    /** @private */
+    this._intervalTime = 0;
+    /** @private */
+    this._velocityCalculated = false;
+    this.isMultitouch = false;
+    this.isDragging = false;
+    this.isZooming = false;
+    /** @type {number | null} */
+    this.raf = null;
+    /** @type {NodeJS.Timeout | null}
+     * @private
+     */
+    this._tapTimer = null;
 
     if (!this.supportsTouch) {
       // disable pan to next slide for non-touch devices
@@ -74,7 +97,11 @@ class Gestures {
     this.tapHandler = new TapHandler(this);
 
     pswp.on('bindEvents', () => {
-      pswp.events.add(pswp.scrollWrap, 'click', e => this._onClick(e));
+      pswp.events.add(
+        pswp.scrollWrap,
+        'click',
+        /** @type EventListener */(this._onClick.bind(this))
+      );
 
       if (this._pointerEventEnabled) {
         this._bindEvents('pointer', 'down', 'up', 'cancel');
@@ -89,8 +116,10 @@ class Gestures {
         // and you don't preventDefault touchstart (which PhotoSwipe does),
         // preventDefault will have no effect on touchmove and touchend.
         // Unless you bind it previously.
-        pswp.scrollWrap.ontouchmove = () => {}; // eslint-disable-line
-        pswp.scrollWrap.ontouchend = () => {}; // eslint-disable-line
+        if (pswp.scrollWrap) {
+          pswp.scrollWrap.ontouchmove = () => {};
+          pswp.scrollWrap.ontouchend = () => {};
+        }
       } else {
         this._bindEvents('mouse', 'down', 'up');
       }
@@ -98,7 +127,7 @@ class Gestures {
   }
 
   /**
-   *
+   * @private
    * @param {'mouse' | 'touch' | 'pointer'} pref
    * @param {'down' | 'start'} down
    * @param {'up' | 'end'} up
@@ -110,11 +139,19 @@ class Gestures {
 
     const cancelEvent = cancel ? pref + cancel : '';
 
-    events.add(pswp.scrollWrap, pref + down, this.onPointerDown.bind(this));
-    events.add(window, pref + 'move', this.onPointerMove.bind(this));
-    events.add(window, pref + up, this.onPointerUp.bind(this));
+    events.add(
+      pswp.scrollWrap,
+      pref + down,
+      /** @type EventListener */(this.onPointerDown.bind(this))
+    );
+    events.add(window, pref + 'move', /** @type EventListener */(this.onPointerMove.bind(this)));
+    events.add(window, pref + up, /** @type EventListener */(this.onPointerUp.bind(this)));
     if (cancelEvent) {
-      events.add(pswp.scrollWrap, cancelEvent, this.onPointerUp.bind(this));
+      events.add(
+        pswp.scrollWrap,
+        cancelEvent,
+        /** @type EventListener */(this.onPointerUp.bind(this))
+      );
     }
   }
 
@@ -128,10 +165,7 @@ class Gestures {
     //
     // Desktop Safari allows to drag images when preventDefault isn't called on mousedown,
     // even though preventDefault IS called on mousemove. That's why we preventDefault mousedown.
-    let isMousePointer;
-    if (e.type === 'mousedown' || e.pointerType === 'mouse') {
-      isMousePointer = true;
-    }
+    const isMousePointer = e.type === 'mousedown' || e.pointerType === 'mouse';
 
     // Allow dragging only via left mouse button.
     // http://www.quirksmode.org/js/events_properties.html
@@ -163,8 +197,6 @@ class Gestures {
     pswp.animations.stopAll();
 
     this._updatePoints(e, 'down');
-
-    this.pointerDown = true;
 
     if (this._numActivePoints === 1) {
       this.dragAxis = null;
@@ -274,7 +306,6 @@ class Gestures {
     }
 
     if (this._numActivePoints === 0) {
-      this.pointerDown = false;
       this._rafStopLoop();
 
       if (this.isDragging) {
@@ -324,7 +355,8 @@ class Gestures {
   /**
    * Update velocity at 50ms interval
    *
-   * @param {boolean=} force
+   * @private
+   * @param {boolean} [force]
    */
   _updateVelocity(force) {
     const time = Date.now();
@@ -406,6 +438,7 @@ class Gestures {
    * @private
    * @param {'x' | 'y'} axis
    * @param {number} duration
+   * @returns {number}
    */
   _getVelocity(axis, duration) {
     // displacement is like distance, but can be negative.
@@ -436,7 +469,6 @@ class Gestures {
     // TODO find a way to disable e.preventDefault on some elements
     //      via event or some class or something
     e.preventDefault();
-    return true;
   }
 
   /**
@@ -451,8 +483,8 @@ class Gestures {
     if (this._pointerEventEnabled) {
       const pointerEvent = /** @type {PointerEvent} */ (e);
       // Try to find the current pointer in ongoing pointers by its ID
-      const pointerIndex = this._ongoingPointers.findIndex((ongoingPoiner) => {
-        return ongoingPoiner.id === pointerEvent.pointerId;
+      const pointerIndex = this._ongoingPointers.findIndex((ongoingPointer) => {
+        return ongoingPointer.id === pointerEvent.pointerId;
       });
 
       if (pointerType === 'up' && pointerIndex > -1) {
@@ -460,7 +492,7 @@ class Gestures {
         this._ongoingPointers.splice(pointerIndex, 1);
       } else if (pointerType === 'down' && pointerIndex === -1) {
         // add new pointer
-        this._ongoingPointers.push(this._convertEventPosToPoint(pointerEvent, {}));
+        this._ongoingPointers.push(this._convertEventPosToPoint(pointerEvent, { x: 0, y: 0 }));
       } else if (pointerIndex > -1) {
         // update existing pointer
         this._convertEventPosToPoint(pointerEvent, this._ongoingPointers[pointerIndex]);
@@ -505,19 +537,24 @@ class Gestures {
     }
   }
 
-  // update points that were used during previous rAF tick
+  /** update points that were used during previous rAF tick
+   * @private
+   */
   _updatePrevPoints() {
     equalizePoints(this.prevP1, this.p1);
     equalizePoints(this.prevP2, this.p2);
   }
 
-  // update points at the start of gesture
+  /** update points at the start of gesture
+   * @private
+   */
   _updateStartPoints() {
     equalizePoints(this.startP1, this.p1);
     equalizePoints(this.startP2, this.p2);
     this._updatePrevPoints();
   }
 
+  /** @private */
   _calculateDragDirection() {
     if (this.pswp.mainScroll.isShifted()) {
       // if main scroll position is shifted – direction is always horizontal
@@ -544,6 +581,7 @@ class Gestures {
    * @private
    * @param {Touch | PointerEvent} e
    * @param {Point} p
+   * @returns {Point}
    */
   _convertEventPosToPoint(e, p) {
     p.x = e.pageX - this.pswp.offset.x;

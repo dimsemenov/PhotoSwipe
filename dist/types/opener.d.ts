@@ -14,38 +14,74 @@ declare class Opener {
     constructor(pswp: PhotoSwipe);
     pswp: import("./photoswipe.js").default;
     isClosed: boolean;
-    _prepareOpen(): void;
-    /** @type {false | Bounds} */
-    _thumbBounds: false | Bounds;
-    open(): void;
-    close(): boolean;
     isOpen: boolean;
-    isOpening: boolean;
     isClosing: boolean;
-    _duration: number | false;
-    _applyStartProps(): void;
-    _placeholder: HTMLDivElement | HTMLImageElement;
-    _useAnimation: boolean;
-    _animateZoom: boolean;
-    _animateRootOpacity: boolean;
-    _animateBgOpacity: boolean;
-    _opacityElement: HTMLDivElement;
-    _croppedZoom: boolean;
-    _cropContainer1: HTMLDivElement;
-    _cropContainer2: HTMLElement;
-    _start(): void;
-    _initiate(): void;
-    _onAnimationComplete(): void;
-    _animateToOpenState(): void;
-    _animateToClosedState(): void;
+    isOpening: boolean;
     /**
-     * @param {boolean=} animate
+     * @private
+     * @type {number | false | undefined}
      */
-    _setClosedStateZoomPan(animate?: boolean | undefined): void;
+    private _duration;
+    /** @private */
+    private _useAnimation;
+    /** @private */
+    private _croppedZoom;
+    /** @private */
+    private _animateRootOpacity;
+    /** @private */
+    private _animateBgOpacity;
     /**
+     * @private
+     * @type { HTMLDivElement | HTMLImageElement | null | undefined }
+     */
+    private _placeholder;
+    /**
+     * @private
+     * @type { HTMLDivElement | undefined }
+     */
+    private _opacityElement;
+    /**
+     * @private
+     * @type { HTMLDivElement | undefined }
+     */
+    private _cropContainer1;
+    /**
+     * @private
+     * @type { HTMLElement | null | undefined }
+     */
+    private _cropContainer2;
+    /**
+     * @private
+     * @type {Bounds | undefined}
+     */
+    private _thumbBounds;
+    /** @private */
+    private _prepareOpen;
+    open(): void;
+    close(): void;
+    /** @private */
+    private _applyStartProps;
+    _animateZoom: boolean | undefined;
+    /** @private */
+    private _start;
+    /** @private */
+    private _initiate;
+    /** @private */
+    private _onAnimationComplete;
+    /** @private */
+    private _animateToOpenState;
+    /** @private */
+    private _animateToClosedState;
+    /**
+     * @private
+     * @param {boolean} [animate]
+     */
+    private _setClosedStateZoomPan;
+    /**
+     * @private
      * @param {HTMLElement} target
      * @param {'transform' | 'opacity'} prop
      * @param {string} propValue
      */
-    _animateTo(target: HTMLElement, prop: 'transform' | 'opacity', propValue: string): void;
+    private _animateTo;
 }

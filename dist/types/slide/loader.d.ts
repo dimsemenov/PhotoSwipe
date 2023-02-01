@@ -4,29 +4,29 @@
  * thus it can be called before dialog is opened.
  *
  * @param {SlideData} itemData Data about the slide
- * @param {PhotoSwipe | PhotoSwipeLightbox | PhotoSwipeBase} instance PhotoSwipe instance
+ * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox instance
  * @param {number} index
- * @returns Image that is being decoded or false.
+ * @returns {Content} Image that is being decoded or false.
  */
-export function lazyLoadData(itemData: SlideData, instance: PhotoSwipe | PhotoSwipeLightbox | PhotoSwipeBase, index: number): import("./content.js").default;
+export function lazyLoadData(itemData: SlideData, instance: PhotoSwipeBase, index: number): Content;
 /**
  * Lazy-loads specific slide.
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
  *
- * By default it loads image based on viewport size and initial zoom level.
+ * By default, it loads image based on viewport size and initial zoom level.
  *
  * @param {number} index Slide index
- * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @returns {Content | undefined}
  */
-export function lazyLoadSlide(index: number, instance: PhotoSwipe | PhotoSwipeLightbox): import("./content.js").default;
+export function lazyLoadSlide(index: number, instance: PhotoSwipeBase): Content | undefined;
 export default ContentLoader;
 export type Content = import('./content.js').default;
 export type Slide = import('./slide.js').default;
 export type SlideData = import('./slide.js').SlideData;
 export type PhotoSwipeBase = import('../core/base.js').default;
 export type PhotoSwipe = import('../photoswipe.js').default;
-export type PhotoSwipeLightbox = import('../lightbox/lightbox.js').default;
 declare class ContentLoader {
     /**
      * @param {PhotoSwipe} pswp
@@ -39,17 +39,18 @@ declare class ContentLoader {
     /**
      * Lazy load nearby slides based on `preload` option.
      *
-     * @param {number=} diff Difference between slide indexes that was changed recently, or 0.
+     * @param {number} [diff] Difference between slide indexes that was changed recently, or 0.
      */
     updateLazy(diff?: number | undefined): void;
     /**
-     * @param {number} index
+     * @param {number} initialIndex
      */
-    loadSlideByIndex(index: number): void;
+    loadSlideByIndex(initialIndex: number): void;
     /**
      * @param {Slide} slide
+     * @returns {Content}
      */
-    getContentBySlide(slide: Slide): import("./content.js").default;
+    getContentBySlide(slide: Slide): Content;
     /**
      * @param {Content} content
      */
@@ -62,7 +63,8 @@ declare class ContentLoader {
     removeByIndex(index: number): void;
     /**
      * @param {number} index
+     * @returns {Content | undefined}
      */
-    getContentByIndex(index: number): import("./content.js").default;
+    getContentByIndex(index: number): Content | undefined;
     destroy(): void;
 }

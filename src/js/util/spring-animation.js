@@ -1,13 +1,27 @@
 import SpringEaser from './spring-easer.js';
 
-/** @typedef {import('./animations.js').AnimationProps} AnimationProps */
+/** @typedef {import('./animations.js').SharedAnimationProps} SharedAnimationProps */
+
+/**
+ * @typedef {Object} DefaultSpringAnimationProps
+ *
+ * @prop {number} start
+ * @prop {number} end
+ * @prop {number} velocity
+ * @prop {number} [dampingRatio]
+ * @prop {number} [naturalFrequency]
+ * @prop {(end: number) => void} onUpdate
+ */
+
+/** @typedef {SharedAnimationProps & DefaultSpringAnimationProps} SpringAnimationProps */
 
 class SpringAnimation {
   /**
-   * @param {AnimationProps} props
+   * @param {SpringAnimationProps} props
    */
   constructor(props) {
     this.props = props;
+    this._raf = 0;
 
     const {
       start,
@@ -15,12 +29,11 @@ class SpringAnimation {
       velocity,
       onUpdate,
       onComplete,
-      onFinish,
+      onFinish = () => {},
       dampingRatio,
       naturalFrequency
     } = props;
 
-    /** @type {() => void} */
     this.onFinish = onFinish;
 
     const easer = new SpringEaser(velocity, dampingRatio, naturalFrequency);
@@ -55,7 +68,7 @@ class SpringAnimation {
     if (this._raf >= 0) {
       cancelAnimationFrame(this._raf);
     }
-    this._raf = null;
+    this._raf = 0;
   }
 }
 

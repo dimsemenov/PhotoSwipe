@@ -10,10 +10,10 @@ export const loadingIndicator = {
     outlineID: 'pswp__icn-loading'
   },
   onInit: (indicatorElement, pswp) => {
-    /** @type {boolean} */
+    /** @type {boolean | undefined} */
     let isVisible;
-    /** @type {NodeJS.Timeout} */
-    let delayTimeout;
+    /** @type {NodeJS.Timeout | null} */
+    let delayTimeout = null;
 
     /**
      * @param {string} className
@@ -34,7 +34,7 @@ export const loadingIndicator = {
     };
 
     const updatePreloaderVisibility = () => {
-      if (!pswp.currSlide.content.isLoading()) {
+      if (!pswp.currSlide?.content.isLoading()) {
         setIndicatorVisibility(false);
         if (delayTimeout) {
           clearTimeout(delayTimeout);
@@ -46,7 +46,7 @@ export const loadingIndicator = {
       if (!delayTimeout) {
         // display loading indicator with delay
         delayTimeout = setTimeout(() => {
-          setIndicatorVisibility(pswp.currSlide.content.isLoading());
+          setIndicatorVisibility(Boolean(pswp.currSlide?.content.isLoading()));
           delayTimeout = null;
         }, pswp.options.preloaderDelay);
       }
@@ -61,6 +61,8 @@ export const loadingIndicator = {
     });
 
     // expose the method
-    pswp.ui.updatePreloaderVisibility = updatePreloaderVisibility;
+    if (pswp.ui) {
+      pswp.ui.updatePreloaderVisibility = updatePreloaderVisibility;
+    }
   }
 };

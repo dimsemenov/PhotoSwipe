@@ -18,6 +18,7 @@ const MIN_NEXT_SLIDE_SPEED = 0.5;
 /**
  * @param {number} initialVelocity
  * @param {number} decelerationRate
+ * @returns {number}
  */
 function project(initialVelocity, decelerationRate) {
   return initialVelocity * decelerationRate / (1 - decelerationRate);
@@ -34,28 +35,30 @@ class DragHandler {
     this.gestures = gestures;
     this.pswp = gestures.pswp;
     /** @type {Point} */
-    this.startPan = {};
+    this.startPan = { x: 0, y: 0 };
   }
 
   start() {
-    equalizePoints(this.startPan, this.pswp.currSlide.pan);
+    if (this.pswp.currSlide) {
+      equalizePoints(this.startPan, this.pswp.currSlide.pan);
+    }
     this.pswp.animations.stopAll();
   }
 
   change() {
-    const { p1, prevP1, dragAxis, pswp } = this.gestures;
-    const { currSlide } = pswp;
+    const { p1, prevP1, dragAxis } = this.gestures;
+    const { currSlide } = this.pswp;
 
     if (dragAxis === 'y'
-        && pswp.options.closeOnVerticalDrag
-        && currSlide.currZoomLevel <= currSlide.zoomLevels.fit
+        && this.pswp.options.closeOnVerticalDrag
+        && (currSlide && currSlide.currZoomLevel <= currSlide.zoomLevels.fit)
         && !this.gestures.isMultitouch) {
       // Handle vertical drag to close
       const panY = currSlide.pan.y + (p1.y - prevP1.y);
-      if (!pswp.dispatch('verticalDrag', { panY }).defaultPrevented) {
+      if (!this.pswp.dispatch('verticalDrag', { panY }).defaultPrevented) {
         this._setPanWithFriction('y', panY, VERTICAL_DRAG_FRICTION);
         const bgOpacity = 1 - Math.abs(this._getVerticalDragRatio(currSlide.pan.y));
-        pswp.applyBgOpacity(bgOpacity);
+        this.pswp.applyBgOpacity(bgOpacity);
         currSlide.applyCurrentZoomPan();
       }
     } else {
@@ -63,18 +66,20 @@ class DragHandler {
       if (!mainScrollChanged) {
         this._panOrMoveMainScroll('y');
 
-        roundPoint(currSlide.pan);
-        currSlide.applyCurrentZoomPan();
+        if (currSlide) {
+          roundPoint(currSlide.pan);
+          currSlide.applyCurrentZoomPan();
+        }
       }
     }
   }
 
   end() {
-    const { pswp, velocity } = this.gestures;
-    const { mainScroll } = pswp;
+    const { velocity } = this.gestures;
+    const { mainScroll, currSlide } = this.pswp;
     let indexDiff = 0;
 
-    pswp.animations.stopAll();
+    this.pswp.animations.stopAll();
 
     // Handle main scroll if it's shifted
     if (mainScroll.isShifted()) {
@@ -83,13 +88,13 @@ class DragHandler {
 
       // Ratio between 0 and 1:
       // 0 - slide is not visible at all,
-      // 0.5 - half of the slide is vicible
+      // 0.5 - half of the slide is visible
       // 1 - slide is fully visible
-      const currentSlideVisibilityRatio = (mainScrollShiftDiff / pswp.viewportSize.x);
+      const currentSlideVisibilityRatio = (mainScrollShiftDiff / this.pswp.viewportSize.x);
 
       // Go next slide.
       //
-      // - if velocity and its direction is matched
+      // - if velocity and its direction is matched,
       //   and we see at least tiny part of the next slide
       //
       // - or if we see less than 50% of the current slide
@@ -111,7 +116,7 @@ class DragHandler {
     }
 
     // Restore zoom level
-    if (pswp.currSlide.currZoomLevel > pswp.currSlide.zoomLevels.max
+    if ((currSlide && currSlide.currZoomLevel > currSlide.zoomLevels.max)
         || this.gestures.isMultitouch) {
       this.gestures.zoomLevels.correctZoomPan(true);
     } else {
@@ -129,15 +134,19 @@ class DragHandler {
    * @param {'x' | 'y'} axis
    */
   _finishPanGestureForAxis(axis) {
-    const { pswp } = this;
-    const { currSlide } = pswp;
     const { velocity } = this.gestures;
+    const { currSlide } = this.pswp;
+
+    if (!currSlide) {
+      return;
+    }
+
     const { pan, bounds } = currSlide;
     const panPos = pan[axis];
-    const restoreBgOpacity = (pswp.bgOpacity < 1 && axis === 'y');
+    const restoreBgOpacity = (this.pswp.bgOpacity < 1 && axis === 'y');
 
     // 0.995 means - scroll view loses 0.5% of its velocity per millisecond
-    // Inceasing this number will reduce travel distance
+    // Increasing this number will reduce travel distance
     const decelerationRate = 0.995; // 0.99
 
     // Pan position if there is no bounds
@@ -151,7 +160,7 @@ class DragHandler {
       // or if we are below and moving downwards
       if ((vDragRatio < 0 && projectedVDragRatio < -MIN_RATIO_TO_CLOSE)
           || (vDragRatio > 0 && projectedVDragRatio > MIN_RATIO_TO_CLOSE)) {
-        pswp.close();
+        this.pswp.close();
         return;
       }
     }
@@ -168,10 +177,10 @@ class DragHandler {
     // Overshoot if the final position is out of pan bounds
     const dampingRatio = (correctedPanPosition === projectedPosition) ? 1 : 0.82;
 
-    const initialBgOpacity = pswp.bgOpacity;
+    const initialBgOpacity = this.pswp.bgOpacity;
     const totalPanDist = correctedPanPosition - panPos;
 
-    pswp.animations.startSpring({
+    this.pswp.animations.startSpring({
       name: 'panGesture' + axis,
       isPan: true,
       start: panPos,
@@ -180,14 +189,14 @@ class DragHandler {
       dampingRatio,
       onUpdate: (pos) => {
         // Animate opacity of background relative to Y pan position of an image
-        if (restoreBgOpacity && pswp.bgOpacity < 1) {
+        if (restoreBgOpacity && this.pswp.bgOpacity < 1) {
           // 0 - start of animation, 1 - end of animation
           const animationProgressRatio = 1 - (correctedPanPosition - pos) / totalPanDist;
 
           // We clamp opacity to keep it between 0 and 1.
           // As progress ratio can be larger than 1 due to overshoot,
           // and we do not want to bounce opacity.
-          pswp.applyBgOpacity(clamp(
+          this.pswp.applyBgOpacity(clamp(
             initialBgOpacity + (1 - initialBgOpacity) * animationProgressRatio,
             0,
             1
@@ -208,15 +217,16 @@ class DragHandler {
    *
    * @private
    * @param {'x' | 'y'} axis
+   * @returns {boolean}
    */
   _panOrMoveMainScroll(axis) {
-    const { p1, pswp, dragAxis, prevP1, isMultitouch } = this.gestures;
-    const { currSlide, mainScroll } = pswp;
+    const { p1, dragAxis, prevP1, isMultitouch } = this.gestures;
+    const { currSlide, mainScroll } = this.pswp;
     const delta = (p1[axis] - prevP1[axis]);
     const newMainScrollX = mainScroll.x + delta;
 
-    if (!delta) {
-      return;
+    if (!delta || !currSlide) {
+      return false;
     }
 
     // Always move main scroll if image can not be panned
@@ -228,7 +238,7 @@ class DragHandler {
     const { bounds } = currSlide;
     const newPan = currSlide.pan[axis] + delta;
 
-    if (pswp.options.allowPanToNext
+    if (this.pswp.options.allowPanToNext
         && dragAxis === 'x'
         && axis === 'x'
         && !isMultitouch) {
@@ -295,8 +305,10 @@ class DragHandler {
         this._setPanWithFriction(axis, newPan);
       }
     }
+
+    return false;
   }
-  //
+
   // If we move above - the ratio is negative
   // If we move below the ratio is positive
 
@@ -309,10 +321,10 @@ class DragHandler {
    *
    * @private
    * @param {number} panY The current pan Y position.
+   * @returns {number}
    */
   _getVerticalDragRatio(panY) {
-    return (panY - this.pswp.currSlide.bounds.center.y)
-            / (this.pswp.viewportSize.y / 3);
+    return (panY - (this.pswp.currSlide?.bounds.center.y ?? 0)) / (this.pswp.viewportSize.y / 3);
   }
 
   /**
@@ -323,10 +335,16 @@ class DragHandler {
    * @private
    * @param {'x' | 'y'} axis
    * @param {number} potentialPan
-   * @param {number=} customFriction (0.1 - 1)
+   * @param {number} [customFriction] (0.1 - 1)
    */
   _setPanWithFriction(axis, potentialPan, customFriction) {
-    const { pan, bounds } = this.pswp.currSlide;
+    const { currSlide } = this.pswp;
+
+    if (!currSlide) {
+      return;
+    }
+
+    const { pan, bounds } = currSlide;
     const correctedPan = bounds.correctPan(axis, potentialPan);
     // If we are out of pan bounds
     if (correctedPan !== potentialPan || customFriction) {

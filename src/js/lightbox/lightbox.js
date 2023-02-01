@@ -15,6 +15,7 @@ import { lazyLoadSlide } from '../slide/loader.js';
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import('../photoswipe.js').DataSource} DataSource */
+/** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/content.js').default} Content */
 /** @typedef {import('../core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
 /** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
@@ -41,13 +42,21 @@ import { lazyLoadSlide } from '../slide/loader.js';
  */
 class PhotoSwipeLightbox extends PhotoSwipeBase {
   /**
-   * @param {PhotoSwipeOptions} options
+   * @param {PhotoSwipeOptions} [options]
    */
   constructor(options) {
     super();
     /** @type {PhotoSwipeOptions} */
     this.options = options || {};
     this._uid = 0;
+    this.shouldOpen = false;
+    /**
+     * @private
+     * @type {Content | undefined}
+     */
+    this._preloadedContent = undefined;
+
+    this.onThumbnailsClick = this.onThumbnailsClick.bind(this);
   }
 
   /**
@@ -55,8 +64,6 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * It's not included in the main constructor, so you may bind events before it.
    */
   init() {
-    this.onThumbnailsClick = this.onThumbnailsClick.bind(this);
-
     // Bind click events to each gallery
     getElementsFromOption(this.options.gallery, this.options.gallerySelector)
       .forEach((galleryElement) => {
@@ -80,8 +87,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     // so we do not pass the initialPoint
     //
     // Note that some screen readers emulate the mouse position,
-    // so it's not ideal way to detect them.
+    // so it's not the ideal way to detect them.
     //
+    /** @type {Point | null} */
     let initialPoint = { x: e.clientX, y: e.clientY };
 
     if (!initialPoint.x && !initialPoint.y) {
@@ -90,6 +98,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
 
     let clickedIndex = this.getClickedIndex(e);
     clickedIndex = this.applyFilters('clickedIndex', clickedIndex, e, this);
+    /** @type {DataSource} */
     const dataSource = {
       gallery: /** @type {HTMLElement} */ (e.currentTarget)
     };
@@ -104,6 +113,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Get index of gallery item that was clicked.
    *
    * @param {MouseEvent} e click event
+   * @returns {number}
    */
   getClickedIndex(e) {
     // legacy option
@@ -136,8 +146,9 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Load and open PhotoSwipe
    *
    * @param {number} index
-   * @param {DataSource=} dataSource
-   * @param {{ x?: number; y?: number }} [initialPoint]
+   * @param {DataSource} dataSource
+   * @param {Point | null} [initialPoint]
+   * @returns {boolean}
    */
   loadAndOpen(index, dataSource, initialPoint) {
     // Check if the gallery is already open
@@ -160,7 +171,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Load the main module and the slide content by index
    *
    * @param {number} index
-   * @param {DataSource=} dataSource
+   * @param {DataSource} [dataSource]
    */
   preload(index, dataSource) {
     const { options } = this;
@@ -241,7 +252,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     // map listeners from Lightbox to PhotoSwipe Core
     /** @type {(keyof PhotoSwipeEventsMap)[]} */
     (Object.keys(this._listeners)).forEach((name) => {
-      this._listeners[name].forEach((fn) => {
+      this._listeners[name]?.forEach((fn) => {
         pswp.on(name, /** @type {EventCallback<typeof name>} */(fn));
       });
     });
@@ -249,20 +260,20 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     // same with filters
     /** @type {(keyof PhotoSwipeFiltersMap)[]} */
     (Object.keys(this._filters)).forEach((name) => {
-      this._filters[name].forEach((filter) => {
+      this._filters[name]?.forEach((filter) => {
         pswp.addFilter(name, filter.fn, filter.priority);
       });
     });
 
     if (this._preloadedContent) {
       pswp.contentLoader.addToCache(this._preloadedContent);
-      this._preloadedContent = null;
+      this._preloadedContent = undefined;
     }
 
     pswp.on('destroy', () => {
       // clean up public variables
-      this.pswp = null;
-      window.pswp = null;
+      this.pswp = undefined;
+      delete window.pswp;
     });
 
     pswp.init();
@@ -272,12 +283,10 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Unbinds all events, closes PhotoSwipe if it's open.
    */
   destroy() {
-    if (this.pswp) {
-      this.pswp.destroy();
-    }
+    this.pswp?.destroy();
 
     this.shouldOpen = false;
-    this._listeners = null;
+    this._listeners = {};
 
     getElementsFromOption(this.options.gallery, this.options.gallerySelector)
       .forEach((galleryElement) => {

@@ -8,13 +8,13 @@ class SpringEaser {
   /**
    * @param {number} initialVelocity Initial velocity, px per ms.
    *
-   * @param {number} dampingRatio
+   * @param {number} [dampingRatio]
    * Determines how bouncy animation will be.
    * From 0 to 1, 0 - always overshoot, 1 - do not overshoot.
    * "overshoot" refers to part of animation that
    * goes beyond the final value.
    *
-   * @param {number} naturalFrequency
+   * @param {number} [naturalFrequency]
    * Determines how fast animation will slow down.
    * The higher value - the stiffer the transition will be,
    * and the faster it will slow down.
@@ -29,9 +29,10 @@ class SpringEaser {
     // https://en.wikipedia.org/wiki/Natural_frequency
     this._naturalFrequency = naturalFrequency || DEFAULT_NATURAL_FREQUENCY;
 
+    this._dampedFrequency = this._naturalFrequency;
+
     if (this._dampingRatio < 1) {
-      this._dampedFrequency = this._naturalFrequency
-                         * Math.sqrt(1 - this._dampingRatio * this._dampingRatio);
+      this._dampedFrequency *= Math.sqrt(1 - this._dampingRatio * this._dampingRatio);
     }
   }
 

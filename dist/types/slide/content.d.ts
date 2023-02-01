@@ -1,42 +1,46 @@
 export default Content;
 export type Slide = import('./slide.js').default;
 export type SlideData = import('./slide.js').SlideData;
-export type PhotoSwipe = import('../photoswipe.js').default;
+export type PhotoSwipeBase = import('../core/base.js').default;
 export type LoadState = import('../util/util.js').LoadState;
 /** @typedef {import('./slide.js').default} Slide */
 /** @typedef {import('./slide.js').SlideData} SlideData */
-/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
 /** @typedef {import('../util/util.js').LoadState} LoadState */
 declare class Content {
     /**
      * @param {SlideData} itemData Slide data
-     * @param {PhotoSwipe} instance PhotoSwipe or PhotoSwipeLightbox instance
+     * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox instance
      * @param {number} index
      */
-    constructor(itemData: SlideData, instance: PhotoSwipe, index: number);
-    instance: import("../photoswipe.js").default;
+    constructor(itemData: SlideData, instance: PhotoSwipeBase, index: number);
+    instance: import("../core/base.js").default;
     data: import("./slide.js").SlideData;
     index: number;
-    /** @type {HTMLImageElement | HTMLDivElement} */
-    element: HTMLImageElement | HTMLDivElement;
+    /** @type {HTMLImageElement | HTMLDivElement | undefined} */
+    element: HTMLImageElement | HTMLDivElement | undefined;
+    /** @type {Placeholder | undefined} */
+    placeholder: Placeholder | undefined;
+    /** @type {Slide | undefined} */
+    slide: Slide | undefined;
     displayedImageWidth: number;
     displayedImageHeight: number;
     width: number;
     height: number;
     isAttached: boolean;
     hasSlide: boolean;
+    isDecoding: boolean;
     /** @type {LoadState} */
     state: LoadState;
     type: string;
     removePlaceholder(): void;
-    placeholder: Placeholder;
     /**
      * Preload content
      *
-     * @param {boolean=} isLazy
-     * @param {boolean=} reload
+     * @param {boolean} isLazy
+     * @param {boolean} [reload]
      */
-    load(isLazy?: boolean | undefined, reload?: boolean | undefined): void;
+    load(isLazy: boolean, reload?: boolean | undefined): void;
     /**
      * Preload image
      *
@@ -49,7 +53,6 @@ declare class Content {
      * @param {Slide} slide
      */
     setSlide(slide: Slide): void;
-    slide: import("./slide.js").default;
     /**
      * Content load success handler
      */
@@ -62,6 +65,9 @@ declare class Content {
      * @returns {Boolean} If the content is currently loading
      */
     isLoading(): boolean;
+    /**
+     * @returns {Boolean} If the content is in error state
+     */
     isError(): boolean;
     /**
      * @returns {boolean} If the content is image
@@ -106,7 +112,6 @@ declare class Content {
      * Append the content
      */
     append(): void;
-    isDecoding: boolean;
     /**
      * Activate the slide,
      * active slide is generally the current one,

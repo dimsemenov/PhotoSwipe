@@ -1,12 +1,9 @@
 export default PanBounds;
 export type Slide = import('./slide.js').default;
-export type Point = {
-    x?: number;
-    y?: number;
-};
+export type Point = Record<Axis, number>;
 export type Axis = 'x' | 'y';
 /** @typedef {import('./slide.js').default} Slide */
-/** @typedef {{ x?: number; y?: number }} Point */
+/** @typedef {Record<Axis, number>} Point */
 /** @typedef {'x' | 'y'} Axis */
 /**
  * Calculates minimum, maximum and initial (center) bounds of a slide
@@ -18,12 +15,18 @@ declare class PanBounds {
     constructor(slide: Slide);
     slide: import("./slide.js").default;
     currZoomLevel: number;
-    /** @type {Point} */
-    center: Point;
-    /** @type {Point} */
-    max: Point;
-    /** @type {Point} */
-    min: Point;
+    center: {
+        x: number;
+        y: number;
+    };
+    max: {
+        x: number;
+        y: number;
+    };
+    min: {
+        x: number;
+        y: number;
+    };
     /**
      * _getItemBounds
      *
@@ -42,6 +45,7 @@ declare class PanBounds {
      *
      * @param {Axis} axis x or y
      * @param {number} panOffset
+     * @returns {number}
      */
     correctPan(axis: Axis, panOffset: number): number;
 }

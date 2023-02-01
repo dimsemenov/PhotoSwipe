@@ -50,7 +50,7 @@ export type _SlideData = {
     /**
      * slide type
      */
-    type?: 'image' | 'html' | string;
+    type?: string | undefined;
 };
 /**
  * Renders and allows to control a single slide
@@ -69,19 +69,20 @@ declare class Slide {
     currentResolution: number;
     /** @type {Point} */
     panAreaSize: Point;
+    /** @type {Point} */
+    pan: Point;
     isFirstSlide: boolean;
     zoomLevels: ZoomLevel;
-    pan: {
-        x: number;
-        y: number;
-    };
     content: import("./content.js").default;
     container: HTMLDivElement;
+    /** @type {HTMLElement | null} */
+    holderElement: HTMLElement | null;
     currZoomLevel: number;
     /** @type {number} */
     width: number;
     /** @type {number} */
     height: number;
+    heavyAppended: boolean;
     bounds: PanBounds;
     prevDisplayedWidth: number;
     prevDisplayedHeight: number;
@@ -97,7 +98,6 @@ declare class Slide {
      * @param {HTMLElement} holderElement
      */
     append(holderElement: HTMLElement): void;
-    holderElement: HTMLElement;
     load(): void;
     /**
      * Append "heavy" DOM elements
@@ -106,7 +106,6 @@ declare class Slide {
      * but generally these are large images.
      */
     appendHeavy(): void;
-    heavyAppended: boolean;
     /**
      * Triggered when this slide is active (selected).
      *
@@ -130,7 +129,7 @@ declare class Slide {
      * Apply size to current slide content,
      * based on the current resolution and scale.
      *
-     * @param {boolean=} force if size should be updated even if dimensions weren't changed
+     * @param {boolean} [force] if size should be updated even if dimensions weren't changed
      */
     updateContentSize(force?: boolean | undefined): void;
     /**
@@ -138,28 +137,22 @@ declare class Slide {
      * @param {number} height
      */
     sizeChanged(width: number, height: number): boolean;
-    getPlaceholderElement(): HTMLDivElement | HTMLImageElement;
+    /** @returns {HTMLImageElement | HTMLDivElement | null | undefined} */
+    getPlaceholderElement(): HTMLImageElement | HTMLDivElement | null | undefined;
     /**
      * Zoom current slide image to...
      *
      * @param {number} destZoomLevel Destination zoom level.
-     * @param {{ x?: number; y?: number }} centerPoint
+     * @param {Point} [centerPoint]
      * Transform origin center point, or false if viewport center should be used.
      * @param {number | false} [transitionDuration] Transition duration, may be set to 0.
-     * @param {boolean=} ignoreBounds Minimum and maximum zoom levels will be ignored.
-     * @return {boolean=} Returns true if animated.
+     * @param {boolean} [ignoreBounds] Minimum and maximum zoom levels will be ignored.
      */
-    zoomTo(destZoomLevel: number, centerPoint: {
-        x?: number;
-        y?: number;
-    }, transitionDuration?: number | false, ignoreBounds?: boolean | undefined): boolean | undefined;
+    zoomTo(destZoomLevel: number, centerPoint?: import("../photoswipe.js").Point | undefined, transitionDuration?: number | false | undefined, ignoreBounds?: boolean | undefined): void;
     /**
-     * @param {{ x?: number, y?: number }} [centerPoint]
+     * @param {Point} [centerPoint]
      */
-    toggleZoom(centerPoint?: {
-        x?: number;
-        y?: number;
-    }): void;
+    toggleZoom(centerPoint?: import("../photoswipe.js").Point | undefined): void;
     /**
      * Updates zoom level property and recalculates new pan bounds,
      * unlike zoomTo it does not apply transform (use applyCurrentZoomPan)
@@ -174,15 +167,13 @@ declare class Slide {
      * pan bounds according to the new zoom level.
      *
      * @param {'x' | 'y'} axis
-     * @param {{ x?: number; y?: number }} [point]
+     * @param {Point} [point]
      * point based on which zoom is performed, usually refers to the current mouse position,
      * if false - viewport center will be used.
-     * @param {number=} prevZoomLevel Zoom level before new zoom was applied.
+     * @param {number} [prevZoomLevel] Zoom level before new zoom was applied.
+     * @returns {number}
      */
-    calculateZoomToPanOffset(axis: 'x' | 'y', point?: {
-        x?: number;
-        y?: number;
-    }, prevZoomLevel?: number | undefined): number;
+    calculateZoomToPanOffset(axis: 'x' | 'y', point?: import("../photoswipe.js").Point | undefined, prevZoomLevel?: number | undefined): number;
     /**
      * Apply pan and keep it within bounds.
      *
@@ -192,10 +183,12 @@ declare class Slide {
     panTo(panX: number, panY: number): void;
     /**
      * If the slide in the current state can be panned by the user
+     * @returns {boolean}
      */
     isPannable(): boolean;
     /**
      * If the slide can be zoomed
+     * @returns {boolean}
      */
     isZoomable(): boolean;
     /**
@@ -210,9 +203,11 @@ declare class Slide {
      * @param {number} x
      * @param {number} y
      * @param {number} zoom
+     * @private
      */
-    _applyZoomTransform(x: number, y: number, zoom: number): void;
+    private _applyZoomTransform;
     calculateSize(): void;
+    /** @returns {string} */
     getCurrentTransform(): string;
     /**
      * Set resolution and re-render the image.
@@ -224,7 +219,7 @@ declare class Slide {
      * the same as image with zoom level 1 and resolution 1.
      *
      * Used to optimize animations and make
-     * sure that browser renders image in highest quality.
+     * sure that browser renders image in the highest quality.
      * Also used by responsive images to load the correct one.
      *
      * @param {number} newResolution

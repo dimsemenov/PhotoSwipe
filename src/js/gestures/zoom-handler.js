@@ -15,6 +15,7 @@ const LOWER_ZOOM_FRICTION = 0.15;
  * @param {Point} p
  * @param {Point} p1
  * @param {Point} p2
+ * @returns {Point}
  */
 function getZoomPointsCenter(p, p1, p2) {
   p.x = (p1.x + p2.x) / 2;
@@ -28,26 +29,46 @@ class ZoomHandler {
    */
   constructor(gestures) {
     this.gestures = gestures;
-    this.pswp = this.gestures.pswp;
-    /** @type {Point} */
-    this._startPan = {};
-
-    /** @type {Point} */
-    this._startZoomPoint = {};
-    /** @type {Point} */
-    this._zoomPoint = {};
+    /**
+     * @private
+     * @type {Point}
+     */
+    this._startPan = { x: 0, y: 0 };
+    /**
+     * @private
+     * @type {Point}
+     */
+    this._startZoomPoint = { x: 0, y: 0 };
+    /**
+     * @private
+     * @type {Point}
+     */
+    this._zoomPoint = { x: 0, y: 0 };
+    /** @private */
+    this._wasOverFitZoomLevel = false;
+    /** @private */
+    this._startZoomLevel = 1;
   }
 
   start() {
-    this._startZoomLevel = this.pswp.currSlide.currZoomLevel;
-    equalizePoints(this._startPan, this.pswp.currSlide.pan);
-    this.pswp.animations.stopAllPan();
+    const { currSlide } = this.gestures.pswp;
+    if (currSlide) {
+      this._startZoomLevel = currSlide.currZoomLevel;
+      equalizePoints(this._startPan, currSlide.pan);
+    }
+
+    this.gestures.pswp.animations.stopAllPan();
     this._wasOverFitZoomLevel = false;
   }
 
   change() {
     const { p1, startP1, p2, startP2, pswp } = this.gestures;
     const { currSlide } = pswp;
+
+    if (!currSlide) {
+      return;
+    }
+
     const minZoomLevel = currSlide.zoomLevels.min;
     const maxZoomLevel = currSlide.zoomLevels.max;
 
@@ -93,9 +114,9 @@ class ZoomHandler {
   }
 
   end() {
-    const { pswp } = this;
+    const { pswp } = this.gestures;
     const { currSlide } = pswp;
-    if (currSlide.currZoomLevel < currSlide.zoomLevels.initial
+    if ((!currSlide || currSlide.currZoomLevel < currSlide.zoomLevels.initial)
         && !this._wasOverFitZoomLevel
         && pswp.options.pinchToClose) {
       pswp.close();
@@ -108,6 +129,7 @@ class ZoomHandler {
    * @private
    * @param {'x' | 'y'} axis
    * @param {number} currZoomLevel
+   * @returns {number}
    */
   _calculatePanForZoomLevel(axis, currZoomLevel) {
     const zoomFactor = currZoomLevel / this._startZoomLevel;
@@ -120,18 +142,18 @@ class ZoomHandler {
    * beyond minimum or maximum values.
    * With animation.
    *
-   * @param {boolean=} ignoreGesture
+   * @param {boolean} [ignoreGesture]
    * Wether gesture coordinates should be ignored when calculating destination pan position.
    */
   correctZoomPan(ignoreGesture) {
-    const { pswp } = this;
+    const { pswp } = this.gestures;
     const { currSlide } = pswp;
 
-    if (!currSlide.isZoomable()) {
+    if (!currSlide?.isZoomable()) {
       return;
     }
 
-    if (this._zoomPoint.x === undefined) {
+    if (this._zoomPoint.x === 0) {
       ignoreGesture = true;
     }
 
@@ -155,8 +177,8 @@ class ZoomHandler {
     const initialBgOpacity = pswp.bgOpacity;
     const restoreBgOpacity = pswp.bgOpacity < 1;
 
-    const initialPan = equalizePoints({}, currSlide.pan);
-    let destinationPan = equalizePoints({}, initialPan);
+    const initialPan = equalizePoints({ x: 0, y: 0 }, currSlide.pan);
+    let destinationPan = equalizePoints({ x: 0, y: 0 }, initialPan);
 
     if (ignoreGesture) {
       this._zoomPoint.x = 0;
@@ -185,10 +207,7 @@ class ZoomHandler {
     // return zoom level and its bounds to initial
     currSlide.setZoomLevel(prevZoomLevel);
 
-    let panNeedsChange = true;
-    if (pointsEqual(destinationPan, initialPan)) {
-      panNeedsChange = false;
-    }
+    const panNeedsChange = !pointsEqual(destinationPan, initialPan);
 
     if (!panNeedsChange && !currZoomLevelNeedsChange && !restoreBgOpacity) {
       // update resolution after gesture

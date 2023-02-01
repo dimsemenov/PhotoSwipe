@@ -18,24 +18,26 @@ declare class MainScroll {
     constructor(pswp: PhotoSwipe);
     pswp: import("./photoswipe.js").default;
     x: number;
-    /** @type {number} */
     slideWidth: number;
+    /** @private */
+    private _currPositionIndex;
+    /** @private */
+    private _prevPositionIndex;
+    /** @private */
+    private _containerShiftIndex;
     /** @type {ItemHolder[]} */
     itemHolders: ItemHolder[];
     /**
      * Position the scroller and slide containers
      * according to viewport size.
      *
-     * @param {boolean=} resizeSlides Whether slides content should resized
+     * @param {boolean} [resizeSlides] Whether slides content should resized
      */
     resize(resizeSlides?: boolean | undefined): void;
     /**
      * Reset X position of the main scroller to zero
      */
     resetPosition(): void;
-    _currPositionIndex: number;
-    _prevPositionIndex: number;
-    _containerShiftIndex: number;
     /**
      * Create and append array of three items
      * that hold data about slides in DOM
@@ -43,6 +45,7 @@ declare class MainScroll {
     appendHolders(): void;
     /**
      * Whether the main scroll can be horizontally swiped to the next or previous slide.
+     * @returns {boolean}
      */
     canBeSwiped(): boolean;
     /**
@@ -56,19 +59,21 @@ declare class MainScroll {
      * (for example `-1` will move to the last slide of the gallery).
      *
      * @param {number} diff
-     * @param {boolean=} animate
-     * @param {number=} velocityX
+     * @param {boolean} [animate]
+     * @param {number} [velocityX]
      * @returns {boolean} whether index was changed or not
      */
     moveIndexBy(diff: number, animate?: boolean | undefined, velocityX?: number | undefined): boolean;
     /**
      * X position of the main scroll for the current slide
      * (ignores position during dragging)
+     * @returns {number}
      */
     getCurrSlideX(): number;
     /**
      * Whether scroll position is shifted.
      * For example, it will return true if the scroll is being dragged or animated.
+     * @returns {boolean}
      */
     isShifted(): boolean;
     /**
@@ -79,7 +84,7 @@ declare class MainScroll {
      * Move the X position of the main scroll container
      *
      * @param {number} x
-     * @param {boolean=} dragging
+     * @param {boolean} [dragging]
      */
     moveTo(x: number, dragging?: boolean | undefined): void;
 }

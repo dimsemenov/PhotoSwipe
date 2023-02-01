@@ -86,7 +86,7 @@
  * @prop {{ originalEvent: KeyboardEvent }} keydown can be default prevented
  * @prop {{ x: number; dragging: boolean }} moveMainScroll
  * @prop {{ slide: Slide }} firstZoomPan
- * @prop {{ slide: Slide, data: SlideData, index: number }} gettingData
+ * @prop {{ slide: Slide | undefined, data: SlideData, index: number }} gettingData
  * @prop {undefined} beforeResize
  * @prop {undefined} resize
  * @prop {undefined} viewportSize
@@ -99,7 +99,7 @@
  * @prop {{ slide: Slide }} slideActivate
  * @prop {{ slide: Slide }} slideDeactivate
  * @prop {{ slide: Slide }} slideDestroy
- * @prop {{ destZoomLevel: number, centerPoint: Point, transitionDuration: number | false }} beforeZoomTo
+ * @prop {{ destZoomLevel: number, centerPoint: Point | undefined, transitionDuration: number | false | undefined }} beforeZoomTo
  * @prop {{ slide: Slide }} zoomPanUpdate
  * @prop {{ slide: Slide }} initialZoomPan
  * @prop {{ slide: Slide }} calcSlideSize
@@ -119,7 +119,7 @@
  * @prop {undefined} initialZoomOut
  * @prop {undefined} initialZoomInEnd
  * @prop {undefined} initialZoomOutEnd
- * @prop {{ dataSource: DataSource, numItems: number }} numItems
+ * @prop {{ dataSource: DataSource | undefined, numItems: number }} numItems
  * @prop {{ itemData: SlideData; index: number }} itemData
  * @prop {{ index: number, itemData: SlideData, instance: PhotoSwipe }} thumbBounds
  */
@@ -127,7 +127,7 @@
 /**
  * @typedef {Object} PhotoSwipeFiltersMap https://photoswipe.com/filters/
  *
- * @prop {(numItems: number, dataSource: DataSource) => number} numItems
+ * @prop {(numItems: number, dataSource: DataSource | undefined) => number} numItems
  * Modify the total amount of slides. Example on Data sources page.
  * https://photoswipe.com/filters/#numitems
  *
@@ -172,11 +172,11 @@
  * Modify a UI element that's being created.
  * https://photoswipe.com/filters/#uielement
  *
- * @prop {(thumbnail: HTMLElement, itemData: SlideData, index: number) => HTMLElement} thumbEl
+ * @prop {(thumbnail: HTMLElement | null | undefined, itemData: SlideData, index: number) => HTMLElement} thumbEl
  * Modify the thubmnail element from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbel
  *
- * @prop {(thumbBounds: Bounds, itemData: SlideData, index: number) => Bounds} thumbBounds
+ * @prop {(thumbBounds: Bounds | undefined, itemData: SlideData, index: number) => Bounds} thumbBounds
  * Modify the thubmnail bounds from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbbounds
  *
@@ -186,7 +186,7 @@
 
 /**
  * @template {keyof PhotoSwipeFiltersMap} T
- * @typedef {{ fn: PhotoSwipeFiltersMap[T], priority: number }} Filter<T>
+ * @typedef {{ fn: PhotoSwipeFiltersMap[T], priority: number }} Filter
  */
 
 /**
@@ -196,7 +196,7 @@
 
 /**
  * @template {keyof PhotoSwipeEventsMap} T
- * @typedef {(event: AugmentedEvent<T>) => void} EventCallback<T>
+ * @typedef {(event: AugmentedEvent<T>) => void} EventCallback
  */
 
 /**
@@ -211,6 +211,7 @@ class PhotoSwipeEvent {
    */
   constructor(type, details) {
     this.type = type;
+    this.defaultPrevented = false;
     if (details) {
       Object.assign(this, details);
     }
@@ -237,10 +238,10 @@ class Eventable {
      */
     this._filters = {};
 
-    /** @type {PhotoSwipe=} */
+    /** @type {PhotoSwipe | undefined} */
     this.pswp = undefined;
 
-    /** @type {PhotoSwipeOptions} */
+    /** @type {PhotoSwipeOptions | undefined} */
     this.options = undefined;
   }
 
@@ -255,12 +256,10 @@ class Eventable {
       this._filters[name] = [];
     }
 
-    this._filters[name].push({ fn, priority });
-    this._filters[name].sort((f1, f2) => f1.priority - f2.priority);
+    this._filters[name]?.push({ fn, priority });
+    this._filters[name]?.sort((f1, f2) => f1.priority - f2.priority);
 
-    if (this.pswp) {
-      this.pswp.addFilter(name, fn, priority);
-    }
+    this.pswp?.addFilter(name, fn, priority);
   }
 
   /**
@@ -286,12 +285,10 @@ class Eventable {
    * @returns {Parameters<PhotoSwipeFiltersMap[T]>[0]}
    */
   applyFilters(name, ...args) {
-    if (this._filters[name]) {
-      this._filters[name].forEach((filter) => {
-        // @ts-expect-error
-        args[0] = filter.fn.apply(this, args);
-      });
-    }
+    this._filters[name]?.forEach((filter) => {
+      // @ts-expect-error
+      args[0] = filter.fn.apply(this, args);
+    });
     return args[0];
   }
 
@@ -304,14 +301,12 @@ class Eventable {
     if (!this._listeners[name]) {
       this._listeners[name] = [];
     }
-    this._listeners[name].push(fn);
+    this._listeners[name]?.push(fn);
 
     // When binding events to lightbox,
     // also bind events to PhotoSwipe Core,
     // if it's open.
-    if (this.pswp) {
-      this.pswp.on(name, fn);
-    }
+    this.pswp?.on(name, fn);
   }
 
   /**
@@ -325,9 +320,7 @@ class Eventable {
       this._listeners[name] = this._listeners[name].filter(listener => (fn !== listener));
     }
 
-    if (this.pswp) {
-      this.pswp.off(name, fn);
-    }
+    this.pswp?.off(name, fn);
   }
 
   /**
@@ -343,15 +336,9 @@ class Eventable {
 
     const event = /** @type {AugmentedEvent<T>} */ (new PhotoSwipeEvent(name, details));
 
-    if (!this._listeners) {
-      return event;
-    }
-
-    if (this._listeners[name]) {
-      this._listeners[name].forEach((listener) => {
-        listener.call(this, event);
-      });
-    }
+    this._listeners[name]?.forEach((listener) => {
+      listener.call(this, event);
+    });
 
     return event;
   }
