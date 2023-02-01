@@ -51,7 +51,7 @@ lightbox.on('beforeOpen', () => {
   pswp.close();
 
   // instantly close and destroy the PhotoSwipe
-  pswp.close();
+  pswp.destroy();
 
   // zoom slide to
   pswp.currSlide.zoomTo(
