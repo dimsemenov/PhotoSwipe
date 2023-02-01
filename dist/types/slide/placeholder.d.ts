@@ -5,7 +5,8 @@ declare class Placeholder {
      * @param {HTMLElement} container
      */
     constructor(imageSrc: string | false, container: HTMLElement);
-    element: HTMLDivElement | HTMLImageElement;
+    /** @type {HTMLImageElement | HTMLDivElement | null} */
+    element: HTMLImageElement | HTMLDivElement | null;
     /**
      * @param {number} width
      * @param {number} height

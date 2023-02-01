@@ -29,6 +29,7 @@ declare class DragHandler {
      *
      * @private
      * @param {'x' | 'y'} axis
+     * @returns {boolean}
      */
     private _panOrMoveMainScroll;
     /**
@@ -40,6 +41,7 @@ declare class DragHandler {
      *
      * @private
      * @param {number} panY The current pan Y position.
+     * @returns {number}
      */
     private _getVerticalDragRatio;
     /**
@@ -50,7 +52,7 @@ declare class DragHandler {
      * @private
      * @param {'x' | 'y'} axis
      * @param {number} potentialPan
-     * @param {number=} customFriction (0.1 - 1)
+     * @param {number} [customFriction] (0.1 - 1)
      */
     private _setPanWithFriction;
 }

@@ -7,9 +7,29 @@ import { specialKeyUsed } from './util/util.js';
  * @typedef {import('./types.js').Methods<T>} Methods<T>
  */
 
+const KeyboardKeyCodesMap = {
+  Escape: 27,
+  z: 90,
+  ArrowLeft: 37,
+  ArrowUp: 38,
+  ArrowRight: 39,
+  ArrowDown: 40,
+  Tab: 9,
+};
+
+/**
+ * @template {keyof KeyboardKeyCodesMap} T
+ * @param {T} key
+ * @param {boolean} isKeySupported
+ * @returns {T | number | undefined}
+ */
+const getKeyboardEventKey = (key, isKeySupported) => {
+  return isKeySupported ? key : KeyboardKeyCodesMap[key];
+};
+
 /**
  * - Manages keyboard shortcuts.
- * - Heps trap focus within photoswipe.
+ * - Helps trap focus within photoswipe.
  */
 class Keyboard {
   /**
@@ -17,6 +37,8 @@ class Keyboard {
    */
   constructor(pswp) {
     this.pswp = pswp;
+    /** @private */
+    this._wasFocused = false;
 
     pswp.on('bindEvents', () => {
       // Dialog was likely opened by keyboard if initial point is not defined
@@ -27,8 +49,8 @@ class Keyboard {
         this._focusRoot();
       }
 
-      pswp.events.add(document, 'focusin', this._onFocusIn.bind(this));
-      pswp.events.add(document, 'keydown', this._onKeyDown.bind(this));
+      pswp.events.add(document, 'focusin', /** @type EventListener */(this._onFocusIn.bind(this)));
+      pswp.events.add(document, 'keydown', /** @type EventListener */(this._onKeyDown.bind(this)));
     });
 
     const lastActiveElement = /** @type {HTMLElement} */ (document.activeElement);
@@ -41,14 +63,16 @@ class Keyboard {
     });
   }
 
+  /** @private */
   _focusRoot() {
-    if (!this._wasFocused) {
+    if (!this._wasFocused && this.pswp.element) {
       this.pswp.element.focus();
       this._wasFocused = true;
     }
   }
 
   /**
+   * @private
    * @param {KeyboardEvent} e
    */
   _onKeyDown(e) {
@@ -65,36 +89,37 @@ class Keyboard {
       return;
     }
 
-    /** @type {Methods<PhotoSwipe>} */
+    /** @type {Methods<PhotoSwipe> | undefined} */
     let keydownAction;
-    /** @type {'x' | 'y'} */
+    /** @type {'x' | 'y' | undefined} */
     let axis;
-    let isForward;
+    let isForward = false;
+    const isKeySupported = 'key' in e;
 
-    switch (e.keyCode) {
-      case 27: // esc
+    switch (isKeySupported ? e.key : e.keyCode) {
+      case getKeyboardEventKey('Escape', isKeySupported):
         if (pswp.options.escKey) {
           keydownAction = 'close';
         }
         break;
-      case 90: // z key
+      case getKeyboardEventKey('z', isKeySupported):
         keydownAction = 'toggleZoom';
         break;
-      case 37: // left
+      case getKeyboardEventKey('ArrowLeft', isKeySupported):
         axis = 'x';
         break;
-      case 38: // top
+      case getKeyboardEventKey('ArrowUp', isKeySupported):
         axis = 'y';
         break;
-      case 39: // right
+      case getKeyboardEventKey('ArrowRight', isKeySupported):
         axis = 'x';
         isForward = true;
         break;
-      case 40: // bottom
+      case getKeyboardEventKey('ArrowDown', isKeySupported):
         isForward = true;
         axis = 'y';
         break;
-      case 9: // tab
+      case getKeyboardEventKey('Tab', isKeySupported):
         this._focusRoot();
         break;
       default:
@@ -123,6 +148,7 @@ class Keyboard {
 
     if (keydownAction) {
       e.preventDefault();
+      // @ts-ignore
       pswp[keydownAction]();
     }
   }
@@ -130,11 +156,13 @@ class Keyboard {
   /**
    * Trap focus inside photoswipe
    *
+   * @private
    * @param {FocusEvent} e
    */
   _onFocusIn(e) {
     const { template } = this.pswp;
-    if (document !== e.target
+    if (template
+        && document !== e.target
         && template !== e.target
         && !template.contains(/** @type {Node} */ (e.target))) {
       // focus root element

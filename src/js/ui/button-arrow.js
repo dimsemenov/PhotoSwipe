@@ -9,7 +9,7 @@
  *
  * @param {HTMLElement} element
  * @param {PhotoSwipe} pswp
- * @param {boolean=} isNextButton
+ * @param {boolean} [isNextButton]
  */
 function initArrowButton(element, pswp, isNextButton) {
   element.classList.add('pswp__button--arrow');

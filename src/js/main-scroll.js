@@ -28,21 +28,23 @@ class MainScroll {
   constructor(pswp) {
     this.pswp = pswp;
     this.x = 0;
-
-    /** @type {number} */
-    this.slideWidth = undefined;
+    this.slideWidth = 0;
+    /** @private */
+    this._currPositionIndex = 0;
+    /** @private */
+    this._prevPositionIndex = 0;
+    /** @private */
+    this._containerShiftIndex = -1;
 
     /** @type {ItemHolder[]} */
-    this.itemHolders = undefined;
-
-    this.resetPosition();
+    this.itemHolders = [];
   }
 
   /**
    * Position the scroller and slide containers
    * according to viewport size.
    *
-   * @param {boolean=} resizeSlides Whether slides content should resized
+   * @param {boolean} [resizeSlides] Whether slides content should resized
    */
   resize(resizeSlides) {
     const { pswp } = this;
@@ -97,7 +99,7 @@ class MainScroll {
     // append our three slide holders -
     // previous, current, and next
     for (let i = 0; i < 3; i++) {
-      const el = createElement('pswp__item', false, this.pswp.container);
+      const el = createElement('pswp__item', 'div', this.pswp.container);
       el.setAttribute('role', 'group');
       el.setAttribute('aria-roledescription', 'slide');
       el.setAttribute('aria-hidden', 'true');
@@ -114,6 +116,7 @@ class MainScroll {
 
   /**
    * Whether the main scroll can be horizontally swiped to the next or previous slide.
+   * @returns {boolean}
    */
   canBeSwiped() {
     return this.pswp.getNumItems() > 1;
@@ -130,8 +133,8 @@ class MainScroll {
    * (for example `-1` will move to the last slide of the gallery).
    *
    * @param {number} diff
-   * @param {boolean=} animate
-   * @param {number=} velocityX
+   * @param {boolean} [animate]
+   * @param {number} [velocityX]
    * @returns {boolean} whether index was changed or not
    */
   moveIndexBy(diff, animate, velocityX) {
@@ -203,14 +206,13 @@ class MainScroll {
       }
     }
 
-    if (diff) {
-      return true;
-    }
+    return Boolean(diff);
   }
 
   /**
    * X position of the main scroll for the current slide
    * (ignores position during dragging)
+   * @returns {number}
    */
   getCurrSlideX() {
     return this.slideWidth * this._currPositionIndex;
@@ -219,6 +221,7 @@ class MainScroll {
   /**
    * Whether scroll position is shifted.
    * For example, it will return true if the scroll is being dragged or animated.
+   * @returns {boolean}
    */
   isShifted() {
     return this.x !== this.getCurrSlideX();
@@ -240,6 +243,7 @@ class MainScroll {
     pswp.currIndex = pswp.potentialIndex;
 
     let diffAbs = Math.abs(positionDifference);
+    /** @type {ItemHolder | undefined} */
     let tempHolder;
 
     if (diffAbs >= 3) {
@@ -250,22 +254,26 @@ class MainScroll {
     for (let i = 0; i < diffAbs; i++) {
       if (positionDifference > 0) {
         tempHolder = this.itemHolders.shift();
-        this.itemHolders[2] = tempHolder; // move first to last
+        if (tempHolder) {
+          this.itemHolders[2] = tempHolder; // move first to last
 
-        this._containerShiftIndex++;
+          this._containerShiftIndex++;
 
-        setTransform(tempHolder.el, (this._containerShiftIndex + 2) * this.slideWidth);
+          setTransform(tempHolder.el, (this._containerShiftIndex + 2) * this.slideWidth);
 
-        pswp.setContent(tempHolder, (pswp.currIndex - diffAbs) + i + 2);
+          pswp.setContent(tempHolder, (pswp.currIndex - diffAbs) + i + 2);
+        }
       } else {
         tempHolder = this.itemHolders.pop();
-        this.itemHolders.unshift(tempHolder); // move last to first
+        if (tempHolder) {
+          this.itemHolders.unshift(tempHolder); // move last to first
 
-        this._containerShiftIndex--;
+          this._containerShiftIndex--;
 
-        setTransform(tempHolder.el, this._containerShiftIndex * this.slideWidth);
+          setTransform(tempHolder.el, this._containerShiftIndex * this.slideWidth);
 
-        pswp.setContent(tempHolder, (pswp.currIndex + diffAbs) - i - 2);
+          pswp.setContent(tempHolder, (pswp.currIndex + diffAbs) - i - 2);
+        }
       }
     }
 
@@ -290,7 +298,7 @@ class MainScroll {
       }
     });
 
-    pswp.currSlide = this.itemHolders[1].slide;
+    pswp.currSlide = this.itemHolders[1]?.slide;
     pswp.contentLoader.updateLazy(positionDifference);
 
     if (pswp.currSlide) {
@@ -304,19 +312,14 @@ class MainScroll {
    * Move the X position of the main scroll container
    *
    * @param {number} x
-   * @param {boolean=} dragging
+   * @param {boolean} [dragging]
    */
   moveTo(x, dragging) {
-    /** @type {number} */
-    let newSlideIndexOffset;
-    /** @type {number} */
-    let delta;
-
     if (!this.pswp.canLoop() && dragging) {
       // Apply friction
-      newSlideIndexOffset = ((this.slideWidth * this._currPositionIndex) - x) / this.slideWidth;
+      let newSlideIndexOffset = ((this.slideWidth * this._currPositionIndex) - x) / this.slideWidth;
       newSlideIndexOffset += this.pswp.currIndex;
-      delta = Math.round(x - this.x);
+      const delta = Math.round(x - this.x);
 
       if ((newSlideIndexOffset < 0 && delta > 0)
           || (newSlideIndexOffset >= this.pswp.getNumItems() - 1 && delta < 0)) {
@@ -325,9 +328,12 @@ class MainScroll {
     }
 
     this.x = x;
-    setTransform(this.pswp.container, x);
 
-    this.pswp.dispatch('moveMainScroll', { x, dragging });
+    if (this.pswp.container) {
+      setTransform(this.pswp.container, x);
+    }
+
+    this.pswp.dispatch('moveMainScroll', { x, dragging: dragging ?? false });
   }
 }
 

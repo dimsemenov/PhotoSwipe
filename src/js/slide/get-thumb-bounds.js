@@ -5,6 +5,7 @@
 
 /**
  * @param {HTMLElement} el
+ * @returns Bounds
  */
 function getBoundsByElement(el) {
   const thumbAreaRect = el.getBoundingClientRect();
@@ -19,6 +20,7 @@ function getBoundsByElement(el) {
  * @param {HTMLElement} el
  * @param {number} imageWidth
  * @param {number} imageHeight
+ * @returns Bounds
  */
 function getCroppedBoundsByElement(el, imageWidth, imageHeight) {
   const thumbAreaRect = el.getBoundingClientRect();
@@ -80,14 +82,15 @@ export function getThumbBounds(index, itemData, instance) {
   }
 
   const { element } = itemData;
+  /** @type {Bounds | undefined} */
   let thumbBounds;
-  /** @type {HTMLElement} */
+  /** @type {HTMLElement | null | undefined} */
   let thumbnail;
 
   if (element && instance.options.thumbSelector !== false) {
     const thumbSelector = instance.options.thumbSelector || 'img';
     thumbnail = element.matches(thumbSelector)
-      ? element : element.querySelector(thumbSelector);
+      ? element : /** @type {HTMLElement | null} */ (element.querySelector(thumbSelector));
   }
 
   thumbnail = instance.applyFilters('thumbEl', thumbnail, itemData, index);
@@ -98,8 +101,8 @@ export function getThumbBounds(index, itemData, instance) {
     } else {
       thumbBounds = getCroppedBoundsByElement(
         thumbnail,
-        itemData.width || itemData.w,
-        itemData.height || itemData.h
+        itemData.width || itemData.w || 0,
+        itemData.height || itemData.h || 0
       );
     }
   }

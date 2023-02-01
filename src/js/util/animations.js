@@ -1,33 +1,19 @@
 import CSSAnimation from './css-animation.js';
 import SpringAnimation from './spring-animation.js';
 
-/** @typedef {SpringAnimation | CSSAnimation} Animation */
+/** @typedef {import('./css-animation.js').CssAnimationProps} CssAnimationProps */
+/** @typedef {import('./spring-animation.js').SpringAnimationProps} SpringAnimationProps */
 
-/**
- * @typedef {Object} AnimationProps
- *
- * @prop {HTMLElement=} target
- *
- * @prop {string=} name
- *
- * @prop {number=} start
- * @prop {number=} end
- * @prop {number=} duration
- * @prop {number=} velocity
- * @prop {number=} dampingRatio
- * @prop {number=} naturalFrequency
- *
- * @prop {(end: number) => void} [onUpdate]
- * @prop {() => void} [onComplete]
- * @prop {() => void} [onFinish]
- *
- * @prop {string=} transform
- * @prop {string=} opacity
- * @prop {string=} easing
- *
- * @prop {boolean=} isPan
- * @prop {boolean=} isMainScroll
+/** @typedef {Object} SharedAnimationProps
+ * @prop {string} [name]
+ * @prop {boolean} [isPan]
+ * @prop {boolean} [isMainScroll]
+ * @prop {VoidFunction} [onComplete]
+ * @prop {VoidFunction} [onFinish]
  */
+
+/** @typedef {SpringAnimation | CSSAnimation} Animation */
+/** @typedef {SpringAnimationProps | CssAnimationProps} AnimationProps */
 
 /**
  * Manages animations
@@ -39,31 +25,29 @@ class Animations {
   }
 
   /**
-   * @param {AnimationProps} props
+   * @param {SpringAnimationProps} props
    */
   startSpring(props) {
     this._start(props, true);
   }
 
   /**
-   * @param {AnimationProps} props
+   * @param {CssAnimationProps} props
    */
   startTransition(props) {
     this._start(props);
   }
 
   /**
+   * @private
    * @param {AnimationProps} props
-   * @param {boolean=} isSpring
+   * @param {boolean} [isSpring]
+   * @returns {Animation}
    */
   _start(props, isSpring) {
-    /** @type {Animation} */
-    let animation;
-    if (isSpring) {
-      animation = new SpringAnimation(props);
-    } else {
-      animation = new CSSAnimation(props);
-    }
+    const animation = isSpring
+      ? new SpringAnimation(/** @type SpringAnimationProps */ (props))
+      : new CSSAnimation(/** @type CssAnimationProps */ (props));
 
     this.activeAnimations.push(animation);
     animation.onFinish = () => this.stop(animation);

@@ -10,7 +10,7 @@ class ScrollWheel {
    */
   constructor(pswp) {
     this.pswp = pswp;
-    pswp.events.add(pswp.element, 'wheel', this._onWheel.bind(this));
+    pswp.events.add(pswp.element, 'wheel', /** @type EventListener */(this._onWheel.bind(this)));
   }
 
   /**

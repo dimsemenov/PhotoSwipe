@@ -7,16 +7,19 @@ declare class UI {
      */
     constructor(pswp: PhotoSwipe);
     pswp: import("../photoswipe.js").default;
-    /** @type {() => void} */
-    updatePreloaderVisibility: () => void;
-    /** @type {number} */
-    _lastUpdatedZoomLevel: number;
-    init(): void;
     isRegistered: boolean;
     /** @type {UIElementData[]} */
     uiElementsData: UIElementData[];
     /** @type {(UIElement | UIElementData)[]} */
     items: (UIElement | UIElementData)[];
+    /** @type {() => void} */
+    updatePreloaderVisibility: () => void;
+    /**
+     * @private
+     * @type {number | undefined}
+     */
+    private _lastUpdatedZoomLevel;
+    init(): void;
     /**
      * @param {UIElementData} elementData
      */
@@ -24,7 +27,9 @@ declare class UI {
     /**
      * Fired each time zoom or pan position is changed.
      * Update classes that control visibility of zoom button and cursor icon.
+     *
+     * @private
      */
-    _onZoomPanUpdate(): void;
+    private _onZoomPanUpdate;
 }
 import UIElement from "./ui-element.js";

@@ -4,11 +4,8 @@ export default TapHandler;
  */
 export type AddPostfix<T, P> = import('../types.js').AddPostfix<T, P>;
 export type Gestures = import('./gestures.js').default;
+export type Point = import('../photoswipe.js').Point;
 export type Actions = 'imageClick' | 'bgClick' | 'tap' | 'doubleTap';
-export type Point = {
-    x?: number;
-    y?: number;
-};
 /**
  * Tap, double-tap handler.
  */
@@ -34,9 +31,10 @@ declare class TapHandler {
      */
     doubleTap(point: Point, originalEvent: PointerEvent): void;
     /**
+     * @private
      * @param {Actions} actionName
      * @param {Point} point
      * @param {PointerEvent} originalEvent
      */
-    _doClickOrTapAction(actionName: Actions, point: Point, originalEvent: PointerEvent): void;
+    private _doClickOrTapAction;
 }

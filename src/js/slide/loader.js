@@ -6,7 +6,6 @@ import ZoomLevel from './zoom-level.js';
 /** @typedef {import('./slide.js').SlideData} SlideData */
 /** @typedef {import('../core/base.js').default} PhotoSwipeBase */
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
-/** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
 
 const MIN_SLIDES_TO_CACHE = 5;
 
@@ -16,34 +15,36 @@ const MIN_SLIDES_TO_CACHE = 5;
  * thus it can be called before dialog is opened.
  *
  * @param {SlideData} itemData Data about the slide
- * @param {PhotoSwipe | PhotoSwipeLightbox | PhotoSwipeBase} instance PhotoSwipe instance
+ * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox instance
  * @param {number} index
- * @returns Image that is being decoded or false.
+ * @returns {Content} Image that is being decoded or false.
  */
 export function lazyLoadData(itemData, instance, index) {
-  // src/slide/content/content.js
   const content = instance.createContentFromData(itemData, index);
-
-  if (!content || !content.lazyLoad) {
-    return;
-  }
+  /** @type {ZoomLevel | undefined} */
+  let zoomLevel;
 
   const { options } = instance;
 
   // We need to know dimensions of the image to preload it,
-  // as it might use srcset and we need to define sizes
-  // @ts-expect-error should provide pswp instance?
-  const viewportSize = instance.viewportSize || getViewportSize(options, instance);
-  const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
-
-  const zoomLevel = new ZoomLevel(options, itemData, -1);
-  zoomLevel.update(content.width, content.height, panAreaSize);
+  // as it might use srcset, and we need to define sizes
+  if (options) {
+    zoomLevel = new ZoomLevel(options, itemData, -1);
+    if (instance.pswp) {
+      const viewportSize = instance.pswp.viewportSize || getViewportSize(options, instance.pswp);
+      const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
+      zoomLevel.update(content.width, content.height, panAreaSize);
+    }
+  }
 
   content.lazyLoad();
-  content.setDisplayedSize(
-    Math.ceil(content.width * zoomLevel.initial),
-    Math.ceil(content.height * zoomLevel.initial)
-  );
+
+  if (zoomLevel) {
+    content.setDisplayedSize(
+      Math.ceil(content.width * zoomLevel.initial),
+      Math.ceil(content.height * zoomLevel.initial)
+    );
+  }
 
   return content;
 }
@@ -54,10 +55,11 @@ export function lazyLoadData(itemData, instance, index) {
  * This function is used both by Lightbox and PhotoSwipe core,
  * thus it can be called before dialog is opened.
  *
- * By default it loads image based on viewport size and initial zoom level.
+ * By default, it loads image based on viewport size and initial zoom level.
  *
  * @param {number} index Slide index
- * @param {PhotoSwipe | PhotoSwipeLightbox} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @param {PhotoSwipeBase} instance PhotoSwipe or PhotoSwipeLightbox eventable instance
+ * @returns {Content | undefined}
  */
 export function lazyLoadSlide(index, instance) {
   const itemData = instance.getItemData(index);
@@ -68,7 +70,6 @@ export function lazyLoadSlide(index, instance) {
 
   return lazyLoadData(itemData, instance, index);
 }
-
 
 class ContentLoader {
   /**
@@ -88,7 +89,7 @@ class ContentLoader {
   /**
    * Lazy load nearby slides based on `preload` option.
    *
-   * @param {number=} diff Difference between slide indexes that was changed recently, or 0.
+   * @param {number} [diff] Difference between slide indexes that was changed recently, or 0.
    */
   updateLazy(diff) {
     const { pswp } = this;
@@ -113,10 +114,10 @@ class ContentLoader {
   }
 
   /**
-   * @param {number} index
+   * @param {number} initialIndex
    */
-  loadSlideByIndex(index) {
-    index = this.pswp.getLoopedIndex(index);
+  loadSlideByIndex(initialIndex) {
+    const index = this.pswp.getLoopedIndex(initialIndex);
     // try to get cached content
     let content = this.getContentByIndex(index);
     if (!content) {
@@ -131,21 +132,19 @@ class ContentLoader {
 
   /**
    * @param {Slide} slide
+   * @returns {Content}
    */
   getContentBySlide(slide) {
     let content = this.getContentByIndex(slide.index);
     if (!content) {
       // create content if not found in cache
       content = this.pswp.createContentFromData(slide.data, slide.index);
-      if (content) {
-        this.addToCache(content);
-      }
+      this.addToCache(content);
     }
 
-    if (content) {
-      // assign slide to content
-      content.setSlide(slide);
-    }
+    // assign slide to content
+    content.setSlide(slide);
+
     return content;
   }
 
@@ -183,6 +182,7 @@ class ContentLoader {
 
   /**
    * @param {number} index
+   * @returns {Content | undefined}
    */
   getContentByIndex(index) {
     return this._cachedItems.find(content => content.index === index);
@@ -190,7 +190,7 @@ class ContentLoader {
 
   destroy() {
     this._cachedItems.forEach(content => content.destroy());
-    this._cachedItems = null;
+    this._cachedItems = [];
   }
 }
 

@@ -2,6 +2,7 @@ const MAX_IMAGE_WIDTH = 4000;
 
 /** @typedef {import('../photoswipe.js').default} PhotoSwipe */
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
+/** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /** @typedef {'fit' | 'fill' | number | ((zoomLevelObject: ZoomLevel) => number)} ZoomLevelOption */
@@ -15,13 +16,24 @@ class ZoomLevel {
    * @param {PhotoSwipeOptions} options PhotoSwipe options
    * @param {SlideData} itemData Slide data
    * @param {number} index Slide index
-   * @param {PhotoSwipe=} pswp PhotoSwipe instance, can be undefined if not initialized yet
+   * @param {PhotoSwipe} [pswp] PhotoSwipe instance, can be undefined if not initialized yet
    */
   constructor(options, itemData, index, pswp) {
     this.pswp = pswp;
     this.options = options;
     this.itemData = itemData;
     this.index = index;
+    /** @type { Point | null } */
+    this.panAreaSize = null;
+    /** @type { Point | null } */
+    this.elementSize = null;
+    this.fit = 1;
+    this.fill = 1;
+    this.vFill = 1;
+    this.initial = 1;
+    this.secondary = 1;
+    this.max = 1;
+    this.min = 1;
   }
 
   /**
@@ -31,18 +43,16 @@ class ZoomLevel {
    *
    * @param {number} maxWidth
    * @param {number} maxHeight
-   * @param {{ x?: number; y?: number }} panAreaSize
+   * @param {Point} panAreaSize
    */
   update(maxWidth, maxHeight, panAreaSize) {
-    this.elementSize = {
-      x: maxWidth,
-      y: maxHeight
-    };
-
+    /** @type {Point} */
+    const elementSize = { x: maxWidth, y: maxHeight };
+    this.elementSize = elementSize;
     this.panAreaSize = panAreaSize;
 
-    const hRatio = this.panAreaSize.x / this.elementSize.x;
-    const vRatio = this.panAreaSize.y / this.elementSize.y;
+    const hRatio = panAreaSize.x / elementSize.x;
+    const vRatio = panAreaSize.y / elementSize.y;
 
     this.fit = Math.min(1, hRatio < vRatio ? hRatio : vRatio);
     this.fill = Math.min(1, hRatio > vRatio ? hRatio : vRatio);
@@ -75,10 +85,12 @@ class ZoomLevel {
    *
    * @private
    * @param {'initial' | 'secondary' | 'max'} optionPrefix Zoom level option prefix (initial, secondary, max)
+   * @returns { number | undefined }
    */
   _parseZoomLevelOption(optionPrefix) {
-    // eslint-disable-next-line max-len
-    const optionName = /** @type {'initialZoomLevel' | 'secondaryZoomLevel' | 'maxZoomLevel'} */ (optionPrefix + 'ZoomLevel');
+    const optionName = /** @type {'initialZoomLevel' | 'secondaryZoomLevel' | 'maxZoomLevel'} */ (
+      optionPrefix + 'ZoomLevel'
+    );
     const optionValue = this.options[optionName];
 
     if (!optionValue) {
@@ -119,7 +131,7 @@ class ZoomLevel {
     // 3x of "fit" state, but not larger than original
     currZoomLevel = Math.min(1, this.fit * 3);
 
-    if (currZoomLevel * this.elementSize.x > MAX_IMAGE_WIDTH) {
+    if (this.elementSize && currZoomLevel * this.elementSize.x > MAX_IMAGE_WIDTH) {
       currZoomLevel = MAX_IMAGE_WIDTH / this.elementSize.x;
     }
 
@@ -145,15 +157,9 @@ class ZoomLevel {
    * @return {number}
    */
   _getMax() {
-    const currZoomLevel = this._parseZoomLevelOption('max');
-
-    if (currZoomLevel) {
-      return currZoomLevel;
-    }
-
     // max zoom level is x4 from "fit state",
     // used for zoom gesture and ctrl/trackpad zoom
-    return Math.max(1, this.fit * 4);
+    return this._parseZoomLevelOption('max') || Math.max(1, this.fit * 4);
   }
 }
 

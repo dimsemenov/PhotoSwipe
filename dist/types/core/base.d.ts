@@ -1,9 +1,7 @@
 export default PhotoSwipeBase;
 export type PhotoSwipe = import("../photoswipe.js").default;
-export type PhotoSwipeOptions = import("../photoswipe.js").PhotoSwipeOptions;
 export type SlideData = import("../slide/slide.js").SlideData;
 /** @typedef {import("../photoswipe.js").default} PhotoSwipe */
-/** @typedef {import("../photoswipe.js").PhotoSwipeOptions} PhotoSwipeOptions */
 /** @typedef {import("../slide/slide.js").SlideData} SlideData */
 /**
  * PhotoSwipe base class that can retrieve data about every slide.
@@ -19,6 +17,7 @@ declare class PhotoSwipeBase extends Eventable {
     /**
      * @param {SlideData} slideData
      * @param {number} index
+     * @returns {Content}
      */
     createContentFromData(slideData: SlideData, index: number): Content;
     /**
@@ -29,27 +28,30 @@ declare class PhotoSwipeBase extends Eventable {
      * `src`, `srcset`, `w`, `h`, which will be used to generate a slide with image.
      *
      * @param {number} index
+     * @returns {SlideData}
      */
-    getItemData(index: number): import("../slide/slide.js").SlideData;
+    getItemData(index: number): SlideData;
     /**
      * Get array of gallery DOM elements,
      * based on childSelector and gallery element.
      *
      * @param {HTMLElement} galleryElement
+     * @returns {HTMLElement[]}
      */
     _getGalleryDOMElements(galleryElement: HTMLElement): HTMLElement[];
     /**
      * Converts DOM element to item data object.
      *
      * @param {HTMLElement} element DOM element
+     * @returns {SlideData}
      */
-    _domElementToItemData(element: HTMLElement): import("../slide/slide.js").SlideData;
+    _domElementToItemData(element: HTMLElement): SlideData;
     /**
      * Lazy-load by slide data
      *
      * @param {SlideData} itemData Data about the slide
      * @param {number} index
-     * @returns Image that is being decoded or false.
+     * @returns {Content} Image that is being decoded or false.
      */
     lazyLoadData(itemData: SlideData, index: number): Content;
 }

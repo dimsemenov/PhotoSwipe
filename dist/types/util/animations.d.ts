@@ -1,49 +1,26 @@
 export default Animations;
-export type Animation = SpringAnimation | CSSAnimation;
-export type AnimationProps = {
-    target?: HTMLElement | undefined;
+export type CssAnimationProps = import('./css-animation.js').CssAnimationProps;
+export type SpringAnimationProps = import('./spring-animation.js').SpringAnimationProps;
+export type SharedAnimationProps = {
     name?: string | undefined;
-    start?: number | undefined;
-    end?: number | undefined;
-    duration?: number | undefined;
-    velocity?: number | undefined;
-    dampingRatio?: number | undefined;
-    naturalFrequency?: number | undefined;
-    onUpdate?: (end: number) => void;
-    onComplete?: () => void;
-    onFinish?: () => void;
-    transform?: string | undefined;
-    opacity?: string | undefined;
-    easing?: string | undefined;
     isPan?: boolean | undefined;
     isMainScroll?: boolean | undefined;
+    onComplete?: VoidFunction | undefined;
+    onFinish?: VoidFunction | undefined;
 };
-/** @typedef {SpringAnimation | CSSAnimation} Animation */
-/**
- * @typedef {Object} AnimationProps
- *
- * @prop {HTMLElement=} target
- *
- * @prop {string=} name
- *
- * @prop {number=} start
- * @prop {number=} end
- * @prop {number=} duration
- * @prop {number=} velocity
- * @prop {number=} dampingRatio
- * @prop {number=} naturalFrequency
- *
- * @prop {(end: number) => void} [onUpdate]
- * @prop {() => void} [onComplete]
- * @prop {() => void} [onFinish]
- *
- * @prop {string=} transform
- * @prop {string=} opacity
- * @prop {string=} easing
- *
- * @prop {boolean=} isPan
- * @prop {boolean=} isMainScroll
+export type Animation = SpringAnimation | CSSAnimation;
+export type AnimationProps = SpringAnimationProps | CssAnimationProps;
+/** @typedef {import('./css-animation.js').CssAnimationProps} CssAnimationProps */
+/** @typedef {import('./spring-animation.js').SpringAnimationProps} SpringAnimationProps */
+/** @typedef {Object} SharedAnimationProps
+ * @prop {string} [name]
+ * @prop {boolean} [isPan]
+ * @prop {boolean} [isMainScroll]
+ * @prop {VoidFunction} [onComplete]
+ * @prop {VoidFunction} [onFinish]
  */
+/** @typedef {SpringAnimation | CSSAnimation} Animation */
+/** @typedef {SpringAnimationProps | CssAnimationProps} AnimationProps */
 /**
  * Manages animations
  */
@@ -51,18 +28,20 @@ declare class Animations {
     /** @type {Animation[]} */
     activeAnimations: Animation[];
     /**
-     * @param {AnimationProps} props
+     * @param {SpringAnimationProps} props
      */
-    startSpring(props: AnimationProps): void;
+    startSpring(props: SpringAnimationProps): void;
     /**
-     * @param {AnimationProps} props
+     * @param {CssAnimationProps} props
      */
-    startTransition(props: AnimationProps): void;
+    startTransition(props: CssAnimationProps): void;
     /**
+     * @private
      * @param {AnimationProps} props
-     * @param {boolean=} isSpring
+     * @param {boolean} [isSpring]
+     * @returns {Animation}
      */
-    _start(props: AnimationProps, isSpring?: boolean | undefined): Animation;
+    private _start;
     /**
      * @param {Animation} animation
      */

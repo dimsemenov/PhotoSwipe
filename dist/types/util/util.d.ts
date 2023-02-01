@@ -1,20 +1,18 @@
 /** @typedef {import('../photoswipe.js').Point} Point */
-/** @typedef {undefined | null | false | '' | 0} Falsy */
-/** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */
 /**
- * @template {HTMLElementTagName | Falsy} [T="div"]
- * @template {Node | undefined} [NodeToAppendElementTo=undefined]
- * @param {string=} className
- * @param {T=} [tagName]
- * @param {NodeToAppendElementTo=} appendToEl
- * @returns {T extends HTMLElementTagName ? HTMLElementTagNameMap[T] : HTMLElementTagNameMap['div']}
+ * @template {keyof HTMLElementTagNameMap} T
+ * @param {string} className
+ * @param {T} tagName
+ * @param {Node} [appendToEl]
+ * @returns {HTMLElementTagNameMap[T]}
  */
-export function createElement<T extends Falsy | keyof HTMLElementTagNameMap = "div", NodeToAppendElementTo extends Node = undefined>(className?: string | undefined, tagName?: T, appendToEl?: NodeToAppendElementTo): T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : HTMLDivElement;
+export function createElement<T extends keyof HTMLElementTagNameMap>(className: string, tagName: T, appendToEl?: Node | undefined): HTMLElementTagNameMap[T];
 /**
  * @param {Point} p1
  * @param {Point} p2
+ * @returns {Point}
  */
-export function equalizePoints(p1: Point, p2: Point): import("../photoswipe.js").Point;
+export function equalizePoints(p1: Point, p2: Point): Point;
 /**
  * @param {Point} p
  */
@@ -24,13 +22,15 @@ export function roundPoint(p: Point): void;
  *
  * @param {Point} p1
  * @param {Point} p2
+ * @returns {number}
  */
 export function getDistanceBetween(p1: Point, p2: Point): number;
 /**
- * Whether X and Y positions of points are qual
+ * Whether X and Y positions of points are equal
  *
  * @param {Point} p1
  * @param {Point} p2
+ * @returns {boolean}
  */
 export function pointsEqual(p1: Point, p2: Point): boolean;
 /**
@@ -39,14 +39,16 @@ export function pointsEqual(p1: Point, p2: Point): boolean;
  * @param {number} val
  * @param {number} min
  * @param {number} max
+ * @returns {number}
  */
 export function clamp(val: number, min: number, max: number): number;
 /**
  * Get transform string
  *
  * @param {number} x
- * @param {number=} y
- * @param {number=} scale
+ * @param {number} [y]
+ * @param {number} [scale]
+ * @returns {string}
  */
 export function toTransformString(x: number, y?: number | undefined, scale?: number | undefined): string;
 /**
@@ -54,17 +56,17 @@ export function toTransformString(x: number, y?: number | undefined, scale?: num
  *
  * @param {HTMLElement} el
  * @param {number} x
- * @param {number=} y
- * @param {number=} scale
+ * @param {number} [y]
+ * @param {number} [scale]
  */
 export function setTransform(el: HTMLElement, x: number, y?: number | undefined, scale?: number | undefined): void;
 /**
  * Apply CSS transition to element
  *
  * @param {HTMLElement} el
- * @param {string=} prop CSS property to animate
- * @param {number=} duration in ms
- * @param {string=} ease CSS easing function
+ * @param {string} [prop] CSS property to animate
+ * @param {number} [duration] in ms
+ * @param {string} [ease] CSS easing function
  */
 export function setTransitionStyle(el: HTMLElement, prop?: string | undefined, duration?: number | undefined, ease?: string | undefined): void;
 /**
@@ -89,23 +91,25 @@ export function decodeImage(img: HTMLImageElement): Promise<HTMLImageElement | v
  * with a special key or via mouse wheel.
  *
  * @param {MouseEvent | KeyboardEvent} e
+ * @returns {boolean}
  */
 export function specialKeyUsed(e: MouseEvent | KeyboardEvent): boolean;
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {import('../photoswipe.js').ElementProvider} option
- * @param {string=} legacySelector
+ * @param {import('../photoswipe.js').ElementProvider} [option]
+ * @param {string} [legacySelector]
  * @param {HTMLElement | Document} [parent]
  * @returns HTMLElement[]
  */
-export function getElementsFromOption(option: import('../photoswipe.js').ElementProvider, legacySelector?: string | undefined, parent?: HTMLElement | Document): HTMLElement[];
+export function getElementsFromOption(option?: import("../photoswipe.js").ElementProvider | undefined, legacySelector?: string | undefined, parent?: Document | HTMLElement | undefined): HTMLElement[];
 /**
  * Check if variable is PhotoSwipe class
  *
  * @param {any} fn
+ * @returns {boolean}
  */
-export function isPswpClass(fn: any): any;
+export function isPswpClass(fn: any): boolean;
 /**
  * Check if browser is Safari
  *
@@ -121,8 +125,6 @@ export const LOAD_STATE: {
     ERROR: 'error';
 };
 export type Point = import('../photoswipe.js').Point;
-export type Falsy = undefined | null | false | '' | 0;
-export type HTMLElementTagName = keyof HTMLElementTagNameMap;
 export type LoadState = {
     IDLE: "idle";
     LOADING: "loading";

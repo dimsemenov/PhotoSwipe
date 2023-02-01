@@ -1,31 +1,27 @@
 /** @typedef {import('../photoswipe.js').Point} Point */
 
-/** @typedef {undefined | null | false | '' | 0} Falsy */
-/** @typedef {keyof HTMLElementTagNameMap} HTMLElementTagName */
-
 /**
- * @template {HTMLElementTagName | Falsy} [T="div"]
- * @template {Node | undefined} [NodeToAppendElementTo=undefined]
- * @param {string=} className
- * @param {T=} [tagName]
- * @param {NodeToAppendElementTo=} appendToEl
- * @returns {T extends HTMLElementTagName ? HTMLElementTagNameMap[T] : HTMLElementTagNameMap['div']}
+ * @template {keyof HTMLElementTagNameMap} T
+ * @param {string} className
+ * @param {T} tagName
+ * @param {Node} [appendToEl]
+ * @returns {HTMLElementTagNameMap[T]}
  */
 export function createElement(className, tagName, appendToEl) {
-  const el = document.createElement(tagName || 'div');
+  const el = document.createElement(tagName);
   if (className) {
     el.className = className;
   }
   if (appendToEl) {
     appendToEl.appendChild(el);
   }
-  // @ts-expect-error
   return el;
 }
 
 /**
  * @param {Point} p1
  * @param {Point} p2
+ * @returns {Point}
  */
 export function equalizePoints(p1, p2) {
   p1.x = p2.x;
@@ -49,6 +45,7 @@ export function roundPoint(p) {
  *
  * @param {Point} p1
  * @param {Point} p2
+ * @returns {number}
  */
 export function getDistanceBetween(p1, p2) {
   const x = Math.abs(p1.x - p2.x);
@@ -57,10 +54,11 @@ export function getDistanceBetween(p1, p2) {
 }
 
 /**
- * Whether X and Y positions of points are qual
+ * Whether X and Y positions of points are equal
  *
  * @param {Point} p1
  * @param {Point} p2
+ * @returns {boolean}
  */
 export function pointsEqual(p1, p2) {
   return p1.x === p2.x && p1.y === p2.y;
@@ -72,6 +70,7 @@ export function pointsEqual(p1, p2) {
  * @param {number} val
  * @param {number} min
  * @param {number} max
+ * @returns {number}
  */
 export function clamp(val, min, max) {
   return Math.min(Math.max(val, min), max);
@@ -81,18 +80,15 @@ export function clamp(val, min, max) {
  * Get transform string
  *
  * @param {number} x
- * @param {number=} y
- * @param {number=} scale
+ * @param {number} [y]
+ * @param {number} [scale]
+ * @returns {string}
  */
 export function toTransformString(x, y, scale) {
-  let propValue = 'translate3d('
-    + x + 'px,' + (y || 0) + 'px'
-    + ',0)';
+  let propValue = `translate3d(${x}px,${y || 0}px,0)`;
 
   if (scale !== undefined) {
-    propValue += ' scale3d('
-      + scale + ',' + scale
-      + ',1)';
+    propValue += ` scale3d(${scale},${scale},1)`;
   }
 
   return propValue;
@@ -103,8 +99,8 @@ export function toTransformString(x, y, scale) {
  *
  * @param {HTMLElement} el
  * @param {number} x
- * @param {number=} y
- * @param {number=} scale
+ * @param {number} [y]
+ * @param {number} [scale]
  */
 export function setTransform(el, x, y, scale) {
   el.style.transform = toTransformString(x, y, scale);
@@ -116,16 +112,16 @@ const defaultCSSEasing = 'cubic-bezier(.4,0,.22,1)';
  * Apply CSS transition to element
  *
  * @param {HTMLElement} el
- * @param {string=} prop CSS property to animate
- * @param {number=} duration in ms
- * @param {string=} ease CSS easing function
+ * @param {string} [prop] CSS property to animate
+ * @param {number} [duration] in ms
+ * @param {string} [ease] CSS easing function
  */
 export function setTransitionStyle(el, prop, duration, ease) {
   // inOut: 'cubic-bezier(.4, 0, .22, 1)', // for "toggle state" transitions
   // out: 'cubic-bezier(0, 0, .22, 1)', // for "show" transitions
   // in: 'cubic-bezier(.4, 0, 1, 1)'// for "hide" transitions
   el.style.transition = prop
-    ? (prop + ' ' + duration + 'ms ' + (ease || defaultCSSEasing))
+    ? `${prop} ${duration}ms ${ease || defaultCSSEasing}`
     : 'none';
 }
 
@@ -137,8 +133,8 @@ export function setTransitionStyle(el, prop, duration, ease) {
  * @param {string | number} h
  */
 export function setWidthHeight(el, w, h) {
-  el.style.width = (typeof w === 'number') ? (w + 'px') : w;
-  el.style.height = (typeof h === 'number') ? (h + 'px') : h;
+  el.style.width = (typeof w === 'number') ? `${w}px` : w;
+  el.style.height = (typeof h === 'number') ? `${h}px` : h;
 }
 
 /**
@@ -182,18 +178,17 @@ export const LOAD_STATE = {
  * with a special key or via mouse wheel.
  *
  * @param {MouseEvent | KeyboardEvent} e
+ * @returns {boolean}
  */
 export function specialKeyUsed(e) {
-  if (e.which === 2 || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
-    return true;
-  }
+  return ('button' in e && e.button === 1) || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey;
 }
 
 /**
  * Parse `gallery` or `children` options.
  *
- * @param {import('../photoswipe.js').ElementProvider} option
- * @param {string=} legacySelector
+ * @param {import('../photoswipe.js').ElementProvider} [option]
+ * @param {string} [legacySelector]
  * @param {HTMLElement | Document} [parent]
  * @returns HTMLElement[]
  */
@@ -219,6 +214,7 @@ export function getElementsFromOption(option, legacySelector, parent = document)
  * Check if variable is PhotoSwipe class
  *
  * @param {any} fn
+ * @returns {boolean}
  */
 export function isPswpClass(fn) {
   return typeof fn === 'function'

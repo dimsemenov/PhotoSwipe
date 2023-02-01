@@ -1,16 +1,16 @@
 export default DOMEvents;
 export type PoolItem = {
-    target: HTMLElement | Window | Document;
+    target: HTMLElement | Window | Document | undefined | null;
     type: string;
-    listener: (e: any) => void;
-    passive: boolean;
+    listener: EventListenerOrEventListenerObject;
+    passive?: boolean | undefined;
 };
 /**
  * @typedef {Object} PoolItem
- * @prop {HTMLElement | Window | Document} target
+ * @prop {HTMLElement | Window | Document | undefined | null} target
  * @prop {string} type
- * @prop {(e: any) => void} listener
- * @prop {boolean} passive
+ * @prop {EventListenerOrEventListenerObject} listener
+ * @prop {boolean} [passive]
  */
 declare class DOMEvents {
     /**
@@ -21,21 +21,21 @@ declare class DOMEvents {
     /**
      * Adds event listeners
      *
-     * @param {HTMLElement | Window | Document} target
-     * @param {string} type Can be multiple, separated by space.
-     * @param {(e: any) => void} listener
-     * @param {boolean=} passive
+     * @param {PoolItem['target']} target
+     * @param {PoolItem['type']} type Can be multiple, separated by space.
+     * @param {PoolItem['listener']} listener
+     * @param {PoolItem['passive']} [passive]
      */
-    add(target: HTMLElement | Window | Document, type: string, listener: (e: any) => void, passive?: boolean | undefined): void;
+    add(target: PoolItem['target'], type: PoolItem['type'], listener: PoolItem['listener'], passive?: PoolItem['passive']): void;
     /**
      * Removes event listeners
      *
-     * @param {HTMLElement | Window | Document} target
-     * @param {string} type
-     * @param {(e: any) => void} listener
-     * @param {boolean=} passive
+     * @param {PoolItem['target']} target
+     * @param {PoolItem['type']} type
+     * @param {PoolItem['listener']} listener
+     * @param {PoolItem['passive']} [passive]
      */
-    remove(target: HTMLElement | Window | Document, type: string, listener: (e: any) => void, passive?: boolean | undefined): void;
+    remove(target: PoolItem['target'], type: PoolItem['type'], listener: PoolItem['listener'], passive?: PoolItem['passive']): void;
     /**
      * Removes all bound events
      */
@@ -43,12 +43,13 @@ declare class DOMEvents {
     /**
      * Adds or removes event
      *
-     * @param {HTMLElement | Window | Document} target
-     * @param {string} type
-     * @param {(e: any) => void} listener
-     * @param {boolean} passive
-     * @param {boolean=} unbind Whether the event should be added or removed
-     * @param {boolean=} skipPool Whether events pool should be skipped
+     * @private
+     * @param {PoolItem['target']} target
+     * @param {PoolItem['type']} type
+     * @param {PoolItem['listener']} listener
+     * @param {PoolItem['passive']} [passive]
+     * @param {boolean} [unbind] Whether the event should be added or removed
+     * @param {boolean} [skipPool] Whether events pool should be skipped
      */
-    _toggleListener(target: HTMLElement | Window | Document, type: string, listener: (e: any) => void, passive: boolean, unbind?: boolean | undefined, skipPool?: boolean | undefined): void;
+    private _toggleListener;
 }

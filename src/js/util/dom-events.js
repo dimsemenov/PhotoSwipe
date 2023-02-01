@@ -2,6 +2,7 @@
 let supportsPassive = false;
 /* eslint-disable */
 try {
+  /* @ts-ignore */
   window.addEventListener('test', null, Object.defineProperty({}, 'passive', {
     get: () => {
       supportsPassive = true;
@@ -10,13 +11,12 @@ try {
 } catch (e) {}
 /* eslint-enable */
 
-
 /**
  * @typedef {Object} PoolItem
- * @prop {HTMLElement | Window | Document} target
+ * @prop {HTMLElement | Window | Document | undefined | null} target
  * @prop {string} type
- * @prop {(e: any) => void} listener
- * @prop {boolean} passive
+ * @prop {EventListenerOrEventListenerObject} listener
+ * @prop {boolean} [passive]
  */
 
 class DOMEvents {
@@ -31,10 +31,10 @@ class DOMEvents {
   /**
    * Adds event listeners
    *
-   * @param {HTMLElement | Window | Document} target
-   * @param {string} type Can be multiple, separated by space.
-   * @param {(e: any) => void} listener
-   * @param {boolean=} passive
+   * @param {PoolItem['target']} target
+   * @param {PoolItem['type']} type Can be multiple, separated by space.
+   * @param {PoolItem['listener']} listener
+   * @param {PoolItem['passive']} [passive]
    */
   add(target, type, listener, passive) {
     this._toggleListener(target, type, listener, passive);
@@ -43,10 +43,10 @@ class DOMEvents {
   /**
    * Removes event listeners
    *
-   * @param {HTMLElement | Window | Document} target
-   * @param {string} type
-   * @param {(e: any) => void} listener
-   * @param {boolean=} passive
+   * @param {PoolItem['target']} target
+   * @param {PoolItem['type']} type
+   * @param {PoolItem['listener']} listener
+   * @param {PoolItem['passive']} [passive]
    */
   remove(target, type, listener, passive) {
     this._toggleListener(target, type, listener, passive, true);
@@ -72,12 +72,13 @@ class DOMEvents {
   /**
    * Adds or removes event
    *
-   * @param {HTMLElement | Window | Document} target
-   * @param {string} type
-   * @param {(e: any) => void} listener
-   * @param {boolean} passive
-   * @param {boolean=} unbind Whether the event should be added or removed
-   * @param {boolean=} skipPool Whether events pool should be skipped
+   * @private
+   * @param {PoolItem['target']} target
+   * @param {PoolItem['type']} type
+   * @param {PoolItem['listener']} listener
+   * @param {PoolItem['passive']} [passive]
+   * @param {boolean} [unbind] Whether the event should be added or removed
+   * @param {boolean} [skipPool] Whether events pool should be skipped
    */
   _toggleListener(target, type, listener, passive, unbind, skipPool) {
     if (!target) {
@@ -108,7 +109,6 @@ class DOMEvents {
             });
           }
         }
-
 
         // most PhotoSwipe events call preventDefault,
         // and we do not need browser to scroll the page
