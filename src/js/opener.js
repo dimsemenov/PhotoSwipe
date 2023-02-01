@@ -287,7 +287,7 @@ class Opener {
       ('initialZoom' + (this.isOpening ? 'In' : 'Out'))
     );
 
-    this.pswp.element?.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
+    this.pswp.element?.classList.toggle('pswp--ui-visible', this.isOpening);
 
     if (this.isOpening) {
       if (this._placeholder) {

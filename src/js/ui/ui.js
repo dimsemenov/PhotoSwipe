@@ -18,7 +18,7 @@ import { counterIndicator } from './counter-indicator.js';
  * @param {boolean} isZoomedIn
  */
 function setZoomedIn(el, isZoomedIn) {
-  el.classList[isZoomedIn ? 'add' : 'remove']('pswp--zoomed-in');
+  el.classList.toggle('pswp--zoomed-in', isZoomedIn);
 }
 
 class UI {
@@ -70,7 +70,7 @@ class UI {
     });
 
     pswp.on('change', () => {
-      pswp.element?.classList[pswp.getNumItems() === 1 ? 'add' : 'remove']('pswp--one-slide');
+      pswp.element?.classList.toggle('pswp--one-slide', pswp.getNumItems() === 1);
     });
 
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());
