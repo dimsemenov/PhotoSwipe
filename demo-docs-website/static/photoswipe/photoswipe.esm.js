@@ -3783,7 +3783,7 @@ const loadingIndicator = {
      * @param {boolean} add
      */
     const toggleIndicatorClass = (className, add) => {
-      indicatorElement.classList.toggle('pswp__preloader--' + className, add);
+      indicatorElement.classList[add ? 'add' : 'remove']('pswp__preloader--' + className);
     };
 
     /**
@@ -3856,7 +3856,7 @@ const counterIndicator = {
  * @param {boolean} isZoomedIn
  */
 function setZoomedIn(el, isZoomedIn) {
-  el.classList.toggle('pswp--zoomed-in', isZoomedIn);
+  el.classList[isZoomedIn ? 'add' : 'remove']('pswp--zoomed-in');
 }
 
 class UI {
@@ -3908,7 +3908,7 @@ class UI {
     });
 
     pswp.on('change', () => {
-      pswp.element?.classList.toggle('pswp--one-slide', pswp.getNumItems() === 1);
+      pswp.element?.classList[pswp.getNumItems() === 1 ? 'add' : 'remove']('pswp--one-slide');
     });
 
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());
@@ -5660,7 +5660,7 @@ class Opener {
       ('initialZoom' + (this.isOpening ? 'In' : 'Out'))
     );
 
-    this.pswp.element?.classList.toggle('pswp--ui-visible', this.isOpening);
+    this.pswp.element?.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
 
     if (this.isOpening) {
       if (this._placeholder) {
