@@ -139,7 +139,7 @@ import ContentLoader from './slide/loader.js';
  * @prop {string} indexIndicatorSep
  * Used for slide count indicator ("1 of 10 ").
  *
- * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipe) => Point} [getViewportSizeFn]
+ * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipeBase) => Point} [getViewportSizeFn]
  * A function that should return slide viewport width and height, in format {x: 100, y: 100}.
  *
  * @prop {string} errorMsg

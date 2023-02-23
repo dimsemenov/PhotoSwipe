@@ -1,11 +1,11 @@
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
 /** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /**
  * @param {PhotoSwipeOptions} options
- * @param {PhotoSwipe} pswp
+ * @param {PhotoSwipeBase} pswp
  * @returns {Point}
  */
 export function getViewportSize(options, pswp) {
