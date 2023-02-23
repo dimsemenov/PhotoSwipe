@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.3.5 - https://photoswipe.com
+  * PhotoSwipe 5.3.6 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -350,13 +350,13 @@ class DOMEvents {
 }
 
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
 /** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /**
  * @param {PhotoSwipeOptions} options
- * @param {PhotoSwipe} pswp
+ * @param {PhotoSwipeBase} pswp
  * @returns {Point}
  */
 function getViewportSize(options, pswp) {
@@ -3783,7 +3783,7 @@ const loadingIndicator = {
      * @param {boolean} add
      */
     const toggleIndicatorClass = (className, add) => {
-      indicatorElement.classList[add ? 'add' : 'remove']('pswp__preloader--' + className);
+      indicatorElement.classList.toggle('pswp__preloader--' + className, add);
     };
 
     /**
@@ -3856,7 +3856,7 @@ const counterIndicator = {
  * @param {boolean} isZoomedIn
  */
 function setZoomedIn(el, isZoomedIn) {
-  el.classList[isZoomedIn ? 'add' : 'remove']('pswp--zoomed-in');
+  el.classList.toggle('pswp--zoomed-in', isZoomedIn);
 }
 
 class UI {
@@ -3908,7 +3908,7 @@ class UI {
     });
 
     pswp.on('change', () => {
-      pswp.element?.classList[pswp.getNumItems() === 1 ? 'add' : 'remove']('pswp--one-slide');
+      pswp.element?.classList.toggle('pswp--one-slide', pswp.getNumItems() === 1);
     });
 
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());
@@ -5034,11 +5034,16 @@ function lazyLoadData(itemData, instance, index) {
   // as it might use srcset, and we need to define sizes
   if (options) {
     zoomLevel = new ZoomLevel(options, itemData, -1);
+
+    let viewportSize;
     if (instance.pswp) {
-      const viewportSize = instance.pswp.viewportSize || getViewportSize(options, instance.pswp);
-      const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
-      zoomLevel.update(content.width, content.height, panAreaSize);
+      viewportSize = instance.pswp.viewportSize;
+    } else {
+      viewportSize = getViewportSize(options, instance);
     }
+
+    const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
+    zoomLevel.update(content.width, content.height, panAreaSize);
   }
 
   content.lazyLoad();
@@ -5660,7 +5665,7 @@ class Opener {
       ('initialZoom' + (this.isOpening ? 'In' : 'Out'))
     );
 
-    this.pswp.element?.classList[this.isOpening ? 'add' : 'remove']('pswp--ui-visible');
+    this.pswp.element?.classList.toggle('pswp--ui-visible', this.isOpening);
 
     if (this.isOpening) {
       if (this._placeholder) {
@@ -5947,7 +5952,7 @@ class Opener {
  * @prop {string} indexIndicatorSep
  * Used for slide count indicator ("1 of 10 ").
  *
- * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipe) => Point} [getViewportSizeFn]
+ * @prop {(options: PhotoSwipeOptions, pswp: PhotoSwipeBase) => Point} [getViewportSizeFn]
  * A function that should return slide viewport width and height, in format {x: 100, y: 100}.
  *
  * @prop {string} errorMsg

@@ -154,7 +154,7 @@ export type PreparedPhotoSwipeOptions = {
     /**
      * A function that should return slide viewport width and height, in format {x: 100, y: 100}.
      */
-    getViewportSizeFn?: ((options: PhotoSwipeOptions, pswp: PhotoSwipe) => Point) | undefined;
+    getViewportSizeFn?: ((options: PhotoSwipeOptions, pswp: PhotoSwipeBase) => Point) | undefined;
     /**
      * Message to display when the image wasn't able to load. If you need to display HTML - use contentErrorElement filter.
      */

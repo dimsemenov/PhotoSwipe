@@ -1,13 +1,13 @@
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
 /** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/slide.js').SlideData} SlideData */
 /**
  * @param {PhotoSwipeOptions} options
- * @param {PhotoSwipe} pswp
+ * @param {PhotoSwipeBase} pswp
  * @returns {Point}
  */
-export function getViewportSize(options: PhotoSwipeOptions, pswp: PhotoSwipe): Point;
+export function getViewportSize(options: PhotoSwipeOptions, pswp: PhotoSwipeBase): Point;
 /**
  * Parses padding option.
  * Supported formats:
@@ -53,6 +53,6 @@ export function parsePaddingOption(prop: 'left' | 'top' | 'bottom' | 'right', op
  */
 export function getPanAreaSize(options: PhotoSwipeOptions, viewportSize: Point, itemData: SlideData, index: number): Point;
 export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
-export type PhotoSwipe = import('../photoswipe.js').default;
+export type PhotoSwipeBase = import('../core/base.js').default;
 export type Point = import('../photoswipe.js').Point;
 export type SlideData = import('../slide/slide.js').SlideData;

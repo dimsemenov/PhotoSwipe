@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.3.5 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.3.6 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -1038,13 +1038,13 @@ class Content {
 }
 
 /** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import('../photoswipe.js').default} PhotoSwipe */
+/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
 /** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('../slide/slide.js').SlideData} SlideData */
 
 /**
  * @param {PhotoSwipeOptions} options
- * @param {PhotoSwipe} pswp
+ * @param {PhotoSwipeBase} pswp
  * @returns {Point}
  */
 function getViewportSize(options, pswp) {
@@ -1324,11 +1324,16 @@ function lazyLoadData(itemData, instance, index) {
   // as it might use srcset, and we need to define sizes
   if (options) {
     zoomLevel = new ZoomLevel(options, itemData, -1);
+
+    let viewportSize;
     if (instance.pswp) {
-      const viewportSize = instance.pswp.viewportSize || getViewportSize(options, instance.pswp);
-      const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
-      zoomLevel.update(content.width, content.height, panAreaSize);
+      viewportSize = instance.pswp.viewportSize;
+    } else {
+      viewportSize = getViewportSize(options, instance);
     }
+
+    const panAreaSize = getPanAreaSize(options, viewportSize, itemData, index);
+    zoomLevel.update(content.width, content.height, panAreaSize);
   }
 
   content.lazyLoad();
