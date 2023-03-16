@@ -6,6 +6,8 @@ sidebar_label: Methods
 
 ## PhotoSwipeLightbox methods
 
+`PhotoSwipeLightbox` loads `PhotoSwipe` and chooses when it should be opened. If you want to use `PhotoSwipe` without its lightbox component refer to [this section](data-sources#without-lightbox-module).
+
 ```js
 const lightbox = new PhotoSwipeLightbox({
   // options
@@ -16,11 +18,59 @@ const lightbox = new PhotoSwipeLightbox({
 lightbox.init();
 
 // Open slide by index
-lightbox.loadAndOpen(0);
+// refer to the section below for more info
+lightbox.loadAndOpen(
+  0,
+  /* optional data source, */
+  /* optional click Point */
+);
 
 // unbinds all events, closes PhotoSwipe if it's open
 lightbox.destroy();
 ```
+
+## Open lightbox via external button with `loadAndOpen`
+
+`PhotoSwipeLightbox` has a method `loadAndOpen`. It accepts three arguments:
+
+1. Index of a slide to open (integer)
+2. Optional data source, see below for more details.
+3. Optional `Point` that determines where exactly the user clicked on the thumbnail (by default it is `{ x: e.clientX, y: e.clientY }` of the corresponding `click` event).
+
+If you use `gallery` & `children` options and you omit the second argument (do not provide data source), `loadAndOpen` won't know which exactly gallery to use, since there might be multiple galleries on a page. To select a specific gallery you can do something like:
+
+<PswpCodePreview  galleryID="with-button">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const options = {
+  gallery: '#gallery--with-button',
+  children: 'a',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
+};
+const lightbox = new PhotoSwipeLightbox(options);
+lightbox.init();
+
+const btn = document.createElement('button');
+btn.type = 'button';
+btn.innerText = 'open second image';
+document.querySelector('#gallery--with-button').parentElement.prepend(btn);
+
+btn.onclick = () => {
+  // highlight-start
+  lightbox.loadAndOpen(1, {
+    gallery: document.querySelector('#gallery--with-button')
+  });
+
+  // You also can just trigger the native click
+  // document.querySelector('#gallery--with-button a:nth-of-type(2)').click();
+  // highlight-end
+};
+
+
+```
+
+</PswpCodePreview>
 
 ## PhotoSwipe core methods
 
@@ -68,6 +118,8 @@ lightbox.on('beforeOpen', () => {
   );
 });
 ```
+
+
 
 ## Dynamically adding or removing slides
 
