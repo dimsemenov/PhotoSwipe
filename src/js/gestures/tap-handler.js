@@ -1,5 +1,6 @@
 /**
- * @template T, P
+ * @template {string} T
+ * @template {string} P
  * @typedef {import('../types.js').AddPostfix<T, P>} AddPostfix<T, P>
  */
 
