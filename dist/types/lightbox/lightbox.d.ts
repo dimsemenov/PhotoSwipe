@@ -13,7 +13,7 @@ export type PhotoSwipeFiltersMap = import('../core/eventable.js').PhotoSwipeFilt
 /**
  * <T>
  */
-export type EventCallback<T> = import('../core/eventable.js').EventCallback<T>;
+export type EventCallback<T extends keyof import("../core/eventable.js").PhotoSwipeEventsMap> = import('../core/eventable.js').EventCallback<T>;
 /**
  * @template T
  * @typedef {import('../types.js').Type<T>} Type<T>
@@ -26,7 +26,7 @@ export type EventCallback<T> = import('../core/eventable.js').EventCallback<T>;
 /** @typedef {import('../core/eventable.js').PhotoSwipeEventsMap} PhotoSwipeEventsMap */
 /** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 /**
- * @template T
+ * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {import('../core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 /**

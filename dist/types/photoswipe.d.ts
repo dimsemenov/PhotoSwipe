@@ -13,11 +13,11 @@ export type Bounds = import('./slide/get-thumb-bounds').Bounds;
 /**
  * <T>
  */
-export type EventCallback<T> = import('./core/eventable.js').EventCallback<T>;
+export type EventCallback<T extends keyof import("./core/eventable.js").PhotoSwipeEventsMap> = import('./core/eventable.js').EventCallback<T>;
 /**
  * <T>
  */
-export type AugmentedEvent<T> = import('./core/eventable.js').AugmentedEvent<T>;
+export type AugmentedEvent<T extends keyof import("./core/eventable.js").PhotoSwipeEventsMap> = import('./core/eventable.js').AugmentedEvent<T>;
 export type Point = {
     x: number;
     y: number;

@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.3.6 - https://photoswipe.com
+  * PhotoSwipe 5.3.7 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -1799,7 +1799,8 @@ class ZoomHandler {
 }
 
 /**
- * @template T, P
+ * @template {string} T
+ * @template {string} P
  * @typedef {import('../types.js').AddPostfix<T, P>} AddPostfix<T, P>
  */
 
@@ -5846,11 +5847,11 @@ class Opener {
 /** @typedef {import('./core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 /** @typedef {import('./slide/get-thumb-bounds').Bounds} Bounds */
 /**
- * @template T
+ * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {import('./core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 /**
- * @template T
+ * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {import('./core/eventable.js').AugmentedEvent<T>} AugmentedEvent<T>
  */
 

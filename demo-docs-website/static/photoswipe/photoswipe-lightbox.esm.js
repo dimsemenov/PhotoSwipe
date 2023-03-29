@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.3.6 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.3.7 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -1564,7 +1564,7 @@ class PhotoSwipeBase extends Eventable {
 /** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 
 /**
- * @template T
+ * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {import('../core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 
