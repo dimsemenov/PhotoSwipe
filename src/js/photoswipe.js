@@ -33,11 +33,11 @@ import ContentLoader from './slide/loader.js';
 /** @typedef {import('./core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 /** @typedef {import('./slide/get-thumb-bounds').Bounds} Bounds */
 /**
- * @template T
+ * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {import('./core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 /**
- * @template T
+ * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {import('./core/eventable.js').AugmentedEvent<T>} AugmentedEvent<T>
  */
 

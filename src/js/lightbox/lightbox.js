@@ -21,7 +21,7 @@ import { lazyLoadSlide } from '../slide/loader.js';
 /** @typedef {import('../core/eventable.js').PhotoSwipeFiltersMap} PhotoSwipeFiltersMap */
 
 /**
- * @template T
+ * @template {keyof PhotoSwipeEventsMap} T
  * @typedef {import('../core/eventable.js').EventCallback<T>} EventCallback<T>
  */
 
