@@ -87,6 +87,17 @@ lightbox.on('contentAppend', (e) => {
   }
 });
 
+// for next/prev navigation with <picture>
+// by default PhotoSwipe removes <img>,
+// but we want to remove <picture>
+lightbox.on('contentRemove', (e) => {
+  const { content } = e;
+  if (content.pictureElement && content.pictureElement.parentNode) {
+    e.preventDefault();
+    content.pictureElement.remove();
+  }
+});
+
 lightbox.init();
 ```
 
