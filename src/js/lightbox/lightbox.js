@@ -77,8 +77,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   onThumbnailsClick(e) {
     // Exit and allow default browser action if:
     if (specialKeyUsed(e) // ... if clicked with a special key (ctrl/cmd...)
-        || window.pswp // ... if PhotoSwipe is already open
-        || window.navigator.onLine === false) { // ... if offline
+        || window.pswp) { // ... if PhotoSwipe is already open
       return;
     }
 
