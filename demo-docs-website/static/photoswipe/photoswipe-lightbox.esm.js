@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.3.7 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.3.8 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -1620,8 +1620,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   onThumbnailsClick(e) {
     // Exit and allow default browser action if:
     if (specialKeyUsed(e) // ... if clicked with a special key (ctrl/cmd...)
-        || window.pswp // ... if PhotoSwipe is already open
-        || window.navigator.onLine === false) { // ... if offline
+        || window.pswp) { // ... if PhotoSwipe is already open
       return;
     }
 
