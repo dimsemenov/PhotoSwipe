@@ -364,6 +364,10 @@ lightbox.init();
 </PswpCodePreview>
 
 
+### initialZoomLevel, secondaryZoomLevel, maxZoomLevel
+
+Refer to [Adjusting zoom level](adjusting-zoom-level.md) page.
+
 
 ### errorMsg
 
