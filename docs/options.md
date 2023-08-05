@@ -366,7 +366,7 @@ lightbox.init();
 
 ### initialZoomLevel, secondaryZoomLevel, maxZoomLevel
 
-Refer to [Adjusting zoom level](adjusting-zoom-level.md) page.
+Refer to [Adjusting zoom level](adjusting-zoom-level.md) page for more info. The default values are described [there too](adjusting-zoom-level.md#default-behaviour).
 
 
 ### errorMsg
