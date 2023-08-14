@@ -8,7 +8,7 @@ Here's an example on how to use PhotoSwipe with Vue to create a simple image gal
 
 <iframe src="https://stackblitz.com/edit/vue-hatnqg?embed=1&file=src/SimpleGallery.vue&hideNavigation=1"></iframe>
 
-There is no special component specifically for Vue yet, if you developed one (for v5) - please let me know and I'll link it here.
+There is also an unofficial [Vue gallery component by @hzpeng57](https://github.com/hzpeng57/vue-preview-imgs) that could be very useful.
 
    
    
