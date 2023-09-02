@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { terser } from 'rollup-plugin-terser';
+import { babel } from '@rollup/plugin-babel';
 
 import pkg from '../package.json';
 
@@ -26,6 +27,12 @@ function getMinifyPlugin() {
   });
 }
 
+function getBabelPlugin() {
+  return babel({
+    exclude: 'node_modules/**'
+  })
+}
+
 const baseOutputDir = 'demo-docs-website/static/photoswipe/';
 export const lightboxJS = {
   input: 'src/js/lightbox/lightbox.js',
@@ -34,7 +41,8 @@ export const lightboxJS = {
     file: baseOutputDir + 'photoswipe-lightbox.esm.js',
     format: 'esm',
     sourcemap: true
-  }
+  },
+  plugins: [getBabelPlugin()]
 };
 
 export const coreJS = {
@@ -44,7 +52,8 @@ export const coreJS = {
     file: baseOutputDir + 'photoswipe.esm.js',
     format: 'esm',
     sourcemap: true
-  }
+  },
+  plugins: [getBabelPlugin()]
 };
 
 export const minLightboxJS = {
@@ -54,7 +63,7 @@ export const minLightboxJS = {
     file: baseOutputDir + 'photoswipe-lightbox.esm.min.js',
     format: 'esm'
   },
-  plugins: [getMinifyPlugin()]
+  plugins: [getBabelPlugin(), getMinifyPlugin()]
 };
 
 export const minCoreJS = {
@@ -64,7 +73,7 @@ export const minCoreJS = {
     file: baseOutputDir + 'photoswipe.esm.min.js',
     format: 'esm',
   },
-  plugins: [getMinifyPlugin()]
+  plugins: [getBabelPlugin(), getMinifyPlugin()]
 };
 
 // UMD config
@@ -77,7 +86,7 @@ export const umdMinLightboxJS = {
     file: umdBaseOutputDir + 'photoswipe-lightbox.umd.min.js',
     format: 'umd'
   },
-  plugins: [getMinifyPlugin()]
+  plugins: [getBabelPlugin(), getMinifyPlugin()]
 };
 
 export const umdMinCoreJS = {
@@ -88,5 +97,5 @@ export const umdMinCoreJS = {
     file: umdBaseOutputDir + 'photoswipe.umd.min.js',
     format: 'umd',
   },
-  plugins: [getMinifyPlugin()]
+  plugins: [getBabelPlugin(), getMinifyPlugin()]
 };

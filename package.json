@@ -53,6 +53,8 @@
     "@babel/core": "^7.18.0",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
+    "@babel/plugin-transform-optional-chaining": "^7.22.10",
+    "@rollup/plugin-babel": "^6.0.3",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^6.0.2",
     "copyfiles": "^2.4.1",
