@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.3.8 - https://photoswipe.com
+  * PhotoSwipe 5.3.9 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -2015,7 +2015,7 @@ class TapHandler {
         break;
 
       case 'zoom':
-        currSlide === null || currSlide === void 0 ? void 0 : currSlide.toggleZoom(point);
+        currSlide === null || currSlide === void 0 || currSlide.toggleZoom(point);
         break;
 
       case 'zoom-or-close':
@@ -2030,7 +2030,7 @@ class TapHandler {
         break;
 
       case 'toggle-controls':
-        (_this$gestures$pswp$e = this.gestures.pswp.element) === null || _this$gestures$pswp$e === void 0 ? void 0 : _this$gestures$pswp$e.classList.toggle('pswp--ui-visible'); // if (_controlsVisible) {
+        (_this$gestures$pswp$e = this.gestures.pswp.element) === null || _this$gestures$pswp$e === void 0 || _this$gestures$pswp$e.classList.toggle('pswp--ui-visible'); // if (_controlsVisible) {
         //   _ui.hideControls();
         // } else {
         //   _ui.showControls();
@@ -3937,7 +3937,7 @@ class UIElement {
       }
     }
 
-    (_container = container) === null || _container === void 0 ? void 0 : _container.appendChild(pswp.applyFilters('uiElement', element, data));
+    (_container = container) === null || _container === void 0 || _container.appendChild(pswp.applyFilters('uiElement', element, data));
   }
 
 }
@@ -4190,7 +4190,7 @@ class UI {
     pswp.on('change', () => {
       var _pswp$element;
 
-      (_pswp$element = pswp.element) === null || _pswp$element === void 0 ? void 0 : _pswp$element.classList.toggle('pswp--one-slide', pswp.getNumItems() === 1);
+      (_pswp$element = pswp.element) === null || _pswp$element === void 0 || _pswp$element.classList.toggle('pswp--one-slide', pswp.getNumItems() === 1);
     });
     pswp.on('zoomPanUpdate', () => this._onZoomPanUpdate());
   }
@@ -4644,12 +4644,12 @@ class Eventable {
       this._filters[name] = [];
     }
 
-    (_this$_filters$name = this._filters[name]) === null || _this$_filters$name === void 0 ? void 0 : _this$_filters$name.push({
+    (_this$_filters$name = this._filters[name]) === null || _this$_filters$name === void 0 || _this$_filters$name.push({
       fn,
       priority
     });
-    (_this$_filters$name2 = this._filters[name]) === null || _this$_filters$name2 === void 0 ? void 0 : _this$_filters$name2.sort((f1, f2) => f1.priority - f2.priority);
-    (_this$pswp = this.pswp) === null || _this$pswp === void 0 ? void 0 : _this$pswp.addFilter(name, fn, priority);
+    (_this$_filters$name2 = this._filters[name]) === null || _this$_filters$name2 === void 0 || _this$_filters$name2.sort((f1, f2) => f1.priority - f2.priority);
+    (_this$pswp = this.pswp) === null || _this$pswp === void 0 || _this$pswp.addFilter(name, fn, priority);
   }
   /**
    * @template {keyof PhotoSwipeFiltersMap} T
@@ -4679,7 +4679,7 @@ class Eventable {
   applyFilters(name, ...args) {
     var _this$_filters$name3;
 
-    (_this$_filters$name3 = this._filters[name]) === null || _this$_filters$name3 === void 0 ? void 0 : _this$_filters$name3.forEach(filter => {
+    (_this$_filters$name3 = this._filters[name]) === null || _this$_filters$name3 === void 0 || _this$_filters$name3.forEach(filter => {
       // @ts-expect-error
       args[0] = filter.fn.apply(this, args);
     });
@@ -4699,11 +4699,11 @@ class Eventable {
       this._listeners[name] = [];
     }
 
-    (_this$_listeners$name = this._listeners[name]) === null || _this$_listeners$name === void 0 ? void 0 : _this$_listeners$name.push(fn); // When binding events to lightbox,
+    (_this$_listeners$name = this._listeners[name]) === null || _this$_listeners$name === void 0 || _this$_listeners$name.push(fn); // When binding events to lightbox,
     // also bind events to PhotoSwipe Core,
     // if it's open.
 
-    (_this$pswp2 = this.pswp) === null || _this$pswp2 === void 0 ? void 0 : _this$pswp2.on(name, fn);
+    (_this$pswp2 = this.pswp) === null || _this$pswp2 === void 0 || _this$pswp2.on(name, fn);
   }
   /**
    * @template {keyof PhotoSwipeEventsMap} T
@@ -4720,7 +4720,7 @@ class Eventable {
       this._listeners[name] = this._listeners[name].filter(listener => fn !== listener);
     }
 
-    (_this$pswp3 = this.pswp) === null || _this$pswp3 === void 0 ? void 0 : _this$pswp3.off(name, fn);
+    (_this$pswp3 = this.pswp) === null || _this$pswp3 === void 0 || _this$pswp3.off(name, fn);
   }
   /**
    * @template {keyof PhotoSwipeEventsMap} T
@@ -4740,7 +4740,7 @@ class Eventable {
     const event =
     /** @type {AugmentedEvent<T>} */
     new PhotoSwipeEvent(name, details);
-    (_this$_listeners$name2 = this._listeners[name]) === null || _this$_listeners$name2 === void 0 ? void 0 : _this$_listeners$name2.forEach(listener => {
+    (_this$_listeners$name2 = this._listeners[name]) === null || _this$_listeners$name2 === void 0 || _this$_listeners$name2.forEach(listener => {
       listener.call(this, event);
     });
     return event;
@@ -6048,13 +6048,13 @@ class Opener {
   _initiate() {
     var _this$pswp$element, _this$pswp$element2;
 
-    (_this$pswp$element = this.pswp.element) === null || _this$pswp$element === void 0 ? void 0 : _this$pswp$element.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
+    (_this$pswp$element = this.pswp.element) === null || _this$pswp$element === void 0 || _this$pswp$element.style.setProperty('--pswp-transition-duration', this._duration + 'ms');
     this.pswp.dispatch(this.isOpening ? 'openingAnimationStart' : 'closingAnimationStart'); // legacy event
 
     this.pswp.dispatch(
     /** @type {'initialZoomIn' | 'initialZoomOut'} */
     'initialZoom' + (this.isOpening ? 'In' : 'Out'));
-    (_this$pswp$element2 = this.pswp.element) === null || _this$pswp$element2 === void 0 ? void 0 : _this$pswp$element2.classList.toggle('pswp--ui-visible', this.isOpening);
+    (_this$pswp$element2 = this.pswp.element) === null || _this$pswp$element2 === void 0 || _this$pswp$element2.classList.toggle('pswp--ui-visible', this.isOpening);
 
     if (this.isOpening) {
       if (this._placeholder) {
@@ -6098,7 +6098,7 @@ class Opener {
         pswp.container.style.width = '100%';
       }
 
-      (_pswp$currSlide = pswp.currSlide) === null || _pswp$currSlide === void 0 ? void 0 : _pswp$currSlide.applyCurrentZoomPan();
+      (_pswp$currSlide = pswp.currSlide) === null || _pswp$currSlide === void 0 || _pswp$currSlide.applyCurrentZoomPan();
     }
   }
   /** @private */
@@ -6681,7 +6681,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.mainScroll.itemHolders.forEach(itemHolder => {
       var _itemHolder$slide;
 
-      (_itemHolder$slide = itemHolder.slide) === null || _itemHolder$slide === void 0 ? void 0 : _itemHolder$slide.appendHeavy();
+      (_itemHolder$slide = itemHolder.slide) === null || _itemHolder$slide === void 0 || _itemHolder$slide.appendHeavy();
     });
   }
   /**
@@ -6719,7 +6719,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   zoomTo(...args) {
     var _this$currSlide;
 
-    (_this$currSlide = this.currSlide) === null || _this$currSlide === void 0 ? void 0 : _this$currSlide.zoomTo(...args);
+    (_this$currSlide = this.currSlide) === null || _this$currSlide === void 0 || _this$currSlide.zoomTo(...args);
   }
   /**
    * @see slide/slide.js toggleZoom
@@ -6729,7 +6729,7 @@ class PhotoSwipe extends PhotoSwipeBase {
   toggleZoom() {
     var _this$currSlide2;
 
-    (_this$currSlide2 = this.currSlide) === null || _this$currSlide2 === void 0 ? void 0 : _this$currSlide2.toggleZoom();
+    (_this$currSlide2 = this.currSlide) === null || _this$currSlide2 === void 0 || _this$currSlide2.toggleZoom();
   }
   /**
    * Close the gallery.
@@ -6773,11 +6773,11 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.scrollWrap.ontouchend = null;
     }
 
-    (_this$element = this.element) === null || _this$element === void 0 ? void 0 : _this$element.remove();
+    (_this$element = this.element) === null || _this$element === void 0 || _this$element.remove();
     this.mainScroll.itemHolders.forEach(itemHolder => {
       var _itemHolder$slide2;
 
-      (_itemHolder$slide2 = itemHolder.slide) === null || _itemHolder$slide2 === void 0 ? void 0 : _itemHolder$slide2.destroy();
+      (_itemHolder$slide2 = itemHolder.slide) === null || _itemHolder$slide2 === void 0 || _itemHolder$slide2.destroy();
     });
     this.contentLoader.destroy();
     this.events.removeAll();
@@ -6808,7 +6808,7 @@ class PhotoSwipe extends PhotoSwipeBase {
           var _itemHolder$slide3;
 
           this.currSlide = itemHolder.slide;
-          (_itemHolder$slide3 = itemHolder.slide) === null || _itemHolder$slide3 === void 0 ? void 0 : _itemHolder$slide3.setIsActive(true);
+          (_itemHolder$slide3 = itemHolder.slide) === null || _itemHolder$slide3 === void 0 || _itemHolder$slide3.setIsActive(true);
         }
       }
     });
@@ -6930,7 +6930,7 @@ class PhotoSwipe extends PhotoSwipeBase {
       var _this$element2;
 
       this.hasMouse = true;
-      (_this$element2 = this.element) === null || _this$element2 === void 0 ? void 0 : _this$element2.classList.add('pswp--has_mouse');
+      (_this$element2 = this.element) === null || _this$element2 === void 0 || _this$element2.classList.add('pswp--has_mouse');
     }
   }
   /**

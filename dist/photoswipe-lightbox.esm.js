@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.3.8 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.3.9 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -396,12 +396,12 @@ class Eventable {
       this._filters[name] = [];
     }
 
-    (_this$_filters$name = this._filters[name]) === null || _this$_filters$name === void 0 ? void 0 : _this$_filters$name.push({
+    (_this$_filters$name = this._filters[name]) === null || _this$_filters$name === void 0 || _this$_filters$name.push({
       fn,
       priority
     });
-    (_this$_filters$name2 = this._filters[name]) === null || _this$_filters$name2 === void 0 ? void 0 : _this$_filters$name2.sort((f1, f2) => f1.priority - f2.priority);
-    (_this$pswp = this.pswp) === null || _this$pswp === void 0 ? void 0 : _this$pswp.addFilter(name, fn, priority);
+    (_this$_filters$name2 = this._filters[name]) === null || _this$_filters$name2 === void 0 || _this$_filters$name2.sort((f1, f2) => f1.priority - f2.priority);
+    (_this$pswp = this.pswp) === null || _this$pswp === void 0 || _this$pswp.addFilter(name, fn, priority);
   }
   /**
    * @template {keyof PhotoSwipeFiltersMap} T
@@ -431,7 +431,7 @@ class Eventable {
   applyFilters(name, ...args) {
     var _this$_filters$name3;
 
-    (_this$_filters$name3 = this._filters[name]) === null || _this$_filters$name3 === void 0 ? void 0 : _this$_filters$name3.forEach(filter => {
+    (_this$_filters$name3 = this._filters[name]) === null || _this$_filters$name3 === void 0 || _this$_filters$name3.forEach(filter => {
       // @ts-expect-error
       args[0] = filter.fn.apply(this, args);
     });
@@ -451,11 +451,11 @@ class Eventable {
       this._listeners[name] = [];
     }
 
-    (_this$_listeners$name = this._listeners[name]) === null || _this$_listeners$name === void 0 ? void 0 : _this$_listeners$name.push(fn); // When binding events to lightbox,
+    (_this$_listeners$name = this._listeners[name]) === null || _this$_listeners$name === void 0 || _this$_listeners$name.push(fn); // When binding events to lightbox,
     // also bind events to PhotoSwipe Core,
     // if it's open.
 
-    (_this$pswp2 = this.pswp) === null || _this$pswp2 === void 0 ? void 0 : _this$pswp2.on(name, fn);
+    (_this$pswp2 = this.pswp) === null || _this$pswp2 === void 0 || _this$pswp2.on(name, fn);
   }
   /**
    * @template {keyof PhotoSwipeEventsMap} T
@@ -472,7 +472,7 @@ class Eventable {
       this._listeners[name] = this._listeners[name].filter(listener => fn !== listener);
     }
 
-    (_this$pswp3 = this.pswp) === null || _this$pswp3 === void 0 ? void 0 : _this$pswp3.off(name, fn);
+    (_this$pswp3 = this.pswp) === null || _this$pswp3 === void 0 || _this$pswp3.off(name, fn);
   }
   /**
    * @template {keyof PhotoSwipeEventsMap} T
@@ -492,7 +492,7 @@ class Eventable {
     const event =
     /** @type {AugmentedEvent<T>} */
     new PhotoSwipeEvent(name, details);
-    (_this$_listeners$name2 = this._listeners[name]) === null || _this$_listeners$name2 === void 0 ? void 0 : _this$_listeners$name2.forEach(listener => {
+    (_this$_listeners$name2 = this._listeners[name]) === null || _this$_listeners$name2 === void 0 || _this$_listeners$name2.forEach(listener => {
       listener.call(this, event);
     });
     return event;
@@ -1892,7 +1892,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     Object.keys(this._listeners).forEach(name => {
       var _this$_listeners$name;
 
-      (_this$_listeners$name = this._listeners[name]) === null || _this$_listeners$name === void 0 ? void 0 : _this$_listeners$name.forEach(fn => {
+      (_this$_listeners$name = this._listeners[name]) === null || _this$_listeners$name === void 0 || _this$_listeners$name.forEach(fn => {
         pswp.on(name,
         /** @type {EventCallback<typeof name>} */
         fn);
@@ -1904,7 +1904,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
     Object.keys(this._filters).forEach(name => {
       var _this$_filters$name;
 
-      (_this$_filters$name = this._filters[name]) === null || _this$_filters$name === void 0 ? void 0 : _this$_filters$name.forEach(filter => {
+      (_this$_filters$name = this._filters[name]) === null || _this$_filters$name === void 0 || _this$_filters$name.forEach(filter => {
         pswp.addFilter(name, filter.fn, filter.priority);
       });
     });
@@ -1929,7 +1929,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
   destroy() {
     var _this$pswp;
 
-    (_this$pswp = this.pswp) === null || _this$pswp === void 0 ? void 0 : _this$pswp.destroy();
+    (_this$pswp = this.pswp) === null || _this$pswp === void 0 || _this$pswp.destroy();
     this.shouldOpen = false;
     this._listeners = {};
     getElementsFromOption(this.options.gallery, this.options.gallerySelector).forEach(galleryElement => {
