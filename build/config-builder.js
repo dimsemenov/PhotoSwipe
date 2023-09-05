@@ -77,7 +77,7 @@ export const minCoreJS = {
 };
 
 // UMD config
-const umdBaseOutputDir = 'demo-docs-website/static/photoswipe/umd/';
+const umdBaseOutputDir = `${baseOutputDir}/umd/`;
 export const umdMinLightboxJS = {
   input: 'src/js/lightbox/lightbox.js',
   output: {
@@ -98,4 +98,25 @@ export const umdMinCoreJS = {
     format: 'umd',
   },
   plugins: [getBabelPlugin(), getMinifyPlugin()]
+};
+
+const commonJsBaseOutputDir = `${baseOutputDir}/cjs/`;
+export const lightboxCommonJS = {
+  input: 'src/js/lightbox/lightbox.js',
+  output: {
+    banner: getBanner('PhotoSwipe Lightbox'),
+    file: commonJsBaseOutputDir + 'photoswipe-lightbox.cjs',
+    format: 'commonjs',
+    sourcemap: true
+  }
+};
+
+export const coreCommonJS = {
+  input: 'src/js/photoswipe.js',
+  output: {
+    banner: getBanner('PhotoSwipe'),
+    file: commonJsBaseOutputDir + 'photoswipe.cjs',
+    format: 'commonjs',
+    sourcemap: true
+  }
 };
