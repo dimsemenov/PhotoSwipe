@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.3.9 - https://photoswipe.com
+  * PhotoSwipe 5.4.0 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -1565,9 +1565,9 @@ class DragHandler {
 
 
   _getVerticalDragRatio(panY) {
-    var _this$pswp$currSlide;
+    var _this$pswp$currSlide$, _this$pswp$currSlide;
 
-    return (panY - (((_this$pswp$currSlide = this.pswp.currSlide) === null || _this$pswp$currSlide === void 0 ? void 0 : _this$pswp$currSlide.bounds.center.y) ?? 0)) / (this.pswp.viewportSize.y / 3);
+    return (panY - ((_this$pswp$currSlide$ = (_this$pswp$currSlide = this.pswp.currSlide) === null || _this$pswp$currSlide === void 0 ? void 0 : _this$pswp$currSlide.bounds.center.y) !== null && _this$pswp$currSlide$ !== void 0 ? _this$pswp$currSlide$ : 0)) / (this.pswp.viewportSize.y / 3);
   }
   /**
    * Set pan position of the current slide.
@@ -3075,7 +3075,7 @@ class MainScroll {
 
     this.pswp.dispatch('moveMainScroll', {
       x,
-      dragging: dragging ?? false
+      dragging: dragging !== null && dragging !== void 0 ? dragging : false
     });
   }
 
@@ -3299,6 +3299,8 @@ class CSSAnimation {
    * @param {CssAnimationProps} props
    */
   constructor(props) {
+    var _props$prop;
+
     this.props = props;
     const {
       target,
@@ -3311,7 +3313,7 @@ class CSSAnimation {
     this.onFinish = onFinish; // support only transform and opacity
 
     const prop = transform ? 'transform' : 'opacity';
-    const propValue = props[prop] ?? '';
+    const propValue = (_props$prop = props[prop]) !== null && _props$prop !== void 0 ? _props$prop : '';
     /** @private */
 
     this._target = target;
@@ -4928,6 +4930,8 @@ class Content {
 
 
   loadImage(isLazy) {
+    var _this$data$src, _this$data$alt;
+
     if (!this.isImageContent() || !this.element || this.instance.dispatch('contentLoadImage', {
       content: this,
       isLazy
@@ -4944,8 +4948,8 @@ class Content {
       imageElement.srcset = this.data.srcset;
     }
 
-    imageElement.src = this.data.src ?? '';
-    imageElement.alt = this.data.alt ?? '';
+    imageElement.src = (_this$data$src = this.data.src) !== null && _this$data$src !== void 0 ? _this$data$src : '';
+    imageElement.alt = (_this$data$alt = this.data.alt) !== null && _this$data$alt !== void 0 ? _this$data$alt : '';
     this.state = LOAD_STATE.LOADING;
 
     if (imageElement.complete) {
@@ -5187,10 +5191,10 @@ class Content {
 
   displayError() {
     if (this.slide) {
-      var _this$instance$option;
+      var _this$instance$option, _this$instance$option2;
 
       let errorMsgEl = createElement('pswp__error-msg', 'div');
-      errorMsgEl.innerText = ((_this$instance$option = this.instance.options) === null || _this$instance$option === void 0 ? void 0 : _this$instance$option.errorMsg) ?? '';
+      errorMsgEl.innerText = (_this$instance$option = (_this$instance$option2 = this.instance.options) === null || _this$instance$option2 === void 0 ? void 0 : _this$instance$option2.errorMsg) !== null && _this$instance$option !== void 0 ? _this$instance$option : '';
       errorMsgEl =
       /** @type {HTMLDivElement} */
       this.instance.applyFilters('contentErrorElement', errorMsgEl, this);
@@ -5721,10 +5725,12 @@ class PhotoSwipeBase extends Eventable {
       const thumbnailEl = element.querySelector('img');
 
       if (thumbnailEl) {
+        var _thumbnailEl$getAttri;
+
         // msrc is URL to placeholder image that's displayed before large image is loaded
         // by default it's displayed only for the first slide
         itemData.msrc = thumbnailEl.currentSrc || thumbnailEl.src;
-        itemData.alt = thumbnailEl.getAttribute('alt') ?? '';
+        itemData.alt = (_thumbnailEl$getAttri = thumbnailEl.getAttribute('alt')) !== null && _thumbnailEl$getAttri !== void 0 ? _thumbnailEl$getAttri : '';
       }
 
       if (linkEl.dataset.pswpCropped || linkEl.dataset.cropped) {
@@ -5918,7 +5924,9 @@ class Opener {
         slide.applyCurrentZoomPan();
       }
     } else {
-      this._animateRootOpacity = options.showHideOpacity ?? false;
+      var _options$showHideOpac;
+
+      this._animateRootOpacity = (_options$showHideOpac = options.showHideOpacity) !== null && _options$showHideOpac !== void 0 ? _options$showHideOpac : false;
     }
 
     this._animateBgOpacity = !this._animateRootOpacity && this.pswp.options.bgOpacity > MIN_OPACITY;
@@ -6792,9 +6800,9 @@ class PhotoSwipe extends PhotoSwipeBase {
   refreshSlideContent(slideIndex) {
     this.contentLoader.removeByIndex(slideIndex);
     this.mainScroll.itemHolders.forEach((itemHolder, i) => {
-      var _this$currSlide3;
+      var _this$currSlide$index, _this$currSlide3;
 
-      let potentialHolderIndex = (((_this$currSlide3 = this.currSlide) === null || _this$currSlide3 === void 0 ? void 0 : _this$currSlide3.index) ?? 0) - 1 + i;
+      let potentialHolderIndex = ((_this$currSlide$index = (_this$currSlide3 = this.currSlide) === null || _this$currSlide3 === void 0 ? void 0 : _this$currSlide3.index) !== null && _this$currSlide$index !== void 0 ? _this$currSlide$index : 0) - 1 + i;
 
       if (this.canLoop()) {
         potentialHolderIndex = this.getLoopedIndex(potentialHolderIndex);
