@@ -2276,7 +2276,7 @@ class Gestures {
       pswp.mouseDetected(); // preventDefault mouse event to prevent
       // browser image drag feature
 
-      this._preventPointerEventBehaviour(e);
+      this._preventPointerEventBehaviour(e, 'down');
     }
 
     pswp.animations.stopAll();
@@ -2305,7 +2305,7 @@ class Gestures {
 
 
   onPointerMove(e) {
-    e.preventDefault(); // always preventDefault move event
+    this._preventPointerEventBehaviour(e, 'move');
 
     if (!this._numActivePoints) {
       return;
@@ -2568,13 +2568,16 @@ class Gestures {
   /**
    * @private
    * @param {PointerEvent} e
+   * @param {'up' | 'down' | 'move'} pointerType Normalized pointer type
    */
 
 
-  _preventPointerEventBehaviour(e) {
-    // TODO find a way to disable e.preventDefault on some elements
-    //      via event or some class or something
-    e.preventDefault();
+  _preventPointerEventBehaviour(e, pointerType) {
+    const preventPointerEvent = this.pswp.applyFilters('preventPointerEvent', true, e, pointerType);
+
+    if (preventPointerEvent) {
+      e.preventDefault();
+    }
   }
   /**
    * Parses and normalizes points from the touch, mouse or pointer event.
@@ -4557,14 +4560,16 @@ function getThumbBounds(index, itemData, instance) {
  * https://photoswipe.com/filters/#uielement
  *
  * @prop {(thumbnail: HTMLElement | null | undefined, itemData: SlideData, index: number) => HTMLElement} thumbEl
- * Modify the thubmnail element from which opening zoom animation starts or ends.
+ * Modify the thumbnail element from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbel
  *
  * @prop {(thumbBounds: Bounds | undefined, itemData: SlideData, index: number) => Bounds} thumbBounds
- * Modify the thubmnail bounds from which opening zoom animation starts or ends.
+ * Modify the thumbnail bounds from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbbounds
  *
  * @prop {(srcsetSizesWidth: number, content: Content) => number} srcsetSizesWidth
+ *
+ * @prop {(preventPointerEvent: boolean, event: PointerEvent, pointerType: string) => boolean} preventPointerEvent
  *
  */
 

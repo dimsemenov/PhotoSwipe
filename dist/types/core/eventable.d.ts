@@ -357,16 +357,17 @@ export type PhotoSwipeFiltersMap = {
      */
     uiElement: (element: HTMLElement, data: UIElementData) => HTMLElement;
     /**
-     * Modify the thubmnail element from which opening zoom animation starts or ends.
+     * Modify the thumbnail element from which opening zoom animation starts or ends.
      * https://photoswipe.com/filters/#thumbel
      */
     thumbEl: (thumbnail: HTMLElement | null | undefined, itemData: SlideData, index: number) => HTMLElement;
     /**
-     * Modify the thubmnail bounds from which opening zoom animation starts or ends.
+     * Modify the thumbnail bounds from which opening zoom animation starts or ends.
      * https://photoswipe.com/filters/#thumbbounds
      */
     thumbBounds: (thumbBounds: Bounds | undefined, itemData: SlideData, index: number) => Bounds;
     srcsetSizesWidth: (srcsetSizesWidth: number, content: Content) => number;
+    preventPointerEvent: (preventPointerEvent: boolean, event: PointerEvent, pointerType: string) => boolean;
 };
 export type Filter<T extends keyof PhotoSwipeFiltersMap> = {
     fn: PhotoSwipeFiltersMap[T];
@@ -715,16 +716,17 @@ declare class Eventable {
          */
         uiElement?: Filter<"uiElement">[] | undefined;
         /**
-         * Modify the thubmnail element from which opening zoom animation starts or ends.
+         * Modify the thumbnail element from which opening zoom animation starts or ends.
          * https://photoswipe.com/filters/#thumbel
          */
         thumbEl?: Filter<"thumbEl">[] | undefined;
         /**
-         * Modify the thubmnail bounds from which opening zoom animation starts or ends.
+         * Modify the thumbnail bounds from which opening zoom animation starts or ends.
          * https://photoswipe.com/filters/#thumbbounds
          */
         thumbBounds?: Filter<"thumbBounds">[] | undefined;
         srcsetSizesWidth?: Filter<"srcsetSizesWidth">[] | undefined;
+        preventPointerEvent?: Filter<"preventPointerEvent">[] | undefined;
     };
     /** @type {PhotoSwipe | undefined} */
     pswp: PhotoSwipe | undefined;
@@ -942,14 +944,16 @@ declare class Eventable {
  * https://photoswipe.com/filters/#uielement
  *
  * @prop {(thumbnail: HTMLElement | null | undefined, itemData: SlideData, index: number) => HTMLElement} thumbEl
- * Modify the thubmnail element from which opening zoom animation starts or ends.
+ * Modify the thumbnail element from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbel
  *
  * @prop {(thumbBounds: Bounds | undefined, itemData: SlideData, index: number) => Bounds} thumbBounds
- * Modify the thubmnail bounds from which opening zoom animation starts or ends.
+ * Modify the thumbnail bounds from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbbounds
  *
  * @prop {(srcsetSizesWidth: number, content: Content) => number} srcsetSizesWidth
+ *
+ * @prop {(preventPointerEvent: boolean, event: PointerEvent, pointerType: string) => boolean} preventPointerEvent
  *
  */
 /**

@@ -125,6 +125,7 @@ declare class Gestures {
     /**
      * @private
      * @param {PointerEvent} e
+     * @param {'up' | 'down' | 'move'} pointerType Normalized pointer type
      */
     private _preventPointerEventBehaviour;
     /**
