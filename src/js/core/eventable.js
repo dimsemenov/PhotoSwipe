@@ -173,14 +173,16 @@
  * https://photoswipe.com/filters/#uielement
  *
  * @prop {(thumbnail: HTMLElement | null | undefined, itemData: SlideData, index: number) => HTMLElement} thumbEl
- * Modify the thubmnail element from which opening zoom animation starts or ends.
+ * Modify the thumbnail element from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbel
  *
  * @prop {(thumbBounds: Bounds | undefined, itemData: SlideData, index: number) => Bounds} thumbBounds
- * Modify the thubmnail bounds from which opening zoom animation starts or ends.
+ * Modify the thumbnail bounds from which opening zoom animation starts or ends.
  * https://photoswipe.com/filters/#thumbbounds
  *
  * @prop {(srcsetSizesWidth: number, content: Content) => number} srcsetSizesWidth
+ *
+ * @prop {(preventPointerEvent: boolean, event: PointerEvent, pointerType: string) => boolean} preventPointerEvent
  *
  */
 

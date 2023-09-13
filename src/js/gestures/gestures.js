@@ -191,7 +191,7 @@ class Gestures {
 
       // preventDefault mouse event to prevent
       // browser image drag feature
-      this._preventPointerEventBehaviour(e);
+      this._preventPointerEventBehaviour(e, 'down');
     }
 
     pswp.animations.stopAll();
@@ -218,7 +218,7 @@ class Gestures {
    * @param {PointerEvent} e
    */
   onPointerMove(e) {
-    e.preventDefault(); // always preventDefault move event
+    this._preventPointerEventBehaviour(e, 'move');
 
     if (!this._numActivePoints) {
       return;
@@ -464,11 +464,13 @@ class Gestures {
   /**
    * @private
    * @param {PointerEvent} e
+   * @param {'up' | 'down' | 'move'} pointerType Normalized pointer type
    */
-  _preventPointerEventBehaviour(e) {
-    // TODO find a way to disable e.preventDefault on some elements
-    //      via event or some class or something
-    e.preventDefault();
+  _preventPointerEventBehaviour(e, pointerType) {
+    const preventPointerEvent = this.pswp.applyFilters('preventPointerEvent', true, e, pointerType);
+    if (preventPointerEvent) {
+      e.preventDefault();
+    }
   }
 
   /**
