@@ -245,6 +245,11 @@ lightbox.init();
 </PswpCodePreview>
 
 
+### trapFocus
+
+Boolean, `true`. Trap focus within PhotoSwipe element while it's open. 
+
+
 ### returnFocus
 
 Boolean, `true`. Restore focus the last active element after PhotoSwipe is closed. 

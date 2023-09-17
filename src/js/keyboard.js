@@ -41,15 +41,22 @@ class Keyboard {
     this._wasFocused = false;
 
     pswp.on('bindEvents', () => {
-      // Dialog was likely opened by keyboard if initial point is not defined
-      if (!pswp.options.initialPointerPos) {
-        // focus causes layout,
-        // which causes lag during the animation,
-        // that's why we delay it until the opener transition ends
-        this._focusRoot();
+      if (pswp.options.trapFocus) {
+        // Dialog was likely opened by keyboard if initial point is not defined
+        if (!pswp.options.initialPointerPos) {
+          // focus causes layout,
+          // which causes lag during the animation,
+          // that's why we delay it until the opener transition ends
+          this._focusRoot();
+        }
+
+        pswp.events.add(
+          document,
+          'focusin',
+          /** @type EventListener */(this._onFocusIn.bind(this))
+        );
       }
 
-      pswp.events.add(document, 'focusin', /** @type EventListener */(this._onFocusIn.bind(this)));
       pswp.events.add(document, 'keydown', /** @type EventListener */(this._onKeyDown.bind(this)));
     });
 

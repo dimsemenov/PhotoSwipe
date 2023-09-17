@@ -113,6 +113,9 @@ import ContentLoader from './slide/loader.js';
  *
  * @prop {boolean} arrowKeys
  * Left/right arrow keys for navigation.
+ * 
+ * @prop {boolean} trapFocus
+ * Trap focus within PhotoSwipe element while it's open.
  *
  * @prop {boolean} returnFocus
  * Restore focus the last active element after PhotoSwipe is closed.
@@ -232,6 +235,7 @@ const defaultOptions = {
   zoomAnimationDuration: 333,
   escKey: true,
   arrowKeys: true,
+  trapFocus: true,
   returnFocus: true,
   maxWidthToAnimate: 4000,
   clickToCloseNonZoomable: true,
