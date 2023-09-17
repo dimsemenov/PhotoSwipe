@@ -180,3 +180,15 @@ lightbox.addFilter('thumbBounds', (thumbBounds, itemData, index) => {
   return thumbBounds;
 });
 ```
+
+### preventPointerEvent
+
+By default, PhotoSwipe calls `preventDefault` on `pointermove` event to disable default browser gestures and prevent page from scrolling. This filter gives you control on when it's called. For example, you may adjust it based on `originalEvent.target`.
+
+```js
+lightbox.addFilter('preventPointerEvent', (preventPointerEvent, originalEvent, pointerType) => {
+  // return true to preventDefault pointermove/pointerdown events
+  // (also applies to touchmove/mousemove)
+  return true;
+});
+```
