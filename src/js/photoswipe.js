@@ -113,7 +113,7 @@ import ContentLoader from './slide/loader.js';
  *
  * @prop {boolean} arrowKeys
  * Left/right arrow keys for navigation.
- * 
+ *
  * @prop {boolean} trapFocus
  * Trap focus within PhotoSwipe element while it's open.
  *

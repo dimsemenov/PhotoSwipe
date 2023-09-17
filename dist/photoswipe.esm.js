@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.4.0 - https://photoswipe.com
+  * PhotoSwipe 5.4.1 - https://photoswipe.com
   * (c) 2023 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -3126,17 +3126,20 @@ class Keyboard {
 
     this._wasFocused = false;
     pswp.on('bindEvents', () => {
-      // Dialog was likely opened by keyboard if initial point is not defined
-      if (!pswp.options.initialPointerPos) {
-        // focus causes layout,
-        // which causes lag during the animation,
-        // that's why we delay it until the opener transition ends
-        this._focusRoot();
+      if (pswp.options.trapFocus) {
+        // Dialog was likely opened by keyboard if initial point is not defined
+        if (!pswp.options.initialPointerPos) {
+          // focus causes layout,
+          // which causes lag during the animation,
+          // that's why we delay it until the opener transition ends
+          this._focusRoot();
+        }
+
+        pswp.events.add(document, 'focusin',
+        /** @type EventListener */
+        this._onFocusIn.bind(this));
       }
 
-      pswp.events.add(document, 'focusin',
-      /** @type EventListener */
-      this._onFocusIn.bind(this));
       pswp.events.add(document, 'keydown',
       /** @type EventListener */
       this._onKeyDown.bind(this));
@@ -6357,6 +6360,9 @@ class Opener {
  * @prop {boolean} arrowKeys
  * Left/right arrow keys for navigation.
  *
+ * @prop {boolean} trapFocus
+ * Trap focus within PhotoSwipe element while it's open.
+ *
  * @prop {boolean} returnFocus
  * Restore focus the last active element after PhotoSwipe is closed.
  *
@@ -6476,6 +6482,7 @@ const defaultOptions = {
   zoomAnimationDuration: 333,
   escKey: true,
   arrowKeys: true,
+  trapFocus: true,
   returnFocus: true,
   maxWidthToAnimate: 4000,
   clickToCloseNonZoomable: true,

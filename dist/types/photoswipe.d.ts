@@ -119,6 +119,10 @@ export type PreparedPhotoSwipeOptions = {
      */
     arrowKeys: boolean;
     /**
+     * Trap focus within PhotoSwipe element while it's open.
+     */
+    trapFocus: boolean;
+    /**
      * Restore focus the last active element after PhotoSwipe is closed.
      */
     returnFocus: boolean;
