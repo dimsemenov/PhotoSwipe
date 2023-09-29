@@ -78,11 +78,11 @@ declare class PhotoSwipeLightbox extends PhotoSwipeBase {
      * Load and open PhotoSwipe
      *
      * @param {number} index
-     * @param {DataSource} dataSource
+     * @param {DataSource} [dataSource]
      * @param {Point | null} [initialPoint]
      * @returns {boolean}
      */
-    loadAndOpen(index: number, dataSource: DataSource, initialPoint?: import("../photoswipe.js").Point | null | undefined): boolean;
+    loadAndOpen(index: number, dataSource?: import("../photoswipe.js").DataSource | undefined, initialPoint?: import("../photoswipe.js").Point | null | undefined): boolean;
     /**
      * Load the main module and the slide content by index
      *
