@@ -145,7 +145,7 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    * Load and open PhotoSwipe
    *
    * @param {number} index
-   * @param {DataSource} dataSource
+   * @param {DataSource} [dataSource]
    * @param {Point | null} [initialPoint]
    * @returns {boolean}
    */
