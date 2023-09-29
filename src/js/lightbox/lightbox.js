@@ -151,8 +151,18 @@ class PhotoSwipeLightbox extends PhotoSwipeBase {
    */
   loadAndOpen(index, dataSource, initialPoint) {
     // Check if the gallery is already open
-    if (window.pswp) {
+    if (window.pswp || !this.options) {
       return false;
+    }
+
+    // Use the first gallery element if dataSource is not provided
+    if (!dataSource && this.options.gallery && this.options.children) {
+      const galleryElements = getElementsFromOption(this.options.gallery);
+      if (galleryElements[0]) {
+        dataSource = {
+          gallery: galleryElements[0]
+        };
+      }
     }
 
     // set initial index
