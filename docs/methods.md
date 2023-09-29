@@ -6,60 +6,87 @@ sidebar_label: Methods
 
 ## PhotoSwipeLightbox methods
 
-`PhotoSwipeLightbox` loads `PhotoSwipe` and chooses when it should be opened. If you want to use `PhotoSwipe` without its lightbox component refer to [this section](data-sources#without-lightbox-module).
+### `init()`
+
+Initialize  the lightbox, must be called once for each instance. It does not open the dialog, only binds events that would open it (by default just `click`). It also allows preloading images before the dialog is opened.
 
 ```js
 const lightbox = new PhotoSwipeLightbox({
   // options
 });
 
-// initialize lightbox, should be called only once,
-// it's not included in the main constructor, so you may bind events before it
+/* you may bind events here */
+
+// highlight-next-line
 lightbox.init();
-
-// Open slide by index
-// refer to the section below for more info
-lightbox.loadAndOpen(
-  0,
-  /* optional data source, */
-  /* optional click Point */
-);
-
-// unbinds all events, closes PhotoSwipe if it's open
-lightbox.destroy();
 ```
 
-## Open lightbox via external button with `loadAndOpen`
 
-`PhotoSwipeLightbox` has a method `loadAndOpen`. It accepts three arguments:
+### `destroy()`
 
-1. Index of a slide to open (integer)
-2. Optional data source, see below for more details.
-3. Optional `Point` that determines where exactly the user clicked on the thumbnail (by default it is `{ x: e.clientX, y: e.clientY }` of the corresponding `click` event).
+Unbinds all events, and closes PhotoSwipe if it is currently open. Once the instance is destroyed, it cannot be initialized again.
 
-If you use `gallery` & `children` options and you omit the second argument (do not provide data source), `loadAndOpen` won't know which exactly gallery to use, since there might be multiple galleries on a page. To select a specific gallery you can do something like:
+
+<PswpCodePreview galleryID="test-destroy" numItems="4">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--test-destroy',
+  children: 'a',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
+  returnFocus: false
+});
+lightbox.init();
+
+const button = document.createElement('button');
+button.type = 'button';
+button.innerText = 'destroy the photoswipe';
+document.querySelector('#gallery--test-destroy').after(button);
+button.onclick = () => {
+  // highlight-start
+  if (lightbox) {
+    lightbox.destroy();
+    lightbox = null;
+  }
+  // highlight-end
+}
+```
+
+</PswpCodePreview>
+
+
+## `loadAndOpen(index, dataSource, point)`
+
+Open PhotoSwipe at a given index. Arguments:
+
+1. Index of a slide to open (`number`)
+2. Optional data source (`DataSource`).
+3. Optional `Point` (`x: number, y: number`) that determines where exactly the user clicked on the thumbnail (by default it is `{ x: e.clientX, y: e.clientY }` of the corresponding `click` event).
+
+If you use `gallery` & `children` options and you omit the second argument (do not provide data source) - PhotoSwipe will use the first `gallery` element. To select another `gallery` element you must define data source as `{ gallery: HTMLElement }`, for example:
+
 
 <PswpCodePreview  galleryID="with-button">
 
 ```js pswpcode
 import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
-const options = {
+const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--with-button',
   children: 'a',
   pswpModule: () => import('/photoswipe/photoswipe.esm.js')
-};
-const lightbox = new PhotoSwipeLightbox(options);
+});
 lightbox.init();
 
 const btn = document.createElement('button');
 btn.type = 'button';
 btn.innerText = 'open second image';
-document.querySelector('#gallery--with-button').parentElement.prepend(btn);
+document.querySelector('#gallery--with-button').after(btn);
 
 btn.onclick = () => {
   // highlight-start
   lightbox.loadAndOpen(1, {
-    gallery: document.querySelector('#gallery--with-button')
+    gallery: document.querySelector('#gallery--test-destroy')
   });
 
   // You also can just trigger the native click
@@ -74,7 +101,7 @@ btn.onclick = () => {
 
 ## PhotoSwipe core methods
 
-You can access PhotoSwipe core instance only after lightbox is opened (for example, within `beforeOpen` event).
+You can access the PhotoSwipe core instance only after the lightbox is opened (for example, within the `beforeOpen` event).
 
 Alternatively, you may use PhotoSwipe core without Lightbox, see example on [Data Sources page](/data-sources#without-lightbox-module).
 
@@ -139,7 +166,7 @@ pswp.options.dataSource = {
 }
 ```
 
-And if you pass array as a `dataSource`, it'll be just an array and you may modify it the same way:
+And if you pass array as a `dataSource`, it'll be kept the same way:
 
 ```js
 pswp.options.dataSource = [
