@@ -19,7 +19,7 @@
     "./style.css": "./dist/photoswipe.css"
   },
   "typesVersions": {
-    "<4.7": {
+    "*": {
       "lightbox": [
         "dist/types/lightbox/lightbox.d.ts"
       ]
