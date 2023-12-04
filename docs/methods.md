@@ -103,7 +103,7 @@ btn.onclick = () => {
 
 You can access the PhotoSwipe core instance only after the lightbox is opened (for example, within the `beforeOpen` event).
 
-Alternatively, you may use PhotoSwipe core without Lightbox, see example on [Data Sources page](data-sources#without-lightbox-module).
+Alternatively, you may use PhotoSwipe core without Lightbox, see example on [Data Sources page](/data-sources#without-lightbox-module).
 
 ```js
 const lightbox = new PhotoSwipeLightbox({
@@ -252,8 +252,8 @@ button.pswp__button--test-button {
 
 </PswpCodePreview>
 
-Alternatively, you may omit `dataSource` option entirely and use filters to supply data and number of items, example on the [Data Sources page](data-sources#dynamically-generated-data).
+Alternatively, you may omit `dataSource` option entirely and use filters to supply data and number of items, example on the [Data Sources page](/data-sources#dynamically-generated-data).
 
 ## UI
 
-Refer to [Styling](styling) page on how to adjust the UI (add buttons, modify icons, etc).
+Refer to [Styling](/styling) page on how to adjust the UI (add buttons, modify icons, etc).
