@@ -1,6 +1,6 @@
 {
   "name": "photoswipe",
-  "version": "5.4.3",
+  "version": "5.4.4",
   "main": "dist/photoswipe.esm.js",
   "style": "dist/photoswipe.css",
   "type": "module",
