@@ -31,7 +31,7 @@ Unbinds all events, and closes PhotoSwipe if it is currently open. Once the inst
 
 ```js pswpcode
 import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
-const lightbox = new PhotoSwipeLightbox({
+let lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--test-destroy',
   children: 'a',
   pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
@@ -67,7 +67,7 @@ Open PhotoSwipe at a given index. Arguments:
 If you use `gallery` & `children` options and you omit the second argument (do not provide data source) - PhotoSwipe will use the first `gallery` element. To select another `gallery` element you must define data source as `{ gallery: HTMLElement }`, for example:
 
 
-<PswpCodePreview  galleryID="with-button">
+<PswpCodePreview galleryID="with-button">
 
 ```js pswpcode
 import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
@@ -86,7 +86,7 @@ document.querySelector('#gallery--with-button').after(btn);
 btn.onclick = () => {
   // highlight-start
   lightbox.loadAndOpen(1, {
-    gallery: document.querySelector('#gallery--test-destroy')
+    gallery: document.querySelector('#gallery--with-button')
   });
 
   // You also can just trigger the native click
