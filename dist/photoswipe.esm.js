@@ -1,6 +1,6 @@
 /*!
-  * PhotoSwipe 5.4.3 - https://photoswipe.com
-  * (c) 2023 Dmytro Semenov
+  * PhotoSwipe 5.4.4 - https://photoswipe.com
+  * (c) 2024 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
 
@@ -2995,7 +2995,14 @@ class MainScroll {
 
     if (diffAbs >= 3) {
       this._containerShiftIndex += positionDifference + (positionDifference > 0 ? -3 : 3);
-      diffAbs = 3;
+      diffAbs = 3; // If slides are changed by 3 screens or more - clean up previous slides
+
+      this.itemHolders.forEach(itemHolder => {
+        var _itemHolder$slide;
+
+        (_itemHolder$slide = itemHolder.slide) === null || _itemHolder$slide === void 0 || _itemHolder$slide.destroy();
+        itemHolder.slide = undefined;
+      });
     }
 
     for (let i = 0; i < diffAbs; i++) {

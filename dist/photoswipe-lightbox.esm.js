@@ -1,6 +1,6 @@
 /*!
-  * PhotoSwipe Lightbox 5.4.3 - https://photoswipe.com
-  * (c) 2023 Dmytro Semenov
+  * PhotoSwipe Lightbox 5.4.4 - https://photoswipe.com
+  * (c) 2024 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
 
