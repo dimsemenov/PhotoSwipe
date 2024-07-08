@@ -27,14 +27,14 @@ const options = {
 
     // simple image
     {
-      src: 'https://source.unsplash.com/Volo9FYUAzU/1620x1080',
+      src: 'https://dummyimage.com/1620x1080/555/fff/?text=1620x1080',
       width: 1620,
       height: 1080,
       alt: 'test image 1'
     },
 
     {
-      src: 'https://source.unsplash.com/RJzHlbKf6eY/1950x1300',
+      src: 'https://dummyimage.com/1950x1300/555/fff/?text=1950x1300',
       width: 1950,
       height: 1300,
       alt: 'test image 2'
@@ -102,14 +102,14 @@ const options = {
 
     // simple image
     {
-      src: 'https://source.unsplash.com/Volo9FYUAzU/1620x1080',
+      src: 'https://dummyimage.com/1620x1080/555/fff/?text=1620x1080',
       width: 1620,
       height: 1080,
       alt: 'test image 1'
     },
 
     {
-      src: 'https://source.unsplash.com/RJzHlbKf6eY/1950x1300',
+      src: 'https://dummyimage.com/1950x1300/555/fff/?text=1950x1300',
       width: 1950,
       height: 1300,
       alt: 'test image 2'

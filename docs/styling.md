@@ -15,7 +15,7 @@ To modify the color of the icons use CSS variables. To modify SVG shapes use JS 
 
 For example:
 
-<PswpCodePreview>
+<PswpCodePreview numItems="4" galleryID="custom-icon-colors">
 
 ```js pswpcode
 import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
@@ -42,29 +42,6 @@ lightbox.init();
   --pswp-icon-color: #00fffc;
   --pswp-icon-color-secondary: #333;
 }
-```
-
-```html pswpcode
-<div class="pswp-gallery" id="gallery--custom-icon-colors">
-  <a href="https://source.unsplash.com/Volo9FYUAzU/1620x1080" 
-    data-pswp-width="1620" 
-    data-pswp-height="1080" 
-    target="_blank">
-    <img src="https://source.unsplash.com/Volo9FYUAzU/162x108" alt="" />
-  </a>
-  <a href="https://source.unsplash.com/WLUHO9A_xik/1600x900" 
-    data-pswp-width="1600" 
-    data-pswp-height="900" 
-    target="_blank">
-    <img src="https://source.unsplash.com/WLUHO9A_xik/160x90" alt="" />
-  </a>
-  <a href="https://source.unsplash.com/RJzHlbKf6eY/1950x1300" 
-    data-pswp-width="1950" 
-    data-pswp-height="1300" 
-    target="_blank">
-    <img src="https://source.unsplash.com/RJzHlbKf6eY/195x130" alt="" />
-  </a>
-</div>
 ```
 
 </PswpCodePreview>
