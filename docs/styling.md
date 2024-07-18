@@ -115,7 +115,7 @@ lightbox.init();
 
 ## Loading indicator (preloader)
 
-If you have a good connection, you probably haven't even seen the loading indicator. That's because PhotoSwipe displays loading indicator only if image is not loaded within 2 seconds (can be adjusted via [preloaderDelay](options#preloaderDelay) option). Use dev tools network throttling to test it.
+If you have a good connection, you probably haven't even seen the loading indicator. That's because PhotoSwipe displays loading indicator only if image is not loaded within 2 seconds (can be adjusted via [preloaderDelay](/options#preloaderDelay) option). Use dev tools network throttling to test it.
 
 The default loading indicator is displayed in the top left corner and is just a spinning 3/4 circle. You may adjust it just via CSS, the default styles are in `photoswipe.css`.
 
