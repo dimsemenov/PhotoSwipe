@@ -88,7 +88,7 @@ class PhotoSwipeBase extends Eventable {
     }
 
     // Dispatching the itemData event,
-    // it's a legacy verion before filters were introduced
+    // it's a legacy version before filters were introduced
     const event = this.dispatch('itemData', {
       itemData: itemData || {},
       index

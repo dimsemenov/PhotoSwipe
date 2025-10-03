@@ -253,7 +253,7 @@ class DragHandler {
       if (newPan > bounds.min[axis] && isLeftToRight) {
         // Panning from left to right, beyond the left edge
 
-        // Wether the image was at minimum pan position (or less)
+        // Whether the image was at minimum pan position (or less)
         // when this drag gesture started.
         // Minimum pan position refers to the left edge of the image.
         const wasAtMinPanPosition = (bounds.min[axis] <= this.startPan[axis]);

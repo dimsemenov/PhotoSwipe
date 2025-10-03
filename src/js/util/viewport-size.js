@@ -19,7 +19,7 @@ export function getViewportSize(options, pswp) {
   return {
     x: document.documentElement.clientWidth,
 
-    // TODO: height on mobile is very incosistent due to toolbar
+    // TODO: height on mobile is very inconsistent due to toolbar
     // find a way to improve this
     //
     // document.documentElement.clientHeight - doesn't seem to work well

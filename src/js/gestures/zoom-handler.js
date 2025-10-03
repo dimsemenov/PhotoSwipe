@@ -143,7 +143,7 @@ class ZoomHandler {
    * With animation.
    *
    * @param {boolean} [ignoreGesture]
-   * Wether gesture coordinates should be ignored when calculating destination pan position.
+   * Whether gesture coordinates should be ignored when calculating destination pan position.
    */
   correctZoomPan(ignoreGesture) {
     const { pswp } = this.gestures;

@@ -653,7 +653,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.dispatch('viewportSize');
 
     // Resize slides only after opener animation is finished
-    // and don't re-calculate size on inital size update
+    // and don't re-calculate size on initial size update
     this.mainScroll.resize(this.opener.isOpen);
 
     if (!this.hasMouse && window.matchMedia('(any-hover: hover)').matches) {

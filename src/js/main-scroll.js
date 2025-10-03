@@ -283,18 +283,18 @@ class MainScroll {
       }
     }
 
-    // Reset transfrom every 50ish navigations in one direction.
+    // Reset transform every 50th navigation in one direction.
     //
     // Otherwise transform will keep growing indefinitely,
     // which might cause issues as browsers have a maximum transform limit.
     // I wasn't able to reach it, but just to be safe.
-    // This should not cause noticable lag.
+    // This should not cause noticeable lag.
     if (Math.abs(this._containerShiftIndex) > 50 && !this.isShifted()) {
       this.resetPosition();
       this.resize();
     }
 
-    // Pan transition might be running (and consntantly updating pan position)
+    // Pan transition might be running (and constantly updating pan position)
     pswp.animations.stopAllPan();
 
     this.itemHolders.forEach((itemHolder, i) => {

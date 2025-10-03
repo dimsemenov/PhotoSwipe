@@ -30,7 +30,7 @@ import { lazyLoadSlide } from '../slide/loader.js';
  *
  * - If user has unsupported browser it falls back to default browser action (just opens URL)
  * - Binds click event to links that should open PhotoSwipe
- * - parses DOM strcture for PhotoSwipe (retrieves large image URLs and sizes)
+ * - parses DOM structure for PhotoSwipe (retrieves large image URLs and sizes)
  * - Initializes PhotoSwipe
  *
  *
