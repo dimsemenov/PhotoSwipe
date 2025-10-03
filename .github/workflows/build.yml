@@ -8,16 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "checkout repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       - name: "setup node"
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v5
         with:
-          node-version: 16
+          node-version: 22
 
       - name: "github api fetch (for stars count)"
         working-directory: demo-docs-website
-        run: curl -s https://api.github.com/repos/dimsemenov/photoswipe -o ./repo-data.json 
+        run: curl -s https://api.github.com/repos/dimsemenov/photoswipe -o ./repo-data.json
 
       - name: "npm install & build docs"
         working-directory: demo-docs-website
@@ -28,7 +28,7 @@ jobs:
       - name: "install ssh key"
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
       - name: "deploy with rsync"
