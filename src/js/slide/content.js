@@ -51,10 +51,8 @@ class Content {
     if (this.placeholder && !this.keepPlaceholder()) {
       // Use animation duration + buffer time to ensure placeholder 
       // does not disappear during opening animation
-      const buffer = 50;
-      const animationDuration =
-        this.instance?.options?.showAnimationDuration || buffer;
-      const safeDelay = Math.max(animationDuration + buffer, buffer);
+      const animationDuration = this.instance?.options?.showAnimationDuration || 0;
+      const safeDelay = animationDuration + 500;
       
       setTimeout(() => {
         if (this.placeholder) {
