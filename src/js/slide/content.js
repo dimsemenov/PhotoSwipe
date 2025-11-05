@@ -49,13 +49,17 @@ class Content {
 
   removePlaceholder() {
     if (this.placeholder && !this.keepPlaceholder()) {
-      // With delay, as image might be loaded, but not rendered
+      // Use animation duration + buffer time to ensure placeholder 
+      // does not disappear during opening animation
+      const animationDuration = this.instance?.options?.showAnimationDuration || 0;
+      const safeDelay = animationDuration + 500;
+      
       setTimeout(() => {
         if (this.placeholder) {
           this.placeholder.destroy();
           this.placeholder = undefined;
         }
-      }, 1000);
+      }, safeDelay);
     }
   }
 
