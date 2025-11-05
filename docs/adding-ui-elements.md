@@ -145,7 +145,7 @@ lightbox.init();
 ```
 
 ```css pswpcode
-button.pswp__button--test-button {
+button.pswp__button--download-button {
   background: #136912 !important;
   font-size: 20px;
   color: #fff;
