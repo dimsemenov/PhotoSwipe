@@ -145,7 +145,7 @@ class Gestures {
       /** @type EventListener */(this.onPointerDown.bind(this))
     );
     events.add(window, pref + 'move', /** @type EventListener */(this.onPointerMove.bind(this)));
-    events.add(window, pref + up, /** @type EventListener */(this.onPointerUp.bind(this)));
+    events.add(pswp.scrollWrap, pref + up, /** @type EventListener */(this.onPointerUp.bind(this)));
     if (cancelEvent) {
       events.add(
         pswp.scrollWrap,
