@@ -417,20 +417,16 @@ class PhotoSwipe extends PhotoSwipeBase {
             if (timeoutId) {
               clearTimeout(timeoutId);
               timeoutId = null;
-              document
-                .querySelector(".pswp__container")
-                ?.classList.remove("animated");
+              this.container?.classList.remove("animated");
             }
 
-            document.querySelector(".pswp__container")?.classList.add("animated");
+            this.container?.classList.add("animated");
           });
           btn.addEventListener("pointerup", (e) => {
             e.preventDefault();
             const transitionDuration = this.element ? parseInt(getComputedStyle(this.element).getPropertyValue('--pswp-transition-duration') || '333', 10) : 333;
             timeoutId = setTimeout(() => {
-              document
-                .querySelector(".pswp__container")
-                ?.classList.remove("animated");
+              this.container?.classList.remove("animated");
               timeoutId = null;
             }, transitionDuration + 150);
           });
