@@ -155,6 +155,19 @@ class Keyboard {
 
     if (keydownAction) {
       e.preventDefault();
+
+      // Add animation class for next/prev navigation
+      if (keydownAction === 'next' || keydownAction === 'prev') {
+        const container = pswp.container;
+        if (container) {
+          container.classList.add('animated');
+          const transitionDuration = pswp.element ? parseInt(getComputedStyle(pswp.element).getPropertyValue('--pswp-transition-duration') || '333', 10) : 333;
+          setTimeout(() => {
+            container.classList.remove('animated');
+          }, transitionDuration + 150);
+        }
+      }
+
       // @ts-ignore
       pswp[keydownAction]();
     }
