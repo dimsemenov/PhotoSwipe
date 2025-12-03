@@ -296,6 +296,7 @@ class Opener {
       }
       this._animateToOpenState();
     } else if (this.isClosing) {
+      this.pswp.element?.classList.add('pswp--closing');
       this._animateToClosedState();
     }
 
