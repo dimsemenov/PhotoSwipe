@@ -30,3 +30,5 @@ website/dist/
 .vscode
 .node-version
 .sass-cache/
+demo-docs-website/
+dist/
