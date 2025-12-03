@@ -422,9 +422,6 @@ div.pswp__img--placeholder,
 /*  animate on next and prev click */
 .pswp__container.animated {
   transition: transform var(--pswp-transition-duration, 333ms) ease !important;
-  @media screen and (hover: none) {
-    transition: none;
-  }
   @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
