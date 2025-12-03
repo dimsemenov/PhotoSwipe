@@ -418,3 +418,11 @@ div.pswp__img--placeholder,
 .pswp--one-slide .pswp__counter {
   display: none;
 }
+
+/*  animate on next and prev click */
+.pswp__container.animated {
+  transition: transform var(--pswp-transition-duration, 333ms) ease !important;
+  @media screen and (hover: none) {
+    transition: none;
+  }
+}

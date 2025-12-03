@@ -404,6 +404,37 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.events.add(window, 'resize', this._handlePageResize.bind(this));
       this.events.add(window, 'scroll', this._updatePageScrollOffset.bind(this));
       this.dispatch('bindEvents');
+      
+      // add animated class on arrow button press
+      let timeoutId = null;
+      document
+        .querySelectorAll(
+          ".pswp__button--arrow--prev, .pswp__button--arrow--next",
+        )
+        .forEach((btn) => {
+          btn.addEventListener("pointerdown", (e) => {
+            e.preventDefault();
+            if (timeoutId) {
+              clearTimeout(timeoutId);
+              timeoutId = null;
+              document
+                .querySelector(".pswp__container")
+                ?.classList.remove("animated");
+            }
+
+            document.querySelector(".pswp__container")?.classList.add("animated");
+          });
+          btn.addEventListener("pointerup", (e) => {
+            e.preventDefault();
+            timeoutId = setTimeout(() => {
+              document
+                .querySelector(".pswp__container")
+                ?.classList.remove("animated");
+              timeoutId = null;
+            }, 500);
+          });
+        });
+
     });
 
     // set content for center slide (first time)
