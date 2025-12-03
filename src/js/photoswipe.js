@@ -426,12 +426,13 @@ class PhotoSwipe extends PhotoSwipeBase {
           });
           btn.addEventListener("pointerup", (e) => {
             e.preventDefault();
+            const transitionDuration = parseInt(getComputedStyle(document.querySelector(".pswp__container")).getPropertyValue('--pswp-transition-duration') || '333', 10);
             timeoutId = setTimeout(() => {
               document
                 .querySelector(".pswp__container")
                 ?.classList.remove("animated");
               timeoutId = null;
-            }, 500);
+            }, transitionDuration + 150);
           });
         });
 
