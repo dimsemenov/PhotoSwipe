@@ -40,7 +40,7 @@ class Keyboard {
     /** @private */
     this._wasFocused = false;
     /** @private */
-    /** @type {number | null} */
+    /** @type {ReturnType<typeof setTimeout> | null} */
     this._animationTimeoutId = null;
 
     pswp.on('bindEvents', () => {

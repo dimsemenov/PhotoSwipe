@@ -406,7 +406,7 @@ class PhotoSwipe extends PhotoSwipeBase {
       this.dispatch('bindEvents');
       
       // add animated class on arrow button press
-      /** @type {number | null} */
+      /** @type {ReturnType<typeof setTimeout> | null} */
       let timeoutId = null;
       document
         .querySelectorAll(
