@@ -39,6 +39,8 @@ class Keyboard {
     this.pswp = pswp;
     /** @private */
     this._wasFocused = false;
+    /** @private */
+    this._animationTimeoutId = null;
 
     pswp.on('bindEvents', () => {
       if (pswp.options.trapFocus) {
@@ -160,10 +162,17 @@ class Keyboard {
       if (keydownAction === 'next' || keydownAction === 'prev') {
         const container = pswp.container;
         if (container) {
+          if (this._animationTimeoutId) {
+            clearTimeout(this._animationTimeoutId);
+            this._animationTimeoutId = null;
+            container.classList.remove('animated');
+          }
+
           container.classList.add('animated');
           const transitionDuration = pswp.element ? parseInt(getComputedStyle(pswp.element).getPropertyValue('--pswp-transition-duration') || '333', 10) : 333;
-          setTimeout(() => {
+          this._animationTimeoutId = setTimeout(() => {
             container.classList.remove('animated');
+            this._animationTimeoutId = null;
           }, transitionDuration + 150);
         }
       }
