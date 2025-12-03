@@ -425,4 +425,7 @@ div.pswp__img--placeholder,
   @media screen and (hover: none) {
     transition: none;
   }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
