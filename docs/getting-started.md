@@ -4,6 +4,7 @@ title: Getting Started
 sidebar_label: Getting Started
 ---
 
+**PhotoSwipe v6 is under development** Please leave feedback in [GitHub Discussion](https://github.com/dimsemenov/PhotoSwipe/discussions/2170).
 
 Before you start:
 
@@ -73,7 +74,7 @@ import { gettingStartedTemplate } from '@site/src/components/PswpCodePreview/gal
 <PswpCodePreview galleryID="getting-started" numItems="6" displayHTML templateFn={gettingStartedTemplate}>
 
 ```js pswpcode
-// Include Lightbox 
+// Include Lightbox
 import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
 
 const lightbox = new PhotoSwipeLightbox({
@@ -151,7 +152,7 @@ lightbox.init();
 
 ## Responsive images with srcset
 
-- Add `data-pswp-srcset` attribute. It supports the same markup as [native srcset](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-srcset). 
+- Add `data-pswp-srcset` attribute. It supports the same markup as [native srcset](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-srcset).
 - Attributes `data-pswp-width` and `data-pswp-height` should define the largest image size.
 - `sizes` attribute will be generated automatically based on actual width of the image. For example, if user zooms-in - `sizes` will be adjusted to the new zoom level.
 
