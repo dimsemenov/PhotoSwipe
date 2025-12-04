@@ -1,4 +1,5 @@
-[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://savelife.in.ua/en/)
+**FEEDBACK NEEDED** I am developing the new version - PhotoSwipe v6, please [read about upcoming changes and leave feedback](https://github.com/dimsemenov/PhotoSwipe/discussions/2170).
+
 
 
 PhotoSwipe v5 — JavaScript image gallery and lightbox
@@ -26,6 +27,8 @@ To run the demo website and automatically rebuild files during development, run 
 ### Older versions
 
 Documentation for the old version (v4) can be found [here](https://photoswipe.com/v4-docs/getting-started.html) and [the code for 4.1.3 is here](https://github.com/dimsemenov/PhotoSwipe/tree/v4.1.3).
+
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://savelife.in.ua/en/)
 
 ---
 
