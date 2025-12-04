@@ -735,6 +735,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.element = createElement('pswp', 'div');
     this.element.setAttribute('tabindex', '-1');
     this.element.setAttribute('role', 'dialog');
+    this.element.setAttribute('aria-modal', 'true');
 
     // template is legacy prop
     this.template = this.element;
