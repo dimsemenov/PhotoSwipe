@@ -28,6 +28,8 @@ function initArrowButton(element, pswp, isNextButton) {
   });
 }
 
+const iconPath = 'M29 43l-3 3-16-16 16-16 3 3-13 13 13 13z';
+
 /** @type {UIElementData} */
 export const arrowPrev = {
   name: 'arrowPrev',
@@ -39,8 +41,8 @@ export const arrowPrev = {
   html: {
     isCustomSVG: true,
     size: 60,
-    inner: '<path d="M29 43l-3 3-16-16 16-16 3 3-13 13 13 13z" id="pswp__icn-arrow"/>',
-    outlineID: 'pswp__icn-arrow'
+    inner: `<path d="${iconPath}" id="pswp__icn-arrow-prev"/>`,
+    outlineID: 'pswp__icn-arrow-prev'
   },
   onClick: 'prev',
   onInit: initArrowButton
@@ -57,8 +59,8 @@ export const arrowNext = {
   html: {
     isCustomSVG: true,
     size: 60,
-    inner: '<use xlink:href="#pswp__icn-arrow"/>',
-    outlineID: 'pswp__icn-arrow'
+    inner: `<path d="${iconPath}" id="pswp__icn-arrow-next"/>`,
+    outlineID: 'pswp__icn-arrow-next'
   },
   onClick: 'next',
   onInit: (el, pswp) => {
