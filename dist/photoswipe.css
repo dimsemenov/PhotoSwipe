@@ -277,6 +277,9 @@ div.pswp__img--placeholder,
 	pointer-events: none !important;
 }
 .pswp__top-bar > * {
+  pointer-events: none;
+}
+.pswp--ui-visible .pswp__top-bar > * {
   pointer-events: auto;
   /* this makes transition significantly more smooth,
      even though inner elements are not animated */
