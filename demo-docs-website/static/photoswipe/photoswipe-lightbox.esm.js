@@ -1,6 +1,6 @@
 /*!
   * PhotoSwipe Lightbox 5.3.8 - https://photoswipe.com
-  * (c) 2023 Dmytro Semenov
+  * (c) 2026 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
 
@@ -1510,8 +1510,19 @@ class PhotoSwipeBase extends Eventable {
         itemData.srcset = linkEl.dataset.pswpSrcset;
       }
 
-      itemData.width = linkEl.dataset.pswpWidth ? parseInt(linkEl.dataset.pswpWidth, 10) : 0;
-      itemData.height = linkEl.dataset.pswpHeight ? parseInt(linkEl.dataset.pswpHeight, 10) : 0;
+      const thumbnailEl = element.querySelector('img');
+      // set itemData.w & itemData.h with naturalWidth & naturalHeight by default
+      itemData.width = thumbnailEl?.naturalWidth;
+      itemData.height = thumbnailEl?.naturalHeight;
+
+      // if pswp-width & pswp-height are defined, replace naturalWidth & naturalHeight with the defined pswp data
+      if (linkEl.dataset.pswpWidth) {
+        itemData.width = parseInt(linkEl.dataset.pswpWidth, 10);
+      }
+
+      if (linkEl.dataset.pswpHeight) {
+        itemData.height = parseInt(linkEl.dataset.pswpHeight, 10);
+      }
 
       // support legacy w & h properties
       itemData.w = itemData.width;
@@ -1520,8 +1531,6 @@ class PhotoSwipeBase extends Eventable {
       if (linkEl.dataset.pswpType) {
         itemData.type = linkEl.dataset.pswpType;
       }
-
-      const thumbnailEl = element.querySelector('img');
 
       if (thumbnailEl) {
         // msrc is URL to placeholder image that's displayed before large image is loaded
