@@ -1,6 +1,6 @@
 /*!
   * PhotoSwipe 5.4.4 - https://photoswipe.com
-  * (c) 2024 Dmytro Semenov
+  * (c) 2026 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
 
@@ -4136,6 +4136,7 @@ const counterIndicator = {
   name: 'counter',
   order: 5,
   onInit: (counterElement, pswp) => {
+    counterElement.setAttribute('role', 'status');
     pswp.on('change', () => {
       counterElement.innerText = pswp.currIndex + 1 + pswp.options.indexIndicatorSep + pswp.getNumItems();
     });
@@ -4877,13 +4878,18 @@ class Content {
 
   removePlaceholder() {
     if (this.placeholder && !this.keepPlaceholder()) {
-      // With delay, as image might be loaded, but not rendered
+      var _this$instance;
+
+      // Use animation duration + buffer time to ensure placeholder 
+      // does not disappear during opening animation
+      const animationDuration = ((_this$instance = this.instance) === null || _this$instance === void 0 || (_this$instance = _this$instance.options) === null || _this$instance === void 0 ? void 0 : _this$instance.showAnimationDuration) || 0;
+      const safeDelay = animationDuration + 500;
       setTimeout(() => {
         if (this.placeholder) {
           this.placeholder.destroy();
           this.placeholder = undefined;
         }
-      }, 1000);
+      }, safeDelay);
     }
   }
   /**
@@ -6474,6 +6480,7 @@ class Opener {
  * @prop {ElementProvider} [children]
  * @prop {string} [childSelector]
  * @prop {string | false} [thumbSelector]
+ * @prop {string} [ariaLabel]
  */
 
 /** @type {PreparedPhotoSwipeOptions} */
@@ -7012,10 +7019,14 @@ class PhotoSwipe extends PhotoSwipeBase {
 
 
   _createMainStructure() {
+    var _this$options;
+
     // root DOM element of PhotoSwipe (.pswp)
     this.element = createElement('pswp', 'div');
     this.element.setAttribute('tabindex', '-1');
-    this.element.setAttribute('role', 'dialog'); // template is legacy prop
+    this.element.setAttribute('role', 'dialog');
+    this.element.setAttribute('aria-modal', 'true');
+    this.element.setAttribute('aria-label', ((_this$options = this.options) === null || _this$options === void 0 ? void 0 : _this$options.ariaLabel) || 'Full-size image gallery'); // template is legacy prop
 
     this.template = this.element; // Background is added as a separate element,
     // as animating opacity is faster than animating rgba()

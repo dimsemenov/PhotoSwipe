@@ -475,6 +475,19 @@ lightbox.init();
 
 </PswpCodePreview>
 
+## Accessibility
+
+### ariaLabel
+
+Sets the `aria-label` attribute on the PhotoSwipe dialog element (`role="dialog"`). Use this to provide a concise text label for the lightbox when there is no visible heading to reference.
+
+```js
+const lightbox = new PhotoSwipeLightbox({
+  // ...
+  ariaLabel: 'Image gallery',
+});
+```
+
 ## Lightbox module options
 
 See [getting started](getting-started.md) and [data sources](data-sources.md) for examples.

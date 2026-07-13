@@ -3,6 +3,7 @@ export const counterIndicator = {
   name: 'counter',
   order: 5,
   onInit: (counterElement, pswp) => {
+    counterElement.setAttribute('role', 'status');
     pswp.on('change', () => {
       counterElement.innerText = (pswp.currIndex + 1)
                                   + pswp.options.indexIndicatorSep

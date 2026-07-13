@@ -236,6 +236,7 @@ export type PreparedPhotoSwipeOptions = {
     children?: ElementProvider | undefined;
     childSelector?: string | undefined;
     thumbSelector?: string | false | undefined;
+    ariaLabel?: string | undefined;
 };
 /**
  * PhotoSwipe Core
