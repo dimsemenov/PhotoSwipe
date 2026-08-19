@@ -371,6 +371,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     // causes forced synchronous layout
     this.updateSize();
 
+    this.offset.x = window.pageXOffset;
     this.offset.y = window.pageYOffset;
 
     this._initialItemData = this.getItemData(this.currIndex);
@@ -711,7 +712,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @private
    */
   _updatePageScrollOffset() {
-    this.setScrollOffset(0, window.pageYOffset);
+    this.setScrollOffset(window.pageXOffset, window.pageYOffset);
   }
 
   /**
