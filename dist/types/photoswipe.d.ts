@@ -29,6 +29,12 @@ export type Padding = {
     left: number;
     right: number;
 };
+export type Margin = {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+};
 export type DataSourceArray = SlideData[];
 export type DataSourceObject = {
     gallery: HTMLElement;
@@ -86,6 +92,14 @@ export type PreparedPhotoSwipeOptions = {
      * Vertical drag gesture to close the PhotoSwipe.
      */
     closeOnVerticalDrag: boolean;
+    /**
+     * Window margin around PhotoSwipe viewport (in pixels).
+     */
+    margin?: Margin | undefined;
+    /**
+     * The option is checked frequently, so make sure it's performant. Overrides margin option if defined.
+     */
+    marginFn?: ((viewportSize: Point) => Margin) | undefined;
     /**
      * Slide area padding (in pixels).
      */
@@ -263,6 +277,12 @@ declare class PhotoSwipe extends PhotoSwipeBase {
      * @type {Point}
      */
     viewportSize: Point;
+    /**
+     * Position of PhotoSwipe viewport relative to the window
+     *
+     * @type {Point}
+     */
+    viewportOffset: Point;
     /**
      * background (backdrop) opacity
      */

@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe Lightbox 5.4.4 - https://photoswipe.com
+  * PhotoSwipe Lightbox 5.5.0 - https://photoswipe.com
   * (c) 2026 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -1121,7 +1121,7 @@ class Content {
  * @param {PhotoSwipeBase} pswp
  * @returns {Point}
  */
-function getViewportSize(options, pswp) {
+function getViewportSizeWithoutMargins(options, pswp) {
   if (options.getViewportSizeFn) {
     const newViewportSize = options.getViewportSizeFn(options, pswp);
 
@@ -1137,6 +1137,24 @@ function getViewportSize(options, pswp) {
     //
     // document.documentElement.clientHeight - doesn't seem to work well
     y: window.innerHeight
+  };
+}
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {PhotoSwipeBase} pswp
+ * @returns {Point}
+ */
+
+
+function getViewportSize(options, pswp) {
+  const viewportSize = getViewportSizeWithoutMargins(options, pswp);
+  const left = parseMarginOption('left', options, viewportSize);
+  const top = parseMarginOption('top', options, viewportSize);
+  const right = parseMarginOption('right', options, viewportSize);
+  const bottom = parseMarginOption('bottom', options, viewportSize);
+  return {
+    x: Math.max(0, viewportSize.x - left - right),
+    y: Math.max(0, viewportSize.y - top - bottom)
   };
 }
 /**
@@ -1192,6 +1210,58 @@ function parsePaddingOption(prop, options, viewportSize, itemData, index) {
   }
 
   return Number(paddingValue) || 0;
+}
+/**
+ * Parses margin option.
+ * Supported formats:
+ *
+ * // Object
+ * margin: {
+ *  top: 0,
+ *  bottom: 0,
+ *  left: 0,
+ *  right: 0
+ * }
+ *
+ * // A function that returns the object
+ * marginFn: (viewportSize) => {
+ *  return {
+ *    top: 0,
+ *    bottom: 0,
+ *    left: 0,
+ *    right: 0
+ *  };
+ * }
+ *
+ * // Legacy variant
+ * marginLeft: 0,
+ * marginRight: 0,
+ * marginTop: 0,
+ * marginBottom: 0,
+ *
+ * @param {'left' | 'top' | 'bottom' | 'right'} prop
+ * @param {PhotoSwipeOptions} options PhotoSwipe options
+ * @param {Point} viewportSize PhotoSwipe viewport size before margins, for example: { x:800, y:600 }
+ * @returns {number}
+ */
+
+function parseMarginOption(prop, options, viewportSize) {
+  let marginValue = 0;
+
+  if (options.marginFn) {
+    marginValue = options.marginFn(viewportSize)[prop];
+  } else if (options.margin) {
+    marginValue = options.margin[prop];
+  } else {
+    const legacyPropName = 'margin' + prop[0].toUpperCase() + prop.slice(1); // @ts-expect-error
+
+    if (options[legacyPropName]) {
+      // @ts-expect-error
+      marginValue = options[legacyPropName];
+    }
+  }
+
+  return Number(marginValue) || 0;
 }
 /**
  * @param {PhotoSwipeOptions} options

@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.4.4 - https://photoswipe.com
+  * PhotoSwipe 5.5.0 - https://photoswipe.com
   * (c) 2026 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -362,7 +362,7 @@ class DOMEvents {
  * @param {PhotoSwipeBase} pswp
  * @returns {Point}
  */
-function getViewportSize(options, pswp) {
+function getViewportSizeWithoutMargins(options, pswp) {
   if (options.getViewportSizeFn) {
     const newViewportSize = options.getViewportSizeFn(options, pswp);
 
@@ -378,6 +378,37 @@ function getViewportSize(options, pswp) {
     //
     // document.documentElement.clientHeight - doesn't seem to work well
     y: window.innerHeight
+  };
+}
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {PhotoSwipeBase} pswp
+ * @returns {Point}
+ */
+
+
+function getViewportSize(options, pswp) {
+  const viewportSize = getViewportSizeWithoutMargins(options, pswp);
+  const left = parseMarginOption('left', options, viewportSize);
+  const top = parseMarginOption('top', options, viewportSize);
+  const right = parseMarginOption('right', options, viewportSize);
+  const bottom = parseMarginOption('bottom', options, viewportSize);
+  return {
+    x: Math.max(0, viewportSize.x - left - right),
+    y: Math.max(0, viewportSize.y - top - bottom)
+  };
+}
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {PhotoSwipeBase} pswp
+ * @returns {Point}
+ */
+
+function getViewportOffset(options, pswp) {
+  const viewportSize = getViewportSizeWithoutMargins(options, pswp);
+  return {
+    x: parseMarginOption('left', options, viewportSize),
+    y: parseMarginOption('top', options, viewportSize)
   };
 }
 /**
@@ -433,6 +464,58 @@ function parsePaddingOption(prop, options, viewportSize, itemData, index) {
   }
 
   return Number(paddingValue) || 0;
+}
+/**
+ * Parses margin option.
+ * Supported formats:
+ *
+ * // Object
+ * margin: {
+ *  top: 0,
+ *  bottom: 0,
+ *  left: 0,
+ *  right: 0
+ * }
+ *
+ * // A function that returns the object
+ * marginFn: (viewportSize) => {
+ *  return {
+ *    top: 0,
+ *    bottom: 0,
+ *    left: 0,
+ *    right: 0
+ *  };
+ * }
+ *
+ * // Legacy variant
+ * marginLeft: 0,
+ * marginRight: 0,
+ * marginTop: 0,
+ * marginBottom: 0,
+ *
+ * @param {'left' | 'top' | 'bottom' | 'right'} prop
+ * @param {PhotoSwipeOptions} options PhotoSwipe options
+ * @param {Point} viewportSize PhotoSwipe viewport size before margins, for example: { x:800, y:600 }
+ * @returns {number}
+ */
+
+function parseMarginOption(prop, options, viewportSize) {
+  let marginValue = 0;
+
+  if (options.marginFn) {
+    marginValue = options.marginFn(viewportSize)[prop];
+  } else if (options.margin) {
+    marginValue = options.margin[prop];
+  } else {
+    const legacyPropName = 'margin' + prop[0].toUpperCase() + prop.slice(1); // @ts-expect-error
+
+    if (options[legacyPropName]) {
+      // @ts-expect-error
+      marginValue = options[legacyPropName];
+    }
+  }
+
+  return Number(marginValue) || 0;
 }
 /**
  * @param {PhotoSwipeOptions} options
@@ -3740,8 +3823,8 @@ class ScrollWheel {
         zoomFactor = 2 ** zoomFactor;
         const destZoomLevel = currSlide.currZoomLevel * zoomFactor;
         currSlide.zoomTo(destZoomLevel, {
-          x: e.clientX,
-          y: e.clientY
+          x: e.clientX - this.pswp.viewportOffset.x,
+          y: e.clientY - this.pswp.viewportOffset.y
         });
       }
     } else {
@@ -4382,7 +4465,14 @@ function getThumbBounds(index, itemData, instance) {
     }
   }
 
-  return instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
+  thumbBounds = instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
+
+  if (thumbBounds) {
+    thumbBounds.x -= instance.viewportOffset.x;
+    thumbBounds.y -= instance.viewportOffset.y;
+  }
+
+  return thumbBounds;
 }
 
 /** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
@@ -6294,6 +6384,8 @@ class Opener {
 
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
 
+/** @typedef {{ top: number; bottom: number; left: number; right: number }} Margin */
+
 /** @typedef {SlideData[]} DataSourceArray */
 
 /** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
@@ -6347,6 +6439,12 @@ class Opener {
  *
  * @prop {boolean} closeOnVerticalDrag
  * Vertical drag gesture to close the PhotoSwipe.
+ *
+ * @prop {Margin} [margin]
+ * Window margin around PhotoSwipe viewport (in pixels).
+ *
+ * @prop {(viewportSize: Point) => Margin} [marginFn]
+ * The option is checked frequently, so make sure it's performant. Overrides margin option if defined.
  *
  * @prop {Padding} [padding]
  * Slide area padding (in pixels).
@@ -6551,6 +6649,16 @@ class PhotoSwipe extends PhotoSwipeBase {
       y: 0
     };
     /**
+     * Position of PhotoSwipe viewport relative to the window
+     *
+     * @type {Point}
+     */
+
+    this.viewportOffset = {
+      x: 0,
+      y: 0
+    };
+    /**
      * background (backdrop) opacity
      */
 
@@ -6643,8 +6751,9 @@ class PhotoSwipe extends PhotoSwipeBase {
 
 
     this.updateSize();
-    this.offset.x = window.pageXOffset;
-    this.offset.y = window.pageYOffset;
+
+    this._updatePageScrollOffset();
+
     this._initialItemData = this.getItemData(this.currIndex);
     this.dispatch('gettingData', {
       index: this.currIndex,
@@ -6927,6 +7036,14 @@ class PhotoSwipe extends PhotoSwipeBase {
     equalizePoints(this._prevViewportSize, newViewportSize);
     this.dispatch('beforeResize');
     equalizePoints(this.viewportSize, this._prevViewportSize);
+    equalizePoints(this.viewportOffset, getViewportOffset(this.options, this));
+
+    if (this.element) {
+      this.element.style.left = this.viewportOffset.x + 'px';
+      this.element.style.top = this.viewportOffset.y + 'px';
+      this.element.style.width = this.viewportSize.x + 'px';
+      this.element.style.height = this.viewportSize.y + 'px';
+    }
 
     this._updatePageScrollOffset();
 
@@ -7005,8 +7122,8 @@ class PhotoSwipe extends PhotoSwipeBase {
 
 
   setScrollOffset(x, y) {
-    this.offset.x = x;
-    this.offset.y = y;
+    this.offset.x = x + this.viewportOffset.x;
+    this.offset.y = y + this.viewportOffset.y;
     this.dispatch('updateScrollOffset');
   }
   /**

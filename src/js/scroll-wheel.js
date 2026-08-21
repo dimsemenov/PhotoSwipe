@@ -10,7 +10,7 @@ class ScrollWheel {
    */
   constructor(pswp) {
     this.pswp = pswp;
-    pswp.events.add(pswp.element, 'wheel', /** @type EventListener */(this._onWheel.bind(this)));
+    pswp.events.add(pswp.element, 'wheel', /** @type EventListener */ (this._onWheel.bind(this)));
   }
 
   /**
@@ -43,8 +43,8 @@ class ScrollWheel {
 
         const destZoomLevel = currSlide.currZoomLevel * zoomFactor;
         currSlide.zoomTo(destZoomLevel, {
-          x: e.clientX,
-          y: e.clientY
+          x: e.clientX - this.pswp.viewportOffset.x,
+          y: e.clientY - this.pswp.viewportOffset.y
         });
       }
     } else {
@@ -56,10 +56,7 @@ class ScrollWheel {
           deltaY *= 18;
         }
 
-        currSlide.panTo(
-          currSlide.pan.x - deltaX,
-          currSlide.pan.y - deltaY
-        );
+        currSlide.panTo(currSlide.pan.x - deltaX, currSlide.pan.y - deltaY);
       }
     }
   }

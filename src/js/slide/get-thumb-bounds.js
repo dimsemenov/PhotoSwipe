@@ -90,7 +90,8 @@ export function getThumbBounds(index, itemData, instance) {
   if (element && instance.options.thumbSelector !== false) {
     const thumbSelector = instance.options.thumbSelector || 'img';
     thumbnail = element.matches(thumbSelector)
-      ? element : /** @type {HTMLElement | null} */ (element.querySelector(thumbSelector));
+      ? element
+      : /** @type {HTMLElement | null} */ (element.querySelector(thumbSelector));
   }
 
   thumbnail = instance.applyFilters('thumbEl', thumbnail, itemData, index);
@@ -107,5 +108,12 @@ export function getThumbBounds(index, itemData, instance) {
     }
   }
 
-  return instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
+  thumbBounds = instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
+
+  if (thumbBounds) {
+    thumbBounds.x -= instance.viewportOffset.x;
+    thumbBounds.y -= instance.viewportOffset.y;
+  }
+
+  return thumbBounds;
 }

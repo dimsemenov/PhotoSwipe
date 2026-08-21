@@ -1,9 +1,4 @@
-import {
-  createElement,
-  equalizePoints,
-  pointsEqual,
-  clamp,
-} from './util/util.js';
+import { createElement, equalizePoints, pointsEqual, clamp } from './util/util.js';
 
 import DOMEvents from './util/dom-events.js';
 import Slide from './slide/slide.js';
@@ -14,7 +9,7 @@ import Keyboard from './keyboard.js';
 import Animations from './util/animations.js';
 import ScrollWheel from './scroll-wheel.js';
 import UI from './ui/ui.js';
-import { getViewportSize } from './util/viewport-size.js';
+import { getViewportSize, getViewportOffset } from './util/viewport-size.js';
 import { getThumbBounds } from './slide/get-thumb-bounds.js';
 import PhotoSwipeBase from './core/base.js';
 import Opener from './opener.js';
@@ -43,6 +38,7 @@ import ContentLoader from './slide/loader.js';
 
 /** @typedef {{ x: number; y: number; id?: string | number }} Point */
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
+/** @typedef {{ top: number; bottom: number; left: number; right: number }} Margin */
 /** @typedef {SlideData[]} DataSourceArray */
 /** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
 /** @typedef {DataSourceArray | DataSourceObject} DataSource */
@@ -89,6 +85,12 @@ import ContentLoader from './slide/loader.js';
  *
  * @prop {boolean} closeOnVerticalDrag
  * Vertical drag gesture to close the PhotoSwipe.
+ *
+ * @prop {Margin} [margin]
+ * Window margin around PhotoSwipe viewport (in pixels).
+ *
+ * @prop {(viewportSize: Point) => Margin} [marginFn]
+ * The option is checked frequently, so make sure it's performant. Overrides margin option if defined.
  *
  * @prop {Padding} [padding]
  * Slide area padding (in pixels).
@@ -286,6 +288,13 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.viewportSize = { x: 0, y: 0 };
 
     /**
+     * Position of PhotoSwipe viewport relative to the window
+     *
+     * @type {Point}
+     */
+    this.viewportOffset = { x: 0, y: 0 };
+
+    /**
      * background (backdrop) opacity
      */
     this.bgOpacity = 1;
@@ -357,9 +366,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.scrollWheel = new ScrollWheel(this);
 
     // sanitize index
-    if (Number.isNaN(this.currIndex)
-        || this.currIndex < 0
-        || this.currIndex >= this.getNumItems()) {
+    if (Number.isNaN(this.currIndex) || this.currIndex < 0 || this.currIndex >= this.getNumItems()) {
       this.currIndex = 0;
     }
 
@@ -371,8 +378,7 @@ class PhotoSwipe extends PhotoSwipeBase {
     // causes forced synchronous layout
     this.updateSize();
 
-    this.offset.x = window.pageXOffset;
-    this.offset.y = window.pageYOffset;
+    this._updatePageScrollOffset();
 
     this._initialItemData = this.getItemData(this.currIndex);
     this.dispatch('gettingData', {
@@ -454,9 +460,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @param {number} index New index
    */
   goTo(index) {
-    this.mainScroll.moveIndexBy(
-      this.getLoopedIndex(index) - this.potentialIndex
-    );
+    this.mainScroll.moveIndexBy(this.getLoopedIndex(index) - this.potentialIndex);
   }
 
   /**
@@ -566,7 +570,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     this.dispatch('change');
   }
 
-
   /**
    * Set slide content
    *
@@ -649,6 +652,15 @@ class PhotoSwipe extends PhotoSwipeBase {
 
     equalizePoints(this.viewportSize, this._prevViewportSize);
 
+    equalizePoints(this.viewportOffset, getViewportOffset(this.options, this));
+
+    if (this.element) {
+      this.element.style.left = this.viewportOffset.x + 'px';
+      this.element.style.top = this.viewportOffset.y + 'px';
+      this.element.style.width = this.viewportSize.x + 'px';
+      this.element.style.height = this.viewportSize.y + 'px';
+    }
+
     this._updatePageScrollOffset();
 
     this.dispatch('viewportSize');
@@ -720,8 +732,8 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @param {number} y
    */
   setScrollOffset(x, y) {
-    this.offset.x = x;
-    this.offset.y = y;
+    this.offset.x = x + this.viewportOffset.x;
+    this.offset.y = y + this.viewportOffset.y;
     this.dispatch('updateScrollOffset');
   }
 
@@ -760,7 +772,6 @@ class PhotoSwipe extends PhotoSwipeBase {
     (this.options.appendToEl || document.body).appendChild(this.element);
   }
 
-
   /**
    * Get position and dimensions of small thumbnail
    *   {x:,y:,w:}
@@ -770,11 +781,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @returns {Bounds | undefined}
    */
   getThumbBounds() {
-    return getThumbBounds(
-      this.currIndex,
-      this.currSlide ? this.currSlide.data : this._initialItemData,
-      this
-    );
+    return getThumbBounds(this.currIndex, this.currSlide ? this.currSlide.data : this._initialItemData, this);
   }
 
   /**
@@ -782,7 +789,7 @@ class PhotoSwipe extends PhotoSwipeBase {
    * @returns Boolean
    */
   canLoop() {
-    return (this.options.loop && this.getNumItems() > 2);
+    return this.options.loop && this.getNumItems() > 2;
   }
 
   /**
