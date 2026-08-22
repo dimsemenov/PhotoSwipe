@@ -1,7 +1,3 @@
-/** @typedef {import('../photoswipe.js').PhotoSwipeOptions} PhotoSwipeOptions */
-/** @typedef {import('../core/base.js').default} PhotoSwipeBase */
-/** @typedef {import('../photoswipe.js').Point} Point */
-/** @typedef {import('../slide/slide.js').SlideData} SlideData */
 /**
  * @param {PhotoSwipeOptions} options
  * @param {PhotoSwipeBase} pswp
@@ -49,13 +45,7 @@ export function getViewportOffset(options: PhotoSwipeOptions, pswp: PhotoSwipeBa
  * @param {number} index Slide index
  * @returns {number}
  */
-export function parsePaddingOption(
-  prop: 'left' | 'top' | 'bottom' | 'right',
-  options: PhotoSwipeOptions,
-  viewportSize: Point,
-  itemData: SlideData,
-  index: number
-): number;
+export function parsePaddingOption(prop: 'left' | 'top' | 'bottom' | 'right', options: PhotoSwipeOptions, viewportSize: Point, itemData: SlideData, index: number): number;
 /**
  * Parses margin option.
  * Supported formats:
@@ -89,11 +79,7 @@ export function parsePaddingOption(
  * @param {Point} viewportSize PhotoSwipe viewport size before margins, for example: { x:800, y:600 }
  * @returns {number}
  */
-export function parseMarginOption(
-  prop: 'left' | 'top' | 'bottom' | 'right',
-  options: PhotoSwipeOptions,
-  viewportSize: Point
-): number;
+export function parseMarginOption(prop: 'left' | 'top' | 'bottom' | 'right', options: PhotoSwipeOptions, viewportSize: Point): number;
 /**
  * @param {PhotoSwipeOptions} options
  * @param {Point} viewportSize
@@ -101,12 +87,7 @@ export function parseMarginOption(
  * @param {number} index
  * @returns {Point}
  */
-export function getPanAreaSize(
-  options: PhotoSwipeOptions,
-  viewportSize: Point,
-  itemData: SlideData,
-  index: number
-): Point;
+export function getPanAreaSize(options: PhotoSwipeOptions, viewportSize: Point, itemData: SlideData, index: number): Point;
 export type PhotoSwipeOptions = import('../photoswipe.js').PhotoSwipeOptions;
 export type PhotoSwipeBase = import('../core/base.js').default;
 export type Point = import('../photoswipe.js').Point;

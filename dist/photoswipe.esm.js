@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.5.0 - https://photoswipe.com
+  * PhotoSwipe 5.5.1 - https://photoswipe.com
   * (c) 2026 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -1312,7 +1312,8 @@ class Slide {
 /** @typedef {import('./gestures.js').default} Gestures */
 
 const PAN_END_FRICTION = 0.35;
-const VERTICAL_DRAG_FRICTION = 0.6; // 1 corresponds to the third of viewport height
+const VERTICAL_DRAG_FRICTION = 0.6;
+const VERTICAL_EDGE_TOLERANCE = 1; // 1 corresponds to the third of viewport height
 
 const MIN_RATIO_TO_CLOSE = 0.4; // Minimum speed required to navigate
 // to next or previous slide
@@ -1345,13 +1346,22 @@ class DragHandler {
       x: 0,
       y: 0
     };
+    /** @private */
+
+    this._isVerticalDragCloseGesture = false;
+    /** @private */
+
+    this._verticalDragCloseOriginY = 0;
   }
 
   start() {
+    this._isVerticalDragCloseGesture = false;
+
     if (this.pswp.currSlide) {
       equalizePoints(this.startPan, this.pswp.currSlide.pan);
     }
 
+    this._verticalDragCloseOriginY = this.startPan.y;
     this.pswp.animations.stopAll();
   }
 
@@ -1364,8 +1374,16 @@ class DragHandler {
     const {
       currSlide
     } = this.pswp;
+    const canStartVerticalDragClose = dragAxis === 'y' && this.pswp.options.closeOnVerticalDrag && currSlide && currSlide.currZoomLevel <= this._getVerticalDragCloseZoomLevel(currSlide) && !this.gestures.isMultitouch;
 
-    if (dragAxis === 'y' && this.pswp.options.closeOnVerticalDrag && currSlide && currSlide.currZoomLevel <= currSlide.zoomLevels.fit && !this.gestures.isMultitouch) {
+    if (canStartVerticalDragClose && currSlide && !this._isVerticalDragCloseGesture) {
+      if (this._canUseVerticalDragClose(currSlide, p1.y - prevP1.y)) {
+        this._isVerticalDragCloseGesture = true;
+        this._verticalDragCloseOriginY = this.startPan.y;
+      }
+    }
+
+    if (canStartVerticalDragClose && currSlide && this._isVerticalDragCloseGesture) {
       // Handle vertical drag to close
       const panY = currSlide.pan.y + (p1.y - prevP1.y);
 
@@ -1374,7 +1392,7 @@ class DragHandler {
       }).defaultPrevented) {
         this._setPanWithFriction('y', panY, VERTICAL_DRAG_FRICTION);
 
-        const bgOpacity = 1 - Math.abs(this._getVerticalDragRatio(currSlide.pan.y));
+        const bgOpacity = 1 - Math.abs(this._getVerticalDragRatio(currSlide.pan.y, this._verticalDragCloseOriginY));
         this.pswp.applyBgOpacity(bgOpacity);
         currSlide.applyCurrentZoomPan();
       }
@@ -1444,6 +1462,8 @@ class DragHandler {
 
       this._finishPanGestureForAxis('y');
     }
+
+    this._isVerticalDragCloseGesture = false;
   }
   /**
    * @private
@@ -1477,9 +1497,13 @@ class DragHandler {
     const projectedPosition = panPos + project(velocity[axis], decelerationRate);
 
     if (restoreBgOpacity) {
-      const vDragRatio = this._getVerticalDragRatio(panPos);
+      var _this$pswp$currSlide$, _this$pswp$currSlide;
 
-      const projectedVDragRatio = this._getVerticalDragRatio(projectedPosition); // If we are above and moving upwards,
+      const dragRatioOriginY = this._isVerticalDragCloseGesture ? this._verticalDragCloseOriginY : (_this$pswp$currSlide$ = (_this$pswp$currSlide = this.pswp.currSlide) === null || _this$pswp$currSlide === void 0 ? void 0 : _this$pswp$currSlide.bounds.center.y) !== null && _this$pswp$currSlide$ !== void 0 ? _this$pswp$currSlide$ : 0;
+
+      const vDragRatio = this._getVerticalDragRatio(panPos, dragRatioOriginY);
+
+      const projectedVDragRatio = this._getVerticalDragRatio(projectedPosition, dragRatioOriginY); // If we are above and moving upwards,
       // or if we are below and moving downwards
 
 
@@ -1643,14 +1667,84 @@ class DragHandler {
    *
    * @private
    * @param {number} panY The current pan Y position.
+   * @param {number} [originY] Origin pan Y position. Defaults to slide center.
    * @returns {number}
    */
 
 
-  _getVerticalDragRatio(panY) {
-    var _this$pswp$currSlide$, _this$pswp$currSlide;
+  _getVerticalDragRatio(panY, originY) {
+    var _ref, _this$pswp$currSlide2;
 
-    return (panY - ((_this$pswp$currSlide$ = (_this$pswp$currSlide = this.pswp.currSlide) === null || _this$pswp$currSlide === void 0 ? void 0 : _this$pswp$currSlide.bounds.center.y) !== null && _this$pswp$currSlide$ !== void 0 ? _this$pswp$currSlide$ : 0)) / (this.pswp.viewportSize.y / 3);
+    const effectiveOriginY = (_ref = originY !== null && originY !== void 0 ? originY : (_this$pswp$currSlide2 = this.pswp.currSlide) === null || _this$pswp$currSlide2 === void 0 ? void 0 : _this$pswp$currSlide2.bounds.center.y) !== null && _ref !== void 0 ? _ref : 0;
+    return (panY - effectiveOriginY) / (this.pswp.viewportSize.y / 3);
+  }
+  /**
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @returns {number}
+   */
+
+
+  _getVerticalDragCloseZoomLevel(currSlide) {
+    const optionValue = this.pswp.options.verticalDragCloseZoomLevel;
+
+    if (optionValue === 'fill') {
+      return currSlide.zoomLevels.fill;
+    }
+
+    if (optionValue === 'initial') {
+      return currSlide.zoomLevels.initial;
+    }
+
+    if (typeof optionValue === 'number') {
+      return optionValue;
+    }
+
+    return currSlide.zoomLevels.fit;
+  }
+  /**
+   * Vertical drag-close is allowed only when gesture starts at a vertical edge
+   * (top or bottom fully visible) and continues dragging outward from that edge.
+   *
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @param {number} deltaY
+   * @returns {boolean}
+   */
+
+
+  _canStartVerticalDragClose(currSlide, deltaY) {
+    const {
+      bounds
+    } = currSlide; // Close-drag should be available only for vertically pannable slides
+    // (for example when image is in fill-like state).
+
+    if (bounds.min.y === bounds.max.y) {
+      return false;
+    }
+
+    const startedAtTopEdge = this.startPan.y >= bounds.min.y - VERTICAL_EDGE_TOLERANCE;
+    const startedAtBottomEdge = this.startPan.y <= bounds.max.y + VERTICAL_EDGE_TOLERANCE;
+    return startedAtTopEdge && deltaY > 0 || startedAtBottomEdge && deltaY < 0;
+  }
+  /**
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @param {number} deltaY
+   * @returns {boolean}
+   */
+
+
+  _canUseVerticalDragClose(currSlide, deltaY) {
+    if (this.pswp.options.verticalDragCloseZoomLevel === 'fill') {
+      if (currSlide.currZoomLevel <= currSlide.zoomLevels.fit) {
+        return true;
+      }
+
+      return this._canStartVerticalDragClose(currSlide, deltaY);
+    }
+
+    return true;
   }
   /**
    * Set pan position of the current slide.
@@ -6440,6 +6534,9 @@ class Opener {
  * @prop {boolean} closeOnVerticalDrag
  * Vertical drag gesture to close the PhotoSwipe.
  *
+ * @prop {'fit' | 'fill' | 'initial' | number} [verticalDragCloseZoomLevel]
+ * Maximum zoom level at which vertical drag-to-close is allowed.
+ *
  * @prop {Margin} [margin]
  * Window margin around PhotoSwipe viewport (in pixels).
  *
@@ -6587,6 +6684,7 @@ const defaultOptions = {
   loop: true,
   pinchToClose: true,
   closeOnVerticalDrag: true,
+  verticalDragCloseZoomLevel: 'fit',
   hideAnimationDuration: 333,
   showAnimationDuration: 333,
   zoomAnimationDuration: 333,

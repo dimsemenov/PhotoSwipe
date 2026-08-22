@@ -13,6 +13,10 @@ declare class DragHandler {
     pswp: import("../photoswipe.js").default;
     /** @type {Point} */
     startPan: Point;
+    /** @private */
+    private _isVerticalDragCloseGesture;
+    /** @private */
+    private _verticalDragCloseOriginY;
     start(): void;
     change(): void;
     end(): void;
@@ -41,9 +45,33 @@ declare class DragHandler {
      *
      * @private
      * @param {number} panY The current pan Y position.
+     * @param {number} [originY] Origin pan Y position. Defaults to slide center.
      * @returns {number}
      */
     private _getVerticalDragRatio;
+    /**
+     * @private
+     * @param {import('../slide/slide.js').default} currSlide
+     * @returns {number}
+     */
+    private _getVerticalDragCloseZoomLevel;
+    /**
+     * Vertical drag-close is allowed only when gesture starts at a vertical edge
+     * (top or bottom fully visible) and continues dragging outward from that edge.
+     *
+     * @private
+     * @param {import('../slide/slide.js').default} currSlide
+     * @param {number} deltaY
+     * @returns {boolean}
+     */
+    private _canStartVerticalDragClose;
+    /**
+     * @private
+     * @param {import('../slide/slide.js').default} currSlide
+     * @param {number} deltaY
+     * @returns {boolean}
+     */
+    private _canUseVerticalDragClose;
     /**
      * Set pan position of the current slide.
      * Apply friction if the position is beyond the pan bounds,
