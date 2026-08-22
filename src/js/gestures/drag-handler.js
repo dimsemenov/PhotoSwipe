@@ -1,12 +1,11 @@
-import {
-  equalizePoints, roundPoint, clamp
-} from '../util/util.js';
+import { equalizePoints, roundPoint, clamp } from '../util/util.js';
 
 /** @typedef {import('../photoswipe.js').Point} Point */
 /** @typedef {import('./gestures.js').default} Gestures */
 
 const PAN_END_FRICTION = 0.35;
 const VERTICAL_DRAG_FRICTION = 0.6;
+const VERTICAL_EDGE_TOLERANCE = 1;
 
 // 1 corresponds to the third of viewport height
 const MIN_RATIO_TO_CLOSE = 0.4;
@@ -21,7 +20,7 @@ const MIN_NEXT_SLIDE_SPEED = 0.5;
  * @returns {number}
  */
 function project(initialVelocity, decelerationRate) {
-  return initialVelocity * decelerationRate / (1 - decelerationRate);
+  return (initialVelocity * decelerationRate) / (1 - decelerationRate);
 }
 
 /**
@@ -49,10 +48,14 @@ class DragHandler {
     const { p1, prevP1, dragAxis } = this.gestures;
     const { currSlide } = this.pswp;
 
-    if (dragAxis === 'y'
-        && this.pswp.options.closeOnVerticalDrag
-        && (currSlide && currSlide.currZoomLevel <= currSlide.zoomLevels.fit)
-        && !this.gestures.isMultitouch) {
+    if (
+      dragAxis === 'y' &&
+      this.pswp.options.closeOnVerticalDrag &&
+      currSlide &&
+      currSlide.currZoomLevel <= this._getVerticalDragCloseZoomLevel(currSlide) &&
+      this._canUseVerticalDragClose(currSlide, p1.y - prevP1.y) &&
+      !this.gestures.isMultitouch
+    ) {
       // Handle vertical drag to close
       const panY = currSlide.pan.y + (p1.y - prevP1.y);
       if (!this.pswp.dispatch('verticalDrag', { panY }).defaultPrevented) {
@@ -90,7 +93,7 @@ class DragHandler {
       // 0 - slide is not visible at all,
       // 0.5 - half of the slide is visible
       // 1 - slide is fully visible
-      const currentSlideVisibilityRatio = (mainScrollShiftDiff / this.pswp.viewportSize.x);
+      const currentSlideVisibilityRatio = mainScrollShiftDiff / this.pswp.viewportSize.x;
 
       // Go next slide.
       //
@@ -100,13 +103,17 @@ class DragHandler {
       // - or if we see less than 50% of the current slide
       //   and velocity is close to 0
       //
-      if ((velocity.x < -MIN_NEXT_SLIDE_SPEED && currentSlideVisibilityRatio < 0)
-          || (velocity.x < 0.1 && currentSlideVisibilityRatio < -0.5)) {
+      if (
+        (velocity.x < -MIN_NEXT_SLIDE_SPEED && currentSlideVisibilityRatio < 0) ||
+        (velocity.x < 0.1 && currentSlideVisibilityRatio < -0.5)
+      ) {
         // Go to next slide
         indexDiff = 1;
         velocity.x = Math.min(velocity.x, 0);
-      } else if ((velocity.x > MIN_NEXT_SLIDE_SPEED && currentSlideVisibilityRatio > 0)
-          || (velocity.x > -0.1 && currentSlideVisibilityRatio > 0.5)) {
+      } else if (
+        (velocity.x > MIN_NEXT_SLIDE_SPEED && currentSlideVisibilityRatio > 0) ||
+        (velocity.x > -0.1 && currentSlideVisibilityRatio > 0.5)
+      ) {
         // Go to prev slide
         indexDiff = -1;
         velocity.x = Math.max(velocity.x, 0);
@@ -116,8 +123,7 @@ class DragHandler {
     }
 
     // Restore zoom level
-    if ((currSlide && currSlide.currZoomLevel > currSlide.zoomLevels.max)
-        || this.gestures.isMultitouch) {
+    if ((currSlide && currSlide.currZoomLevel > currSlide.zoomLevels.max) || this.gestures.isMultitouch) {
       this.gestures.zoomLevels.correctZoomPan(true);
     } else {
       // we run two animations instead of one,
@@ -143,7 +149,7 @@ class DragHandler {
 
     const { pan, bounds } = currSlide;
     const panPos = pan[axis];
-    const restoreBgOpacity = (this.pswp.bgOpacity < 1 && axis === 'y');
+    const restoreBgOpacity = this.pswp.bgOpacity < 1 && axis === 'y';
 
     // 0.995 means - scroll view loses 0.5% of its velocity per millisecond
     // Increasing this number will reduce travel distance
@@ -158,8 +164,10 @@ class DragHandler {
 
       // If we are above and moving upwards,
       // or if we are below and moving downwards
-      if ((vDragRatio < 0 && projectedVDragRatio < -MIN_RATIO_TO_CLOSE)
-          || (vDragRatio > 0 && projectedVDragRatio > MIN_RATIO_TO_CLOSE)) {
+      if (
+        (vDragRatio < 0 && projectedVDragRatio < -MIN_RATIO_TO_CLOSE) ||
+        (vDragRatio > 0 && projectedVDragRatio > MIN_RATIO_TO_CLOSE)
+      ) {
         this.pswp.close();
         return;
       }
@@ -175,7 +183,7 @@ class DragHandler {
     }
 
     // Overshoot if the final position is out of pan bounds
-    const dampingRatio = (correctedPanPosition === projectedPosition) ? 1 : 0.82;
+    const dampingRatio = correctedPanPosition === projectedPosition ? 1 : 0.82;
 
     const initialBgOpacity = this.pswp.bgOpacity;
     const totalPanDist = correctedPanPosition - panPos;
@@ -196,16 +204,12 @@ class DragHandler {
           // We clamp opacity to keep it between 0 and 1.
           // As progress ratio can be larger than 1 due to overshoot,
           // and we do not want to bounce opacity.
-          this.pswp.applyBgOpacity(clamp(
-            initialBgOpacity + (1 - initialBgOpacity) * animationProgressRatio,
-            0,
-            1
-          ));
+          this.pswp.applyBgOpacity(clamp(initialBgOpacity + (1 - initialBgOpacity) * animationProgressRatio, 0, 1));
         }
 
         pan[axis] = Math.floor(pos);
         currSlide.applyCurrentZoomPan();
-      },
+      }
     });
   }
 
@@ -222,7 +226,7 @@ class DragHandler {
   _panOrMoveMainScroll(axis) {
     const { p1, dragAxis, prevP1, isMultitouch } = this.gestures;
     const { currSlide, mainScroll } = this.pswp;
-    const delta = (p1[axis] - prevP1[axis]);
+    const delta = p1[axis] - prevP1[axis];
     const newMainScrollX = mainScroll.x + delta;
 
     if (!delta || !currSlide) {
@@ -238,10 +242,7 @@ class DragHandler {
     const { bounds } = currSlide;
     const newPan = currSlide.pan[axis] + delta;
 
-    if (this.pswp.options.allowPanToNext
-        && dragAxis === 'x'
-        && axis === 'x'
-        && !isMultitouch) {
+    if (this.pswp.options.allowPanToNext && dragAxis === 'x' && axis === 'x' && !isMultitouch) {
       const currSlideMainScrollX = mainScroll.getCurrSlideX();
 
       // Position of the main scroll relative to the viewport
@@ -256,7 +257,7 @@ class DragHandler {
         // Wether the image was at minimum pan position (or less)
         // when this drag gesture started.
         // Minimum pan position refers to the left edge of the image.
-        const wasAtMinPanPosition = (bounds.min[axis] <= this.startPan[axis]);
+        const wasAtMinPanPosition = bounds.min[axis] <= this.startPan[axis];
 
         if (wasAtMinPanPosition) {
           mainScroll.moveTo(newMainScrollX, true);
@@ -269,7 +270,7 @@ class DragHandler {
         // Paning from right to left, beyond the right edge
 
         // Maximum pan position refers to the right edge of the image.
-        const wasAtMaxPanPosition = (this.startPan[axis] <= bounds.max[axis]);
+        const wasAtMaxPanPosition = this.startPan[axis] <= bounds.max[axis];
 
         if (wasAtMaxPanPosition) {
           mainScroll.moveTo(newMainScrollX, true);
@@ -325,6 +326,71 @@ class DragHandler {
    */
   _getVerticalDragRatio(panY) {
     return (panY - (this.pswp.currSlide?.bounds.center.y ?? 0)) / (this.pswp.viewportSize.y / 3);
+  }
+
+  /**
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @returns {number}
+   */
+  _getVerticalDragCloseZoomLevel(currSlide) {
+    const optionValue = this.pswp.options.verticalDragCloseZoomLevel;
+
+    if (optionValue === 'fill') {
+      return currSlide.zoomLevels.fill;
+    }
+
+    if (optionValue === 'initial') {
+      return currSlide.zoomLevels.initial;
+    }
+
+    if (typeof optionValue === 'number') {
+      return optionValue;
+    }
+
+    return currSlide.zoomLevels.fit;
+  }
+
+  /**
+   * Vertical drag-close is allowed only when gesture starts at a vertical edge
+   * (top or bottom fully visible) and continues dragging outward from that edge.
+   *
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @param {number} deltaY
+   * @returns {boolean}
+   */
+  _canStartVerticalDragClose(currSlide, deltaY) {
+    const { bounds } = currSlide;
+
+    // Close-drag should be available only for vertically pannable slides
+    // (for example when image is in fill-like state).
+    if (bounds.min.y === bounds.max.y) {
+      return false;
+    }
+
+    const startedAtTopEdge = this.startPan.y >= bounds.min.y - VERTICAL_EDGE_TOLERANCE;
+    const startedAtBottomEdge = this.startPan.y <= bounds.max.y + VERTICAL_EDGE_TOLERANCE;
+
+    return (startedAtTopEdge && deltaY > 0) || (startedAtBottomEdge && deltaY < 0);
+  }
+
+  /**
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @param {number} deltaY
+   * @returns {boolean}
+   */
+  _canUseVerticalDragClose(currSlide, deltaY) {
+    if (this.pswp.options.verticalDragCloseZoomLevel === 'fill') {
+      if (currSlide.currZoomLevel <= currSlide.zoomLevels.fit) {
+        return true;
+      }
+
+      return this._canStartVerticalDragClose(currSlide, deltaY);
+    }
+
+    return true;
   }
 
   /**

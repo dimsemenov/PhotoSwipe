@@ -86,6 +86,9 @@ import ContentLoader from './slide/loader.js';
  * @prop {boolean} closeOnVerticalDrag
  * Vertical drag gesture to close the PhotoSwipe.
  *
+ * @prop {'fit' | 'fill' | 'initial' | number} [verticalDragCloseZoomLevel]
+ * Maximum zoom level at which vertical drag-to-close is allowed.
+ *
  * @prop {Margin} [margin]
  * Window margin around PhotoSwipe viewport (in pixels).
  *
@@ -232,6 +235,7 @@ const defaultOptions = {
   loop: true,
   pinchToClose: true,
   closeOnVerticalDrag: true,
+  verticalDragCloseZoomLevel: 'fit',
   hideAnimationDuration: 333,
   showAnimationDuration: 333,
   zoomAnimationDuration: 333,

@@ -187,6 +187,34 @@ lightbox.init();
 
 </PswpCodePreview>
 
+### verticalDragCloseZoomLevel
+
+String or Number, `'fit'`. Maximum zoom level at which vertical drag-to-close is allowed.
+
+Supported string values:
+
+- `'fit'` - allow close-drag only at fit zoom level or smaller.
+- `'fill'` - allow close-drag at fill zoom level or smaller (includes fit).
+- `'initial'` - allow close-drag at initial zoom level or smaller.
+
+You may also pass a custom numeric zoom level.
+
+<PswpCodePreview galleryID="close-on-vertical-drag-fill" numItems="4">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--close-on-vertical-drag-fill',
+  children: 'a',
+  initialZoomLevel: 'fill',
+  verticalDragCloseZoomLevel: 'fill',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
+});
+lightbox.init();
+```
+
+</PswpCodePreview>
+
 ### padding
 
 Object, `{ top: 0, bottom: 0, left: 0, right: 0 }`. Slide area padding (in pixels).
