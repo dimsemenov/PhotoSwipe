@@ -35,12 +35,20 @@ class DragHandler {
     this.pswp = gestures.pswp;
     /** @type {Point} */
     this.startPan = { x: 0, y: 0 };
+    /** @private */
+    this._isVerticalDragCloseGesture = false;
+    /** @private */
+    this._verticalDragCloseOriginY = 0;
   }
 
   start() {
+    this._isVerticalDragCloseGesture = false;
+
     if (this.pswp.currSlide) {
       equalizePoints(this.startPan, this.pswp.currSlide.pan);
     }
+
+    this._verticalDragCloseOriginY = this.startPan.y;
     this.pswp.animations.stopAll();
   }
 
@@ -48,19 +56,26 @@ class DragHandler {
     const { p1, prevP1, dragAxis } = this.gestures;
     const { currSlide } = this.pswp;
 
-    if (
+    const canStartVerticalDragClose =
       dragAxis === 'y' &&
       this.pswp.options.closeOnVerticalDrag &&
       currSlide &&
       currSlide.currZoomLevel <= this._getVerticalDragCloseZoomLevel(currSlide) &&
-      this._canUseVerticalDragClose(currSlide, p1.y - prevP1.y) &&
-      !this.gestures.isMultitouch
-    ) {
+      !this.gestures.isMultitouch;
+
+    if (canStartVerticalDragClose && currSlide && !this._isVerticalDragCloseGesture) {
+      if (this._canUseVerticalDragClose(currSlide, p1.y - prevP1.y)) {
+        this._isVerticalDragCloseGesture = true;
+        this._verticalDragCloseOriginY = this.startPan.y;
+      }
+    }
+
+    if (canStartVerticalDragClose && currSlide && this._isVerticalDragCloseGesture) {
       // Handle vertical drag to close
       const panY = currSlide.pan.y + (p1.y - prevP1.y);
       if (!this.pswp.dispatch('verticalDrag', { panY }).defaultPrevented) {
         this._setPanWithFriction('y', panY, VERTICAL_DRAG_FRICTION);
-        const bgOpacity = 1 - Math.abs(this._getVerticalDragRatio(currSlide.pan.y));
+        const bgOpacity = 1 - Math.abs(this._getVerticalDragRatio(currSlide.pan.y, this._verticalDragCloseOriginY));
         this.pswp.applyBgOpacity(bgOpacity);
         currSlide.applyCurrentZoomPan();
       }
@@ -133,6 +148,8 @@ class DragHandler {
       this._finishPanGestureForAxis('x');
       this._finishPanGestureForAxis('y');
     }
+
+    this._isVerticalDragCloseGesture = false;
   }
 
   /**
@@ -159,8 +176,11 @@ class DragHandler {
     const projectedPosition = panPos + project(velocity[axis], decelerationRate);
 
     if (restoreBgOpacity) {
-      const vDragRatio = this._getVerticalDragRatio(panPos);
-      const projectedVDragRatio = this._getVerticalDragRatio(projectedPosition);
+      const dragRatioOriginY = this._isVerticalDragCloseGesture
+        ? this._verticalDragCloseOriginY
+        : (this.pswp.currSlide?.bounds.center.y ?? 0);
+      const vDragRatio = this._getVerticalDragRatio(panPos, dragRatioOriginY);
+      const projectedVDragRatio = this._getVerticalDragRatio(projectedPosition, dragRatioOriginY);
 
       // If we are above and moving upwards,
       // or if we are below and moving downwards
@@ -322,10 +342,12 @@ class DragHandler {
    *
    * @private
    * @param {number} panY The current pan Y position.
+   * @param {number} [originY] Origin pan Y position. Defaults to slide center.
    * @returns {number}
    */
-  _getVerticalDragRatio(panY) {
-    return (panY - (this.pswp.currSlide?.bounds.center.y ?? 0)) / (this.pswp.viewportSize.y / 3);
+  _getVerticalDragRatio(panY, originY) {
+    const effectiveOriginY = originY ?? this.pswp.currSlide?.bounds.center.y ?? 0;
+    return (panY - effectiveOriginY) / (this.pswp.viewportSize.y / 3);
   }
 
   /**
