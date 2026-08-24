@@ -14,9 +14,11 @@ declare class DragHandler {
     /** @type {Point} */
     startPan: Point;
     /** @private */
-    private _isVerticalDragCloseGesture;
+    private _isDragCloseGesture;
     /** @private */
-    private _verticalDragCloseOriginY;
+    private _dragCloseOrigin;
+    /** @private */
+    private _dragCloseAxis;
     start(): void;
     change(): void;
     end(): void;
@@ -44,17 +46,18 @@ declare class DragHandler {
      * if position is shifted downwards - the ratio is positive.
      *
      * @private
-     * @param {number} panY The current pan Y position.
-     * @param {number} [originY] Origin pan Y position. Defaults to slide center.
+     * @param {number} panPos Current pan position along the axis.
+     * @param {'x' | 'y'} axis Axis to calculate the drag-close ratio for.
+     * @param {number} [originPos] Origin pan position. Defaults to slide center.
      * @returns {number}
      */
-    private _getVerticalDragRatio;
+    private _getDragCloseRatio;
     /**
      * @private
      * @param {import('../slide/slide.js').default} currSlide
      * @returns {number}
      */
-    private _getVerticalDragCloseZoomLevel;
+    private _getDragCloseZoomLevel;
     /**
      * Vertical drag-close is allowed only when gesture starts at a vertical edge
      * (top or bottom fully visible) and continues dragging outward from that edge.
@@ -68,10 +71,23 @@ declare class DragHandler {
     /**
      * @private
      * @param {import('../slide/slide.js').default} currSlide
-     * @param {number} deltaY
+     * @param {'x' | 'y'} axis
+     * @param {number} delta
      * @returns {boolean}
      */
-    private _canUseVerticalDragClose;
+    private _canUseDragClose;
+    /**
+     * @private
+     * @returns {boolean}
+     */
+    private _canUseHorizontalDragClose;
+    /**
+     * @private
+     * @param {import('../slide/slide.js').default} currSlide
+     * @param {number} deltaX
+     * @returns {boolean}
+     */
+    private _canStartHorizontalDragClose;
     /**
      * Set pan position of the current slide.
      * Apply friction if the position is beyond the pan bounds,

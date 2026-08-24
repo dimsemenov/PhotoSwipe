@@ -93,9 +93,9 @@ export type PreparedPhotoSwipeOptions = {
      */
     closeOnVerticalDrag: boolean;
     /**
-     * Maximum zoom level at which vertical drag-to-close is allowed.
+     * Maximum zoom level at which drag-to-close is allowed.
      */
-    verticalDragCloseZoomLevel?: number | "fit" | "fill" | "initial" | undefined;
+    dragCloseZoomLevel?: number | "fit" | "fill" | "initial" | undefined;
     /**
      * Window margin around PhotoSwipe viewport (in pixels).
      */
