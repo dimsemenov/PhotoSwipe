@@ -283,7 +283,7 @@ class Slide {
    * @param {Point} [centerPoint]
    * Transform origin center point, or false if viewport center should be used.
    * @param {number | false} [transitionDuration] Transition duration, may be set to 0.
-   * @param {boolean} [ignoreBounds] Minimum and maximum zoom levels will be ignored.
+   * @param {boolean} [ignoreBounds] Pan bounds and minimum/maximum zoom levels will be ignored.
    */
   zoomTo(destZoomLevel, centerPoint, transitionDuration, ignoreBounds) {
     const { pswp } = this;
@@ -314,8 +314,8 @@ class Slide {
     // }
 
     this.setZoomLevel(destZoomLevel);
-    this.pan.x = this.calculateZoomToPanOffset('x', centerPoint, prevZoomLevel);
-    this.pan.y = this.calculateZoomToPanOffset('y', centerPoint, prevZoomLevel);
+    this.pan.x = this.calculateZoomToPanOffset('x', centerPoint, prevZoomLevel, ignoreBounds);
+    this.pan.y = this.calculateZoomToPanOffset('y', centerPoint, prevZoomLevel, ignoreBounds);
     roundPoint(this.pan);
 
     const finishTransition = () => {
@@ -372,11 +372,12 @@ class Slide {
    * point based on which zoom is performed, usually refers to the current mouse position,
    * if false - viewport center will be used.
    * @param {number} [prevZoomLevel] Zoom level before new zoom was applied.
+   * @param {boolean} [ignoreBounds] Allow pan outside the bounds, preserving the zoom center point.
    * @returns {number}
    */
-  calculateZoomToPanOffset(axis, point, prevZoomLevel) {
+  calculateZoomToPanOffset(axis, point, prevZoomLevel, ignoreBounds) {
     const totalPanDistance = this.bounds.max[axis] - this.bounds.min[axis];
-    if (totalPanDistance === 0) {
+    if (!ignoreBounds && totalPanDistance === 0) {
       return this.bounds.center[axis];
     }
 
@@ -389,10 +390,8 @@ class Slide {
     }
 
     const zoomFactor = this.currZoomLevel / prevZoomLevel;
-    return this.bounds.correctPan(
-      axis,
-      (this.pan[axis] - point[axis]) * zoomFactor + point[axis]
-    );
+    const pan = (this.pan[axis] - point[axis]) * zoomFactor + point[axis];
+    return ignoreBounds ? pan : this.bounds.correctPan(axis, pan);
   }
 
   /**

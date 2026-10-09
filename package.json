@@ -46,7 +46,8 @@
     "copy-to-dist": "copyfiles -f demo-docs-website/static/photoswipe/* dist/ && copyfiles -f demo-docs-website/static/photoswipe/umd/* dist/umd/",
     "lint": "eslint src/js/**/*.js",
     "lint-auto-fix": "eslint src/js/**/*.js --fix",
-    "test": "npm run lint",
+    "test": "npm run lint && npm run test:zoom",
+    "test:zoom": "node tests/zoom-to.mjs",
     "tsc": "tsc"
   },
   "devDependencies": {

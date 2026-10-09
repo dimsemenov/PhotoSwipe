@@ -135,7 +135,7 @@ lightbox.on('beforeOpen', () => {
     1, // slide zoom level, 1 - original image size
     { x: 0, y: 0 }, // zoom center point
     2000, // transition duration, can be 0
-    false // wether pan/zoom bounds should be ignored
+    false // whether pan/zoom bounds should be ignored
   );
 
   // pan slide to
@@ -147,6 +147,13 @@ lightbox.on('beforeOpen', () => {
 ```
 
 
+The optional fourth argument of `zoomTo`, `ignoreBounds`, defaults to `false`.
+When `true`, both zoom-level limits and pan bounds are ignored for that call.
+The image stays anchored to the supplied zoom center point, even if this leaves
+background visible or the image is smaller than the viewport. If no center point
+is supplied, the viewport center is used. Coordinates are still rounded to pixels.
+This does not disable bounds for subsequent gestures, `panTo`, or `zoomTo` calls
+that omit the argument or pass `false`.
 
 ## Dynamically adding or removing slides
 
