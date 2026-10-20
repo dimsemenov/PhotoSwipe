@@ -136,6 +136,23 @@ lightbox.init();
 
 </PswpCodePreview>
 
+### Server-side cropped thumbnails
+
+If your thumbnail files have a different aspect ratio from the full images, use a fade transition and disable the image placeholder. The placeholder otherwise uses the thumbnail's aspect ratio and may extend beyond the full image while it loads. Disabling it replaces the thumbnail preview with a correctly sized solid-color placeholder.
+
+```js
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery',
+  children: 'a',
+  showHideAnimationType: 'fade',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
+});
+lightbox.addFilter('placeholderSrc', () => false);
+lightbox.init();
+```
+
+Keep `data-pswp-width` and `data-pswp-height` set to the dimensions of the full image. `data-cropped="true"` describes CSS cropping; it does not correct a thumbnail file with a different aspect ratio.
+
 ## Hiding elements that overlap thumbnails
 
 If you have some element that overlays thumbnail, you may want to fade it out when PhotoSwipe is opening, and fade it back in when PhotoSwipe is closed.

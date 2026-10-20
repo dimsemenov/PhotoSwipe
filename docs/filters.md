@@ -50,6 +50,8 @@ lightbox.addFilter('clickedIndex', (clickedIndex, e) => {
 
 Modify placeholder image source.
 
+The placeholder image should have the same aspect ratio as the full image. Return `false` to use a solid-color placeholder instead, for example with [server-side cropped thumbnails](/opening-or-closing-transition#server-side-cropped-thumbnails).
+
 ```js
 lightbox.addFilter('placeholderSrc', (placeholderSrc, content) => {
   return placeholderSrc;
