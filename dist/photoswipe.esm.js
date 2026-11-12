@@ -4804,9 +4804,16 @@ class Placeholder {
       // Use transform scale() to modify img placeholder size
       // (instead of changing width/height directly).
       // This helps with performance, specifically in iOS15 Safari.
-      setWidthHeight(this.element, 250, 'auto');
+      //
+      // Height must follow the *target* image box, not the thumbnail's
+      // intrinsic ratio. Cropped thumbs (e.g. 4:3) with a differently
+      // shaped full image (e.g. 3:2) used to be scaled by width only,
+      // so the placeholder overhung the slide and flickered on open.
+      const baseWidth = 250;
+      const baseHeight = width ? (baseWidth * height / width) : baseWidth;
+      setWidthHeight(this.element, baseWidth, baseHeight);
       this.element.style.transformOrigin = '0 0';
-      this.element.style.transform = toTransformString(0, 0, width / 250);
+      this.element.style.transform = toTransformString(0, 0, width / baseWidth);
     } else {
       setWidthHeight(this.element, width, height);
     }
