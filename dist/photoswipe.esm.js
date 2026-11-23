@@ -1,5 +1,5 @@
 /*!
-  * PhotoSwipe 5.5.2 - https://photoswipe.com
+  * PhotoSwipe 5.5.3 - https://photoswipe.com
   * (c) 2026 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
@@ -1378,7 +1378,7 @@ class DragHandler {
     const {
       currSlide
     } = this.pswp;
-    const dragCloseAxis = this._canUseHorizontalDragClose() && dragAxis === 'x' ? 'x' : dragAxis;
+    const dragCloseAxis = dragAxis === 'y' || dragAxis === 'x' && this._canUseHorizontalDragClose() ? dragAxis : null;
     const dragDelta = dragCloseAxis ? p1[dragCloseAxis] - prevP1[dragCloseAxis] : 0;
     const canStartVerticalDragClose = (dragCloseAxis === 'y' || dragCloseAxis === 'x') && this.pswp.options.closeOnVerticalDrag && currSlide && currSlide.currZoomLevel <= this._getDragCloseZoomLevel(currSlide) && !this.gestures.isMultitouch;
 

@@ -58,7 +58,10 @@ class DragHandler {
   change() {
     const { p1, prevP1, dragAxis } = this.gestures;
     const { currSlide } = this.pswp;
-    const dragCloseAxis = this._canUseHorizontalDragClose() && dragAxis === 'x' ? 'x' : dragAxis;
+    const dragCloseAxis = (dragAxis === 'y'
+      || (dragAxis === 'x' && this._canUseHorizontalDragClose()))
+      ? dragAxis
+      : null;
     const dragDelta = dragCloseAxis ? p1[dragCloseAxis] - prevP1[dragCloseAxis] : 0;
 
     const canStartVerticalDragClose =
