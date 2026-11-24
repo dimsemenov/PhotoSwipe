@@ -1,6 +1,6 @@
 /*!
-  * PhotoSwipe 5.4.4 - https://photoswipe.com
-  * (c) 2024 Dmytro Semenov
+  * PhotoSwipe 5.5.3 - https://photoswipe.com
+  * (c) 2026 Dmytro Semenov
   */
 /** @typedef {import('../photoswipe.js').Point} Point */
 
@@ -362,7 +362,7 @@ class DOMEvents {
  * @param {PhotoSwipeBase} pswp
  * @returns {Point}
  */
-function getViewportSize(options, pswp) {
+function getViewportSizeWithoutMargins(options, pswp) {
   if (options.getViewportSizeFn) {
     const newViewportSize = options.getViewportSizeFn(options, pswp);
 
@@ -378,6 +378,37 @@ function getViewportSize(options, pswp) {
     //
     // document.documentElement.clientHeight - doesn't seem to work well
     y: window.innerHeight
+  };
+}
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {PhotoSwipeBase} pswp
+ * @returns {Point}
+ */
+
+
+function getViewportSize(options, pswp) {
+  const viewportSize = getViewportSizeWithoutMargins(options, pswp);
+  const left = parseMarginOption('left', options, viewportSize);
+  const top = parseMarginOption('top', options, viewportSize);
+  const right = parseMarginOption('right', options, viewportSize);
+  const bottom = parseMarginOption('bottom', options, viewportSize);
+  return {
+    x: Math.max(0, viewportSize.x - left - right),
+    y: Math.max(0, viewportSize.y - top - bottom)
+  };
+}
+/**
+ * @param {PhotoSwipeOptions} options
+ * @param {PhotoSwipeBase} pswp
+ * @returns {Point}
+ */
+
+function getViewportOffset(options, pswp) {
+  const viewportSize = getViewportSizeWithoutMargins(options, pswp);
+  return {
+    x: parseMarginOption('left', options, viewportSize),
+    y: parseMarginOption('top', options, viewportSize)
   };
 }
 /**
@@ -433,6 +464,58 @@ function parsePaddingOption(prop, options, viewportSize, itemData, index) {
   }
 
   return Number(paddingValue) || 0;
+}
+/**
+ * Parses margin option.
+ * Supported formats:
+ *
+ * // Object
+ * margin: {
+ *  top: 0,
+ *  bottom: 0,
+ *  left: 0,
+ *  right: 0
+ * }
+ *
+ * // A function that returns the object
+ * marginFn: (viewportSize) => {
+ *  return {
+ *    top: 0,
+ *    bottom: 0,
+ *    left: 0,
+ *    right: 0
+ *  };
+ * }
+ *
+ * // Legacy variant
+ * marginLeft: 0,
+ * marginRight: 0,
+ * marginTop: 0,
+ * marginBottom: 0,
+ *
+ * @param {'left' | 'top' | 'bottom' | 'right'} prop
+ * @param {PhotoSwipeOptions} options PhotoSwipe options
+ * @param {Point} viewportSize PhotoSwipe viewport size before margins, for example: { x:800, y:600 }
+ * @returns {number}
+ */
+
+function parseMarginOption(prop, options, viewportSize) {
+  let marginValue = 0;
+
+  if (options.marginFn) {
+    marginValue = options.marginFn(viewportSize)[prop];
+  } else if (options.margin) {
+    marginValue = options.margin[prop];
+  } else {
+    const legacyPropName = 'margin' + prop[0].toUpperCase() + prop.slice(1); // @ts-expect-error
+
+    if (options[legacyPropName]) {
+      // @ts-expect-error
+      marginValue = options[legacyPropName];
+    }
+  }
+
+  return Number(marginValue) || 0;
 }
 /**
  * @param {PhotoSwipeOptions} options
@@ -1229,7 +1312,8 @@ class Slide {
 /** @typedef {import('./gestures.js').default} Gestures */
 
 const PAN_END_FRICTION = 0.35;
-const VERTICAL_DRAG_FRICTION = 0.6; // 1 corresponds to the third of viewport height
+const VERTICAL_DRAG_FRICTION = 0.6;
+const VERTICAL_EDGE_TOLERANCE = 1; // 1 corresponds to the third of viewport height
 
 const MIN_RATIO_TO_CLOSE = 0.4; // Minimum speed required to navigate
 // to next or previous slide
@@ -1262,13 +1346,26 @@ class DragHandler {
       x: 0,
       y: 0
     };
+    /** @private */
+
+    this._isDragCloseGesture = false;
+    /** @private */
+
+    this._dragCloseOrigin = 0;
+    /** @private */
+
+    this._dragCloseAxis = null;
   }
 
   start() {
+    this._isDragCloseGesture = false;
+    this._dragCloseAxis = null;
+
     if (this.pswp.currSlide) {
       equalizePoints(this.startPan, this.pswp.currSlide.pan);
     }
 
+    this._dragCloseOrigin = this.startPan.y;
     this.pswp.animations.stopAll();
   }
 
@@ -1281,17 +1378,28 @@ class DragHandler {
     const {
       currSlide
     } = this.pswp;
+    const dragCloseAxis = dragAxis === 'y' || dragAxis === 'x' && this._canUseHorizontalDragClose() ? dragAxis : null;
+    const dragDelta = dragCloseAxis ? p1[dragCloseAxis] - prevP1[dragCloseAxis] : 0;
+    const canStartVerticalDragClose = (dragCloseAxis === 'y' || dragCloseAxis === 'x') && this.pswp.options.closeOnVerticalDrag && currSlide && currSlide.currZoomLevel <= this._getDragCloseZoomLevel(currSlide) && !this.gestures.isMultitouch;
 
-    if (dragAxis === 'y' && this.pswp.options.closeOnVerticalDrag && currSlide && currSlide.currZoomLevel <= currSlide.zoomLevels.fit && !this.gestures.isMultitouch) {
-      // Handle vertical drag to close
-      const panY = currSlide.pan.y + (p1.y - prevP1.y);
+    if (canStartVerticalDragClose && currSlide && !this._isDragCloseGesture && dragCloseAxis) {
+      if (this._canUseDragClose(currSlide, dragCloseAxis, dragDelta)) {
+        this._isDragCloseGesture = true;
+        this._dragCloseAxis = dragCloseAxis;
+        this._dragCloseOrigin = this.startPan[dragCloseAxis];
+      }
+    }
 
-      if (!this.pswp.dispatch('verticalDrag', {
-        panY
+    if (canStartVerticalDragClose && currSlide && this._isDragCloseGesture && this._dragCloseAxis) {
+      const closeAxis = this._dragCloseAxis;
+      const panPos = currSlide.pan[closeAxis] + (p1[closeAxis] - prevP1[closeAxis]);
+
+      if (closeAxis !== 'y' || !this.pswp.dispatch('verticalDrag', {
+        panY: panPos
       }).defaultPrevented) {
-        this._setPanWithFriction('y', panY, VERTICAL_DRAG_FRICTION);
+        this._setPanWithFriction(closeAxis, panPos, VERTICAL_DRAG_FRICTION);
 
-        const bgOpacity = 1 - Math.abs(this._getVerticalDragRatio(currSlide.pan.y));
+        const bgOpacity = 1 - Math.abs(this._getDragCloseRatio(currSlide.pan[closeAxis], closeAxis, this._dragCloseOrigin));
         this.pswp.applyBgOpacity(bgOpacity);
         currSlide.applyCurrentZoomPan();
       }
@@ -1361,6 +1469,9 @@ class DragHandler {
 
       this._finishPanGestureForAxis('y');
     }
+
+    this._isDragCloseGesture = false;
+    this._dragCloseAxis = null;
   }
   /**
    * @private
@@ -1385,7 +1496,7 @@ class DragHandler {
       bounds
     } = currSlide;
     const panPos = pan[axis];
-    const restoreBgOpacity = this.pswp.bgOpacity < 1 && axis === 'y'; // 0.995 means - scroll view loses 0.5% of its velocity per millisecond
+    const restoreBgOpacity = this.pswp.bgOpacity < 1 && axis === this._dragCloseAxis; // 0.995 means - scroll view loses 0.5% of its velocity per millisecond
     // Increasing this number will reduce travel distance
 
     const decelerationRate = 0.995; // 0.99
@@ -1394,9 +1505,14 @@ class DragHandler {
     const projectedPosition = panPos + project(velocity[axis], decelerationRate);
 
     if (restoreBgOpacity) {
-      const vDragRatio = this._getVerticalDragRatio(panPos);
+      var _this$pswp$currSlide$, _this$pswp$currSlide;
 
-      const projectedVDragRatio = this._getVerticalDragRatio(projectedPosition); // If we are above and moving upwards,
+      const closeAxis = this._dragCloseAxis || axis;
+      const dragRatioOrigin = this._isDragCloseGesture ? this._dragCloseOrigin : (_this$pswp$currSlide$ = (_this$pswp$currSlide = this.pswp.currSlide) === null || _this$pswp$currSlide === void 0 ? void 0 : _this$pswp$currSlide.bounds.center[closeAxis]) !== null && _this$pswp$currSlide$ !== void 0 ? _this$pswp$currSlide$ : 0;
+
+      const vDragRatio = this._getDragCloseRatio(panPos, closeAxis, dragRatioOrigin);
+
+      const projectedVDragRatio = this._getDragCloseRatio(projectedPosition, closeAxis, dragRatioOrigin); // If we are above and moving upwards,
       // or if we are below and moving downwards
 
 
@@ -1559,15 +1675,122 @@ class DragHandler {
    * if position is shifted downwards - the ratio is positive.
    *
    * @private
-   * @param {number} panY The current pan Y position.
+   * @param {number} panPos Current pan position along the axis.
+   * @param {'x' | 'y'} axis Axis to calculate the drag-close ratio for.
+   * @param {number} [originPos] Origin pan position. Defaults to slide center.
    * @returns {number}
    */
 
 
-  _getVerticalDragRatio(panY) {
-    var _this$pswp$currSlide$, _this$pswp$currSlide;
+  _getDragCloseRatio(panPos, axis, originPos) {
+    var _ref, _this$pswp$currSlide2;
 
-    return (panY - ((_this$pswp$currSlide$ = (_this$pswp$currSlide = this.pswp.currSlide) === null || _this$pswp$currSlide === void 0 ? void 0 : _this$pswp$currSlide.bounds.center.y) !== null && _this$pswp$currSlide$ !== void 0 ? _this$pswp$currSlide$ : 0)) / (this.pswp.viewportSize.y / 3);
+    const effectiveOriginPos = (_ref = originPos !== null && originPos !== void 0 ? originPos : (_this$pswp$currSlide2 = this.pswp.currSlide) === null || _this$pswp$currSlide2 === void 0 ? void 0 : _this$pswp$currSlide2.bounds.center[axis]) !== null && _ref !== void 0 ? _ref : 0;
+    const viewportAxisSize = axis === 'x' ? this.pswp.viewportSize.x : this.pswp.viewportSize.y;
+    return (panPos - effectiveOriginPos) / (viewportAxisSize / 3);
+  }
+  /**
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @returns {number}
+   */
+
+
+  _getDragCloseZoomLevel(currSlide) {
+    const optionValue = this.pswp.options.dragCloseZoomLevel;
+
+    if (optionValue === 'fill') {
+      return currSlide.zoomLevels.fill;
+    }
+
+    if (optionValue === 'initial') {
+      return currSlide.zoomLevels.initial;
+    }
+
+    if (typeof optionValue === 'number') {
+      return optionValue;
+    }
+
+    return currSlide.zoomLevels.fit;
+  }
+  /**
+   * Vertical drag-close is allowed only when gesture starts at a vertical edge
+   * (top or bottom fully visible) and continues dragging outward from that edge.
+   *
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @param {number} deltaY
+   * @returns {boolean}
+   */
+
+
+  _canStartVerticalDragClose(currSlide, deltaY) {
+    const {
+      bounds
+    } = currSlide;
+    const startedAtTopEdge = this.startPan.y >= bounds.min.y - VERTICAL_EDGE_TOLERANCE;
+    const startedAtBottomEdge = this.startPan.y <= bounds.max.y + VERTICAL_EDGE_TOLERANCE;
+    return startedAtTopEdge && deltaY > 0 || startedAtBottomEdge && deltaY < 0;
+  }
+  /**
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @param {'x' | 'y'} axis
+   * @param {number} delta
+   * @returns {boolean}
+   */
+
+
+  _canUseDragClose(currSlide, axis, delta) {
+    const dragCloseZoomLevel = this.pswp.options.dragCloseZoomLevel;
+
+    if (dragCloseZoomLevel === 'fill') {
+      if (currSlide.currZoomLevel <= currSlide.zoomLevels.fit) {
+        return true;
+      }
+
+      if (axis === 'x') {
+        return this._canStartHorizontalDragClose(currSlide, delta);
+      }
+
+      return this._canStartVerticalDragClose(currSlide, delta);
+    }
+
+    return true;
+  }
+  /**
+   * @private
+   * @returns {boolean}
+   */
+
+
+  _canUseHorizontalDragClose() {
+    return this.pswp.getNumItems() === 1;
+  }
+  /**
+   * @private
+   * @param {import('../slide/slide.js').default} currSlide
+   * @param {number} deltaX
+   * @returns {boolean}
+   */
+
+
+  _canStartHorizontalDragClose(currSlide, deltaX) {
+    if (!this._canUseHorizontalDragClose()) {
+      return false;
+    }
+
+    const {
+      bounds
+    } = currSlide;
+
+    if (bounds.min.x === bounds.max.x) {
+      return true;
+    }
+
+    const startedAtLeftEdge = this.startPan.x >= bounds.min.x - VERTICAL_EDGE_TOLERANCE;
+    const startedAtRightEdge = this.startPan.x <= bounds.max.x + VERTICAL_EDGE_TOLERANCE;
+    return startedAtLeftEdge && deltaX > 0 || startedAtRightEdge && deltaX < 0;
   }
   /**
    * Set pan position of the current slide.
@@ -3740,8 +3963,8 @@ class ScrollWheel {
         zoomFactor = 2 ** zoomFactor;
         const destZoomLevel = currSlide.currZoomLevel * zoomFactor;
         currSlide.zoomTo(destZoomLevel, {
-          x: e.clientX,
-          y: e.clientY
+          x: e.clientX - this.pswp.viewportOffset.x,
+          y: e.clientY - this.pswp.viewportOffset.y
         });
       }
     } else {
@@ -4382,7 +4605,14 @@ function getThumbBounds(index, itemData, instance) {
     }
   }
 
-  return instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
+  thumbBounds = instance.applyFilters('thumbBounds', thumbBounds, itemData, index);
+
+  if (thumbBounds) {
+    thumbBounds.x -= instance.viewportOffset.x;
+    thumbBounds.y -= instance.viewportOffset.y;
+  }
+
+  return thumbBounds;
 }
 
 /** @typedef {import('../lightbox/lightbox.js').default} PhotoSwipeLightbox */
@@ -4877,13 +5107,18 @@ class Content {
 
   removePlaceholder() {
     if (this.placeholder && !this.keepPlaceholder()) {
-      // With delay, as image might be loaded, but not rendered
+      var _this$instance;
+
+      // Use animation duration + buffer time to ensure placeholder 
+      // does not disappear during opening animation
+      const animationDuration = ((_this$instance = this.instance) === null || _this$instance === void 0 || (_this$instance = _this$instance.options) === null || _this$instance === void 0 ? void 0 : _this$instance.showAnimationDuration) || 0;
+      const safeDelay = animationDuration + 500;
       setTimeout(() => {
         if (this.placeholder) {
           this.placeholder.destroy();
           this.placeholder = undefined;
         }
-      }, 1000);
+      }, safeDelay);
     }
   }
   /**
@@ -6289,6 +6524,8 @@ class Opener {
 
 /** @typedef {{ top: number; bottom: number; left: number; right: number }} Padding */
 
+/** @typedef {{ top: number; bottom: number; left: number; right: number }} Margin */
+
 /** @typedef {SlideData[]} DataSourceArray */
 
 /** @typedef {{ gallery: HTMLElement; items?: HTMLElement[] }} DataSourceObject */
@@ -6342,6 +6579,15 @@ class Opener {
  *
  * @prop {boolean} closeOnVerticalDrag
  * Vertical drag gesture to close the PhotoSwipe.
+ *
+ * @prop {'fit' | 'fill' | 'initial' | number} [dragCloseZoomLevel]
+ * Maximum zoom level at which drag-to-close is allowed.
+ *
+ * @prop {Margin} [margin]
+ * Window margin around PhotoSwipe viewport (in pixels).
+ *
+ * @prop {(viewportSize: Point) => Margin} [marginFn]
+ * The option is checked frequently, so make sure it's performant. Overrides margin option if defined.
  *
  * @prop {Padding} [padding]
  * Slide area padding (in pixels).
@@ -6484,6 +6730,7 @@ const defaultOptions = {
   loop: true,
   pinchToClose: true,
   closeOnVerticalDrag: true,
+  dragCloseZoomLevel: 'fit',
   hideAnimationDuration: 333,
   showAnimationDuration: 333,
   zoomAnimationDuration: 333,
@@ -6542,6 +6789,16 @@ class PhotoSwipe extends PhotoSwipeBase {
      */
 
     this.viewportSize = {
+      x: 0,
+      y: 0
+    };
+    /**
+     * Position of PhotoSwipe viewport relative to the window
+     *
+     * @type {Point}
+     */
+
+    this.viewportOffset = {
       x: 0,
       y: 0
     };
@@ -6638,7 +6895,9 @@ class PhotoSwipe extends PhotoSwipeBase {
 
 
     this.updateSize();
-    this.offset.y = window.pageYOffset;
+
+    this._updatePageScrollOffset();
+
     this._initialItemData = this.getItemData(this.currIndex);
     this.dispatch('gettingData', {
       index: this.currIndex,
@@ -6921,6 +7180,14 @@ class PhotoSwipe extends PhotoSwipeBase {
     equalizePoints(this._prevViewportSize, newViewportSize);
     this.dispatch('beforeResize');
     equalizePoints(this.viewportSize, this._prevViewportSize);
+    equalizePoints(this.viewportOffset, getViewportOffset(this.options, this));
+
+    if (this.element) {
+      this.element.style.left = this.viewportOffset.x + 'px';
+      this.element.style.top = this.viewportOffset.y + 'px';
+      this.element.style.width = this.viewportSize.x + 'px';
+      this.element.style.height = this.viewportSize.y + 'px';
+    }
 
     this._updatePageScrollOffset();
 
@@ -6990,7 +7257,7 @@ class PhotoSwipe extends PhotoSwipeBase {
 
 
   _updatePageScrollOffset() {
-    this.setScrollOffset(0, window.pageYOffset);
+    this.setScrollOffset(window.pageXOffset, window.pageYOffset);
   }
   /**
    * @param {number} x
@@ -6999,8 +7266,8 @@ class PhotoSwipe extends PhotoSwipeBase {
 
 
   setScrollOffset(x, y) {
-    this.offset.x = x;
-    this.offset.y = y;
+    this.offset.x = x + this.viewportOffset.x;
+    this.offset.y = y + this.viewportOffset.y;
     this.dispatch('updateScrollOffset');
   }
   /**

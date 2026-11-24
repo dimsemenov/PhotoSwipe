@@ -6,7 +6,7 @@ sidebar_label: Options
 
 ### bgOpacity
 
-Number, `0.8`. 
+Number, `0.8`.
 
 Background backdrop opacity, always define it via this option and not via CSS rgba color.
 
@@ -18,7 +18,7 @@ const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--test-bgopacity',
   children: 'a',
   pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
-  bgOpacity: 0.2,
+  bgOpacity: 0.2
 });
 lightbox.init();
 ```
@@ -37,7 +37,7 @@ const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--test-spacing',
   children: 'a',
   pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
-  spacing: 0.5, // 50% of viewport width
+  spacing: 0.5 // 50% of viewport width
 });
 lightbox.init();
 ```
@@ -63,7 +63,6 @@ lightbox.init();
 
 </PswpCodePreview>
 
-
 ### loop
 
 Boolean, `true`. If set to true you'll be able to swipe from the last to the first image. Option is always `false` when there are less than 3 slides.
@@ -82,8 +81,6 @@ lightbox.init();
 ```
 
 </PswpCodePreview>
-
-
 
 ### wheelToZoom
 
@@ -142,9 +139,86 @@ lightbox.init();
 
 </PswpCodePreview>
 
+### margin
+
+Object, `{ top: 0, bottom: 0, left: 0, right: 0 }`. Window margin around PhotoSwipe viewport (in pixels). Use it to make the gallery float within the window while keeping gestures and zoom calculations inside the reduced viewport.
+
+<PswpCodePreview galleryID="test-margin" numItems="4">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--test-margin',
+  children: 'a',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
+  margin: { top: 40, bottom: 40, left: 80, right: 80 }
+});
+lightbox.init();
+```
+
+</PswpCodePreview>
+
+### marginFn
+
+Function, should return margin object. The option is checked frequently, so make sure it's performant. Overrides `margin` option if defined. For example:
+
+<PswpCodePreview galleryID="test-marginfn" numItems="4">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--test-marginfn',
+  children: 'a',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
+
+  marginFn: (viewportSize) => {
+    const isSmallScreen = viewportSize.x < 900;
+
+    return {
+      top: isSmallScreen ? 12 : 40,
+      bottom: isSmallScreen ? 12 : 40,
+      left: isSmallScreen ? 12 : 80,
+      right: isSmallScreen ? 12 : 80
+    };
+  }
+});
+lightbox.init();
+```
+
+</PswpCodePreview>
+
+### dragCloseZoomLevel
+
+String or Number, `'fit'`. Maximum zoom level at which drag-to-close is allowed.
+
+Supported string values:
+
+- `'fit'` - allow close-drag only at fit zoom level or smaller.
+- `'fill'` - allow close-drag at fill zoom level or smaller (includes fit).
+- `'initial'` - allow close-drag at initial zoom level or smaller.
+
+When there is only one slide in the gallery, horizontal drag-close (from left/right) is enabled as well.
+
+You may also pass a custom numeric zoom level.
+
+<PswpCodePreview galleryID="close-on-vertical-drag-fill" numItems="4">
+
+```js pswpcode
+import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#gallery--close-on-vertical-drag-fill',
+  children: 'a',
+  initialZoomLevel: 'fill',
+  dragCloseZoomLevel: 'fill',
+  pswpModule: () => import('/photoswipe/photoswipe.esm.js')
+});
+lightbox.init();
+```
+
+</PswpCodePreview>
 
 ### padding
-  
+
 Object, `{ top: 0, bottom: 0, left: 0, right: 0 }`. Slide area padding (in pixels).
 
 <PswpCodePreview galleryID="test-padding" numItems="4">
@@ -165,7 +239,6 @@ lightbox.init();
 ### paddingFn
 
 Function, should return padding object. The option is checked frequently, so make sure it's performant. Overrides `padding` option if defined. For example:
-
 
 <PswpCodePreview galleryID="test-paddingfn" numItems="4">
 
@@ -204,7 +277,6 @@ Number, `333`. Transition duration in milliseconds, can be `0`. [Example here](o
 
 String, `'cubic-bezier(.4,0,.22,1)'`. CSS easing function for open/close/zoom transitions. [Example here](opening-or-closing-transition.md#transition-duration-and-easing).
 
-
 ### escKey
 
 Boolean, `true`. Esc key to close.
@@ -223,7 +295,6 @@ lightbox.init();
 ```
 
 </PswpCodePreview>
-
 
 ### arrowKeys
 
@@ -244,15 +315,13 @@ lightbox.init();
 
 </PswpCodePreview>
 
-
 ### trapFocus
 
-Boolean, `true`. Trap focus within PhotoSwipe element while it's open. 
-
+Boolean, `true`. Trap focus within PhotoSwipe element while it's open.
 
 ### returnFocus
 
-Boolean, `true`. Restore focus the last active element after PhotoSwipe is closed. 
+Boolean, `true`. Restore focus the last active element after PhotoSwipe is closed.
 
 <PswpCodePreview galleryID="test-restore-focus" numItems="4">
 
@@ -286,16 +355,31 @@ const lightbox = new PhotoSwipeLightbox({
 lightbox.init();
 ```
 
-```html pswpcode 
+```html pswpcode
 <div class="pswp-gallery" id="gallery--clickToCloseNonZoomable">
-  <a data-pswp-width="300" data-pswp-height="200" href="https://dummyimage.com/300x200/555/fff/?text=1st-300x200" target="_blank">
-    <img src="https://dummyimage.com/150x100/555/fff/?text=1st-150x100" alt="">
+  <a
+    data-pswp-width="300"
+    data-pswp-height="200"
+    href="https://dummyimage.com/300x200/555/fff/?text=1st-300x200"
+    target="_blank"
+  >
+    <img src="https://dummyimage.com/150x100/555/fff/?text=1st-150x100" alt="" />
   </a>
-  <a data-pswp-width="1000" data-pswp-height="1000" href="https://dummyimage.com/1000x1000/555/fff/?text=2nd-1000x1000" target="_blank">
-    <img src="https://dummyimage.com/100x100/555/fff/?text=2nd-100x100" alt="">
+  <a
+    data-pswp-width="1000"
+    data-pswp-height="1000"
+    href="https://dummyimage.com/1000x1000/555/fff/?text=2nd-1000x1000"
+    target="_blank"
+  >
+    <img src="https://dummyimage.com/100x100/555/fff/?text=2nd-100x100" alt="" />
   </a>
-  <a data-pswp-width="100" data-pswp-height="700" href="https://dummyimage.com/100x700/555/fff/?text=3rd-100x700" target="_blank">
-    <img src="https://dummyimage.com/50x350/555/fff/?text=3rd-50x350" alt="">
+  <a
+    data-pswp-width="100"
+    data-pswp-height="700"
+    href="https://dummyimage.com/100x700/555/fff/?text=3rd-100x700"
+    target="_blank"
+  >
+    <img src="https://dummyimage.com/50x350/555/fff/?text=3rd-50x350" alt="" />
   </a>
 </div>
 ```
@@ -327,7 +411,7 @@ lightbox.init();
 
 ### indexIndicatorSep
 
-String, ` / `. Used for slide count indicator ("1 of 10 ").
+String, `/`. Used for slide count indicator ("1 of 10 ").
 
 <PswpCodePreview galleryID="test-indexIndicatorSep" numItems="4">
 
@@ -356,7 +440,7 @@ const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--test-getViewportSizeFn',
   children: 'a',
   pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
-  getViewportSizeFn: function(options, pswp) {
+  getViewportSizeFn: function (options, pswp) {
     return {
       x: document.documentElement.clientWidth - 200,
       y: window.innerHeight
@@ -368,11 +452,9 @@ lightbox.init();
 
 </PswpCodePreview>
 
-
 ### initialZoomLevel, secondaryZoomLevel, maxZoomLevel
 
 Refer to [Adjusting zoom level](adjusting-zoom-level.md) page for more info. The default values are described [there too](adjusting-zoom-level.md#default-behaviour).
-
 
 ### errorMsg
 
@@ -393,20 +475,25 @@ const lightbox = new PhotoSwipeLightbox({
 lightbox.init();
 ```
 
-```html pswpcode 
+```html pswpcode
 <div class="pswp-gallery pswp-gallery--single-column" id="gallery--errorMsg">
   <a data-pswp-width="1200" data-pswp-height="800" href="https://picsum.photos/1200/800" target="_blank">
-    <img src="https://dummyimage.com/300x200/555/fff/?text=0-random-image" alt="">
+    <img src="https://dummyimage.com/300x200/555/fff/?text=0-random-image" alt="" />
   </a>
 
   <a data-pswp-width="800" data-pswp-height="600" href="https://example.com/broken-image-link" target="_blank">
-    <img src="https://dummyimage.com/300x200/555/fff/?text=1st-broken-large-image" alt="">
+    <img src="https://dummyimage.com/300x200/555/fff/?text=1st-broken-large-image" alt="" />
   </a>
-  <a data-pswp-width="1000" data-pswp-height="1000" href="https://dummyimage.com/1000x1000/555/fff/?text=2nd-1000x1000" target="_blank">
-    <img src="https://dummyimage.com/100x100/555/fff/?text=2nd-100x100" alt="">
+  <a
+    data-pswp-width="1000"
+    data-pswp-height="1000"
+    href="https://dummyimage.com/1000x1000/555/fff/?text=2nd-1000x1000"
+    target="_blank"
+  >
+    <img src="https://dummyimage.com/100x100/555/fff/?text=2nd-100x100" alt="" />
   </a>
   <a data-pswp-width="800" data-pswp-height="600" href="https://example.com/another-broken-image-link" target="_blank">
-    <img src="https://dummyimage.com/300x200/555/fff/?text=3rd-broken-image-link" alt="">
+    <img src="https://dummyimage.com/300x200/555/fff/?text=3rd-broken-image-link" alt="" />
   </a>
 </div>
 ```
@@ -431,7 +518,6 @@ lightbox.init();
 ```
 
 </PswpCodePreview>
-
 
 ### mainClass
 
@@ -468,7 +554,7 @@ const lightbox = new PhotoSwipeLightbox({
   gallery: '#gallery--test-maxWidthToAnimate',
   children: 'a',
   pswpModule: () => import('/photoswipe/photoswipe.esm.js'),
-  maxWidthToAnimate: 800,
+  maxWidthToAnimate: 800
 });
 lightbox.init();
 ```
@@ -525,7 +611,6 @@ lightbox.init();
 ```
 
 </PswpCodePreview>
-
 
 ## Translating
 
